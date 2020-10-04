@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <ImageView
+        android:id="@+id/adminproductdetailsimage"
+        android:layout_width="match_parent"
+        android:layout_height="260dp"
+        android:scaleType="centerCrop"
+        android:contentDescription="TODO" />
+
+
+    <TextView
+        android:id="@+id/adminproductimageproductname"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/adminproductdetailsimage"
+
+        android:textColor="@android:color/black"
+        android:textStyle="bold"
+        android:textSize="18sp"
+        android:gravity="center"
+        android:layout_marginTop="10dp"
+        />
+
+
+
+    <TextView
+        android:id="@+id/adminproductimagedescription"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/adminproductimageproductname"
+
+        android:textColor="@android:color/black"
+        android:textStyle="bold"
+        android:textSize="16sp"
+        android:gravity="center"
+        android:layout_marginTop="10dp"
+        />
+
+    <TextView
+        android:id="@+id/adminproductimageprice"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/adminproductimagedescription"
+
+        android:textColor="@android:color/black"
+        android:textStyle="bold"
+        android:textSize="18sp"
+        android:gravity="center"
+        android:layout_marginTop="10dp"
+        />
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:id="@+id/likebuttonsresult"
+    android:layout_below="@+id/adminproductimageprice">
+    >
+
+
+    <ImageButton
+        android:id="@+id/adminproductimagelikebutton"
+        android:layout_width="75sp"
+        android:layout_height="50sp"
+        android:scaleType="fitCenter"
+        app:srcCompat="@drawable/likeicons"
+        android:contentDescription="likebutton" />
+    <TextView
+        android:id="@+id/adminproductimagenumberoflikes"
+        android:layout_width="50sp"
+        android:layout_height="wrap_content"
+
+        android:textColor="@android:color/black"
+        android:textStyle="bold"
+        android:textSize="18sp"
+        android:gravity="center"
+        android:layout_marginTop="10dp"
+        android:layout_below="@+id/adminproductimagelikebutton"
+        />
+
+
+
+</LinearLayout>
+
+
+
+    <Button
+        android:id="@+id/ViewCustomers"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:hint="@string/view_customers"
+
+        android:layout_below="@+id/likebuttonsresult"
+      />
+
+
+</RelativeLayout>

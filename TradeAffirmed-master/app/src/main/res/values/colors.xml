@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#D9CB0F</color>
+    <color name="colorPrimaryDark">#68E51A</color>
+    <color name="colorAccent">#CB1B57</color>
+    <color name="item_border_color">#666666</color>
+    <color name="item_default_color">#22EEEEEE</color>
+    <color name="item_pressed_color">#CCCCCC</color>
+    <color name="item_activated_color">#77CEEE</color>
+
+    <color name="grey">#BFBFBF</color>
+
+    <color name="white">#FFF</color>
+
+    <color name="black">#000000</color>
+
+    <color name="link_blue">#4d94ff</color>
+
+    <color name="old_link_blue">#005CE6</color>
+
+    <color name="darkRed">#cc0000</color>
+</resources>

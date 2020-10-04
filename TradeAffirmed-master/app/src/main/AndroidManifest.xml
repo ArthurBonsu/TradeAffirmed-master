@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+
+    package="com.simcoder.bimbo">
+
+    <!--
+         The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
+         Google Maps Android API v2, but you must specify either coarse or fine
+         location permissions for the 'MyLocation' functionality. 
+    -->
+
+
+
+
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_SETTINGS"
+        tools:ignore="ProtectedPermissions" />
+    <uses-permission android:name="android.permission.READ_PROFILE"/>
+
+
+    <!-- To auto-complete the email text field in the login form with the user's emails -->
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+
+    <uses-feature
+        android:glEsVersion="0x00020000"
+        android:required="true" />
+
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+
+
+
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <permission android:name="com.simcoder.bimbo.permission.C2D_MESSAGE"
+        tools:ignore="ProtectedPermissions"
+        android:protectionLevel="signature" />
+    <uses-permission android:name="com.simcoder.bimbo.permission.C2D_MESSAGE"
+        tools:ignore="ProtectedPermissions"  />
+
+
+
+
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/tradexlogo"
+
+        tools:replace="android:icon"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/tradexlogo"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme"
+       >
+
+
+        <service
+            android:name=".onAppKilled"
+            android:stopWithTask="false" />
+        <uses-library
+            android:name="org.apache.http.legacy"
+            android:required="false" />
+
+        <activity android:name=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".DriverLoginActivity" />
+        <activity android:name=".CustomerLoginActivity" />
+        <activity android:name=".WriteSettingsPermissionActivity"/>
+
+
+        <!--
+             The API key for Google Maps-based APIs is defined as a string resource.
+             (See the file "res/values/google_maps_api.xml").
+             Note that the API key is linked to the encryption key used to sign the APK.
+             You need a different API key for each encryption key, including the release key that is used to
+             sign the APK for publishing.
+             You can define the keys for the debug and release targets in src/debug/ and src/release/.
+        -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyANVxiIz1ZxEyb-SwJfYnzEqo9mbpqr5xg" />
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="4b0c9afb55db9f4ca3736c5c90f745c92c03d52f"
+            tools:replace="android:value" />
+
+        <service
+            android:name=".MyFirebaseInstanceIDService"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
+            </intent-filter>
+        </service>
+        <service
+            android:name=".MyService"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
+        <activity android:name=".CustomerMapActivity"
+            android:hardwareAccelerated="true"  />
+        <activity android:name=".CustomerSettingsActivity" />
+        <activity android:name=".DriverSettingsActivity" />
+        <activity android:name=".HistoryActivity" />
+        <activity android:name=".HistorySingleActivity" />
+        <activity android:name=".DriverMapActivity"
+            android:hardwareAccelerated="true"  />
+        <activity android:name=".WorkActivities.CartActivity" />
+        <activity android:name=".WorkActivities.ConfirmFinalOrderActivity" />
+        <activity android:name=".WorkActivities.HomeActivity" />
+        <activity android:name=".WorkActivities.LoginActivity" />
+        <activity android:name=".WorkActivities.MainActivity" />
+        <activity android:name=".WorkActivities.ProductDetailsActivity" />
+        <activity android:name=".WorkActivities.RegisterActivity" />
+        <activity android:name=".WorkActivities.ResetPasswordActivity" />
+        <activity android:name=".WorkActivities.SearchProductsActivity" />
+        <activity android:name=".WorkActivities.SettinsActivity" />
+        <activity android:name=".WorkActivities.CustomerProfile" />
+        <activity android:name=".WorkActivities.TraderProfile" />
+        <activity android:name=".Admin.ViewSpecificUsersOrder" />
+        <activity android:name=".Admin.ViewYourPersonalProduct" />
+        <activity android:name=".Admin.ViewSpecificUsersCart" />
+        <activity android:name=".Admin.ViewAllCarts" />
+        <activity android:name=".Admin.AdminProductDetails" />
+        <activity android:name=".Admin.AdminNewOrdersActivity" />
+        <activity android:name=".Admin.AdminMaintainProductsActivity" />
+        <activity android:name=".Admin.AdminCategoryActivity" />
+        <activity android:name=".Admin.AdminAllProducts" />
+        <activity android:name=".Admin.AdminAllCustomers" />
+        <activity android:name=".Admin.AdminAddNewProductActivity" />
+        <activity android:name=".Admin.AdminAddNewProductActivityII" />
+        <activity android:name=".Admin.AdminViewCartOfUser" />
+
+
+        <activity android:name=".instagram.dialogs.ConfirmPasswordDialog" />
+        <activity android:name=".instagram.Home.InstagramHomeActivity" />
+        <activity android:name=".instagram.Home.CameraFragment" />
+        <activity android:name=".instagram.Home.HomeFragment" />
+        <activity android:name=".instagram.Home.MessagesFragment" />
+        <activity android:name=".instagram.Home.MainViewFeedFragment" />
+
+
+
+        <activity android:name=".instagram.Likes.LikesActivity" />
+        <activity android:name=".instagram.Login.InstagramLoginActivity" />
+        <activity android:name=".instagram.Login.InstagramRegisterActivity" />
+
+
+
+        <activity android:name=".instagram.Profile.AccountSettingsActivity" />
+        <activity android:name=".instagram.Profile.EditProfileFragment" />
+        <activity android:name=".instagram.Profile.ProfileActivity" />
+        <activity android:name=".instagram.Profile.ProfileFragment" />
+        <activity android:name=".instagram.Profile.SignOutFragment" />
+
+        <activity android:name=".instagram.Search.SearchActivity" />
+        <activity android:name=".instagram.Search.SearchActivityPeople" />
+        <activity android:name=".instagram.Search.SearchByImage" />
+        <activity android:name=".instagram.Search.SearchByPosts" />
+        <activity android:name=".instagram.Search.SearchByResidence" />
+
+
+
+        <activity android:name=".instagram.Share.GalleryFragment" />
+        <activity android:name=".instagram.Share.NextActivity" />
+        <activity android:name=".instagram.Share.PhotoFragment" />
+        <activity android:name=".instagram.Share.ShareActivity" />
+        <activity android:name=".instagram.Share.SetNameAndPriceActivity" />
+
+
+        <activity android:name=".instagram.Utils.ViewCommentsFragment" />
+        <activity android:name=".instagram.Utils.ViewPostFragment" />
+        <activity android:name=".instagram.Utils.ViewProfileFragment" />
+
+    </application>
+
+</manifest>
+

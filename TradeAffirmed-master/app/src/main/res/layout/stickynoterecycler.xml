@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="8dp">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:popupTheme="@style/AppTheme.PopupOverlay" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+
+    <!--侧边栏样式-->
+
+
+
+
+
+
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/stickyheaderrecyler"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="5dp">
+
+
+    </androidx.recyclerview.widget.RecyclerView>
+
+    <androidx.drawerlayout.widget.DrawerLayout
+android:id="@+id/drawer_layout"
+android:layout_width="250dp"
+android:layout_height="700dp"
+
+android:layout_marginEnd="8dp"
+android:layout_marginRight="8dp"
+android:visibility="visible"
+tools:openDrawer="start">
+
+<!--主页内容-->
+
+
+<com.google.android.material.navigation.NavigationView
+    android:id="@+id/nav_view"
+    tools="start"
+    android:layout_width="250dp"
+    android:layout_height="700dp"
+    android:layout_gravity="start"
+    android:fitsSystemWindows="true"
+    android:visibility="visible"
+    app:headerLayout="@layout/nav_header_home"
+    app:menu="@menu/activity_home_drawer">
+
+
+
+</com.google.android.material.navigation.NavigationView>
+</androidx.drawerlayout.widget.DrawerLayout>
+
+</FrameLayout>

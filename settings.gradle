@@ -1,0 +1,3 @@
+include ':app', ':build.gradle'
+project(':app').projectDir = new File('TradeAffirmed-master/app')
+project(':build.gradle').projectDir = new File('TradeAffirmed-master/app/build.gradle')

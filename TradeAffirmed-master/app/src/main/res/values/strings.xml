@@ -1,0 +1,438 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="app_name">TradeX</string>
+    <string name="title_activity_driver_map">Map</string>
+    <string name="title_activity_main2">Main2Activity</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_login">Sign in</string>
+
+
+
+    <string name="edit_profile_fragment">Edit Profile</string>
+
+    <string name="view_post_fragment">View Post</string>
+
+    <string name="sign_out_fragment">Sign out</string>
+
+    <string name="profile_fragment">Profile</string>
+
+    <string name="view_profile_fragment">View Profile</string>
+
+    <string name="view_comments_fragment">View Comments</string>
+
+    <!-- Dialog names -->
+
+
+    <string name="confirm_password_dialog">ConfirmPasswordDialog</string>
+
+    <!-- Firebase messages -->
+
+
+    <string name="auth_failed">Failed to Authenticate</string>
+
+    <string name="auth_success">Authentication Success</string>
+
+    <!-- Firebase database fields -->
+
+
+    <string name="dbname_users">users</string>
+
+    <string name="dbname_user_account_settings">user_account_settings</string>
+
+    <string name="dbname_photos">photos</string>
+
+    <string name="dbname_user_photos">user_photos</string>
+
+    <string name="dbname_following">following</string>
+
+    <string name="dbname_followers">followers</string>
+
+    <string name="field_username">username</string>
+
+    <string name="field_email">email</string>
+
+    <string name="field_display_name">display_name</string>
+
+    <string name="field_website">website</string>
+
+    <string name="field_description">description</string>
+
+    <string name="field_phone_number">phone_number</string>
+
+    <string name="field_user_id">user_id</string>
+
+    <string name="field_likes">likes</string>
+
+    <string name="field_caption">caption</string>
+
+    <string name="field_date_created">date_created</string>
+
+    <string name="field_photo_id">photo_id</string>
+
+    <string name="field_tags">tags</string>
+
+    <string name="field_image_path">image_path</string>
+
+    <string name="field_comments">comments</string>
+
+    <!-- photo types -->
+
+
+    <string name="new_photo">new_photo</string>
+
+    <string name="profile_photo">profile_photo</string>
+    <string name="instagramhomeactivity">InstagramHomeActivity</string>
+
+    <!-- Intent Extras -->
+
+
+    <string name="calling_activity">calling_activity</string>
+
+    <string name="selected_image">selected_image</string>
+
+    <string name="return_to_fragment">return_to_fragment</string>
+
+    <string name="selected_bitmap">selected_bitmap</string>
+
+    <string name="intent_user">intent_user</string>
+
+    <!-- Bundle args names -->
+
+
+    <string name="activity_number">activity_number</string>
+
+    <string name="bundle_photo">bundle_photo</string>
+
+    <string name="bundle_user_account_settings">bundle_user_account_settings</string>
+
+    <!-- activity names -->
+
+
+    <string name="profile_activity">Profile Activity</string>
+
+    <string name="search_activity">Search Activity</string>
+
+    <string name="home_activity">Home Activity</string>
+
+    <!-- random -->
+
+
+    <string name="gallery">GALLERY</string>
+
+    <string name="photo">PHOTO</string>
+
+    <string name="open_camera">Open Camera</string>
+
+    <string name="next">Next</string>
+
+    <string name="string_share">Share</string>
+
+    <string name="string_next">Next</string>
+
+
+
+
+    <!-- Strings related to login -->
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password (optional)</string>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="error_invalid_email">This email address is invalid</string>
+    <string name="error_invalid_password">This password is too short</string>
+    <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_field_required">This field is required</string>
+    <string name="permission_rationale">"Contacts permissions are needed for providing email
+        completions."
+    </string>
+    <string name="gridlayout">GRIDLAYOUT</string>
+    <string name="from_toss">From - To</string>
+    <string name="tech_asokwah">Tech-Asokwah</string>
+    <string name="time">time</string>
+    <string name="rideid">rideId</string>
+    <string name="i_m_a_driver">I\'m a Driver</string>
+    <string name="i_m_a_customer">I\'m a Customer</string>
+    <string name="distance">distance</string>
+    <string name="_0">0</string>
+    <string name="call_uber">call Uber</string>
+    <string name="uberblack">UberBlack</string>
+    <string name="uberxl">UberXl</string>
+    <string name="uberx">UberX</string>
+    <string name="logouts">logout</string>
+    <string name="settingss">Settings</string>
+    <string name="historys">history</string>
+    <string name="email">email</string>
+    <string name="password">password</string>
+    <string name="login">login</string>
+    <string name="registration">registration</string>
+    <string name="name">Name</string>
+    <string name="phone">Phone</string>
+    <string name="confirm">confirm</string>
+    <string name="back">back</string>
+    <string name="call_bus_driver">Call Bus Driver</string>
+
+
+
+
+
+
+
+    <string name="workings">Working</string>
+
+
+    <string name="todoagain">TODO</string>
+
+
+
+
+
+
+
+    <string name="car">Car</string>
+    <string name="select_driver_picture">Select Driver picture</string>
+    <string name="balance_0">Balance: 0€</string>
+    <string name="paypal_email">Paypal Email</string>
+    <string name="payout">payout</string>
+
+    <string name="from_tos">From-To</string>
+    <string name="baseprice">Baseprice</string>
+    <string name="rideprice">Rideprice</string>
+
+    <string name="date">date:</string>
+    <string name="_30th_june_2017">30th June 2017</string>
+    <string name="_0s">0s</string>
+    <string name="_0_usd">0 USD</string>
+    <string name="names">name</string>
+    <string name="phones">phone</string>
+    <string name="pay_here">Pay Here</string>
+    <string name="eta">ETA:</string>
+    <string name="view_user_s_image">View User\'s image</string>
+    <string name="destinations">Destination: --</string>
+    <string name="picked_customers">picked customer</string>
+    <string name="customer_profile_image">Customer profile image</string>
+    <string name="emailss">Email</string>
+    <string name="emailsd">Email</string>
+    <string name="uberblackS">Uberblack</string>
+    <string name="uberblackxiSS">UberblackXI</string>
+    <string name="passport_noSS">PASSPORT NO.</string>
+    <string name="descriptionSS">DESCRIPTION</string>
+    <string name="operationSS">OPERATION</string>
+    <string name="residenceSS">RESIDENCE</string>
+    <string name="in_order_to_provide_safety_and_security_for_members_of_this_community_we_will_like_you_to_provide_these_additional_informationSS">In order to provide safety and security for members of this community, we will like you to provide these additional information</string>
+    <string name="click_button_to_set_office_locationSS">CLICK BUTTON TO SET OFFICE LOCATION</string>
+    <string name="set_your_passport_picturess">set your passport picture</string>
+    <string name="set_the_operationss">set the operation</string>
+    <string name="set_the_descriptionss">set the description</string>
+    <string name="set_the_residencess">set the residence</string>
+    <string name="call_Trader" />
+    <string name="call_trader">call_Trader</string>
+    <string name="from_to">From - To</string>
+    <string name="distancess">distance</string>
+    <string name="datess">date</string>
+    <string name="namess">name</string>
+    <string name="phoness">phone</string>
+    <string name="pay_heress">Pay Here</string>
+    <string name="for_users">for user</string>
+    <string name="navigation_drawer_things">navigation drawer things</string>
+    <string name="my_string_mr_chooser_searching">my @string/mr_chooser_searching</string>
+    <string name="zoom_in_content">zoom in content</string>
+    <string name="zoom_out">zoom_out</string>
+    <string name="logout">logout</string>
+    <string name="working">Working</string>
+    <string name="settings">Settings</string>
+    <string name="history">history</string>
+    <string name="picked_customerss">picked customer</string>
+    <string name="destinationss">Destination: --</string>
+    <string name="customerprofileimage">customerProfileImage</string>
+    <string name="picked_customer">picked customer</string>
+    <string name="destination">Destination: --</string>
+    <string name="accessibility">accessibility</string>
+    <string name="changedriveravailable">changedriveravailable</string>
+    <string name="search_text">Search text</string>
+    <string name="vip_99">开通Vip 99元</string>
+    <string name="zhjs">zhj</string>
+    <string name="zhj">zhj</string>
+    <string name="_99">99+</string>
+    <string name="android">Android</string>
+    <string name="fragment">Fragment自定义布局</string>
+    <string name="theghhd">苹果</string>
+    <string name="githubs">github</string>
+    <string name="github">github</string>
+    <string name="fddf">设置</string>
+    <string name="ddad">退出</string>
+    <string name="here">0</string>
+    <string name="price">Price</string>
+    <string name="name_of_product">Name of Product</string>
+    <string name="display_category_of_product">Display Category of Product</string>
+    <string name="display_name_of_products">Display name of Product</string>
+    <string name="show_days_uploaded">Show days uploaded</string>
+    <string name="shows_name_of_trader">Shows name of Trader</string>
+    <string name="display_name_of_product">Display name of Product</string>
+    <string name="currency">Currency</string>
+    <string name="todos">TODO</string>
+    <string name="the_ratings">the ratings</string>
+    <string name="customername">CustomerName</string>
+    <string name="book_title">Book Title</string>
+    <string name="category">Category</string>
+    <string name="description">Description</string>
+    <string name="tradersimageonscreen">tradersimageonscreen</string>
+    <string name="pictureofmyviewpager">pictureofmyviewpager</string>
+    <string name="this_is_my_application">This is my application</string>
+    <string name="women_shoes">Women Shoes</string>
+
+    <string name="thetradername">thetradername</string>
+
+
+    <string name="header">Header</string>
+    <string name="SHOES">SHOES</string>
+    <string name="shoes">shoes</string>
+    <string name="books">books</string>
+    <string name="theproductname">theproductname</string>
+
+    <string name="productpricehere">ProductPrice</string>
+    <string name="categoryheretoo">categoryhere</string>
+    <string name="thenumberoflikesgotten">thenumberoflikesgotten</string>
+    <string name="thenavigationaldrawerbutton">TheNavigationalDrawerButton</string>
+    <string name="the_scanner_camera_here">The Scanner Camera Here</string>
+    <string name="a_black_camera_to_shoot">A Black camera to shoot</string>
+    <string name="emailcommerce">Email</string>
+    <string name="phone_number">Phone Number</string>
+    <string name="passwordcommerce">Password</string>
+    <string name="find_discover_choose_and_buy_anything_online">Find, Discover, Choose and Buy anything online.</string>
+    <string name="already_have_an_account_login">Already have an Account? Login</string>
+    <string name="join_now">Join Now</string>
+    <string name="todoblacklisted">TODO</string>
+    <string name="todoyet">TODO</string>
+    <string name="remember_me">Remember me</string>
+    <string name="forget_password">Forget Password?</string>
+    <string name="login1">Login</string>
+    <string name="i_m_a_trader">I\'m a Trader?</string>
+    <string name="i_m_a_customer1">I\'m a Customer</string>
+    <string name="view_all_your_customers">View All Your Customers</string>
+    <string name="all_products">All Products</string>
+    <string name="view_all_your_customerss">view all your customers</string>
+    <string name="theproductnamedone">theproductname</string>
+    <string name="productprice">ProductPrice</string>
+    <string name="categoryhere">categoryhere</string>
+    <string name="numberoflikes">numberoflikes</string>
+    <string name="the_number_of_likes">the number of likes</string>
+    <string name="product_name">Product Name</string>
+
+    <string name="product_description">Product Description</string>
+    <string name="the_trader">The Trader</string>
+    <string name="fromswitchimage">TODO</string>
+    <string name="customerphone">CustomerPhone</string>
+    <string name="order">Order</string>
+    <string name="notfromswithcimage">TODO</string>
+    <string name="getthecustomerinformation">createcustomerinfoirmatio</string>
+    <string name="mobile">Mobile</string>
+    <string name="hybrid">Hybrid</string>
+    <string name="stationary">Stationary</string>
+    <string name="product_imagehere">product_imagehere</string>
+    <string name="add_new_product">Add New Product</string>
+    <string name="home_button">Home Button</string>
+    <string name="view_all_products">View All Products</string>
+    <string name="check_new_orders">Check New Orders</string>
+    <string name="maintain_products">Maintain Products</string>
+    <string name="logoutERRT">Logout</string>
+    <string name="todoHERE">TODO</string>
+    <string name="todoHER">TODO</string>
+    <string name="product_nameXX">Product Name...</string>
+    <string name="product_descriptionSS">Product Description...</string>
+    <string name="product_pricesd">Product Price...</string>
+    <string name="add_productd">Add Product</string>
+    <string name="image1s">image1</string>
+    <string name="product_namedd">Product Name</string>
+    <string name="product_descriptionnb">Product Description</string>
+    <string name="product_priceqw">Product Price</string>
+    <string name="apply_changesddd">Apply Changes</string>
+    <string name="delete_this_productxx">Delete This Product</string>
+    <string name="imagetobemaint">imagetobemaint</string>
+    <string name="productsff">Products</string>
+    <string name="total_priceff">Total Price =</string>
+    <string name="congratulations_your_final_order_has_been_placed_successfully_soon_it_will_be_verifieds">Congratulations, your final order has been placed successfully. Soon it will be verified.</string>
+    <string name="nexts">Next</string>
+    <string name="productsss">Products</string>
+    <string name="new_orderss">New Orders</string>
+    <string name="please_write_your_shipment_detailss">Please write your Shipment Details</string>
+    <string name="your_names">your Name</string>
+    <string name="confirmd">Confirm</string>
+    <string name="your_phone_numberso">your Phone Number</string>
+    <string name="your_home_addresss">your Home Address</string>
+    <string name="your_city_names">your City Name</string>
+    <string name="your_phone_numbers">your Phone Number</string>
+    <string name="i_am_a_trader">I AM A TRADER</string>
+    <string name="michael_steelgard">Michael Steelgard</string>
+    <string name="grilled_chicken_vendors">Grilled Chicken Vendor</string>
+    <string name="life_is_a_marathon_not_a_sprints">Life is a marathon not a sprint</string>
+    <string name="_0557154235s">0557154235</string>
+    <string name="follows">FOLLOW</string>
+    <string name="_23s">23</string>
+    <string name="customerimages">customerimage</string>
+    <string name="stationary2">STATIONARY</string>
+    <string name="mobileS">MOBILE</string>
+    <string name="hybridS">HYBRID</string>
+
+    <string name="cartproductprice">cartProductPrice</string>
+
+    <string name="cart_the_number_of_likes">cart the number of likes</string>
+    <string name="cart_number_of_likes">cart number of likes</string>
+    <string name="cartimageonscreen">cartimageonscreen</string>
+    <string name="carttheproductname">carttheproductname</string>
+    <string name="cartproductprices">cartproductprice</string>
+    <string name="cartthetradername">cartthetradername</string>
+    <string name="cartcategoryhere">cartcategoryhere</string>
+    <string name="cart_number_of_likess">cart_number_of_likes</string>
+    <string name="cartproductimageonscreen">cartproductimageonscreen</string>
+    <string name="cartdescriptionhere">cartdescriptionhere</string>
+    <string name="cartquantity">cartquantity</string>
+    <string name="nextclicktogotoconfirm">next</string>
+    <string name="image1">image1</string>
+
+    <string name="tostartimageintent">tostartimageintent</string>
+    <string name="trader_imagehere">trader_imagehere</string>
+    <string name="change_write_settings_permission">Change Write Settings Permission</string>
+    <string name="view_customers">View Customers</string>
+    <string name="number_of_products_in_cart">Number of products in cart</string>
+    <string name="product_name_here">Product Name Here</string>
+
+    <string name="product_price">Product Price</string>
+    <string name="total_price">Total Price</string>
+    <string name="username">UserName</string>
+    <string name="phone_number9">Phone Number</string>
+    <string name="product_key9">Product Key</string>
+    <string name="address_city9">Address, City</string>
+    <string name="date_time99">Date Time</string>
+    <string name="show_the_carted_products_of_user9">Show The Carted Products of User</string>
+    <string name="approve9">APPROVE</string>
+    <string name="show_the_products_that_were_ordered9">Show The Products That Were Ordered</string>
+    <string name="date_time9">Date Time</string>
+    <string name="userimagehere">userimagehere</string>
+    <string name="usernamehere">username</string>
+    <string name="_23numberoflikes">23</string>
+    <string name="total_amount">TOTAL AMOUNT</string>
+    <string name="address">address</string>
+    <string name="these_are_the_details_of_shipment">These are the details of shipment</string>
+    <string name="carseeen">car</string>
+    <string name="motorcarhere">motor</string>
+    <string name="bicycleishere">bicycle</string>
+    <string name="walkingishere">walking</string>
+    <string name="products_boughthere">PRODUCTS BOUGHT</string>
+    <string name="timeishere">time</string>
+    <string name="timewrapup">time</string>
+    <string name="nameisheree">Name</string>
+    <string name="total_amountforonfiirmorefder">Total amount</string>
+    <string name="cityconfirmorder">city</string>
+    <string name="shipping_costextraction">Shipping cost</string>
+    <string name="stateoftheconfirmed">state</string>
+    <string name="traderconfirmedorder">Trader</string>
+    <string name="traderidconfirmedheree">traderid</string>
+    <string name="dateofposthere">dateofposthere</string>
+    <string name="modeoftransportclick">Button</string>
+    <string name="todohere">TODO</string>
+    <string name="todo2">TODO</string>
+    <string name="you_are_marked_at_kotoka">You are marked at Kotoka</string>
+
+</resources>

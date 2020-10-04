@@ -1,0 +1,313 @@
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.simcoder.bimbo.CustomerMapActivity" >
+
+
+    <fragment
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+
+        android:layout_height="match_parent"
+        tools:layout="@layout/simple_gallery_item" />
+
+    <fragment
+        android:id="@+id/place_autocomplete_fragment"
+        android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
+        android:layout_width="262dp"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_marginLeft="35sp"
+        tools:layout="@layout/place_autocomplete_fragment"
+        tools:visibility="gone"
+        android:layout_marginStart="35sp" />
+
+    <TextView
+        android:layout_width="290sp"
+        android:layout_height="50sp"
+        android:layout_marginTop="110sp"
+        android:text="@string/you_are_marked_at_kotoka"
+        android:textSize="14sp">
+
+    </TextView>
+
+
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="270dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20sp"
+            android:layout_marginLeft="20sp"
+            android:layout_marginTop="20sp"
+            android:layout_marginEnd="20sp"
+            android:layout_marginRight="20sp"
+            android:layout_marginBottom="20sp">
+
+            <!--Insert the spinner into the post -->
+
+
+            <SearchView
+                android:id="@+id/mysearchbox"
+                android:layout_width="310dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="29dp"
+                android:layout_marginLeft="30dp"
+
+                android:layout_marginTop="25dp"
+
+
+                android:layout_toStartOf="@+id/gosearch"
+                android:layout_toLeftOf="@+id/gosearch"
+                android:background="@color/item_default_color">
+
+            </SearchView>
+
+ <!-- This is to be done in a way that a person can take the location and specify it on the map, not just his location alone -->
+
+        </androidx.cardview.widget.CardView>
+
+        <ImageButton
+            android:id="@+id/gosearch"
+            android:layout_width="56dp"
+            android:layout_height="58dp"
+
+            android:layout_marginLeft="350dp"
+            android:layout_marginTop="90dp"
+
+
+            android:contentDescription="@string/my_string_mr_chooser_searching"
+            android:scaleType="centerCrop"
+            android:src="@android:drawable/ic_media_play"
+            tools:ignore="RtlCompat"
+            tools:src="@drawable/searchcamerahere"
+            android:layout_marginStart="350dp" />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/driverInfo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:background="@android:color/white"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <ImageView
+                android:id="@+id/driverProfileImage"
+                android:layout_width="100sp"
+                android:layout_height="100sp"
+                android:contentDescription="@string/i_m_a_driver"
+                android:padding="20sp"
+                android:src="@mipmap/ic_default_user" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingStart="40sp"
+                android:paddingLeft="40sp"
+                android:paddingEnd="40sp">
+
+                <RatingBar
+                    android:id="@+id/ratingBar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:numStars="5"
+                    android:stepSize="0.1" />
+
+                <TextView
+                    android:id="@+id/driverPhone"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="20sp"
+                    android:paddingBottom="10sp" />
+
+                <TextView
+                    android:id="@+id/driverCar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="20sp"
+                    android:paddingBottom="10sp" />
+
+                <TextView
+                    android:id="@+id/driverName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="20sp"
+                    android:paddingBottom="10sp" />
+
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            style="?android:buttonBarStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/white"
+            android:orientation="vertical">
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginLeft="300sp"
+                android:layout_marginStart="200sp">
+
+
+                <ImageButton
+                    android:id="@+id/zoom_in"
+                    android:layout_width="69dp"
+                    android:layout_height="74dp"
+                    android:background="@color/item_default_color"
+
+                    android:contentDescription="@string/zoom_in_content"
+                    android:padding="5sp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/plusiconhere" />
+
+                <ImageButton
+                    android:id="@+id/getoriginalocation"
+                    android:layout_width="70sp"
+                    android:layout_height="70sp"
+                    android:background="@color/item_default_color"
+                    android:contentDescription="@string/todo2"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/acamerascannerhere"
+                    android:padding="5sp"/>
+
+                <ImageButton
+                    android:id="@+id/zoomtomarkerpoint"
+                    android:layout_width="70sp"
+                    android:layout_height="70sp"
+                    android:background="@color/item_default_color"
+                    android:contentDescription="@string/todo2"
+                    android:padding="5sp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/mappinicon" />
+
+            </LinearLayout>
+            <Button
+                android:id="@+id/request"
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:text="@string/call_trader"
+
+                />
+
+            <RadioGroup
+                android:id="@+id/radioGroup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <RadioButton
+                    android:id="@+id/UberX"
+                    style="?android:attr/borderlessButtonStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/stationary" />
+
+                <RadioButton
+                    android:id="@+id/UberBlack"
+                    style="?android:attr/borderlessButtonStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/mobile" />
+
+                <RadioButton
+                    android:id="@+id/UberXl"
+                    style="?android:attr/borderlessButtonStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/hybrid" />
+            </RadioGroup>
+        </LinearLayout>
+    </LinearLayout>
+
+
+
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/messagefloatingActionButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="150sp"
+        android:layout_marginLeft="150sp"
+        android:layout_marginTop="400sp"
+        android:clickable="true"
+        android:focusable="true"
+        android:scaleType="fitCenter"
+        android:src="@drawable/callcredithere"
+        app:backgroundTint="@color/item_default_color" />
+
+
+
+
+    <!--侧边栏样式-->
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="250dp"
+        android:layout_height="700dp">
+
+        <androidx.drawerlayout.widget.DrawerLayout
+            android:id="@+id/drawer_layout"
+            android:layout_width="250dp"
+            android:layout_height="700dp"
+
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0"
+            tools:openDrawer="start">
+
+            <!--主页内容-->
+
+
+            <com.google.android.material.navigation.NavigationView
+                android:id="@+id/nav_view"
+                tools="start"
+                android:layout_width="250dp"
+                android:layout_height="700dp"
+                android:layout_gravity="start"
+                android:fitsSystemWindows="true"
+                android:visibility="visible"
+                app:headerLayout="@layout/nav_header_home"
+                app:menu="@menu/activitycustomermapdrawer">
+
+            </com.google.android.material.navigation.NavigationView>
+
+
+        </androidx.drawerlayout.widget.DrawerLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize"
+        android:background="@color/colorPrimary"
+        app:subtitleTextColor="@android:color/white"
+        app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:titleTextColor="@android:color/white"></androidx.appcompat.widget.Toolbar>
+
+
+</FrameLayout>
+
+       <!-- BuiltByGOD -->
