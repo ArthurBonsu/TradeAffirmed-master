@@ -58,9 +58,9 @@
             android:id="@+id/productPicss"
             android:layout_width="120dp"
             android:layout_height="110dp"
-            app:srcCompat="@drawable/cast_ic_mini_controller_closed_caption"
             android:background="#2d2d2d"
-            android:contentDescription="pictureforyourpictures" />
+            android:contentDescription="pictureforyourpictures"
+            app:srcCompat="@drawable/sweather" />
 
         <TextView
             android:id="@+id/productnamegiven"
@@ -100,8 +100,8 @@
             android:layout_width="15dp"
             android:layout_height="0dp"
             android:layout_weight="1"
-            app:srcCompat="@drawable/mr_vol_type_audiotrack_light"
-            android:contentDescription="@string/the_ratings" />
+            android:contentDescription="@string/the_ratings"
+            app:srcCompat="@android:drawable/btn_star_big_on" />
         <TextView
             android:id="@+id/displaycategory"
             android:layout_width="120dp"
