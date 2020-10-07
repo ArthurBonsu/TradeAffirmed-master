@@ -271,7 +271,7 @@ public class AdminAddNewProductActivityII extends AppCompatActivity implements G
 
 
 
-                        final Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                        final Uri downloadUrl = taskSnapshot.getUploadSessionUri();
 
                                           traderid = user.getUid();
                                           tradername = user.getDisplayName();

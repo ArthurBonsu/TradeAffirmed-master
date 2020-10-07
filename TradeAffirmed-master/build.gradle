@@ -22,6 +22,7 @@ buildscript {
         classpath 'org.jfrog.buildinfo:build-info-extractor-gradle:4.0.0'
         classpath 'com.github.dcendents:android-maven-gradle-plugin:1.5'
         classpath 'com.google.firebase:firebase-crashlytics-gradle:2.3.0'
+         classpath 'com.google.android.libraries.places:places:2.4.0'
      //  classpath 'io.fabric.tools:gradle:1.26.1'
         classpath 'com.google.gms:google-services:4.2.0'
 //https://mvnrepository.com/artifact/com.android.support/support-content

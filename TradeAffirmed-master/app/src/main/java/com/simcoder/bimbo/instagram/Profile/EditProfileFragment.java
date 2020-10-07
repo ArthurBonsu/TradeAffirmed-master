@@ -48,7 +48,8 @@ public class EditProfileFragment extends Fragment implements
             // Get auth credentials from the user for re-authentication. The example below shows
             // email and password credentials but there are multiple possible providers,
             // such as GoogleAuthProvider or FacebookAuthProvider.
-
+            // We will be using the custom Sign in or the Google Sign in here to help prevent the need for browser input
+            //since this is an app
             AuthCredential credential = EmailAuthProvider
                     .getCredential(mAuth.getCurrentUser().getEmail(), password);
 

@@ -15,6 +15,11 @@ import android.os.Build;
 import android.os.Looper;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
+import com.esotericsoftware.kryo.NotNull;
+import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
+import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import androidx.core.app.ActivityCompat;
@@ -57,9 +62,17 @@ import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
-import com.google.android.gms.location.places.ui.PlaceSelectionListener;
+
+import com.google.android.gms.location.places.ui.PlaceAutocomplete;
+
+import com.google.android.gms.location.places.ui.PlacePicker;
+import com.google.android.gms.location.places.ui.zzc;
+
+import com.google.android.gms.location.places.ui.SupportPlaceAutocompleteFragment;
+import com.google.android.gms.location.places.PlaceReport;
+import com.google.android.gms.location.places.zza.*;
+import com.google.android.gms.location.places.Places;
+
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -86,6 +99,7 @@ import com.squareup.picasso.Picasso;
 
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -111,7 +125,7 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
     private LatLng DriverLocationPoint;
     LatLng latLng;
     private Boolean requestBol = false;
-
+    AutocompleteSupportFragment autocompleteFragment;
     Marker pickupMarker;
     Marker mypickup2marker;
     String role;
@@ -160,7 +174,7 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
     String service;
     String latvalues;
     String longvalues;
-    PlaceAutocompleteFragment autocompleteFragment;
+   // PlaceAutocompleteFragment autocompleteFragment;
     ImageButton serchbutton;
     LocationCallback mLocationCallback;
     private FirebaseAuth.AuthStateListener firebaseAuthListener;
@@ -243,9 +257,45 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
 
 
         mRequest = findViewById(R.id.request);
+         // Initialize the AutocompleteSupportFragment.
 
-        autocompleteFragment = (PlaceAutocompleteFragment)
-                getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
+        /**
+         * Initialize Places. For simplicity, the API key is hard-coded. In a production
+         * environment we recommend using a secure mechanism to manage API keys.
+         */
+
+
+
+
+    //    AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
+      //          getSupportFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
+
+      // autocompleteFragment = (PlaceAutocompleteFragment)
+        //        getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
+
+// Initialize the AutocompleteSupportFragment.
+        autocompleteFragment = (AutocompleteSupportFragment)
+                getSupportFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
+        // Specify the types of place data to return.
+        autocompleteFragment.setPlaceFields(Arrays.asList(com.google.android.libraries.places.api.model.Place.Field.ID, com.google.android.libraries.places.api.model.Place.Field.NAME));
+
+
+// Set up a PlaceSelectionListener to handle the response.
+        autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+            @Override
+            public void onPlaceSelected(Place place) {
+                // TODO: Get info about the selected place.
+                Log.i(TAG, "Place: " + place.getName() + ", " + place.getId());
+            }
+
+
+            @Override
+            public void onError(Status status) {
+                // TODO: Handle the error.
+                Log.i(TAG, "An error occurred: " + status);
+            }
+        });
+
 
         fusedLocationProviderClient = new FusedLocationProviderClient(CustomerMapActivity.this);
 
@@ -294,7 +344,7 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
                 TextView userNameTextView = headerView.findViewById(R.id.user_profile_name);
                 CircleImageView profileImageView = headerView.findViewById(R.id.user_profile_image);
 
-                PlaceAutocompleteFragment autocompleteFragment;
+
 
 
                 serchbutton.setOnClickListener(new View.OnClickListener() {
