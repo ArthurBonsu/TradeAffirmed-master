@@ -316,6 +316,7 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
         if (mapFragment != null) {
             mapFragment.getMapAsync(this);
         }
+
         Paper.init(this);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);

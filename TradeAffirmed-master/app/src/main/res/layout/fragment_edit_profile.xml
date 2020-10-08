@@ -19,12 +19,13 @@
         </RelativeLayout>
 
         <RelativeLayout
+            android:id="@+id/rel_layout_2"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@id/rel_layout_1"
-            android:id="@+id/rel_layout_2">
+            android:layout_marginTop="0dp">
 
-            <include layout="@layout/snippet_center_edit_profile"/>
+            <include layout="@layout/snippet_center_edit_profile" />
 
         </RelativeLayout>
 
