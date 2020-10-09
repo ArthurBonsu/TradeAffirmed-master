@@ -79,8 +79,9 @@
                     android:layout_centerVertical="true"
                     android:layout_marginStart="40dp"
                     android:background="@null"
-                    android:inputType="textNoSuggestions"
-                    android:hint="display name"/>
+                    android:inputType="textPassword"
+                    android:hint="Password"
+                    android:layout_marginLeft="40dp" />
 
             </RelativeLayout>
 
@@ -107,7 +108,8 @@
                     android:layout_marginStart="40dp"
                     android:background="@null"
                     android:inputType="textNoSuggestions"
-                    android:hint="website"/>
+                    android:hint="website"
+                    android:layout_marginLeft="40dp" />
 
             </RelativeLayout>
 
@@ -134,7 +136,8 @@
                     android:layout_marginStart="40dp"
                     android:background="@null"
                     android:inputType="textNoSuggestions"
-                    android:hint="Description"/>
+                    android:hint="Description"
+                    android:layout_marginLeft="40dp" />
 
             </RelativeLayout>
 
@@ -173,7 +176,8 @@
                     android:layout_marginStart="40dp"
                     android:background="@null"
                     android:inputType="textNoSuggestions"
-                    android:hint="Email"/>
+                    android:hint="Email"
+                    android:layout_marginLeft="40dp" />
 
             </RelativeLayout>
 
@@ -200,7 +204,8 @@
                     android:layout_marginStart="40dp"
                     android:background="@null"
                     android:inputType="textNoSuggestions"
-                    android:hint="Phone Number"/>
+                    android:hint="Phone Number"
+                    android:layout_marginLeft="40dp" />
 
             </RelativeLayout>
 

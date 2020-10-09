@@ -146,7 +146,7 @@ public class LoginActivity extends AppCompatActivity
                 LoginButton.setText("Login Trader");
                 AdminLink.setVisibility(View.INVISIBLE);
                 NotAdminLink.setVisibility(View.VISIBLE);
-                parentDbName = "Customer";
+                parentDbName = "Customers";
             }
         });
 
@@ -156,7 +156,7 @@ public class LoginActivity extends AppCompatActivity
                 LoginButton.setText("Login");
                 AdminLink.setVisibility(View.VISIBLE);
                 NotAdminLink.setVisibility(View.INVISIBLE);
-                parentDbName = "Driver";
+                parentDbName = "Drivers";
             }
         });
 
@@ -304,12 +304,6 @@ public class LoginActivity extends AppCompatActivity
                                                                                 }
                                                                             }
 
-
-
-
-
-
-
                                                             };
                                                         };
 
@@ -432,44 +426,47 @@ public class LoginActivity extends AppCompatActivity
                                             if (user != null) {
                                                 traderoruser = "";
                                                 traderoruser = user.getUid();
+                                                if (parentDbName != null) {
 
-                                                if (FirebaseDatabase.getInstance().getReference().child("Users").child(parentDbName).child(traderoruser) != null && role.equals("Trader")) {
+                                                           if (FirebaseDatabase.getInstance().getReference().child("Users").child(parentDbName).child(traderoruser) != null && role.equals("Trader")) {
 
-                                                    mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
-                                                        @Override
-                                                        public void onComplete(@NonNull Task<AuthResult> task) {
+                                                        mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
+                                                            @Override
+                                                            public void onComplete(@NonNull Task<AuthResult> task) {
 
-                                                            if (task.isSuccessful()) {
-                                                                Log.d(TAG, "signInWithEmail:success");
-                                                                String user_id = mAuth.getCurrentUser().getUid();
+                                                                if (task.isSuccessful()) {
+                                                                    Log.d(TAG, "signInWithEmail:success");
+                                                                    String user_id = mAuth.getCurrentUser().getUid();
 
-                                                                Toast.makeText(LoginActivity.this, "Welcome Trader, you are logged in Successfully...", Toast.LENGTH_SHORT).show();
-                                                                loadingBar.dismiss();
+                                                                    Toast.makeText(LoginActivity.this, "Welcome Trader, you are logged in Successfully...", Toast.LENGTH_SHORT).show();
+                                                                    loadingBar.dismiss();
 
-                                                                Intent intent = new Intent(LoginActivity.this, AdminCategoryActivity.class);
-                                                                startActivity(intent);
-                                                                finish();
-                                                                return;
-                                                            } else {
-                                                                Toast.makeText(LoginActivity.this, "Trader with" + user.getDisplayName() + "does does not exist", Toast.LENGTH_SHORT).show();
-                                                                // WE HAVE TO UPDATE THE CURRENT UI AND GO TO THE NEXT ACTIVITY WHICH IS MAP
+                                                                    Intent intent = new Intent(LoginActivity.this, AdminCategoryActivity.class);
+                                                                    startActivity(intent);
+                                                                    finish();
+                                                                    return;
+                                                                } else {
+                                                                    Toast.makeText(LoginActivity.this, "Trader with" + user.getDisplayName() + "does does not exist", Toast.LENGTH_SHORT).show();
+                                                                    // WE HAVE TO UPDATE THE CURRENT UI AND GO TO THE NEXT ACTIVITY WHICH IS MAP
 
+                                                                }
                                                             }
-                                                        }
-                                                    });
+                                                        });
+                                                    }
                                                 }
+
+                                                // I HAVE TO TRY TO GET THE SETUP INFORMATION , IF THEY ARE ALREADY PROVIDED WE TAKE TO THE NEXT STAGE
+                                                // WHICH IS CUSTOMER TO BE ADDED.
+                                                // PULLING DATABASE REFERENCE IS NULL, WE CHANGE BACK TO THE SETUP PAGE ELSE WE GO STRAIGHT TO MAP PAGE
                                             }
-
-                                            // I HAVE TO TRY TO GET THE SETUP INFORMATION , IF THEY ARE ALREADY PROVIDED WE TAKE TO THE NEXT STAGE
-                                            // WHICH IS CUSTOMER TO BE ADDED.
-                                            // PULLING DATABASE REFERENCE IS NULL, WE CHANGE BACK TO THE SETUP PAGE ELSE WE GO STRAIGHT TO MAP PAGE
                                         }
+
+                                        ;
+
                                     };
-
-
                                     // Intent intent = new Intent(LoginActivity.this, AdminCategoryActivity.class);
                                     //   startActivity(intent);
-                                } else if (parentDbName.equals("Customers") && role.equals("Customers")) {
+                                } else if (parentDbName.equals("Customers") && role.equals("Customer")) {
                                     Toast.makeText(LoginActivity.this, "logged in Successfully...", Toast.LENGTH_SHORT).show();
                                     loadingBar.dismiss();
 
@@ -542,8 +539,9 @@ public class LoginActivity extends AppCompatActivity
 
         }
 
-
     }
+
+
     @Override
     protected void onStop() {
         super.onStop();

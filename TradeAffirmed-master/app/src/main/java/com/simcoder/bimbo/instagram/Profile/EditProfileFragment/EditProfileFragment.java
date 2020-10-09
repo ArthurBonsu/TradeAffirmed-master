@@ -38,8 +38,10 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.simcoder.bimbo.Admin.AdminAddNewProductActivityII;
 import com.simcoder.bimbo.DriverMapActivity;
 import com.simcoder.bimbo.Model.HashMaps;
+import com.simcoder.bimbo.Model.Products;
 import  com.simcoder.bimbo.R;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -51,12 +53,15 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.simcoder.bimbo.WorkActivities.HomeActivity;
 import com.simcoder.bimbo.historyRecyclerView.HistoryObject;
 import com.simcoder.bimbo.instagram.Models.User;
 import com.simcoder.bimbo.instagram.Models.UserSettings;
 import com.simcoder.bimbo.instagram.Utils.FirebaseMethods;
 import com.simcoder.bimbo.instagram.dialogs.ConfirmPasswordDialog;
 import com.squareup.picasso.Picasso;
+import com.theartofdev.edmodo.cropper.CropImage;
+import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -69,12 +74,15 @@ public class EditProfileFragment extends AppCompatActivity implements GoogleApiC
 
     private static final int GalleryPick = 1;
     private Uri ImageUri;
+    private static final int GALLERY_REQUEST = 1;
     private String productRandomKey, downloadImageUrl;
     private StorageReference ProductImagesRef;
     private DatabaseReference ProductsRef;
-    private  DatabaseReference ProductsTraderRef;
+    private DatabaseReference ProductsTraderRef;
     private ProgressDialog loadingBar;
     private static final int RC_SIGN_IN = 1;
+    private StorageReference ProfileStorageImage;
+    private ProgressDialog mProgress;
     private FirebaseAuth.AuthStateListener firebaseAuthListener;
     String traderID;
     String role;
@@ -93,34 +101,28 @@ public class EditProfileFragment extends AppCompatActivity implements GoogleApiC
     ImageButton setimagebutton;
     DatabaseReference myuserreference;
 
-    private FirebaseAuth.AuthStateListener mAuthListener;
-    private FirebaseDatabase mFirebaseDatabase;
-     FirebaseDatabase mrolefirebaseDatabase;
+
+    FirebaseDatabase myfirebaseDatabase;
+    FirebaseDatabase mrolefirebaseDatabase;
     private DatabaseReference myRef;
+    private DatabaseReference UsersRef;
     private FirebaseMethods mFirebaseMethods;
     private String userID;
     String userid;
-
+    ImageView backArrow;
     //Edit Profile Fragment Widgets
-    private EditText mDisplayName, mUsername, mWebsite, mDescription, mEmail, mPhoneNumber;
-    private TextView mChangeProfilePhoto;
-    private CircleImageView mProfilePhoto;
-
+    EditText Passwordedittext, mUsername, mWebsite, mDescription, mEmail, mPhoneNumber;
+    TextView mChangeProfilePhoto;
+    CircleImageView mProfilePhoto;
+    private Uri mImageUri = null;
     // vars
     private UserSettings mUserSettings;
-
     // TAKEN FROM AUTHENTICATION LISTENERS
-
-
     private SignInButton GoogleBtn;
-
     Intent signInIntent;
-    private static final String TAG1 = "Google Activity";
-    private ProgressDialog mProgress;
-
-      String email;
-      String username;
-      String password;
+    String email;
+    String username;
+    String password;
     String website;
     String description;
     String phone;
@@ -130,26 +132,25 @@ public class EditProfileFragment extends AppCompatActivity implements GoogleApiC
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_admin_add_new_product);
+        setContentView(R.layout.fragment_edit_profile);
 
         Intent category = getIntent();
-        if( category.getExtras().getString("category") != null) {
+        if (category.getExtras().getString("category") != null) {
             CategoryName = category.getExtras().getString("category");
         }
 
         // KEYS PASSED IN FROM ADMINCATEGORY
         Intent roleintent = getIntent();
-        if( roleintent.getExtras().getString("rolefromadmincategorytoaddadmin") != null) {
+        if (roleintent.getExtras().getString("rolefromadmincategorytoaddadmin") != null) {
             role = roleintent.getExtras().getString("rolefromadmincategorytoaddadmin");
         }
         Intent traderintent = getIntent();
-        if( traderintent.getExtras().getString("fromadmincategoryactivitytoaddadmin") != null) {
+        if (traderintent.getExtras().getString("fromadmincategoryactivitytoaddadmin") != null) {
             traderID = category.getExtras().getString("fromadmincategoryactivitytoaddadmin");
         }
 
 
-        ProfileStorageImage = FirebaseStorage.getInstance().getReference().child("userimages");
-
+        ProfileStorageImage = FirebaseStorage.getInstance().getReference().child("profile_images");
 
 
         user = FirebaseAuth.getInstance().getCurrentUser();
@@ -157,13 +158,10 @@ public class EditProfileFragment extends AppCompatActivity implements GoogleApiC
             traderoruserID = "";
             traderoruserID = user.getUid();
         }
-        if (ProductsRef.push() != null) {
-            productRandomKey = ProductsRef.push().getKey();
 
-        }
 
         mProfilePhoto = (CircleImageView) findViewById(R.id.profile_photo);
-        mDisplayName = (EditText) findViewById(R.id.display_name);
+        Passwordedittext = (EditText) findViewById(R.id.display_name);
         mUsername = (EditText) findViewById(R.id.username);
         mWebsite = (EditText) findViewById(R.id.website);
         mDescription = (EditText) findViewById(R.id.description);
@@ -210,7 +208,6 @@ public class EditProfileFragment extends AppCompatActivity implements GoogleApiC
         };
 
 
-
         mAuth = FirebaseAuth.getInstance();
 
         if (mAuth != null) {
@@ -235,65 +232,44 @@ public class EditProfileFragment extends AppCompatActivity implements GoogleApiC
 
 
                 myfirebaseDatabase = FirebaseDatabase.getInstance();
-        //         myfirebaseDatabase = FirebaseDatabase.getInstance();
+                //         myfirebaseDatabase = FirebaseDatabase.getInstance();
 
-                 mrolefirebaseDatabase = FirebaseDatabase.getInstance();
+                mrolefirebaseDatabase = FirebaseDatabase.getInstance();
                 UsersRef = myfirebaseDatabase.getReference().child("Users");
-                DatabaseReference = mrolefirebaseDatabase.getReference().child("Users").
 
 
                 userkey = UsersRef.getKey();
-                role =
 
+                //IF USER KEY
 
-                           if (role == 'Customer'){
-                 myuserreference = FirebaseDatabase.getInstance().getReference().child("Users").child(traderoruserID);
-                  specificuserkey = myuserreference.getKey();
-                myrolereference.keepSynced(true);
-                if (myrolereference != null) {
-                    myrolereference.addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            if (dataSnapshot.exists()) {
-                                if (dataSnapshot != null) {
-                                    dataSnapshot.getValue(User.class);
-                                    role = dataSnapshot.child("role").getValue(String.class);
-                                    String email = dataSnapshot.child().getValue();
-                                    String username = dataSnapshot.getKey();
-                                    String password = "";
-                                    String website = "";
-                                    String description = "";
-                                    String phone = " ";
-                                    String image = "";
-                                }
-                            }
-                        }
+                if (role == "Trader") {
+                    myuserreference = UsersRef.child("Drivers").child(traderoruserID);
 
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-                        }
-                    });
-                }
-                else{
-
-                     myuserreference = FirebaseDatabase.getInstance().getReference().child("Users").child(traderoruserID);
-                    specificuserkey = myuserreference.getKey();
-                    myrolereference.keepSynced(true);
-                    if (myrolereference != null) {
-                        myrolereference.addValueEventListener(new ValueEventListener() {
+                    myuserreference.keepSynced(true);
+                    if (myuserreference != null) {
+                        myuserreference.addValueEventListener(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 if (dataSnapshot.exists()) {
                                     if (dataSnapshot != null) {
                                         dataSnapshot.getValue(User.class);
                                         role = dataSnapshot.child("role").getValue(String.class);
-                                        String email = dataSnapshot.child().getValue();
-                                        String username = dataSnapshot.getKey();
-                                        String password = "";
-                                        String website = "";
-                                        String description = "";
-                                        String phone = " ";
-                                        String image = "";
+
+                                        email = dataSnapshot.child("email").getValue(String.class);
+                                        mEmail.setText(email);
+
+                                        username = dataSnapshot.child("username").getValue(String.class);
+                                        mUsername.setText(username);
+                                        password = dataSnapshot.child("password").getValue(String.class);
+                                        Passwordedittext.setText(password);
+                                        website = dataSnapshot.child("website").getValue(String.class);
+                                        mWebsite.setText(website);
+                                        description = dataSnapshot.child("description").getValue(String.class);
+                                        mDescription.setText(description);
+                                        phone = dataSnapshot.child("phone").getValue(String.class);
+                                        mPhoneNumber.setText(phone);
+                                        image = dataSnapshot.child("image").getValue(String.class);
+                                        mProfilePhoto.setText(image);
                                     }
                                 }
                             }
@@ -302,29 +278,94 @@ public class EditProfileFragment extends AppCompatActivity implements GoogleApiC
                             public void onCancelled(DatabaseError databaseError) {
                             }
                         });
-                    }
+                    } else {
 
-                    Paper.init(this);
+                        myuserreference = UsersRef.child("Customers").child(traderoruserID);
 
-                    Toolbar toolbar = (Toolbar) findViewById(R.id.drivertoolbar);
-                    if (toolbar != null) {
-                        toolbar.setTitle("Trader MapView");
-//        setSupportActionBar(toolbar);
-                        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-                        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-                        if (drawer != null) {
-                            drawer.addDrawerListener(toggle);
-                            if (toggle != null) {
-                                toggle.syncState();
+                        myuserreference.keepSynced(true);
 
+                        if (myuserreference != null) {
+                            myuserreference.addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    if (dataSnapshot.exists()) {
+                                        if (dataSnapshot != null) {
+                                            dataSnapshot.getValue(User.class);
+                                            role = dataSnapshot.child("role").getValue(String.class);
+                                            email = dataSnapshot.child("email").getValue(String.class);
+
+                                            username = dataSnapshot.child("username").getValue(String.class);
+                                            mUsername.setText(username);
+                                            password = dataSnapshot.child("password").getValue(String.class);
+                                            Passwordedittext.setText(password);
+                                            website = dataSnapshot.child("website").getValue(String.class);
+                                            mWebsite.setText(website);
+                                            description = dataSnapshot.child("description").getValue(String.class);
+                                            mDescription.setText(description);
+                                            phone = dataSnapshot.child("phone").getValue(String.class);
+                                            mPhoneNumber.setText(phone);
+                                            image = dataSnapshot.child("image").getValue(String.class);
+                                            mProfilePhoto.setText(image);
+                                        }
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+                                }
+                            });
+                        }
+
+                        Paper.init(this);
+
+                        Toolbar toolbar = (Toolbar) findViewById(R.id.drivertoolbar);
+                        if (toolbar != null) {
+                            toolbar.setTitle("Edit Profile");
+                            //        setSupportActionBar(toolbar);
+                            DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+                            ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                                    this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+                            if (drawer != null) {
+                                drawer.addDrawerListener(toggle);
+                                if (toggle != null) {
+                                    toggle.syncState();
+
+                                }
                             }
                         }
+
+                        //back arrow for navigating back to "ProfileActivity"
+                        backArrow = (ImageView) findViewById(R.id.backArrow);
+                        if (backArrow != null) {
+                            backArrow.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    Log.d(TAG, "onClick: navigating back to ProfileActivity");
+
+
+                                }
+                            });
+                        }
                     }
+
+                    // green checkmark icon to update user settings information
+                    ImageView checkmark = (ImageView) findViewById(R.id.saveChanges);
+                    if (checkmark != null) {
+                        checkmark.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Log.d(TAG, "onClick: attempting to save changes.");
+                                saveProfileSettings();
+
+                            }
+                        });
+                    }
+
                     NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
 
                     if (navigationView != null) {
-                        navigationView.setNavigationItemSelectedListener(EditProfileFragment.this); }
+                        navigationView.setNavigationItemSelectedListener(EditProfileFragment.this);
+                    }
 
 
                     View headerView = navigationView.getHeaderView(0);
@@ -336,23 +377,25 @@ public class EditProfileFragment extends AppCompatActivity implements GoogleApiC
                                 role = getIntent().getExtras().get("rolefromhomeactivitytodrivermapactivity").toString();
                             }
                         }
-                        if ( != null) {
-                            if (getIntent() != null) {
-                                driverId = getIntent().getStringExtra("fromhomeactivitytodrivermapactivity");
-                            }
 
-                            if (mydrivernavigations != null) {
+                        if (getIntent() != null) {
+                            driverId = getIntent().getStringExtra("fromhomeactivitytodrivermapactivity");
+                        }
 
-                                mydrivernavigations.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        getAssignedCustomerInfo();
-                                    }
-                                });
-                            }
+                        if (mydrivernavigations != null) {
+
+                            mydrivernavigations.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    getAssignedCustomerInfo();
+                                }
+                            });
                         }
                     }
-                }}}}
+                }
+            }
+        }
+    }
 
 
     protected synchronized void buildGoogleApiClient() {
@@ -366,158 +409,157 @@ public class EditProfileFragment extends AppCompatActivity implements GoogleApiC
         }
     }
 
-    //back arrow for navigating back to "ProfileActivity"
-    ImageView backArrow = (ImageView)findViewById(R.id.backArrow);
-        if (backArrow != null) {
-        backArrow.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d(TAG, "onClick: navigating back to ProfileActivity");
-                if (getActivity() != null) {
-                    getActivity().finish();
-
-                }
-            }
-        });
-    }
-
-    // green checkmark icon to update user settings information
-    ImageView checkmark = (ImageView) findViewById(R.id.saveChanges);
-        if (checkmark != null) {
-        checkmark.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d(TAG, "onClick: attempting to save changes.");
-                saveProfileSettings();
-
-            }
-        });
-    }
-
-
 
     /**
      * Retrieves the data from widgets and submits it to database
      * Checks that username is unique
      */
+    //
+    private void startEdit() {
 
+        if (mUsername.getText() != null) {
+            mUsername.setText("");
 
-          //SAVE PROFILE SETTINGS HERE
-    private void saveProfileSettings() {
-        if (mDisplayName.getText() != null) {
-            final String displayName = mDisplayName.getText().toString();
-
-            if (mUsername.getText() != null) {
-                final String username = mUsername.getText().toString();
-
+            if (Passwordedittext.getText() != null) {
+                Passwordedittext.setText("");
                 if (mDescription.getText() != null) {
-                    final String description = mDescription.getText().toString();
+                    mDescription.setText("");
 
                     if (mWebsite.getText() != null) {
-                        final String website = mWebsite.getText().toString();
+                        mWebsite.setText("");
 
                         if (mEmail.getText() != null) {
-                            final String email = mEmail.getText().toString();
+                            mEmail.setText("");
 
                             if (mPhoneNumber.getText() != null) {
-                                final String phoneNumber = mPhoneNumber.getText().toString();
-
-
+                                mPhoneNumber.setText("");
                                 // case1: if user changed to same name.
-                                if (!mUserSettings.getUser().getname().equals(username)) {
-                                    checkIfUsernameExists(username);
-                                }
-                                // case2: if user change their email
-                                if (!mUserSettings.getUser().getemail().equals(email)) {
-                                    //step1 Re-Auth
-                                    //      - Confirm password and email
-                                    ConfirmPasswordDialog dialog = new ConfirmPasswordDialog();
-                                    if (dialog != null) {
-                                        if (getFragmentManager() != null) {
-                                            dialog.show(getFragmentManager(), getString(R.string.confirm_password_dialog));
-                                        }
-
-                                        dialog.setTargetFragment(EditProfileFragment.this, 1);
-                                        //step2 Check if email already exists
-
-
-                                        //      - 'fetchProvidersForEmail(String email)
-                                        //step3 change email
-                                        //      - submit new email to database and authentication
-
-                                    }
-                                }
                             }
                         }
-                    }}
+                    }
+                }
             }
         }
+
     }
-/**
- * Change fields in Settings that doesn't require unique values
- */
+
+    //SAVE PROFILE SETTINGS HERE
+    private void saveProfileSettingsForDriver() {
+        if (loadingBar != null) {
+            loadingBar.setTitle("Add New Product");
+            loadingBar.setMessage("Dear Trader, please wait while we are adding the new product.");
+            loadingBar.setCanceledOnTouchOutside(false);
+            loadingBar.show();
+            if (mUsername.getText() != null) {
 
 
-/**
- * Check if @param username already exists in database
- * @param username
- */
-    /**
-     * Check if @param username already exists in database
-     * @param username
-     */
- // CHECK IF USERNAME EXIST AND FIREBASE CAN BE USED TO POPULATE ACTIVITY
+                final String usernamerewritten = mUsername.getText().toString();
+                if (Passwordedittext.getText() != null) {
+                    final String passwordwritten = Passwordedittext.getText().toString();
+                    if (mDescription.getText() != null) {
+                        final String descriptionrewritten = mDescription.getText().toString();
+
+                        if (mWebsite.getText() != null) {
+                            final String websiterewritten = mWebsite.getText().toString();
+
+                            if (mEmail.getText() != null) {
+                                final String emailrewritten = mEmail.getText().toString();
+
+                                if (mPhoneNumber.getText() != null) {
+                                    final String phoneNumberrewritten = mPhoneNumber.getText().toString();
 
 
-    private void checkandpoulate(final String username) {
-        if (username != null) {
-            Log.d(TAG, "checkIfUsernameExists: Checking if " + username + " already exists");
-            if (FirebaseAuth.getInstance() != null) {
-                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                if (user != null) {
-                    userid = "";
-                    userid = user.getUid();
-                    if (FirebaseDatabase.getInstance() != null) {
+                                    // case1: if user changed to same name.
+                                    if (usernamerewritten == username) {
+                                        Toast.makeText(this, "This username already exist", Toast.LENGTH_SHORT).show();
+                                    }
+                                    // case2: if user changed to same password.
+                                    else if (passwordwritten == password) {
+                                        Toast.makeText(this, "This password already exist", Toast.LENGTH_SHORT).show();
+                                    }
 
-                        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-                        if (username != null) {
-                            Query query = reference
-                                    .child("Users").child("Customers")
-                                    .orderByChild("name")
-                                    .equalTo(username);
-                            if (query != null) {
-                                query.addListenerForSingleValueEvent(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(DataSnapshot dataSnapshot) {
-                                        if (dataSnapshot != null) {
-                                            if (!dataSnapshot.exists()) {
+                                    // case3: if user changed to same description.
+                                    else if (descriptionrewritten == description) {
+                                        Toast.makeText(this, "This description already exist", Toast.LENGTH_SHORT).show();
+                                    }
 
-                                                // add the username
-                                                if (mFirebaseMethods != null) {
-                                                    if (username != null) {
-                                                        mFirebaseMethods.updateUsername(username);
-                                                        Toast.makeText(getActivity(), "saved username.", Toast.LENGTH_SHORT).show();
+                                    // case4: if user changed to same website.
+                                    else if (websiterewritten == website) {
+                                        Toast.makeText(this, "This website already exist", Toast.LENGTH_SHORT).show();
+                                    }
+
+                                    // case5: if user changed to same email.
+                                    else if (emailrewritten == email) {
+                                        Toast.makeText(this, "This email already exist", Toast.LENGTH_SHORT).show();
+                                    }
+
+                                    // case5: if user changed to same email.
+                                    else if (phoneNumberrewritten == phone) {
+                                        Toast.makeText(this, "This phone number already exist", Toast.LENGTH_SHORT).show();
+                                    } else {
+
+                                        Calendar calendar = Calendar.getInstance();
+                                        SimpleDateFormat currentDate = new SimpleDateFormat("MMM dd, yyyy");
+
+                                        if (currentDate != null) {
+                                            saveCurrentDate = currentDate.format(calendar.getTime()).toString();
+
+                                            SimpleDateFormat currentTime = new SimpleDateFormat("HH:mm:ss a");
+                                            if (currentTime != null) {
+                                                saveCurrentTime = currentTime.format(calendar.getTime());
+
+                                            }
+
+
+                                            if (!TextUtils.isEmpty(usernamerewritten) && !TextUtils.isEmpty(passwordwritten) && !TextUtils.isEmpty(descriptionrewritten) && !TextUtils.isEmpty(websiterewritten) && !TextUtils.isEmpty(emailrewritten) && !TextUtils.isEmpty(phoneNumberrewritten) && mImageUri != null) {
+                                                mProgress.setMessage("Editing Profile Here");
+
+                                                mProgress.show();
+                                                StorageReference filepath = ProfileStorageImage.child(mImageUri.getLastPathSegment());
+
+                                                filepath.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                                                    @Override
+                                                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+
+
+                                                        final Uri downloadUrl = taskSnapshot.getUploadSessionUri();
+
+                                                        traderoruserid = user.getUid();
+                                                        traderorusername = user.getDisplayName();
+                                                        profileimage = downloadUrl.toString();
+
+                                                        Uri myphoto = user.getPhotoUrl();
+                                                        mytraderoruserimage = myphoto.toString();
+                                                        userkey = ProductsRef.child(userkey);
+
+
+                                                        User userinformationtobeupdated = new User(emailrewritten, usernamerewritten, descriptionrewritten, websiterewritten, profileimage, passwordwritten, phoneNumberrewritten);
+
+                                                        UsersRef.child(productkey).setValue(producttobesent, new
+                                                                DatabaseReference.CompletionListener() {
+                                                                    @Override
+                                                                    public void onComplete(DatabaseError databaseError, DatabaseReference
+                                                                            databaseReference) {
+                                                                        Toast.makeText(getApplicationContext(), "Product Added", Toast.LENGTH_SHORT).show();
+                                                                        Intent addadminproductactivity = new Intent(AdminAddNewProductActivityII.this, HomeActivity.class);
+
+                                                                        startActivity(addadminproductactivity);
+
+                                                                    }
+                                                                });
+
+
                                                     }
-                                                    for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
-                                                        if (singleSnapshot != null) {
-                                                            if (singleSnapshot.exists()) {
-                                                                if (singleSnapshot.child(userid).child("name").getValue(String.class) != null) {
-                                                                    Log.d(TAG, "checkIfUsernameExists: FOUND A MATCH" + singleSnapshot.child(userid).child("name").getValue(String.class));
-                                                                    Toast.makeText(getActivity(), "That username already exists.", Toast.LENGTH_SHORT).show();
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-                                                }
+
+                                                });
+
+
+                                                mProgress.dismiss();
+
                                             }
                                         }
                                     }
-                                    @Override
-                                    public void onCancelled(DatabaseError databaseError) {
-
-                                    }
-                                });
-
+                                }
                             }
                         }
                     }
@@ -526,36 +568,156 @@ public class EditProfileFragment extends AppCompatActivity implements GoogleApiC
         }
     }
 
-    private void OpenGallery() {
-        Intent galleryIntent = new Intent();
-        if (galleryIntent != null) {
-            galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
-            galleryIntent.setType("image/*");
-            startActivityForResult(galleryIntent, GalleryPick);
-        }
-    }
+    ;
 
+
+
+
+
+    private void saveProfileSettingsForUser() {
+
+        if (mUsername.getText() != null) {
+
+
+            final String usernamerewritten = mUsername.getText().toString();
+            if (Passwordedittext.getText() != null) {
+                final String passwordwritten = Passwordedittext.getText().toString();
+                if (mDescription.getText() != null) {
+                    final String descriptionrewritten = mDescription.getText().toString();
+
+                    if (mWebsite.getText() != null) {
+                        final String websiterewritten = mWebsite.getText().toString();
+
+                        if (mEmail.getText() != null) {
+                            final String emailrewritten = mEmail.getText().toString();
+
+                            if (mPhoneNumber.getText() != null) {
+                                final String phoneNumberrewritten = mPhoneNumber.getText().toString();
+
+
+                                // case1: if user changed to same name.
+                                if (usernamerewritten == username) {
+                                    Toast.makeText(this, "This username already exist", Toast.LENGTH_SHORT).show();
+                                }
+                                // case2: if user changed to same password.
+                                else if (passwordwritten == password) {
+                                    Toast.makeText(this, "This password already exist", Toast.LENGTH_SHORT).show();
+                                }
+
+                                // case3: if user changed to same description.
+                                else if (descriptionrewritten == description) {
+                                    Toast.makeText(this, "This description already exist", Toast.LENGTH_SHORT).show();
+                                }
+
+                                // case4: if user changed to same website.
+                                else if (websiterewritten == website) {
+                                    Toast.makeText(this, "This website already exist", Toast.LENGTH_SHORT).show();
+                                }
+
+                                // case5: if user changed to same email.
+                                else if (emailrewritten == email) {
+                                    Toast.makeText(this, "This email already exist", Toast.LENGTH_SHORT).show();
+                                }
+
+                                // case5: if user changed to same email.
+                                else if (phoneNumberrewritten == phone) {
+                                    Toast.makeText(this, "This phone number already exist", Toast.LENGTH_SHORT).show();
+                                } else {
+
+                                    Calendar calendar = Calendar.getInstance();
+                                    SimpleDateFormat currentDate = new SimpleDateFormat("MMM dd, yyyy");
+
+                                    if (currentDate != null) {
+                                        saveCurrentDate = currentDate.format(calendar.getTime()).toString();
+
+                                        SimpleDateFormat currentTime = new SimpleDateFormat("HH:mm:ss a");
+                                        if (currentTime != null) {
+                                            saveCurrentTime = currentTime.format(calendar.getTime());
+
+                                        }
+
+
+                                        if (!TextUtils.isEmpty(usernamerewritten) && !TextUtils.isEmpty(passwordwritten) && !TextUtils.isEmpty(descriptionrewritten) && !TextUtils.isEmpty(websiterewritten) && !TextUtils.isEmpty(emailrewritten) && !TextUtils.isEmpty(phoneNumberrewritten) && mImageUri != null) {
+                                            mProgress.setMessage("Editing Profile Here");
+
+                                            mProgress.show();
+                                            StorageReference filepath = ProfileStorageImage.child(mImageUri.getLastPathSegment());
+
+                                            filepath.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                                                @Override
+                                                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+
+
+                                                    final Uri downloadUrl = taskSnapshot.getUploadSessionUri();
+
+                                                    traderoruserID = user.getUid();
+                                                    traderorusername = user.getDisplayName();
+                                                    profileimage = downloadUrl.toString();
+
+                                                    Uri myphoto = user.getPhotoUrl();
+                                                    mytraderoruserimage = myphoto.toString();
+                                                    userkey = ProductsRef.child(userkey);
+
+
+                                                    User userinformationtobeupdated = new User(emailrewritten, usernamerewritten, descriptionrewritten, websiterewritten, profileimage, passwordwritten, phoneNumberrewritten);
+
+                                                    UsersRef.child("Customers").child(traderoruserID).setValue(userinformationtobeupdated, new
+                                                            DatabaseReference.CompletionListener() {
+                                                                @Override
+                                                                public void onComplete(DatabaseError databaseError, DatabaseReference
+                                                                        databaseReference) {
+                                                                    Toast.makeText(getApplicationContext(), "Product Added", Toast.LENGTH_SHORT).show();
+                                                                    Intent addadminproductactivity = new Intent(AdminAddNewProductActivityII.this, HomeActivity.class);
+
+                                                                    startActivity(addadminproductactivity);
+
+                                                                }
+                                                            });
+
+
+                                                }
+
+                                            });
+
+
+                                            mProgress.dismiss();
+
+                                        }
+                                    }}}}}}}}}
+
+    // OnActivity result is lacking behind, I have to get the URi from it
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == GALLERY_REQUEST && resultCode == RESULT_OK) {
 
-        if (requestCode == GalleryPick && resultCode == RESULT_OK && data != null) {
-            if (ImageUri != null) {
-                if (data != null) {
-                    ImageUri = data.getData();
-                    ImageStore = ImageUri;
-                    setimagebutton.setImageURI(ImageUri);
+            Uri imageUri = data.getData();
 
-                    if (InputProductImage != null) {
-                        InputProductImage.setImageURI(ImageUri);
-                    }
-
-                }
-            }
+            CropImage.activity(imageUri).setGuidelines(CropImageView.Guidelines.ON).setAspectRatio(1, 1).start(this);
 
 
         }
+
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+            if (resultCode == RESULT_OK) {
+
+                mImageUri = result.getUri();
+
+                mProfilePhoto.setImageURI(mImageUri);
+
+
+
+            } else if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+
+                Exception error = result.getError();
+            }
+
+        }
     }
+
+
+
 
 
     private void ValidateProductData() {
@@ -579,14 +741,7 @@ public class EditProfileFragment extends AppCompatActivity implements GoogleApiC
                         Toast.makeText(this, "Please write product name...", Toast.LENGTH_SHORT).show();
                     } else {
                         StoreProductInformation();
-                    }}
-            }
-        }
-
-    }
-
-
-
+                    }}}}}
 
 
 

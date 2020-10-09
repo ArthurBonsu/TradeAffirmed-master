@@ -29,6 +29,7 @@ public class User implements Parcelable{
 
     String pname;
     String pimage;
+    String password;
 
     String photid;
 
@@ -40,8 +41,20 @@ public class User implements Parcelable{
         this.image = image;
         this.photoid = photoid;
         this.tid = tid;
+
        }
 
+    public User(String email, String name, String desc, String website, String image, String password) {
+        this.email = email;
+        this.name = name;
+        this.desc = desc;
+        this.website = website;
+        this.image = image;
+        this.photoid = photoid;
+        this.tid = tid;
+        this.password = password;
+
+    }
 
     public User(String email, String name, String desc, String website, String image, String uid, String phone,String posts, String photoid,
             String tid,String likeid,String number,String subject, String pid,String orderkey,String reply, String replyid,String traderimage,String tradername,String pname,
@@ -68,6 +81,7 @@ public class User implements Parcelable{
                 this.pname = pname;
                 this.pimage = pimage;
                 this.photoid = photoid;
+                this.password = password;
 
     }
 
@@ -98,6 +112,7 @@ public class User implements Parcelable{
         tradername = in.readString();
         pname = in.readString();
         pimage = in.readString();
+        password = in.readString();
 
 
     }
@@ -270,6 +285,14 @@ public class User implements Parcelable{
 
     public void setPosts(String posts) {
         this.posts = posts;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
 
