@@ -9,11 +9,14 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -29,8 +32,12 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -39,7 +46,10 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.simcoder.bimbo.Admin.AdminAddNewProductActivityII;
+import com.simcoder.bimbo.CustomerMapActivity;
 import com.simcoder.bimbo.DriverMapActivity;
+import com.simcoder.bimbo.HistoryActivity;
+import com.simcoder.bimbo.MainActivity;
 import com.simcoder.bimbo.Model.HashMaps;
 import com.simcoder.bimbo.Model.Products;
 import  com.simcoder.bimbo.R;
@@ -54,9 +64,11 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.simcoder.bimbo.WorkActivities.HomeActivity;
+import com.simcoder.bimbo.WorkActivities.SearchProductsActivity;
 import com.simcoder.bimbo.historyRecyclerView.HistoryObject;
 import com.simcoder.bimbo.instagram.Models.User;
 import com.simcoder.bimbo.instagram.Models.UserSettings;
+import com.simcoder.bimbo.instagram.Profile.ProfileActivity;
 import com.simcoder.bimbo.instagram.Utils.FirebaseMethods;
 import com.simcoder.bimbo.instagram.dialogs.ConfirmPasswordDialog;
 import com.squareup.picasso.Picasso;
@@ -70,7 +82,7 @@ import java.util.HashMap;
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.paperdb.Paper;
 
-public class EditProfileFragment extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+public class EditProfileFragment extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, NavigationView.OnNavigationItemSelectedListener  {
 
     private static final int GalleryPick = 1;
     private Uri ImageUri;
@@ -79,6 +91,7 @@ public class EditProfileFragment extends AppCompatActivity implements GoogleApiC
     private StorageReference ProductImagesRef;
     private DatabaseReference ProductsRef;
     private DatabaseReference ProductsTraderRef;
+    DatabaseReference mydriversreference;
     private ProgressDialog loadingBar;
     private static final int RC_SIGN_IN = 1;
     private StorageReference ProfileStorageImage;
@@ -91,7 +104,7 @@ public class EditProfileFragment extends AppCompatActivity implements GoogleApiC
     Uri ImageStore;
     Intent intent;
     //AUTHENTICATORS
-
+    String saveCurrentDate, saveCurrentTime;
     private GoogleMap mMap;
     GoogleApiClient mGoogleApiClient;
     private static final String TAG = "Google Activity";
@@ -127,26 +140,28 @@ public class EditProfileFragment extends AppCompatActivity implements GoogleApiC
     String description;
     String phone;
     String image;
-
+    String  traderoruserID;
+    String userkey;
+    String profileimage;
+    String traderorusername;
+    String mytraderoruserimage;
+     Button clearinfo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_edit_profile);
 
-        Intent category = getIntent();
-        if (category.getExtras().getString("category") != null) {
-            CategoryName = category.getExtras().getString("category");
-        }
 
         // KEYS PASSED IN FROM ADMINCATEGORY
+        // ROLE SHOULD BE MADE AS 1
         Intent roleintent = getIntent();
-        if (roleintent.getExtras().getString("rolefromadmincategorytoaddadmin") != null) {
-            role = roleintent.getExtras().getString("rolefromadmincategorytoaddadmin");
+        if (roleintent.getExtras().getString("rolefrominstagramhome") != null) {
+            role = roleintent.getExtras().getString("rolefrominstagramhome");
         }
-        Intent traderintent = getIntent();
-        if (traderintent.getExtras().getString("fromadmincategoryactivitytoaddadmin") != null) {
-            traderID = category.getExtras().getString("fromadmincategoryactivitytoaddadmin");
+        Intent traderoruserintent = getIntent();
+        if (traderoruserintent.getExtras().getString("traderfrominstagramhome") != null) {
+            traderoruserID = traderoruserintent.getExtras().getString("traderfrominstagramhome");
         }
 
 
@@ -168,8 +183,8 @@ public class EditProfileFragment extends AppCompatActivity implements GoogleApiC
         mEmail = (EditText) findViewById(R.id.email);
         mPhoneNumber = (EditText) findViewById(R.id.phoneNumber);
         mChangeProfilePhoto = (TextView) findViewById(R.id.changeProfilePhoto);
-
-        //  setimagebutton = (ImageView)findViewById(R.id.setimagebutton);
+         clearinfo = (Button)findViewById(R.id.clearinfo);
+                 //  setimagebutton = (ImageView)findViewById(R.id.setimagebutton);
         loadingBar = new ProgressDialog(this);
 
         FirebaseAuth.getInstance();
@@ -211,16 +226,9 @@ public class EditProfileFragment extends AppCompatActivity implements GoogleApiC
         mAuth = FirebaseAuth.getInstance();
 
         if (mAuth != null) {
-            FirebaseUser user = mAuth.getCurrentUser();
+          user = mAuth.getCurrentUser();
 
 
-            if (user.getDisplayName() != null) {
-                if (user.getDisplayName() != null) {
-                    userNameTextView.setText(user.getDisplayName());
-
-                    Picasso.get().load(user.getPhotoUrl()).placeholder(R.drawable.profile).into(profileImageView);
-                }
-            }
 
 
             if (mAuth != null) {
@@ -232,9 +240,9 @@ public class EditProfileFragment extends AppCompatActivity implements GoogleApiC
 
 
                 myfirebaseDatabase = FirebaseDatabase.getInstance();
-                //         myfirebaseDatabase = FirebaseDatabase.getInstance();
 
-                mrolefirebaseDatabase = FirebaseDatabase.getInstance();
+
+
                 UsersRef = myfirebaseDatabase.getReference().child("Users");
 
 
@@ -269,7 +277,7 @@ public class EditProfileFragment extends AppCompatActivity implements GoogleApiC
                                         phone = dataSnapshot.child("phone").getValue(String.class);
                                         mPhoneNumber.setText(phone);
                                         image = dataSnapshot.child("image").getValue(String.class);
-                                        mProfilePhoto.setText(image);
+                                        mProfilePhoto.setImageResource(Integer.parseInt(image));
                                     }
                                 }
                             }
@@ -283,6 +291,9 @@ public class EditProfileFragment extends AppCompatActivity implements GoogleApiC
                         myuserreference = UsersRef.child("Customers").child(traderoruserID);
 
                         myuserreference.keepSynced(true);
+                        mydriversreference = UsersRef.child("Drivers").child(traderoruserID);
+
+                        mydriversreference.keepSynced(true);
 
                         if (myuserreference != null) {
                             myuserreference.addValueEventListener(new ValueEventListener() {
@@ -293,7 +304,7 @@ public class EditProfileFragment extends AppCompatActivity implements GoogleApiC
                                             dataSnapshot.getValue(User.class);
                                             role = dataSnapshot.child("role").getValue(String.class);
                                             email = dataSnapshot.child("email").getValue(String.class);
-
+                                            mEmail.setText(email);
                                             username = dataSnapshot.child("username").getValue(String.class);
                                             mUsername.setText(username);
                                             password = dataSnapshot.child("password").getValue(String.class);
@@ -305,7 +316,8 @@ public class EditProfileFragment extends AppCompatActivity implements GoogleApiC
                                             phone = dataSnapshot.child("phone").getValue(String.class);
                                             mPhoneNumber.setText(phone);
                                             image = dataSnapshot.child("image").getValue(String.class);
-                                            mProfilePhoto.setText(image);
+                                            // We are going to set the image here
+                                            mProfilePhoto.setImageResource(Integer.parseInt(image));
                                         }
                                     }
                                 }
@@ -341,7 +353,9 @@ public class EditProfileFragment extends AppCompatActivity implements GoogleApiC
                                 @Override
                                 public void onClick(View v) {
                                     Log.d(TAG, "onClick: navigating back to ProfileActivity");
+                                    Intent profileactivity = new Intent(EditProfileFragment.this, ProfileActivity.class);
 
+                                    startActivity(profileactivity);
 
                                 }
                             });
@@ -350,6 +364,7 @@ public class EditProfileFragment extends AppCompatActivity implements GoogleApiC
 
                     // green checkmark icon to update user settings information
                     ImageView checkmark = (ImageView) findViewById(R.id.saveChanges);
+                    Log.d(TAG, "onClick: Saving the information typed in the activity");
                     if (checkmark != null) {
                         checkmark.setOnClickListener(new View.OnClickListener() {
                             @Override
@@ -371,31 +386,21 @@ public class EditProfileFragment extends AppCompatActivity implements GoogleApiC
                     View headerView = navigationView.getHeaderView(0);
                     TextView userNameTextView = headerView.findViewById(R.id.user_profile_name);
                     CircleImageView profileImageView = headerView.findViewById(R.id.user_profile_image);
-                    if (getIntent() != null) {
-                        {
-                            if (getIntent().getExtras().get("rolefromhomeactivitytodrivermapactivity") != null) {
-                                role = getIntent().getExtras().get("rolefromhomeactivitytodrivermapactivity").toString();
-                            }
-                        }
 
-                        if (getIntent() != null) {
-                            driverId = getIntent().getStringExtra("fromhomeactivitytodrivermapactivity");
-                        }
-
-                        if (mydrivernavigations != null) {
-
-                            mydrivernavigations.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    getAssignedCustomerInfo();
-                                }
-                            });
-                        }
                     }
                 }
             }
+
+        clearinfo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startEdit();
+            }
+        });
+
+
         }
-    }
+
 
 
     protected synchronized void buildGoogleApiClient() {
@@ -407,6 +412,17 @@ public class EditProfileFragment extends AppCompatActivity implements GoogleApiC
                     .build();
             mGoogleApiClient.connect();
         }
+
+                if (role == "Trader"){
+
+                    saveProfileSettingsForDriver();
+
+                }
+                if (role == " Customers"){
+
+                    saveProfileSettingsForUser();
+                }
+
     }
 
 
@@ -443,11 +459,139 @@ public class EditProfileFragment extends AppCompatActivity implements GoogleApiC
 
     }
 
-    //SAVE PROFILE SETTINGS HERE
-    private void saveProfileSettingsForDriver() {
-        if (loadingBar != null) {
-            loadingBar.setTitle("Add New Product");
-            loadingBar.setMessage("Dear Trader, please wait while we are adding the new product.");
+      public void saveProfileSettings() {
+          if (role == "Trader") {
+              if (loadingBar != null) {
+                  loadingBar.setTitle("Saving Trader Information");
+                  loadingBar.setMessage("Dear Trader, please wait while we save your profile information.");
+                  loadingBar.setCanceledOnTouchOutside(false);
+                  loadingBar.show();
+                  if (mUsername.getText() != null) {
+
+
+                      final String usernamerewritten = mUsername.getText().toString();
+                      if (Passwordedittext.getText() != null) {
+                          final String passwordwritten = Passwordedittext.getText().toString();
+                          if (mDescription.getText() != null) {
+                              final String descriptionrewritten = mDescription.getText().toString();
+
+                              if (mWebsite.getText() != null) {
+                                  final String websiterewritten = mWebsite.getText().toString();
+
+                                  if (mEmail.getText() != null) {
+                                      final String emailrewritten = mEmail.getText().toString();
+
+                                      if (mPhoneNumber.getText() != null) {
+                                          final String phoneNumberrewritten = mPhoneNumber.getText().toString();
+
+
+                                          // case1: if user changed to same name.
+                                          if (usernamerewritten == username) {
+                                              Toast.makeText(this, "This username already exist", Toast.LENGTH_SHORT).show();
+                                          }
+                                          // case2: if user changed to same password.
+                                          else if (passwordwritten == password) {
+                                              Toast.makeText(this, "This password already exist", Toast.LENGTH_SHORT).show();
+                                          }
+
+                                          // case3: if user changed to same description.
+                                          else if (descriptionrewritten == description) {
+                                              Toast.makeText(this, "This description already exist", Toast.LENGTH_SHORT).show();
+                                          }
+
+                                          // case4: if user changed to same website.
+                                          else if (websiterewritten == website) {
+                                              Toast.makeText(this, "This website already exist", Toast.LENGTH_SHORT).show();
+                                          }
+
+                                          // case5: if user changed to same email.
+                                          else if (emailrewritten == email) {
+                                              Toast.makeText(this, "This email already exist", Toast.LENGTH_SHORT).show();
+                                          }
+
+                                          // case5: if user changed to same email.
+                                          else if (phoneNumberrewritten == phone) {
+                                              Toast.makeText(this, "This phone number already exist", Toast.LENGTH_SHORT).show();
+                                          } else {
+
+                                              Calendar calendar = Calendar.getInstance();
+                                              SimpleDateFormat currentDate = new SimpleDateFormat("MMM dd, yyyy");
+
+                                              if (currentDate != null) {
+                                                  saveCurrentDate = currentDate.format(calendar.getTime()).toString();
+
+                                                  SimpleDateFormat currentTime = new SimpleDateFormat("HH:mm:ss a");
+                                                  if (currentTime != null) {
+                                                      saveCurrentTime = currentTime.format(calendar.getTime());
+
+                                                  }
+
+
+                                                  if (!TextUtils.isEmpty(usernamerewritten) && !TextUtils.isEmpty(passwordwritten) && !TextUtils.isEmpty(descriptionrewritten) && !TextUtils.isEmpty(websiterewritten) && !TextUtils.isEmpty(emailrewritten) && !TextUtils.isEmpty(phoneNumberrewritten) && mImageUri != null) {
+                                                      mProgress.setMessage("Editing Profile Here");
+
+                                                      mProgress.show();
+                                                      StorageReference filepath = ProfileStorageImage.child(mImageUri.getLastPathSegment());
+
+                                                      filepath.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                                                          @Override
+                                                          public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+
+
+                                                              final Uri downloadUrl = taskSnapshot.getUploadSessionUri();
+
+                                                              traderoruserID = user.getUid();
+                                                              traderorusername = user.getDisplayName();
+                                                              profileimage = downloadUrl.toString();
+
+                                                              Uri myphoto = user.getPhotoUrl();
+                                                              mytraderoruserimage = myphoto.toString();
+
+
+                                                              String email, String name, String
+                                                              desc, String website, String
+                                                              image, String password
+                                                              User userinformationtobeupdated = new User(emailrewritten, usernamerewritten, descriptionrewritten, websiterewritten, profileimage, passwordwritten, phoneNumberrewritten);
+
+                                                              UsersRef.child("Drivers").child(traderoruserID).setValue(userinformationtobeupdated, new
+                                                                      DatabaseReference.CompletionListener() {
+                                                                          @Override
+                                                                          public void onComplete(DatabaseError databaseError, DatabaseReference
+                                                                                  databaseReference) {
+                                                                              Toast.makeText(getApplicationContext(), "Information being updated", Toast.LENGTH_SHORT).show();
+                                                                              Intent gotohomefromeditprofile = new Intent(EditProfileFragment.this, HomeActivity.class);
+
+                                                                              startActivity(gotohomefromeditprofile);
+
+                                                                          }
+                                                                      });
+
+
+                                                          }
+
+                                                      });
+
+
+                                                      mProgress.dismiss();
+
+                                                  }
+                                              }
+                                          }
+                                      }
+                                  }
+                              }
+                          }
+                      }
+                  }
+              }
+          }
+
+
+
+          if (role == "Customers") {
+    if (loadingBar != null) {
+            loadingBar.setTitle("Save information for user");
+            loadingBar.setMessage("Dear User, please wait  while we save your profile information");
             loadingBar.setCanceledOnTouchOutside(false);
             loadingBar.show();
             if (mUsername.getText() != null) {
@@ -524,26 +668,26 @@ public class EditProfileFragment extends AppCompatActivity implements GoogleApiC
 
                                                         final Uri downloadUrl = taskSnapshot.getUploadSessionUri();
 
-                                                        traderoruserid = user.getUid();
+                                                        traderoruserID = user.getUid();
                                                         traderorusername = user.getDisplayName();
                                                         profileimage = downloadUrl.toString();
 
                                                         Uri myphoto = user.getPhotoUrl();
                                                         mytraderoruserimage = myphoto.toString();
-                                                        userkey = ProductsRef.child(userkey);
+
 
 
                                                         User userinformationtobeupdated = new User(emailrewritten, usernamerewritten, descriptionrewritten, websiterewritten, profileimage, passwordwritten, phoneNumberrewritten);
 
-                                                        UsersRef.child(productkey).setValue(producttobesent, new
+                                                        UsersRef.child("Customers").child(traderoruserID).setValue(userinformationtobeupdated, new
                                                                 DatabaseReference.CompletionListener() {
                                                                     @Override
                                                                     public void onComplete(DatabaseError databaseError, DatabaseReference
                                                                             databaseReference) {
-                                                                        Toast.makeText(getApplicationContext(), "Product Added", Toast.LENGTH_SHORT).show();
-                                                                        Intent addadminproductactivity = new Intent(AdminAddNewProductActivityII.this, HomeActivity.class);
+                                                                        Toast.makeText(getApplicationContext(), "Information being updated", Toast.LENGTH_SHORT).show();
+                                                                        Intent gotohomefromeditprofile = new Intent(EditProfileFragment.this, HomeActivity.class);
 
-                                                                        startActivity(addadminproductactivity);
+                                                                        startActivity(gotohomefromeditprofile);
 
                                                                     }
                                                                 });
@@ -566,125 +710,7 @@ public class EditProfileFragment extends AppCompatActivity implements GoogleApiC
                 }
             }
         }
-    }
-
-    ;
-
-
-
-
-
-    private void saveProfileSettingsForUser() {
-
-        if (mUsername.getText() != null) {
-
-
-            final String usernamerewritten = mUsername.getText().toString();
-            if (Passwordedittext.getText() != null) {
-                final String passwordwritten = Passwordedittext.getText().toString();
-                if (mDescription.getText() != null) {
-                    final String descriptionrewritten = mDescription.getText().toString();
-
-                    if (mWebsite.getText() != null) {
-                        final String websiterewritten = mWebsite.getText().toString();
-
-                        if (mEmail.getText() != null) {
-                            final String emailrewritten = mEmail.getText().toString();
-
-                            if (mPhoneNumber.getText() != null) {
-                                final String phoneNumberrewritten = mPhoneNumber.getText().toString();
-
-
-                                // case1: if user changed to same name.
-                                if (usernamerewritten == username) {
-                                    Toast.makeText(this, "This username already exist", Toast.LENGTH_SHORT).show();
-                                }
-                                // case2: if user changed to same password.
-                                else if (passwordwritten == password) {
-                                    Toast.makeText(this, "This password already exist", Toast.LENGTH_SHORT).show();
-                                }
-
-                                // case3: if user changed to same description.
-                                else if (descriptionrewritten == description) {
-                                    Toast.makeText(this, "This description already exist", Toast.LENGTH_SHORT).show();
-                                }
-
-                                // case4: if user changed to same website.
-                                else if (websiterewritten == website) {
-                                    Toast.makeText(this, "This website already exist", Toast.LENGTH_SHORT).show();
-                                }
-
-                                // case5: if user changed to same email.
-                                else if (emailrewritten == email) {
-                                    Toast.makeText(this, "This email already exist", Toast.LENGTH_SHORT).show();
-                                }
-
-                                // case5: if user changed to same email.
-                                else if (phoneNumberrewritten == phone) {
-                                    Toast.makeText(this, "This phone number already exist", Toast.LENGTH_SHORT).show();
-                                } else {
-
-                                    Calendar calendar = Calendar.getInstance();
-                                    SimpleDateFormat currentDate = new SimpleDateFormat("MMM dd, yyyy");
-
-                                    if (currentDate != null) {
-                                        saveCurrentDate = currentDate.format(calendar.getTime()).toString();
-
-                                        SimpleDateFormat currentTime = new SimpleDateFormat("HH:mm:ss a");
-                                        if (currentTime != null) {
-                                            saveCurrentTime = currentTime.format(calendar.getTime());
-
-                                        }
-
-
-                                        if (!TextUtils.isEmpty(usernamerewritten) && !TextUtils.isEmpty(passwordwritten) && !TextUtils.isEmpty(descriptionrewritten) && !TextUtils.isEmpty(websiterewritten) && !TextUtils.isEmpty(emailrewritten) && !TextUtils.isEmpty(phoneNumberrewritten) && mImageUri != null) {
-                                            mProgress.setMessage("Editing Profile Here");
-
-                                            mProgress.show();
-                                            StorageReference filepath = ProfileStorageImage.child(mImageUri.getLastPathSegment());
-
-                                            filepath.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                                                @Override
-                                                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-
-
-                                                    final Uri downloadUrl = taskSnapshot.getUploadSessionUri();
-
-                                                    traderoruserID = user.getUid();
-                                                    traderorusername = user.getDisplayName();
-                                                    profileimage = downloadUrl.toString();
-
-                                                    Uri myphoto = user.getPhotoUrl();
-                                                    mytraderoruserimage = myphoto.toString();
-                                                    userkey = ProductsRef.child(userkey);
-
-
-                                                    User userinformationtobeupdated = new User(emailrewritten, usernamerewritten, descriptionrewritten, websiterewritten, profileimage, passwordwritten, phoneNumberrewritten);
-
-                                                    UsersRef.child("Customers").child(traderoruserID).setValue(userinformationtobeupdated, new
-                                                            DatabaseReference.CompletionListener() {
-                                                                @Override
-                                                                public void onComplete(DatabaseError databaseError, DatabaseReference
-                                                                        databaseReference) {
-                                                                    Toast.makeText(getApplicationContext(), "Product Added", Toast.LENGTH_SHORT).show();
-                                                                    Intent addadminproductactivity = new Intent(AdminAddNewProductActivityII.this, HomeActivity.class);
-
-                                                                    startActivity(addadminproductactivity);
-
-                                                                }
-                                                            });
-
-
-                                                }
-
-                                            });
-
-
-                                            mProgress.dismiss();
-
-                                        }
-                                    }}}}}}}}}
-
+    }}
     // OnActivity result is lacking behind, I have to get the URi from it
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -862,6 +888,248 @@ public class EditProfileFragment extends AppCompatActivity implements GoogleApiC
 
     }
 
+    @Override
+    public void onBackPressed() {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if (drawer != null) {
+            if (drawer.isDrawerOpen(GravityCompat.START)) {
+                drawer.closeDrawer(GravityCompat.START);
+            } else {
+                super.onBackPressed();
+            }
+        }
+    }
+
+
+    private void hideSystemUI() {
+        // Set the IMMERSIVE flag.
+        // Set the content to appear under the system bars so that the content
+        // doesn't resize when the system bars hide and show.
+        drawer.setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide nav bar
+                        | View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
+                        | View.SYSTEM_UI_FLAG_IMMERSIVE);
+    }
+
+    // This snippet shows the system bars. It does this by removing all the flags
+// except for the ones that make the content appear under the system bars.
+    private void showSystemUI() {
+        drawer.setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+    }
+
+    public void setupDrawer() {
+        if (toggle != null) {
+            toggle = new ActionBarDrawerToggle(
+                    this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
+
+                @Override
+                public void onDrawerClosed(View drawerView) {
+
+
+                    super.onDrawerClosed(drawerView);
+                    invalidateOptionsMenu();
+                    drawer.setVisibility(View.GONE);
+
+                }
+
+                @Override
+                public void onDrawerOpened(View drawerView) {
+                    super.onDrawerOpened(drawerView);
+                    invalidateOptionsMenu();
+
+
+                    //  drawer.closeDrawer(View.VISIBLE);
+                }
+            };
+            toggle.setDrawerIndicatorEnabled(true);
+            if (drawer != null) {
+                drawer.setDrawerListener(toggle);
+            }
+        }
+
+
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.activitycustomermapdrawer, menu);
+        return true;
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+//        if (id == R.id.action_settings)
+//        {
+//            return true;
+//        }
+        return super.onOptionsItemSelected(item);
+    }
+
+
+    public boolean onNavigationItemSelected(MenuItem item) {
+        // Handle navigation view item clicks here.
+        int id = item.getItemId();
+
+
+        if (id == R.id.nav_ViewStore) {
+
+            {
+
+                if (UsersRef.child("Customers").child().child(traderoruserID) != null) {
+                    Intent intent = new Intent(EditProfileFragment.this, com.simcoder.bimbo.WorkActivities.HomeActivity.class);
+
+                    intent.putExtra("rolefromcustomermapactivitytohomeactivity", role);
+                    intent.putExtra("fromcustomermapactivitytohomeactivity", traderoruserID);
+
+                    startActivity(intent);
+                    finish();
+
+                } else {
+                    Intent intent = new Intent(EditProfileFragment.this, com.simcoder.bimbo.WorkActivities.MainActivity.class);
+                    intent.putExtra("traderoruser", traderoruserID);
+                    intent.putExtra("traderoruser", role);
+                    startActivity(intent);
+                    finish();
+
+                }
+            }
+        } else if (id == R.id.nav_SearchforTraders) {
+        } else if (id == R.id.nav_searchforproducts) {
+
+            {
+                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                String cusomerId = "";
+                cusomerId = user.getUid();
+                Intent intent = new Intent(EditProfileFragment.this, SearchProductsActivity.class);
+                intent.putExtra("fromcustomermapactivitytosearchproductactivity", cusomerId);
+                intent.putExtra("rolefromcustomermapactivtytosearchproductactivity", role);
+                startActivity(intent);
+
+
+            }
+        } else if (id == R.id.nav_logout) {
+            FirebaseAuth.getInstance().signOut();
+            if (mGoogleSignInClient != null) {
+                mGoogleSignInClient.signOut().addOnCompleteListener(EditProfileFragment.this,
+                        new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+
+                            }
+                        });
+            }
+            Intent intent = new Intent(EditProfileFragment.this, MainActivity.class);
+            startActivity(intent);
+            finish();
+
+        } else if (id == R.id.nav_history) {
+
+            {
+                Intent intent = new Intent(EditProfileFragment.this, HistoryActivity.class);
+                // WE PASS THE CUSTOMER OR DRIVER CODE TO THE HISTORY ACTIVITY TO SEE ALL THE HISTORY ACTIVITES
+                intent.putExtra("customerOrDriver", "Drivers");
+                startActivity(intent);
+            }
+        } else if (id == R.id.nav_viewprofilehome) {
+
+            {
+                Paper.book().destroy();
+
+                Intent intent = new Intent(EditProfileFragment.this, com.simcoder.bimbo.WorkActivities.CustomerProfile.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+                finish();
+            }
+        } else if (id == R.id.nav_paymenthome) {
+
+
+           /* drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+            if (drawer != null) {
+
+                drawer.closeDrawer(GravityCompat.START);
+            }
+*/
+        }
+        return true;
+    }
+
+    @Override
+    public void onPointerCaptureChanged(boolean hasCapture) {
+
+    }
+
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        firebaseAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+
+                user = mAuth.getCurrentUser();
+                if (mAuth != null) {
+                    if (user != null) {
+
+                        traderoruserID = user.getUid();
+                    }
+
+                    // I HAVE TO TRY TO GET THE SETUP INFORMATION , IF THEY ARE ALREADY PROVIDED WE TAKE TO THE NEXT STAGE
+                    // WHICH IS CUSTOMER TO BE ADDED.
+                    // PULLING DATABASE REFERENCE IS NULL, WE CHANGE BACK TO THE SETUP PAGE ELSE WE GO STRAIGHT TO MAP PAGE
+                }
+            }
+        };
+
+
+        if (mAuth != null) {
+            mAuth.addAuthStateListener(firebaseAuthListener);
+        }
+
+
+
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+    }
+
+    @Override
+    public void onResume() {
+
+        super.onResume();
+       }
+
+
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+       }
+
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+
+    }
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
@@ -882,19 +1150,6 @@ public class EditProfileFragment extends AppCompatActivity implements GoogleApiC
     }
 
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        if (mAuth != null) {
-            mAuth.addAuthStateListener(firebaseAuthListener);
-        }
-    }
-    @Override
-    protected void onStop() {
-        super.onStop();
-        if (mAuth !=null) {
-            mAuth.removeAuthStateListener(firebaseAuthListener);
-        }
-    }
+
 }
 // #BuiltByGOD

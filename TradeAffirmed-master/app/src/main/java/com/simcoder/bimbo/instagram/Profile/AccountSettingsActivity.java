@@ -19,6 +19,7 @@ import android.widget.RelativeLayout;
 
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 import com.simcoder.bimbo.R;
+import com.simcoder.bimbo.instagram.Profile.EditProfileFragment.EditProfileFragment;
 import com.simcoder.bimbo.instagram.Utils.SectionsStatePagerAdapter;
 import com.simcoder.bimbo.instagram.Utils.BottomNavigationViewHelper;
 import com.simcoder.bimbo.instagram.Utils.FirebaseMethods;

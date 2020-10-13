@@ -1,5 +1,6 @@
 package com.simcoder.bimbo.instagram.Home;
 
+import android.content.Intent;
 import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -18,9 +19,12 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.simcoder.bimbo.R;
+import com.simcoder.bimbo.WorkActivities.HomeActivity;
+import com.simcoder.bimbo.WorkActivities.ProductDetailsActivity;
 import com.simcoder.bimbo.instagram.Models.Like;
 import com.simcoder.bimbo.instagram.Models.Photo;
 import com.simcoder.bimbo.instagram.Models.Tags;
+import com.simcoder.bimbo.instagram.Profile.EditProfileFragment.EditProfileFragment;
 import com.simcoder.bimbo.instagram.Utils.MainfeedListAdapter;
 import com.simcoder.bimbo.instagram.Models.Comment;
 
@@ -59,6 +63,34 @@ public class HomeFragment extends Fragment {
         //   mPhotos = (ArrayList<Photo>) new ArrayList<>();
 
         getFollowing();
+
+       //Passing information to HomeFragment
+
+        holder.product_imagehere.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (type.equals("Trader")) {
+                    Intent intent = new Intent(HomeFragment.this, EditProfileFragment.class);
+                    if (intent != null) {
+                        intent.putExtra("pid", key);
+                        intent.putExtra("fromthehomeactivitytraderkey", traderkey);
+                        intent.putExtra("fromthehomeactivityname", model.getname());
+                        intent.putExtra("fromthehomeactivityprice", model.getprice());
+                        intent.putExtra("fromthehomeactivitydesc", model.getdesc());
+                        intent.putExtra("fromthehomeactivityname", thetraderhere);
+                        intent.putExtra("fromthehomeactivityimage", model.getimage());
+
+                    }
+                    startActivity(intent);
+                } else {
+                    Intent intent = new Intent(HomeActivity.this, EditProfileFragment.class);
+                    if (intent != null) {
+                        intent.putExtra("fromthehomeactivitytoproductdetails", traderkey);
+                    }
+                    startActivity(intent);
+                }
+            }
+        });
 
         return view;
     }

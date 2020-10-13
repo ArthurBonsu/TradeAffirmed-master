@@ -44,7 +44,7 @@ public class User implements Parcelable{
 
        }
 
-    public User(String email, String name, String desc, String website, String image, String password) {
+    public User(String email, String name, String desc, String website, String image, String password, String phone) {
         this.email = email;
         this.name = name;
         this.desc = desc;
@@ -53,6 +53,7 @@ public class User implements Parcelable{
         this.photoid = photoid;
         this.tid = tid;
         this.password = password;
+        this.phone = phone ;
 
     }
 
