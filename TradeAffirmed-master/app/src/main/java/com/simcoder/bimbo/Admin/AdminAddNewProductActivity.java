@@ -326,7 +326,8 @@ public class AdminAddNewProductActivity extends AppCompatActivity implements Goo
                 }
             }
         }
-    }}
+    }
+    }
 
     private void SaveProductInfoToDatabase()
     {
