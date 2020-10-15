@@ -270,6 +270,7 @@ public class DriverLoginActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
       //  mProgress.show();
+
         mAuth.addAuthStateListener(firebaseAuthListener);
         }
 
