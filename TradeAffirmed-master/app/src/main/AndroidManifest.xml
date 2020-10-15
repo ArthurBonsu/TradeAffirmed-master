@@ -97,6 +97,10 @@
             android:name="io.fabric.ApiKey"
             android:value="4b0c9afb55db9f4ca3736c5c90f745c92c03d52f"
             tools:replace="android:value" />
+        <!-- Sample AdMob App ID: ca-app-pub-3940256099942544~3347511713 -->
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-3940256099942544~6300978111"/>
 
         <service
             android:name=".MyFirebaseInstanceIDService"
