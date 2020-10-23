@@ -229,7 +229,7 @@
                 android:fitsSystemWindows="true"
                 android:visibility="visible"
                 app:headerLayout="@layout/nav_header_home"
-                app:menu="@menu/activitytradermapdrawer" >
+                app:menu="@menu/activity_home_drawer" >
 
 
             </com.google.android.material.navigation.NavigationView>

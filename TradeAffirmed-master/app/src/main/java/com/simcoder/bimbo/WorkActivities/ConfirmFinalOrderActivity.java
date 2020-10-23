@@ -1375,7 +1375,7 @@ public class ConfirmFinalOrderActivity extends AppCompatActivity implements Navi
         }
 
 
-        if (id == R.id.checkfeed) {
+        if (id == R.id.nav_social_media) {
             if (!role.equals("Trader")) {
 
                 Intent intent = new Intent(ConfirmFinalOrderActivity.this, InstagramHomeActivity.class);

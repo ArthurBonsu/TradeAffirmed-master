@@ -9,24 +9,30 @@
         >
 
         <item
-            android:id="@+id/nav_ViewStore"
+            android:id="@+id/viewmap"
             android:icon="@drawable/ic_apple_fill"
-            android:title="ViewStore"
+            android:title="Go to Map"
             app:actionLayout="@layout/vip_view"/>
 
         <item
-            android:id="@+id/nav_Chat"
+            android:id="@+id/nav_social_media"
             android:icon="@drawable/ic_android_fill"
-            android:title="Chat"
-            app:actionLayout="@layout/bage_hint"/>
+            android:title="Social"
+            app:actionLayout="@layout/bage_hint" />
+
+
 
         <item
-            android:id="@+id/nav_SearchforTraders"
+            android:id="@+id/viewproducts"
             android:icon="@drawable/ic_apple_fill"
-            android:title="Search for Traders"
+            android:title="Shop"
             app:actionLayout="@layout/vip_view"/>
 
-
+        <item
+            android:id="@+id/nav_cart"
+            android:icon="@drawable/ic_android_fill"
+            android:title="Go to Cart"
+            app:actionLayout="@layout/bage_hint"/>
 
 
 
@@ -36,38 +42,50 @@
             android:title="Search for Product"
             app:actionLayout="@layout/vip_view"/>
 
+        <item
+            android:id="@+id/nav_SearchforTraders"
+            android:icon="@drawable/ic_apple_fill"
+            android:title="Search for traders"
+            app:actionLayout="@layout/vip_view"/>
+
+        <item
+            android:id="@+id/goodsbought"
+            android:icon="@drawable/ic_apple_fill"
+            android:title="Bought Goods"
+            app:actionLayout="@layout/vip_view"/>
+
 
 
 
         <item
             android:title="More">
             <menu>
+
                 <item
-                    android:id="@+id/nav_logout"
-                    android:icon="@drawable/ic_taobao_fill"
-                    android:title="Logout"/>
+                    android:id="@+id/nav_history"
+                    android:icon="@drawable/ic_github_line"
+                    android:title="History"/>
+
+
+                <item
+                    android:id="@+id/nav_paymenthome"
+                    android:icon="@drawable/ic_github_line"
+                    android:title="Paymenthome"/>
 
                 <item
                     android:id="@+id/nav_settings"
                     android:icon="@drawable/ic_wechat_fill"
                     android:title="Settings"/>
-                <item
-                    android:id="@+id/nav_history"
-                    android:icon="@drawable/ic_github_line"
-                    android:title="History"/>
+
+
                 <item
                     android:id="@+id/nav_viewprofilehome"
                     android:icon="@drawable/ic_github_line"
                     android:title="View Profile"/>
-
                 <item
-                    android:id="@+id/nav_paymenthome"
-                    android:icon="@drawable/ic_github_line"
-                    android:title="View Payment Method"/>
-
-
-
-
+                    android:id="@+id/nav_logout"
+                    android:icon="@drawable/ic_taobao_fill"
+                    android:title="Logout"/>
 
 
             </menu>

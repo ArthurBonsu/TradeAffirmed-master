@@ -252,11 +252,6 @@ public class AdminAddNewProductActivity extends AppCompatActivity implements Goo
 
     }
 
-
-
-
-
-
     private void StoreProductInformation() {
         if (loadingBar != null) {
             loadingBar.setTitle("Add New Product");
