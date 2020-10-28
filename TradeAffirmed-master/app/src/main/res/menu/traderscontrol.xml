@@ -48,13 +48,6 @@
             android:title=" Customers Following"
             app:actionLayout="@layout/bage_hint"/>
 
-
-
-
-
-
-
-
         <item
             android:title="More">
             <menu>
@@ -84,6 +77,37 @@
                     android:id="@+id/allordershistory"
                     android:icon="@drawable/ic_github_line"
                     android:title="All Orders"/>
+
+                <item
+                    android:id="@+id/singeuserorderhere"
+                    android:icon="@drawable/ic_github_line"
+                    android:title="Single User"/>
+
+                <item
+                    android:id="@+id/viewbuyershere"
+                    android:icon="@drawable/ic_github_line"
+                    android:title="View Buyer"/>
+
+                <item
+                    android:id="@+id/Maintainnewproducts"
+                    android:icon="@drawable/ic_github_line"
+                    android:title="Maintain new user"/>
+
+                <item
+                    android:id="@+id/usercartedactivityhere"
+                    android:icon="@drawable/ic_github_line"
+                    android:title="In Carts For Users"/>
+
+                <item
+                android:id="@+id/newproductdetailshere"
+                android:icon="@drawable/ic_github_line"
+                android:title="New Products"/>
+
+                <item
+                    android:id="@+id/allcategorieshere"
+                    android:icon="@drawable/ic_github_line"
+                    android:title="All Categorical"/>
+
 
             </menu>
         </item>
