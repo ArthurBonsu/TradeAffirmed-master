@@ -352,7 +352,7 @@ public class AdminMaintainProductsActivity extends AppCompatActivity implements 
             mAuth.removeAuthStateListener(firebaseAuthListener);
         }
 
-
+    }
 
         @Override
         public void onBackPressed() {
@@ -390,17 +390,17 @@ public class AdminMaintainProductsActivity extends AppCompatActivity implements 
 
 
             if (id == R.id.viewallcustomershere) {
-                if (!type.equals("Trader")) {
+                if (!role.equals("Trader")) {
                     if (FirebaseAuth.getInstance() != null) {
                         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                         if (user != null) {
                             String cusomerId = "";
 
                             cusomerId = user.getUid();
-                            Intent intent = new Intent(AdminAllCustomers.this, NotTraderActivity.class);
+                            Intent intent = new Intent(AdminMaintainProductsActivity.this, NotTraderActivity.class);
                             if (intent != null) {
-                                intent.putExtra("traderorcustomer", traderoruser);
-                                intent.putExtra("role", type);
+                                intent.putExtra("traderorcustomer", traderID);
+                                intent.putExtra("role", role);
                                 startActivity(intent);
                             }
                         }
@@ -413,10 +413,10 @@ public class AdminMaintainProductsActivity extends AppCompatActivity implements 
                             String cusomerId = "";
                             cusomerId = user.getUid();
 
-                            Intent intent = new Intent(AdminAllCustomers.this, AdminAllCustomers.class);
+                            Intent intent = new Intent(AdminMaintainProductsActivity.this, AdminAllCustomers.class);
                             if (intent != null) {
-                                intent.putExtra("traderorcustomer", traderoruser);
-                                intent.putExtra("role", type);
+                                intent.putExtra("traderorcustomer", traderID);
+                                intent.putExtra("role", role);
                                 startActivity(intent);
                             }
                         }
@@ -428,17 +428,17 @@ public class AdminMaintainProductsActivity extends AppCompatActivity implements 
 
             if (id == R.id. allcustomersincart) {
 
-                if (!type.equals("Trader")) {
+                if (!role.equals("Trader")) {
                     if (FirebaseAuth.getInstance() != null) {
                         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                         if (user != null) {
                             String cusomerId = "";
 
                             cusomerId = user.getUid();
-                            Intent intent = new Intent(AdminAllCustomers.this, NotTraderActivity.class);
+                            Intent intent = new Intent(AdminMaintainProductsActivity.this, NotTraderActivity.class);
                             if (intent != null) {
-                                intent.putExtra("traderorcustomer", traderoruser);
-                                intent.putExtra("role", type);
+                                intent.putExtra("traderorcustomer", traderID);
+                                intent.putExtra("role", role);
                                 startActivity(intent);
                             }
                         }
@@ -451,10 +451,10 @@ public class AdminMaintainProductsActivity extends AppCompatActivity implements 
                             String cusomerId = "";
                             cusomerId = user.getUid();
 
-                            Intent intent = new Intent(AdminAllCustomers.this, ViewAllCarts.class);
+                            Intent intent = new Intent(AdminMaintainProductsActivity.this, ViewAllCarts.class);
                             if (intent != null) {
-                                intent.putExtra("traderorcustomer", traderoruser);
-                                intent.putExtra("role", type);
+                                intent.putExtra("traderorcustomer", traderID);
+                                intent.putExtra("role", role);
                                 startActivity(intent);
                             }
                         }
@@ -465,17 +465,17 @@ public class AdminMaintainProductsActivity extends AppCompatActivity implements 
 
 
             if (id == R.id.addnewproducthere) {
-                if (!type.equals("Trader")) {
+                if (!role.equals("Trader")) {
                     if (FirebaseAuth.getInstance() != null) {
                         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                         if (user != null) {
                             String cusomerId = "";
 
                             cusomerId = user.getUid();
-                            Intent intent = new Intent(AdminAllCustomers.this, NotTraderActivity.class);
+                            Intent intent = new Intent(AdminMaintainProductsActivity.this, NotTraderActivity.class);
                             if (intent != null) {
-                                intent.putExtra("traderorcustomer", traderoruser);
-                                intent.putExtra("role", type);
+                                intent.putExtra("traderorcustomer", traderID);
+                                intent.putExtra("role", role);
                                 startActivity(intent);
                             }
                         }
@@ -488,10 +488,10 @@ public class AdminMaintainProductsActivity extends AppCompatActivity implements 
                             String cusomerId = "";
                             cusomerId = user.getUid();
 
-                            Intent intent = new Intent(AdminAllCustomers.this, AdminAddNewProductActivityII.class);
+                            Intent intent = new Intent(AdminMaintainProductsActivity.this, AdminAddNewProductActivityII.class);
                             if (intent != null) {
-                                intent.putExtra("traderorcustomer", traderoruser);
-                                intent.putExtra("role", type);
+                                intent.putExtra("traderorcustomer", traderID);
+                                intent.putExtra("role", role);
                                 startActivity(intent);
                             }
                         }
@@ -500,17 +500,17 @@ public class AdminMaintainProductsActivity extends AppCompatActivity implements 
             }
 
             if (id == R.id.allproductshere) {
-                if (!type.equals("Trader")) {
+                if (!role.equals("Trader")) {
                     if (FirebaseAuth.getInstance() != null) {
                         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                         if (user != null) {
                             String cusomerId = "";
 
                             cusomerId = user.getUid();
-                            Intent intent = new Intent(AdminAllCustomers.this, NotTraderActivity.class);
+                            Intent intent = new Intent(AdminMaintainProductsActivity.this, NotTraderActivity.class);
                             if (intent != null) {
-                                intent.putExtra("traderorcustomer", traderoruser);
-                                intent.putExtra("role", type);
+                                intent.putExtra("traderorcustomer", traderID);
+                                intent.putExtra("role", role);
                                 startActivity(intent);
                             }
                         }
@@ -523,26 +523,26 @@ public class AdminMaintainProductsActivity extends AppCompatActivity implements 
                             String cusomerId = "";
                             cusomerId = user.getUid();
 
-                            Intent intent = new Intent(AdminAllCustomers.this, AdminAllProducts.class);
+                            Intent intent = new Intent(AdminMaintainProductsActivity.this, AdminAllProducts.class);
                             if (intent != null) {
-                                intent.putExtra("traderorcustomer", traderoruser);
-                                intent.putExtra("role", type);
+                                intent.putExtra("traderorcustomer", traderID);
+                                intent.putExtra("role", role);
                                 startActivity(intent);
                             }
                         }}
 
                     if (id == R.id.allproductspurchased) {
-                        if (!type.equals("Trader")) {
+                        if (!role.equals("Trader")) {
                             if (FirebaseAuth.getInstance() != null) {
                                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                                 if (user != null) {
                                     String cusomerId = "";
 
                                     cusomerId = user.getUid();
-                                    Intent intent = new Intent(AdminAllCustomers.this, NotTraderActivity.class);
+                                    Intent intent = new Intent(AdminMaintainProductsActivity.this, NotTraderActivity.class);
                                     if (intent != null) {
-                                        intent.putExtra("traderorcustomer", traderoruser);
-                                        intent.putExtra("role", type);
+                                        intent.putExtra("traderorcustomer", traderID);
+                                        intent.putExtra("role", role);
                                         startActivity(intent);
                                     }
                                 }
@@ -555,10 +555,10 @@ public class AdminMaintainProductsActivity extends AppCompatActivity implements 
                                     String cusomerId = "";
                                     cusomerId = user.getUid();
 
-                                    Intent intent = new Intent(AdminAllCustomers.this, AllProductsPurchased.class);
+                                    Intent intent = new Intent(AdminMaintainProductsActivity.this, AllProductsPurchased.class);
                                     if (intent != null) {
-                                        intent.putExtra("traderorcustomer", traderoruser);
-                                        intent.putExtra("role", type);
+                                        intent.putExtra("traderorcustomer", traderID);
+                                        intent.putExtra("role", role);
                                         startActivity(intent);
                                     }
                                 }
@@ -568,17 +568,17 @@ public class AdminMaintainProductsActivity extends AppCompatActivity implements 
 
 
                     if (id == R.id. viewallcustomershere) {
-                        if (!type.equals("Trader")) {
+                        if (!role.equals("Trader")) {
                             if (FirebaseAuth.getInstance() != null) {
                                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                                 if (user != null) {
                                     String cusomerId = "";
 
                                     cusomerId = user.getUid();
-                                    Intent intent = new Intent(AdminAllCustomers.this, NotTraderActivity.class);
+                                    Intent intent = new Intent(AdminMaintainProductsActivity.this, NotTraderActivity.class);
                                     if (intent != null) {
-                                        intent.putExtra("traderorcustomer", traderoruser);
-                                        intent.putExtra("role", type);
+                                        intent.putExtra("traderorcustomer", traderID);
+                                        intent.putExtra("role", role);
                                         startActivity(intent);
                                     }
                                 }
@@ -591,10 +591,10 @@ public class AdminMaintainProductsActivity extends AppCompatActivity implements 
                                     String cusomerId = "";
                                     cusomerId = user.getUid();
 
-                                    Intent intent = new Intent(AdminAllCustomers.this, ViewAllCustomers.class);
+                                    Intent intent = new Intent(AdminMaintainProductsActivity.this, ViewAllCustomers.class);
                                     if (intent != null) {
-                                        intent.putExtra("traderorcustomer", traderoruser);
-                                        intent.putExtra("role", type);
+                                        intent.putExtra("traderorcustomer", traderID);
+                                        intent.putExtra("role", role);
                                         startActivity(intent);
                                     }
                                 }
@@ -603,17 +603,17 @@ public class AdminMaintainProductsActivity extends AppCompatActivity implements 
                     }
 
                     if (id == R.id.tradersfollowing) {
-                        if (!type.equals("Trader")) {
+                        if (!role.equals("Trader")) {
                             if (FirebaseAuth.getInstance() != null) {
                                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                                 if (user != null) {
                                     String cusomerId = "";
 
                                     cusomerId = user.getUid();
-                                    Intent intent = new Intent(AdminAllCustomers.this, NotTraderActivity.class);
+                                    Intent intent = new Intent(AdminMaintainProductsActivity.this, NotTraderActivity.class);
                                     if (intent != null) {
-                                        intent.putExtra("traderorcustomer", traderoruser);
-                                        intent.putExtra("role", type);
+                                        intent.putExtra("traderorcustomer", traderID);
+                                        intent.putExtra("role", role);
                                         startActivity(intent);
                                     }
                                 }
@@ -626,10 +626,10 @@ public class AdminMaintainProductsActivity extends AppCompatActivity implements 
                                     String cusomerId = "";
                                     cusomerId = user.getUid();
 
-                                    Intent intent = new Intent(AdminAllCustomers.this, TradersFollowing.class);
+                                    Intent intent = new Intent(AdminMaintainProductsActivity.this, TradersFollowing.class);
                                     if (intent != null) {
-                                        intent.putExtra("traderorcustomer", traderoruser);
-                                        intent.putExtra("role", type);
+                                        intent.putExtra("traderorcustomer", traderID);
+                                        intent.putExtra("role", role);
                                         startActivity(intent);
                                     }
                                 }
@@ -640,17 +640,17 @@ public class AdminMaintainProductsActivity extends AppCompatActivity implements 
 
                     if (id == R.id.AdminNewOrders) {
 
-                        if (!type.equals("Trader")) {
+                        if (!role.equals("Trader")) {
                             if (FirebaseAuth.getInstance() != null) {
                                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                                 if (user != null) {
                                     String cusomerId = "";
 
                                     cusomerId = user.getUid();
-                                    Intent intent = new Intent(AdminAllCustomers.this, NotTraderActivity.class);
+                                    Intent intent = new Intent(AdminMaintainProductsActivity.this, NotTraderActivity.class);
                                     if (intent != null) {
-                                        intent.putExtra("traderorcustomer", traderoruser);
-                                        intent.putExtra("role", type);
+                                        intent.putExtra("traderorcustomer", traderID);
+                                        intent.putExtra("role", role);
                                         startActivity(intent);
                                     }
                                 }
@@ -663,10 +663,10 @@ public class AdminMaintainProductsActivity extends AppCompatActivity implements 
                                     String cusomerId = "";
                                     cusomerId = user.getUid();
 
-                                    Intent intent = new Intent(AdminAllCustomers.this, AdminNewOrdersActivity.class);
+                                    Intent intent = new Intent(AdminMaintainProductsActivity.this, AdminNewOrdersActivity.class);
                                     if (intent != null) {
-                                        intent.putExtra("traderorcustomer", traderoruser);
-                                        intent.putExtra("role", type);
+                                        intent.putExtra("traderorcustomer", traderID);
+                                        intent.putExtra("role", role);
                                         startActivity(intent);
                                     }
                                 }
@@ -677,17 +677,17 @@ public class AdminMaintainProductsActivity extends AppCompatActivity implements 
 
                     if (id == R.id.allcustomersserved) {
 
-                        if (!type.equals("Trader")) {
+                        if (!role.equals("Trader")) {
                             if (FirebaseAuth.getInstance() != null) {
                                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                                 if (user != null) {
                                     String cusomerId = "";
 
                                     cusomerId = user.getUid();
-                                    Intent intent = new Intent(AdminAllCustomers.this, NotTraderActivity.class);
+                                    Intent intent = new Intent(AdminMaintainProductsActivity.this, NotTraderActivity.class);
                                     if (intent != null) {
-                                        intent.putExtra("traderorcustomer", traderoruser);
-                                        intent.putExtra("role", type);
+                                        intent.putExtra("traderorcustomer", traderID);
+                                        intent.putExtra("role", role);
                                         startActivity(intent);
                                     }
                                 }
@@ -700,10 +700,10 @@ public class AdminMaintainProductsActivity extends AppCompatActivity implements 
                                     String cusomerId = "";
                                     cusomerId = user.getUid();
 
-                                    Intent intent = new Intent(AdminAllCustomers.this, AdminCustomerServed.class);
+                                    Intent intent = new Intent(AdminMaintainProductsActivity.this, AdminCustomerServed.class);
                                     if (intent != null) {
-                                        intent.putExtra("traderorcustomer", traderoruser);
-                                        intent.putExtra("role", type);
+                                        intent.putExtra("traderorcustomer", traderID);
+                                        intent.putExtra("role", role);
                                         startActivity(intent);
                                     }
                                 }
@@ -713,17 +713,17 @@ public class AdminMaintainProductsActivity extends AppCompatActivity implements 
 
                     if (id == R.id.allordershistory) {
 
-                        if (!type.equals("Trader")) {
+                        if (!role.equals("Trader")) {
                             if (FirebaseAuth.getInstance() != null) {
                                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                                 if (user != null) {
                                     String cusomerId = "";
 
                                     cusomerId = user.getUid();
-                                    Intent intent = new Intent(AdminAllCustomers.this, NotTraderActivity.class);
+                                    Intent intent = new Intent(AdminMaintainProductsActivity.this, NotTraderActivity.class);
                                     if (intent != null) {
-                                        intent.putExtra("traderorcustomer", traderoruser);
-                                        intent.putExtra("role", type);
+                                        intent.putExtra("traderorcustomer", traderID);
+                                        intent.putExtra("role", role);
                                         startActivity(intent);
                                     }
                                 }
@@ -736,10 +736,10 @@ public class AdminMaintainProductsActivity extends AppCompatActivity implements 
                                     String cusomerId = "";
                                     cusomerId = user.getUid();
 
-                                    Intent intent = new Intent(AdminAllCustomers.this, AdminAllOrderHistory.class);
+                                    Intent intent = new Intent(AdminMaintainProductsActivity.this, AdminAllOrderHistory.class);
                                     if (intent != null) {
-                                        intent.putExtra("traderorcustomer", traderoruser);
-                                        intent.putExtra("role", type);
+                                        intent.putExtra("traderorcustomer", traderID);
+                                        intent.putExtra("role", role);
                                         startActivity(intent);
                                     }
                                 }
@@ -763,21 +763,21 @@ public class AdminMaintainProductsActivity extends AppCompatActivity implements 
             int id = item.getItemId();
 
             if (id == R.id.viewmap) {
-                if (!type.equals("Trader")) {
+                if (!role.equals("Trader")) {
 
-                    Intent intent = new Intent(AdminAllCustomers.this, NotTraderActivity.class);
+                    Intent intent = new Intent(AdminMaintainProductsActivity.this, NotTraderActivity.class);
                     if (intent != null) {
-                        intent.putExtra("traderorcustomer", traderoruser);
-                        intent.putExtra("role", type);
+                        intent.putExtra("traderorcustomer", traderID);
+                        intent.putExtra("role", role);
                         startActivity(intent);
                         finish();
                     }
                 } else {
 
-                    Intent intent = new Intent(AdminAllCustomers.this, DriverMapActivity.class);
+                    Intent intent = new Intent(AdminMaintainProductsActivity.this, DriverMapActivity.class);
                     if (intent != null) {
-                        intent.putExtra("traderorcustomer", traderoruser);
-                        intent.putExtra("role", type);
+                        intent.putExtra("traderorcustomer", traderID);
+                        intent.putExtra("role", role);
                         startActivity(intent);
                         finish();
                     }
@@ -788,17 +788,17 @@ public class AdminMaintainProductsActivity extends AppCompatActivity implements 
 
 
             if (id == R.id.nav_cart) {
-                if (!type.equals("Trader")) {
+                if (!role.equals("Trader")) {
                     if (FirebaseAuth.getInstance() != null) {
                         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                         if (user != null) {
                             String cusomerId = "";
 
                             cusomerId = user.getUid();
-                            Intent intent = new Intent(AdminAllCustomers.this, NotTraderActivity.class);
+                            Intent intent = new Intent(AdminMaintainProductsActivity.this, NotTraderActivity.class);
                             if (intent != null) {
-                                intent.putExtra("traderorcustomer", traderoruser);
-                                intent.putExtra("role", type);
+                                intent.putExtra("traderorcustomer", traderID);
+                                intent.putExtra("role", role);
                                 startActivity(intent);
                             }
                         }
@@ -811,10 +811,10 @@ public class AdminMaintainProductsActivity extends AppCompatActivity implements 
                             String cusomerId = "";
                             cusomerId = user.getUid();
 
-                            Intent intent = new Intent(AdminAllCustomers.this, CartActivity.class);
+                            Intent intent = new Intent(AdminMaintainProductsActivity.this, CartActivity.class);
                             if (intent != null) {
-                                intent.putExtra("traderorcustomer", traderoruser);
-                                intent.putExtra("role", type);
+                                intent.putExtra("traderorcustomer", traderID);
+                                intent.putExtra("role", role);
                                 startActivity(intent);
                             }
                         }
@@ -824,17 +824,17 @@ public class AdminMaintainProductsActivity extends AppCompatActivity implements 
 
 
                 if (id == R.id.nav_social_media) {
-                    if (!type.equals("Trader")) {
+                    if (!role.equals("Trader")) {
                         if (FirebaseAuth.getInstance() != null) {
                             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                             if (user != null) {
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(AdminAllCustomers.this, NotTraderActivity.class);
+                                Intent intent = new Intent(AdminMaintainProductsActivity.this, NotTraderActivity.class);
                                 if (intent != null) {
-                                    intent.putExtra("traderorcustomer", traderoruser);
-                                    intent.putExtra("role", type);
+                                    intent.putExtra("traderorcustomer", traderID);
+                                    intent.putExtra("role", role);
                                     startActivity(intent);
                                 }
                             }
@@ -847,10 +847,10 @@ public class AdminMaintainProductsActivity extends AppCompatActivity implements 
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(AdminAllCustomers.this, InstagramHomeActivity.class);
+                                Intent intent = new Intent(AdminMaintainProductsActivity.this, InstagramHomeActivity.class);
                                 if (intent != null) {
-                                    intent.putExtra("traderorcustomer", traderoruser);
-                                    intent.putExtra("role", type);
+                                    intent.putExtra("traderorcustomer", traderID);
+                                    intent.putExtra("role", role);
                                     startActivity(intent);
                                 }
                             }
@@ -860,17 +860,17 @@ public class AdminMaintainProductsActivity extends AppCompatActivity implements 
 
 
                     if (id == R.id.viewproducts) {
-                        if (!type.equals("Trader")) {
+                        if (!role.equals("Trader")) {
                             if (FirebaseAuth.getInstance() != null) {
                                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                                 if (user != null) {
                                     String cusomerId = "";
 
                                     cusomerId = user.getUid();
-                                    Intent intent = new Intent(AdminAllCustomers.this, NotTraderActivity.class);
+                                    Intent intent = new Intent(AdminMaintainProductsActivity.this, NotTraderActivity.class);
                                     if (intent != null) {
-                                        intent.putExtra("traderorcustomer", traderoruser);
-                                        intent.putExtra("role", type);
+                                        intent.putExtra("traderorcustomer", traderID);
+                                        intent.putExtra("role", role);
                                         startActivity(intent);
                                     }
                                 }
@@ -883,27 +883,27 @@ public class AdminMaintainProductsActivity extends AppCompatActivity implements 
                                     String cusomerId = "";
                                     cusomerId = user.getUid();
 
-                                    Intent intent = new Intent(AdminAllCustomers.this, AdminAllProducts.class);
+                                    Intent intent = new Intent(AdminMaintainProductsActivity.this, AdminAllProducts.class);
                                     if (intent != null) {
-                                        intent.putExtra("traderorcustomer", traderoruser);
-                                        intent.putExtra("role", type);
+                                        intent.putExtra("traderorcustomer", traderID);
+                                        intent.putExtra("role", role);
                                         startActivity(intent);
                                     }
                                 }
                             }
 
                             if (id == R.id.nav_searchforproducts) {
-                                if (!type.equals("Trader")) {
+                                if (!role.equals("Trader")) {
                                     if (FirebaseAuth.getInstance() != null) {
                                         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                                         if (user != null) {
                                             String cusomerId = "";
 
                                             cusomerId = user.getUid();
-                                            Intent intent = new Intent(AdminAllCustomers.this, NotTraderActivity.class);
+                                            Intent intent = new Intent(AdminMaintainProductsActivity.this, NotTraderActivity.class);
                                             if (intent != null) {
-                                                intent.putExtra("traderorcustomer", traderoruser);
-                                                intent.putExtra("role", type);
+                                                intent.putExtra("traderorcustomer", traderID);
+                                                intent.putExtra("role", role);
                                                 startActivity(intent);
                                             }
                                         }
@@ -916,10 +916,10 @@ public class AdminMaintainProductsActivity extends AppCompatActivity implements 
                                             String cusomerId = "";
                                             cusomerId = user.getUid();
 
-                                            Intent intent = new Intent(AdminAllCustomers.this, SearchForAdminProductsActivity.class);
+                                            Intent intent = new Intent(AdminMaintainProductsActivity.this, SearchForAdminProductsActivity.class);
                                             if (intent != null) {
-                                                intent.putExtra("traderorcustomer", traderoruser);
-                                                intent.putExtra("role", type);
+                                                intent.putExtra("traderorcustomer", traderID);
+                                                intent.putExtra("role", role);
                                                 startActivity(intent);
                                             }
                                         }
@@ -932,7 +932,7 @@ public class AdminMaintainProductsActivity extends AppCompatActivity implements 
                                 if (FirebaseAuth.getInstance() != null) {
                                     FirebaseAuth.getInstance().signOut();
                                     if (mGoogleApiClient != null) {
-                                        mGoogleSignInClient.signOut().addOnCompleteListener(AdminAllCustomers.this,
+                                        mGoogleSignInClient.signOut().addOnCompleteListener(AdminMaintainProductsActivity.this,
                                                 new OnCompleteListener<Void>() {
                                                     @Override
                                                     public void onComplete(@NonNull Task<Void> task) {
@@ -941,7 +941,7 @@ public class AdminMaintainProductsActivity extends AppCompatActivity implements 
                                                 });
                                     }
                                 }
-                                Intent intent = new Intent(AdminAllCustomers.this, com.simcoder.bimbo.MainActivity.class);
+                                Intent intent = new Intent(AdminMaintainProductsActivity.this, com.simcoder.bimbo.MainActivity.class);
                                 if (intent != null) {
                                     startActivity(intent);
                                     finish();
@@ -949,17 +949,17 @@ public class AdminMaintainProductsActivity extends AppCompatActivity implements 
                             }
 
                             if (id == R.id.nav_settings) {
-                                if (!type.equals("Trader")) {
+                                if (!role.equals("Trader")) {
                                     if (FirebaseAuth.getInstance() != null) {
                                         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                                         if (user != null) {
                                             String cusomerId = "";
 
                                             cusomerId = user.getUid();
-                                            Intent intent = new Intent(AdminAllCustomers.this, NotTraderActivity.class);
+                                            Intent intent = new Intent(AdminMaintainProductsActivity.this, NotTraderActivity.class);
                                             if (intent != null) {
-                                                intent.putExtra("traderorcustomer", traderoruser);
-                                                intent.putExtra("role", type);
+                                                intent.putExtra("traderorcustomer", traderID);
+                                                intent.putExtra("role", role);
                                                 startActivity(intent);
                                             }
                                         }
@@ -972,10 +972,10 @@ public class AdminMaintainProductsActivity extends AppCompatActivity implements 
                                             String cusomerId = "";
                                             cusomerId = user.getUid();
 
-                                            Intent intent = new Intent(AdminAllCustomers.this, com.simcoder.bimbo.WorkActivities.SettinsActivity.class);
+                                            Intent intent = new Intent(AdminMaintainProductsActivity.this, com.simcoder.bimbo.WorkActivities.SettinsActivity.class);
                                             if (intent != null) {
-                                                intent.putExtra("traderorcustomer", traderoruser);
-                                                intent.putExtra("role", type);
+                                                intent.putExtra("traderorcustomer", traderID);
+                                                intent.putExtra("role", role);
                                                 startActivity(intent);
                                             }
                                         }
@@ -983,17 +983,17 @@ public class AdminMaintainProductsActivity extends AppCompatActivity implements 
                                 }
                             }
                             if (id == R.id.nav_history) {
-                                if (!type.equals("Trader")) {
+                                if (!role.equals("Trader")) {
                                     if (FirebaseAuth.getInstance() != null) {
                                         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                                         if (user != null) {
                                             String cusomerId = "";
 
                                             cusomerId = user.getUid();
-                                            Intent intent = new Intent(AdminAllCustomers.this, NotTraderActivity.class);
+                                            Intent intent = new Intent(AdminMaintainProductsActivity.this, NotTraderActivity.class);
                                             if (intent != null) {
-                                                intent.putExtra("traderorcustomer", traderoruser);
-                                                intent.putExtra("role", type);
+                                                intent.putExtra("traderorcustomer", traderID);
+                                                intent.putExtra("role", role);
                                                 startActivity(intent);
                                             }
                                         }
@@ -1006,10 +1006,10 @@ public class AdminMaintainProductsActivity extends AppCompatActivity implements 
                                             String cusomerId = "";
                                             cusomerId = user.getUid();
 
-                                            Intent intent = new Intent(AdminAllCustomers.this, HistoryActivity.class);
+                                            Intent intent = new Intent(AdminMaintainProductsActivity.this, HistoryActivity.class);
                                             if (intent != null) {
-                                                intent.putExtra("traderorcustomer", traderoruser);
-                                                intent.putExtra("role", type);
+                                                intent.putExtra("traderorcustomer", traderID);
+                                                intent.putExtra("role", role);
                                                 startActivity(intent);
                                             }
                                         }
@@ -1019,17 +1019,17 @@ public class AdminMaintainProductsActivity extends AppCompatActivity implements 
 
 
                             if (id == R.id.nav_viewprofilehome) {
-                                if (!type.equals("Trader")) {
+                                if (!role.equals("Trader")) {
                                     if (FirebaseAuth.getInstance() != null) {
                                         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                                         if (user != null) {
                                             String cusomerId = "";
 
                                             cusomerId = user.getUid();
-                                            Intent intent = new Intent(AdminAllCustomers.this, NotTraderActivity.class);
+                                            Intent intent = new Intent(AdminMaintainProductsActivity.this, NotTraderActivity.class);
                                             if (intent != null) {
-                                                intent.putExtra("traderorcustomer", traderoruser);
-                                                intent.putExtra("role", type);
+                                                intent.putExtra("traderorcustomer", traderID);
+                                                intent.putExtra("role", role);
                                                 startActivity(intent);
                                             }
                                         }
@@ -1042,10 +1042,10 @@ public class AdminMaintainProductsActivity extends AppCompatActivity implements 
                                             String cusomerId = "";
                                             cusomerId = user.getUid();
 
-                                            Intent intent = new Intent(AdminAllCustomers.this, TraderProfile.class);
+                                            Intent intent = new Intent(AdminMaintainProductsActivity.this, TraderProfile.class);
                                             if (intent != null) {
-                                                intent.putExtra("traderorcustomer", traderoruser);
-                                                intent.putExtra("role", type);
+                                                intent.putExtra("traderorcustomer", traderID);
+                                                intent.putExtra("role", role);
                                                 startActivity(intent);
                                             }
                                         }
@@ -1055,17 +1055,17 @@ public class AdminMaintainProductsActivity extends AppCompatActivity implements 
 
 
                             if (id == R.id.viewallcustomershere) {
-                                if (!type.equals("Trader")) {
+                                if (!role.equals("Trader")) {
                                     if (FirebaseAuth.getInstance() != null) {
                                         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                                         if (user != null) {
                                             String cusomerId = "";
 
                                             cusomerId = user.getUid();
-                                            Intent intent = new Intent(AdminAllCustomers.this, NotTraderActivity.class);
+                                            Intent intent = new Intent(AdminMaintainProductsActivity.this, NotTraderActivity.class);
                                             if (intent != null) {
-                                                intent.putExtra("traderorcustomer", traderoruser);
-                                                intent.putExtra("role", type);
+                                                intent.putExtra("traderorcustomer", traderID);
+                                                intent.putExtra("role", role);
                                                 startActivity(intent);
                                             }
                                         }
@@ -1078,10 +1078,10 @@ public class AdminMaintainProductsActivity extends AppCompatActivity implements 
                                             String cusomerId = "";
                                             cusomerId = user.getUid();
 
-                                            Intent intent = new Intent(AdminAllCustomers.this, AdminAllCustomers.class);
+                                            Intent intent = new Intent(AdminMaintainProductsActivity.this, AdminAllCustomers.class);
                                             if (intent != null) {
-                                                intent.putExtra("traderorcustomer", traderoruser);
-                                                intent.putExtra("role", type);
+                                                intent.putExtra("traderorcustomer", traderID);
+                                                intent.putExtra("role", role);
                                                 startActivity(intent);
                                             }
                                         }
@@ -1092,17 +1092,17 @@ public class AdminMaintainProductsActivity extends AppCompatActivity implements 
 
                             if (id == R.id.addnewproducthere) {
 
-                                if (!type.equals("Trader")) {
+                                if (!role.equals("Trader")) {
                                     if (FirebaseAuth.getInstance() != null) {
                                         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                                         if (user != null) {
                                             String cusomerId = "";
 
                                             cusomerId = user.getUid();
-                                            Intent intent = new Intent(AdminAllCustomers.this, NotTraderActivity.class);
+                                            Intent intent = new Intent(AdminMaintainProductsActivity.this, NotTraderActivity.class);
                                             if (intent != null) {
-                                                intent.putExtra("traderorcustomer", traderoruser);
-                                                intent.putExtra("role", type);
+                                                intent.putExtra("traderorcustomer", traderID);
+                                                intent.putExtra("role", role);
                                                 startActivity(intent);
                                             }
                                         }
@@ -1115,10 +1115,10 @@ public class AdminMaintainProductsActivity extends AppCompatActivity implements 
                                             String cusomerId = "";
                                             cusomerId = user.getUid();
 
-                                            Intent intent = new Intent(AdminAllCustomers.this, AdminAddNewProductActivityII.class);
+                                            Intent intent = new Intent(AdminMaintainProductsActivity.this, AdminAddNewProductActivityII.class);
                                             if (intent != null) {
-                                                intent.putExtra("traderorcustomer", traderoruser);
-                                                intent.putExtra("role", type);
+                                                intent.putExtra("traderorcustomer", traderID);
+                                                intent.putExtra("role", role);
                                                 startActivity(intent);
                                             }
                                         }
@@ -1128,17 +1128,17 @@ public class AdminMaintainProductsActivity extends AppCompatActivity implements 
 
 
                             if (id == R.id.goodsbought) {
-                                if (!type.equals("Trader")) {
+                                if (!role.equals("Trader")) {
                                     if (FirebaseAuth.getInstance() != null) {
                                         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                                         if (user != null) {
                                             String cusomerId = "";
 
                                             cusomerId = user.getUid();
-                                            Intent intent = new Intent(AdminAllCustomers.this, NotTraderActivity.class);
+                                            Intent intent = new Intent(AdminMaintainProductsActivity.this, NotTraderActivity.class);
                                             if (intent != null) {
-                                                intent.putExtra("traderorcustomer", traderoruser);
-                                                intent.putExtra("role", type);
+                                                intent.putExtra("traderorcustomer", traderID);
+                                                intent.putExtra("role", role);
                                                 startActivity(intent);
                                             }
                                         }
@@ -1151,10 +1151,10 @@ public class AdminMaintainProductsActivity extends AppCompatActivity implements 
                                             String cusomerId = "";
                                             cusomerId = user.getUid();
 
-                                            Intent intent = new Intent(AdminAllCustomers.this, AllGoodsBought.class);
+                                            Intent intent = new Intent(AdminMaintainProductsActivity.this, AllGoodsBought.class);
                                             if (intent != null) {
-                                                intent.putExtra("traderorcustomer", traderoruser);
-                                                intent.putExtra("role", type);
+                                                intent.putExtra("traderorcustomer", traderID);
+                                                intent.putExtra("role", role);
                                                 startActivity(intent);
                                             }
                                         }
@@ -1164,17 +1164,17 @@ public class AdminMaintainProductsActivity extends AppCompatActivity implements 
 
 
                             if (id == R.id.nav_paymenthome) {
-                                if (!type.equals("Trader")) {
+                                if (!role.equals("Trader")) {
                                     if (FirebaseAuth.getInstance() != null) {
                                         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                                         if (user != null) {
                                             String cusomerId = "";
 
                                             cusomerId = user.getUid();
-                                            Intent intent = new Intent(AdminAllCustomers.this, NotTraderActivity.class);
+                                            Intent intent = new Intent(AdminMaintainProductsActivity.this, NotTraderActivity.class);
                                             if (intent != null) {
-                                                intent.putExtra("traderorcustomer", traderoruser);
-                                                intent.putExtra("role", type);
+                                                intent.putExtra("traderorcustomer", traderID);
+                                                intent.putExtra("role", role);
                                                 startActivity(intent);
                                             }
                                         }
@@ -1187,10 +1187,10 @@ public class AdminMaintainProductsActivity extends AppCompatActivity implements 
                                             String cusomerId = "";
                                             cusomerId = user.getUid();
 
-                                            Intent intent = new Intent(AdminAllCustomers.this, AdminPaymentHere.class);
+                                            Intent intent = new Intent(AdminMaintainProductsActivity.this, AdminPaymentHere.class);
                                             if (intent != null) {
-                                                intent.putExtra("traderorcustomer", traderoruser);
-                                                intent.putExtra("role", type);
+                                                intent.putExtra("traderorcustomer", traderID);
+                                                intent.putExtra("role", role);
                                                 startActivity(intent);
                                             }
                                         }
@@ -1200,17 +1200,17 @@ public class AdminMaintainProductsActivity extends AppCompatActivity implements 
 
 
                             if (id == R.id.nav_settings) {
-                                if (!type.equals("Trader")) {
+                                if (!role.equals("Trader")) {
                                     if (FirebaseAuth.getInstance() != null) {
                                         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                                         if (user != null) {
                                             String cusomerId = "";
 
                                             cusomerId = user.getUid();
-                                            Intent intent = new Intent(AdminAllCustomers.this, NotTraderActivity.class);
+                                            Intent intent = new Intent(AdminMaintainProductsActivity.this, NotTraderActivity.class);
                                             if (intent != null) {
-                                                intent.putExtra("traderorcustomer", traderoruser);
-                                                intent.putExtra("role", type);
+                                                intent.putExtra("traderorcustomer", traderID);
+                                                intent.putExtra("role", role);
                                                 startActivity(intent);
                                             }
                                         }
@@ -1223,10 +1223,10 @@ public class AdminMaintainProductsActivity extends AppCompatActivity implements 
                                             String cusomerId = "";
                                             cusomerId = user.getUid();
 
-                                            Intent intent = new Intent(AdminAllCustomers.this, AdminSettings.class);
+                                            Intent intent = new Intent(AdminMaintainProductsActivity.this, AdminSettings.class);
                                             if (intent != null) {
-                                                intent.putExtra("traderorcustomer", traderoruser);
-                                                intent.putExtra("role", type);
+                                                intent.putExtra("traderorcustomer", traderID);
+                                                intent.putExtra("role", role);
                                                 startActivity(intent);
                                             }
                                         }
@@ -1250,6 +1250,5 @@ public class AdminMaintainProductsActivity extends AppCompatActivity implements 
     }
 
 
-}
 
 // #BuiltByGOD

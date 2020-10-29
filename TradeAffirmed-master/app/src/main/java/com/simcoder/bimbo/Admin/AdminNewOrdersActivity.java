@@ -596,11 +596,11 @@ public  class  AdminNewOrdersActivity  extends AppCompatActivity
 
                                                     PostOrderDatabase = myfirebaseDatabase.getReference().child("PostOrder");
                                                     ordersRef = myfirebaseDatabase.getReference().child("Orders");
-                                                    postorderkey =   PostOrderDatabase.push().getKey();
+                                                    postorderkey = PostOrderDatabase.push().getKey();
                                                     //   orderkey = OrdersRef.getKey();
                                                     orderID = ordersRef.getKey();
                                                     state = "shipped";
-                                                    if (state != null){
+                                                    if (state != null) {
                                                         Users userspostorderinfo = new Users(orderkey, date, time, tid, thetraderimage, tradername, address, amount, city, delivered, distance, image, uid, name, mode,
 
                                                                 number, phone, quantity, shippingcost, state);
@@ -627,7 +627,7 @@ public  class  AdminNewOrdersActivity  extends AppCompatActivity
                                                         }
                                                     }
                                                 }
-                                    });
+                                            });
 
 
                                     alertDialogBuilder.setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -656,11 +656,11 @@ public  class  AdminNewOrdersActivity  extends AppCompatActivity
         }
 
 
-            if (recyclerView != null) {
-                recyclerView.setAdapter(feedadapter);
-            }
-
+        if (recyclerView != null) {
+            recyclerView.setAdapter(feedadapter);
         }
+
+    }
 
 
     @Nullable
@@ -686,7 +686,8 @@ public  class  AdminNewOrdersActivity  extends AppCompatActivity
                     // WHICH IS CUSTOMER TO BE ADDED.
                     // PULLING DATABASE REFERENCE IS NULL, WE CHANGE BACK TO THE SETUP PAGE ELSE WE GO STRAIGHT TO MAP PAGE
                 }
-            }    };
+            }
+        };
 
 
         if (mAuth != null) {
@@ -694,15 +695,16 @@ public  class  AdminNewOrdersActivity  extends AppCompatActivity
         }
 
 
-
     }
-    private void RemoverOrder(String orderID)
-    {       if ( ordersRef.child(orderID) != null) {
-        ordersRef.child(orderID).removeValue();
-    }}
+
+    private void RemoverOrder(String orderID) {
+        if (ordersRef.child(orderID) != null) {
+            ordersRef.child(orderID).removeValue();
+        }
+    }
 
     @Override
-    public void onStop () {
+    public void onStop() {
         super.onStop();
         if (feedadapter != null) {
             feedadapter.stopListening();
@@ -747,483 +749,21 @@ public  class  AdminNewOrdersActivity  extends AppCompatActivity
 //            return true;
 //        }
 
+
+
+
         if (id == R.id.viewallcustomershere) {
-            if (!type.equals("Trader")) {
+            if (!role.equals("Trader")) {
                 if (FirebaseAuth.getInstance() != null) {
                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                     if (user != null) {
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(AdminNewOrdersActivity.this, AdminAllCustomers.class);
+                        Intent intent = new Intent(AdminNewOrdersActivity.this, NotTraderActivity.class);
                         if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderoruser);
-                            intent.putExtra("role", type);
-                            startActivity(intent);
-                        }
-                    }
-                }
-            } else {
-                if (FirebaseAuth.getInstance() != null) {
-
-                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                    if (user != null) {
-                        String cusomerId = "";
-                        cusomerId = user.getUid();
-
-                        Intent intent = new Intent(AdminNewOrdersActivity.this, AdminAllCustomers.class);
-                        if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderoruser);
-                            intent.putExtra("role", type);
-                            startActivity(intent);
-                        }
-                    }
-                }
-            }
-        }
-
-
-        if (id == R.id.addnewproducthere) {
-
-            if (!type.equals("Trader")) {
-                if (FirebaseAuth.getInstance() != null) {
-                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                    if (user != null) {
-                        String cusomerId = "";
-
-                        cusomerId = user.getUid();
-                        Intent intent = new Intent(AdminNewOrdersActivity.this, AdminAddNewProductActivityII.class);
-                        if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderoruser);
-                            intent.putExtra("role", type);
-                            startActivity(intent);
-                        }
-                    }
-                }
-            } else {
-                if (FirebaseAuth.getInstance() != null) {
-
-                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                    if (user != null) {
-                        String cusomerId = "";
-                        cusomerId = user.getUid();
-
-                        Intent intent = new Intent(AdminNewOrdersActivity.this, AdminAddNewProductActivityII.class);
-                        if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderoruser);
-                            intent.putExtra("role", type);
-                            startActivity(intent);
-                        }
-                    }
-                }
-            }
-        }
-
-
-        if (id == R.id.singeuserorderhere) {
-
-            if (!type.equals("Trader")) {
-                if (FirebaseAuth.getInstance() != null) {
-                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                    if (user != null) {
-                        String cusomerId = "";
-
-                        cusomerId = user.getUid();
-                        Intent intent = new Intent(AdminNewOrdersActivity.this, ViewYourPersonalProduct.class);
-                        if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderoruser);
-                            intent.putExtra("role", type);
-                            startActivity(intent);
-                        }
-                    }
-                }
-            } else {
-                if (FirebaseAuth.getInstance() != null) {
-
-                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                    if (user != null) {
-                        String cusomerId = "";
-                        cusomerId = user.getUid();
-
-                        Intent intent = new Intent(AdminNewOrdersActivity.this, ViewYourPersonalProduct.class);
-                        if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderoruser);
-                            intent.putExtra("role", type);
-                            startActivity(intent);
-                        }
-                    }
-                }
-            }
-        }
-
-
-        if (id == R.id.viewbuyershere) {
-
-            if (!type.equals("Trader")) {
-                if (FirebaseAuth.getInstance() != null) {
-                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                    if (user != null) {
-                        String cusomerId = "";
-
-                        cusomerId = user.getUid();
-                        Intent intent = new Intent(AdminNewOrdersActivity.this, ViewSpecificUsersCart.class);
-                        if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderoruser);
-                            intent.putExtra("role", type);
-                            startActivity(intent);
-                        }
-                    }
-                }
-            } else {
-                if (FirebaseAuth.getInstance() != null) {
-
-                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                    if (user != null) {
-                        String cusomerId = "";
-                        cusomerId = user.getUid();
-
-                        Intent intent = new Intent(AdminNewOrdersActivity.this, ViewSpecificUsersCart.class);
-                        if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderoruser);
-                            intent.putExtra("role", type);
-                            startActivity(intent);
-                        }
-                    }
-                }
-            }
-        }
-
-
-        if (id == R.id.usercartedactivityhere) {
-
-            if (!type.equals("Trader")) {
-                if (FirebaseAuth.getInstance() != null) {
-                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                    if (user != null) {
-                        String cusomerId = "";
-
-                        cusomerId = user.getUid();
-                        Intent intent = new Intent(AdminNewOrdersActivity.this, ViewAllCarts.class);
-                        if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderoruser);
-                            intent.putExtra("role", type);
-                            startActivity(intent);
-                        }
-                    }
-                }
-            } else {
-                if (FirebaseAuth.getInstance() != null) {
-
-                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                    if (user != null) {
-                        String cusomerId = "";
-                        cusomerId = user.getUid();
-
-                        Intent intent = new Intent(AdminNewOrdersActivity.this, ViewAllCarts.class);
-                        if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderoruser);
-                            intent.putExtra("role", type);
-                            startActivity(intent);
-                        }
-                    }
-                }
-            }
-        }
-
-
-        if (id == R.id.newproductdetailshere) {
-            if (!type.equals("Trader")) {
-                if (FirebaseAuth.getInstance() != null) {
-                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                    if (user != null) {
-                        String cusomerId = "";
-
-                        cusomerId = user.getUid();
-                        Intent intent = new Intent(AdminNewOrdersActivity.this, AdminProductDetails.class);
-                        if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderoruser);
-                            intent.putExtra("role", type);
-                            startActivity(intent);
-                        }
-                    }
-                }
-            } else {
-                if (FirebaseAuth.getInstance() != null) {
-
-                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                    if (user != null) {
-                        String cusomerId = "";
-                        cusomerId = user.getUid();
-
-                        Intent intent = new Intent(AdminNewOrdersActivity.this, AdminProductDetails.class);
-                        if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderoruser);
-                            intent.putExtra("role", type);
-                            startActivity(intent);
-                        }
-                    }
-                }
-            }
-        }
-
-
-        if (id == R.id.Maintainnewproducts) {
-            if (!type.equals("Trader")) {
-                if (FirebaseAuth.getInstance() != null) {
-                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                    if (user != null) {
-                        String cusomerId = "";
-
-                        cusomerId = user.getUid();
-                        Intent intent = new Intent(AdminNewOrdersActivity.this, AdminMaintainProductsActivity.class);
-                        if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderoruser);
-                            intent.putExtra("role", type);
-                            startActivity(intent);
-                        }
-                    }
-                }
-            } else {
-                if (FirebaseAuth.getInstance() != null) {
-
-                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                    if (user != null) {
-                        String cusomerId = "";
-                        cusomerId = user.getUid();
-
-                        Intent intent = new Intent(AdminNewOrdersActivity.this, AdminMaintainProductsActivity.class);
-                        if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderoruser);
-                            intent.putExtra("role", type);
-                            startActivity(intent);
-                        }
-                    }
-                }
-            }
-        }
-
-
-        if (id == R.id.allcategorieshere) {
-
-            if (!type.equals("Trader")) {
-                if (FirebaseAuth.getInstance() != null) {
-                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                    if (user != null) {
-                        String cusomerId = "";
-
-                        cusomerId = user.getUid();
-                        Intent intent = new Intent(AdminNewOrdersActivity.this, AdminCategoryActivity.class);
-                        if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderoruser);
-                            intent.putExtra("role", type);
-                            startActivity(intent);
-                        }
-                    }
-                }
-            } else {
-                if (FirebaseAuth.getInstance() != null) {
-
-                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                    if (user != null) {
-                        String cusomerId = "";
-                        cusomerId = user.getUid();
-
-                        Intent intent = new Intent(AdminNewOrdersActivity.this, AdminCategoryActivity.class);
-                        if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderoruser);
-                            intent.putExtra("role", type);
-                            startActivity(intent);
-                        }
-                    }
-                }
-            }
-        }
-
-
-        if (id == R.id.allproductshere) {
-            if (!type.equals("Trader")) {
-                if (FirebaseAuth.getInstance() != null) {
-                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                    if (user != null) {
-                        String cusomerId = "";
-
-                        cusomerId = user.getUid();
-                        Intent intent = new Intent(AdminNewOrdersActivity.this, AdminAllProducts.class);
-                        if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderoruser);
-                            intent.putExtra("role", type);
-                            startActivity(intent);
-                        }
-                    }
-                }
-            } else {
-                if (FirebaseAuth.getInstance() != null) {
-
-                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                    if (user != null) {
-                        String cusomerId = "";
-                        cusomerId = user.getUid();
-
-                        Intent intent = new Intent(AdminNewOrdersActivity.this, AdminAllProducts.class);
-                        if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderoruser);
-                            intent.putExtra("role", type);
-                            startActivity(intent);
-                        }
-                    }
-                }}}
-
-        return super.onOptionsItemSelected(item);
-    }
-
-
-    public boolean onNavigationItemSelected (MenuItem item)
-    {
-        // Handle navigation view item clicks here.
-
-        int id = item.getItemId();
-
-        if (id == R.id.viewmap) {
-            if (!type.equals("Trader")) {
-
-                Intent intent = new Intent(AdminNewOrdersActivity.this, com.simcoder.bimbo.CustomerMapActivity.class);
-                if (intent != null) {
-                    intent.putExtra("roledhomeactivitytocustomermapactivity", type);
-                    intent.putExtra("fromhomeactivitytocustomermapactivity", traderoruser);
-                    startActivity(intent);
-                    finish();
-                }
-            } else {
-
-                Intent intent = new Intent(AdminNewOrdersActivity.this, DriverMapActivity.class);
-                if (intent != null) {
-                    intent.putExtra("rolefromhomeactivitytodrivermapactivity", type);
-                    intent.putExtra("fromhomeactivitytodrivermapactivity", traderoruser);
-                    startActivity(intent);
-                    finish();
-                }
-            }
-
-
-        }
-        if (id == R.id.nav_cart) {
-            if (!type.equals("Trader")) {
-                Intent intent = new Intent(AdminNewOrdersActivity.this, CartActivity.class);
-                if (intent != null) {
-                    startActivity(intent);
-                }
-            }
-
-        }
-
-        if (id == R.id.viewproducts) {
-            if (!type.equals("Trader")) {
-                Intent intent = new Intent(AdminNewOrdersActivity.this, HomeActivity.class);
-                if (intent != null) {
-                    startActivity(intent);
-                }
-            } else {
-            }
-
-        }
-        if (id == R.id.nav_search) {
-            if (!type.equals("Trader")) {
-                Intent intent = new Intent(AdminNewOrdersActivity.this, SearchProductsActivity.class);
-                if (intent != null) {
-                    startActivity(intent);
-                }
-            } else {
-            }
-        }
-
-        if (id == R.id.nav_logout) {
-
-            if (FirebaseAuth.getInstance() != null) {
-                FirebaseAuth.getInstance().signOut();
-                if (mGoogleApiClient != null) {
-                    mGoogleSignInClient.signOut().addOnCompleteListener(AdminNewOrdersActivity.this,
-                            new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-
-                                }
-                            });
-                }
-            }
-            Intent intent = new Intent(AdminNewOrdersActivity.this, com.simcoder.bimbo.MainActivity.class);
-            if (intent != null) {
-                startActivity(intent);
-                finish();
-            }
-        }
-
-        if (id == R.id.nav_settings) {
-            if (!type.equals("Trader")) {
-                Intent intent = new Intent(AdminNewOrdersActivity.this, com.simcoder.bimbo.WorkActivities.SettinsActivity.class);
-                if (intent != null) {
-                    startActivity(intent);
-                }
-            } else {
-            }
-        }
-        if (id == R.id.nav_history) {
-            if (!type.equals("Trader")) {
-                Intent intent = new Intent(AdminNewOrdersActivity.this, HistoryActivity.class);
-                if (intent != null) {
-                    startActivity(intent);
-                }
-            } else {
-            }
-        }
-        if (id == R.id.nav_categories) {
-
-        }
-        if (id == R.id.nav_viewprofilehome) {
-            if (!type.equals("Trader")) {
-                if (FirebaseAuth.getInstance() != null) {
-                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                    if (user != null) {
-                        String cusomerId = "";
-
-                        cusomerId = user.getUid();
-                        Intent intent = new Intent(AdminNewOrdersActivity.this, CustomerProfile.class);
-                        if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderoruser);
-                            intent.putExtra("role", type);
-                            startActivity(intent);
-                        }
-                    }
-                }
-            } else {
-                if (FirebaseAuth.getInstance() != null) {
-
-                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                    if (user != null) {
-                        String cusomerId = "";
-                        cusomerId = user.getUid();
-
-                        Intent intent = new Intent(AdminNewOrdersActivity.this, TraderProfile.class);
-                        if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderoruser);
-                            intent.putExtra("role", type);
-                            startActivity(intent);
-                        }
-                    }
-                }
-            }
-        }
-        if (id == R.id.viewallcustomershere) {
-            if (!type.equals("Trader")) {
-                if (FirebaseAuth.getInstance() != null) {
-                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                    if (user != null) {
-                        String cusomerId = "";
-
-                        cusomerId = user.getUid();
-                        Intent intent = new Intent(AdminNewOrdersActivity.this, HomeActivity.class);
-                        if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderoruser);
-                            intent.putExtra("role", type);
+                            intent.putExtra("traderorcustomer", traderID);
+                            intent.putExtra("role", role);
                             startActivity(intent);
                         }
                     }
@@ -1238,379 +778,8 @@ public  class  AdminNewOrdersActivity  extends AppCompatActivity
 
                         Intent intent = new Intent(AdminNewOrdersActivity.this, AdminAllCustomers.class);
                         if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderoruser);
-                            intent.putExtra("role", type);
-                            startActivity(intent);
-                        }
-                    }
-                }
-            }
-        }
-
-
-        if (id == R.id.addnewproducthere) {
-
-            if (!type.equals("Trader")) {
-                if (FirebaseAuth.getInstance() != null) {
-                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                    if (user != null) {
-                        String cusomerId = "";
-
-                        cusomerId = user.getUid();
-                        Intent intent = new Intent(AdminNewOrdersActivity.this, HomeActivity.class);
-                        if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderoruser);
-                            intent.putExtra("role", type);
-                            startActivity(intent);
-                        }
-                    }
-                }
-            } else {
-                if (FirebaseAuth.getInstance() != null) {
-
-                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                    if (user != null) {
-                        String cusomerId = "";
-                        cusomerId = user.getUid();
-
-                        Intent intent = new Intent(AdminNewOrdersActivity.this, AdminAddNewProductActivityII.class);
-                        if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderoruser);
-                            intent.putExtra("role", type);
-                            startActivity(intent);
-                        }
-                    }
-                }
-            }
-        }
-
-
-        if (id == R.id.singeuserorderhere) {
-
-            if (!type.equals("Trader")) {
-                if (FirebaseAuth.getInstance() != null) {
-                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                    if (user != null) {
-                        String cusomerId = "";
-
-                        cusomerId = user.getUid();
-                        Intent intent = new Intent(AdminNewOrdersActivity.this, HomeActivity.class);
-                        if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderoruser);
-                            intent.putExtra("role", type);
-                            startActivity(intent);
-                        }
-                    }
-                }
-            } else {
-                if (FirebaseAuth.getInstance() != null) {
-
-                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                    if (user != null) {
-                        String cusomerId = "";
-                        cusomerId = user.getUid();
-
-                        Intent intent = new Intent(AdminNewOrdersActivity.this, ViewYourPersonalProduct.class);
-                        if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderoruser);
-                            intent.putExtra("role", type);
-                            startActivity(intent);
-                        }
-                    }
-                }
-            }
-        }
-
-
-        if (id == R.id.viewbuyershere) {
-
-            if (!type.equals("Trader")) {
-                if (FirebaseAuth.getInstance() != null) {
-                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                    if (user != null) {
-                        String cusomerId = "";
-
-                        cusomerId = user.getUid();
-                        Intent intent = new Intent(AdminNewOrdersActivity.this, HomeActivity.class);
-                        if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderoruser);
-                            intent.putExtra("role", type);
-                            startActivity(intent);
-                        }
-                    }
-                }
-            } else {
-                if (FirebaseAuth.getInstance() != null) {
-
-                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                    if (user != null) {
-                        String cusomerId = "";
-                        cusomerId = user.getUid();
-
-                        Intent intent = new Intent(AdminNewOrdersActivity.this, ViewSpecificUsersCart.class);
-                        if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderoruser);
-                            intent.putExtra("role", type);
-                            startActivity(intent);
-                        }
-                    }
-                }
-            }
-        }
-
-
-        if (id == R.id.usercartedactivityhere) {
-
-            if (!type.equals("Trader")) {
-                if (FirebaseAuth.getInstance() != null) {
-                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                    if (user != null) {
-                        String cusomerId = "";
-
-                        cusomerId = user.getUid();
-                        Intent intent = new Intent(AdminNewOrdersActivity.this, HomeActivity.class);
-                        if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderoruser);
-                            intent.putExtra("role", type);
-                            startActivity(intent);
-                        }
-                    }
-                }
-            } else {
-                if (FirebaseAuth.getInstance() != null) {
-
-                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                    if (user != null) {
-                        String cusomerId = "";
-                        cusomerId = user.getUid();
-
-                        Intent intent = new Intent(AdminNewOrdersActivity.this, ViewAllCarts.class);
-                        if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderoruser);
-                            intent.putExtra("role", type);
-                            startActivity(intent);
-                        }
-                    }
-                }
-            }
-        }
-
-
-        if (id == R.id.newproductdetailshere) {
-            if (!type.equals("Trader")) {
-                if (FirebaseAuth.getInstance() != null) {
-                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                    if (user != null) {
-                        String cusomerId = "";
-
-                        cusomerId = user.getUid();
-                        Intent intent = new Intent(AdminNewOrdersActivity.this, HomeActivity.class);
-                        if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderoruser);
-                            intent.putExtra("role", type);
-                            startActivity(intent);
-                        }
-                    }
-                }
-            } else {
-                if (FirebaseAuth.getInstance() != null) {
-
-                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                    if (user != null) {
-                        String cusomerId = "";
-                        cusomerId = user.getUid();
-
-                        Intent intent = new Intent(AdminNewOrdersActivity.this, AdminProductDetails.class);
-                        if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderoruser);
-                            intent.putExtra("role", type);
-                            startActivity(intent);
-                        }
-                    }
-                }
-            }
-        }
-
-
-        if (id == R.id.Maintainnewproducts) {
-            if (!type.equals("Trader")) {
-                if (FirebaseAuth.getInstance() != null) {
-                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                    if (user != null) {
-                        String cusomerId = "";
-
-                        cusomerId = user.getUid();
-                        Intent intent = new Intent(AdminNewOrdersActivity.this, HomeActivity.class);
-                        if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderoruser);
-                            intent.putExtra("role", type);
-                            startActivity(intent);
-                        }
-                    }
-                }
-            } else {
-                if (FirebaseAuth.getInstance() != null) {
-
-                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                    if (user != null) {
-                        String cusomerId = "";
-                        cusomerId = user.getUid();
-
-                        Intent intent = new Intent(AdminNewOrdersActivity.this, AdminMaintainProductsActivity.class);
-                        if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderoruser);
-                            intent.putExtra("role", type);
-                            startActivity(intent);
-                        }
-                    }
-                }
-            }
-        }
-
-
-        if (id == R.id.allcategorieshere) {
-
-            if (!type.equals("Trader")) {
-                if (FirebaseAuth.getInstance() != null) {
-                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                    if (user != null) {
-                        String cusomerId = "";
-
-                        cusomerId = user.getUid();
-                        Intent intent = new Intent(AdminNewOrdersActivity.this, HomeActivity.class);
-                        if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderoruser);
-                            intent.putExtra("role", type);
-                            startActivity(intent);
-                        }
-                    }
-                }
-            } else {
-                if (FirebaseAuth.getInstance() != null) {
-
-                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                    if (user != null) {
-                        String cusomerId = "";
-                        cusomerId = user.getUid();
-
-                        Intent intent = new Intent(AdminNewOrdersActivity.this, AdminCategoryActivity.class);
-                        if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderoruser);
-                            intent.putExtra("role", type);
-                            startActivity(intent);
-                        }
-                    }
-                }
-            }
-        }
-
-
-        if (id == R.id.allproductshere) {
-            if (!type.equals("Trader")) {
-                if (FirebaseAuth.getInstance() != null) {
-                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                    if (user != null) {
-                        String cusomerId = "";
-
-                        cusomerId = user.getUid();
-                        Intent intent = new Intent(AdminNewOrdersActivity.this, AdminAllProducts.class);
-                        if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderoruser);
-                            intent.putExtra("role", type);
-                            startActivity(intent);
-                        }
-                    }
-                }
-            } else {
-                if (FirebaseAuth.getInstance() != null) {
-
-                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                    if (user != null) {
-                        String cusomerId = "";
-                        cusomerId = user.getUid();
-
-                        Intent intent = new Intent(AdminNewOrdersActivity.this, AdminAllProducts.class);
-                        if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderoruser);
-                            intent.putExtra("role", type);
-                            startActivity(intent);
-                        }
-                    }
-                }
-            }
-        }
-
-
-
-        return true;
-    }
-
-
-
-
-    @Override
-    public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer != null) {
-            if (drawer.isDrawerOpen(GravityCompat.START)) {
-                drawer.closeDrawer(GravityCompat.START);
-            } else {
-                super.onBackPressed();
-            }
-        }
-
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        if (getMenuInflater() != null) {
-            getMenuInflater().inflate(R.menu.traderscontrol, menu);
-        }
-        return true;
-    }
-
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-//        if (id == R.id.action_settings)
-//        {
-//            return true;
-//        }
-
-
-
-
-        if (id == R.id.viewallcustomershere) {
-            if (!type.equals("Trader")) {
-                if (FirebaseAuth.getInstance() != null) {
-                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                    if (user != null) {
-                        String cusomerId = "";
-
-                        cusomerId = user.getUid();
-                        Intent intent = new Intent(AdminAllCustomers.this, NotTraderActivity.class);
-                        if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderoruser);
-                            intent.putExtra("role", type);
-                            startActivity(intent);
-                        }
-                    }
-                }
-            } else {
-                if (FirebaseAuth.getInstance() != null) {
-
-                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                    if (user != null) {
-                        String cusomerId = "";
-                        cusomerId = user.getUid();
-
-                        Intent intent = new Intent(AdminAllCustomers.this, AdminAllCustomers.class);
-                        if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderoruser);
-                            intent.putExtra("role", type);
+                            intent.putExtra("traderorcustomer", traderID);
+                            intent.putExtra("role", role);
                             startActivity(intent);
                         }
                     }
@@ -1622,17 +791,17 @@ public  class  AdminNewOrdersActivity  extends AppCompatActivity
 
         if (id == R.id. allcustomersincart) {
 
-            if (!type.equals("Trader")) {
+            if (!role.equals("Trader")) {
                 if (FirebaseAuth.getInstance() != null) {
                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                     if (user != null) {
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(AdminAllCustomers.this, NotTraderActivity.class);
+                        Intent intent = new Intent(AdminNewOrdersActivity.this, NotTraderActivity.class);
                         if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderoruser);
-                            intent.putExtra("role", type);
+                            intent.putExtra("traderorcustomer", traderID);
+                            intent.putExtra("role", role);
                             startActivity(intent);
                         }
                     }
@@ -1645,10 +814,10 @@ public  class  AdminNewOrdersActivity  extends AppCompatActivity
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(AdminAllCustomers.this, ViewAllCarts.class);
+                        Intent intent = new Intent(AdminNewOrdersActivity.this, ViewAllCarts.class);
                         if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderoruser);
-                            intent.putExtra("role", type);
+                            intent.putExtra("traderorcustomer", traderID);
+                            intent.putExtra("role", role);
                             startActivity(intent);
                         }
                     }
@@ -1659,17 +828,17 @@ public  class  AdminNewOrdersActivity  extends AppCompatActivity
 
 
         if (id == R.id.addnewproducthere) {
-            if (!type.equals("Trader")) {
+            if (!role.equals("Trader")) {
                 if (FirebaseAuth.getInstance() != null) {
                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                     if (user != null) {
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(AdminAllCustomers.this, NotTraderActivity.class);
+                        Intent intent = new Intent(AdminNewOrdersActivity.this, NotTraderActivity.class);
                         if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderoruser);
-                            intent.putExtra("role", type);
+                            intent.putExtra("traderorcustomer", traderID);
+                            intent.putExtra("role", role);
                             startActivity(intent);
                         }
                     }
@@ -1682,10 +851,10 @@ public  class  AdminNewOrdersActivity  extends AppCompatActivity
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(AdminAllCustomers.this, AdminAddNewProductActivityII.class);
+                        Intent intent = new Intent(AdminNewOrdersActivity.this, AdminAddNewProductActivityII.class);
                         if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderoruser);
-                            intent.putExtra("role", type);
+                            intent.putExtra("traderorcustomer", traderID);
+                            intent.putExtra("role", role);
                             startActivity(intent);
                         }
                     }
@@ -1694,17 +863,17 @@ public  class  AdminNewOrdersActivity  extends AppCompatActivity
         }
 
         if (id == R.id.allproductshere) {
-            if (!type.equals("Trader")) {
+            if (!role.equals("Trader")) {
                 if (FirebaseAuth.getInstance() != null) {
                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                     if (user != null) {
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(AdminAllCustomers.this, NotTraderActivity.class);
+                        Intent intent = new Intent(AdminNewOrdersActivity.this, NotTraderActivity.class);
                         if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderoruser);
-                            intent.putExtra("role", type);
+                            intent.putExtra("traderorcustomer", traderID);
+                            intent.putExtra("role", role);
                             startActivity(intent);
                         }
                     }
@@ -1717,26 +886,26 @@ public  class  AdminNewOrdersActivity  extends AppCompatActivity
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(AdminAllCustomers.this, AdminAllProducts.class);
+                        Intent intent = new Intent(AdminNewOrdersActivity.this, AdminAllProducts.class);
                         if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderoruser);
-                            intent.putExtra("role", type);
+                            intent.putExtra("traderorcustomer", traderID);
+                            intent.putExtra("role", role);
                             startActivity(intent);
                         }
                     }}
 
                 if (id == R.id.allproductspurchased) {
-                    if (!type.equals("Trader")) {
+                    if (!role.equals("Trader")) {
                         if (FirebaseAuth.getInstance() != null) {
                             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                             if (user != null) {
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(AdminAllCustomers.this, NotTraderActivity.class);
+                                Intent intent = new Intent(AdminNewOrdersActivity.this, NotTraderActivity.class);
                                 if (intent != null) {
-                                    intent.putExtra("traderorcustomer", traderoruser);
-                                    intent.putExtra("role", type);
+                                    intent.putExtra("traderorcustomer", traderID);
+                                    intent.putExtra("role", role);
                                     startActivity(intent);
                                 }
                             }
@@ -1749,10 +918,10 @@ public  class  AdminNewOrdersActivity  extends AppCompatActivity
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(AdminAllCustomers.this, AllProductsPurchased.class);
+                                Intent intent = new Intent(AdminNewOrdersActivity.this, AllProductsPurchased.class);
                                 if (intent != null) {
-                                    intent.putExtra("traderorcustomer", traderoruser);
-                                    intent.putExtra("role", type);
+                                    intent.putExtra("traderorcustomer", traderID);
+                                    intent.putExtra("role", role);
                                     startActivity(intent);
                                 }
                             }
@@ -1762,17 +931,17 @@ public  class  AdminNewOrdersActivity  extends AppCompatActivity
 
 
                 if (id == R.id. viewallcustomershere) {
-                    if (!type.equals("Trader")) {
+                    if (!role.equals("Trader")) {
                         if (FirebaseAuth.getInstance() != null) {
                             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                             if (user != null) {
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(AdminAllCustomers.this, NotTraderActivity.class);
+                                Intent intent = new Intent(AdminNewOrdersActivity.this, NotTraderActivity.class);
                                 if (intent != null) {
-                                    intent.putExtra("traderorcustomer", traderoruser);
-                                    intent.putExtra("role", type);
+                                    intent.putExtra("traderorcustomer", traderID);
+                                    intent.putExtra("role", role);
                                     startActivity(intent);
                                 }
                             }
@@ -1785,10 +954,10 @@ public  class  AdminNewOrdersActivity  extends AppCompatActivity
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(AdminAllCustomers.this, ViewAllCustomers.class);
+                                Intent intent = new Intent(AdminNewOrdersActivity.this, ViewAllCustomers.class);
                                 if (intent != null) {
-                                    intent.putExtra("traderorcustomer", traderoruser);
-                                    intent.putExtra("role", type);
+                                    intent.putExtra("traderorcustomer", traderID);
+                                    intent.putExtra("role", role);
                                     startActivity(intent);
                                 }
                             }
@@ -1797,17 +966,17 @@ public  class  AdminNewOrdersActivity  extends AppCompatActivity
                 }
 
                 if (id == R.id.tradersfollowing) {
-                    if (!type.equals("Trader")) {
+                    if (!role.equals("Trader")) {
                         if (FirebaseAuth.getInstance() != null) {
                             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                             if (user != null) {
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(AdminAllCustomers.this, NotTraderActivity.class);
+                                Intent intent = new Intent(AdminNewOrdersActivity.this, NotTraderActivity.class);
                                 if (intent != null) {
-                                    intent.putExtra("traderorcustomer", traderoruser);
-                                    intent.putExtra("role", type);
+                                    intent.putExtra("traderorcustomer", traderID);
+                                    intent.putExtra("role", role);
                                     startActivity(intent);
                                 }
                             }
@@ -1820,31 +989,30 @@ public  class  AdminNewOrdersActivity  extends AppCompatActivity
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(AdminAllCustomers.this, TradersFollowing.class);
+                                Intent intent = new Intent(AdminNewOrdersActivity.this, TradersFollowing.class);
                                 if (intent != null) {
-                                    intent.putExtra("traderorcustomer", traderoruser);
-                                    intent.putExtra("role", type);
+                                    intent.putExtra("traderorcustomer", traderID);
+                                    intent.putExtra("role", role);
                                     startActivity(intent);
                                 }
                             }
                         }
-                    }
-                }
+                    }                }
 
 
                 if (id == R.id.AdminNewOrders) {
 
-                    if (!type.equals("Trader")) {
+                    if (!role.equals("Trader")) {
                         if (FirebaseAuth.getInstance() != null) {
                             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                             if (user != null) {
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(AdminAllCustomers.this, NotTraderActivity.class);
+                                Intent intent = new Intent(AdminNewOrdersActivity.this, NotTraderActivity.class);
                                 if (intent != null) {
-                                    intent.putExtra("traderorcustomer", traderoruser);
-                                    intent.putExtra("role", type);
+                                    intent.putExtra("traderorcustomer", traderID);
+                                    intent.putExtra("role", role);
                                     startActivity(intent);
                                 }
                             }
@@ -1857,10 +1025,10 @@ public  class  AdminNewOrdersActivity  extends AppCompatActivity
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(AdminAllCustomers.this, AdminNewOrdersActivity.class);
+                                Intent intent = new Intent(AdminNewOrdersActivity.this, AdminNewOrdersActivity.class);
                                 if (intent != null) {
-                                    intent.putExtra("traderorcustomer", traderoruser);
-                                    intent.putExtra("role", type);
+                                    intent.putExtra("traderorcustomer", traderID);
+                                    intent.putExtra("role", role);
                                     startActivity(intent);
                                 }
                             }
@@ -1871,17 +1039,17 @@ public  class  AdminNewOrdersActivity  extends AppCompatActivity
 
                 if (id == R.id.allcustomersserved) {
 
-                    if (!type.equals("Trader")) {
+                    if (!role.equals("Trader")) {
                         if (FirebaseAuth.getInstance() != null) {
                             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                             if (user != null) {
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(AdminAllCustomers.this, NotTraderActivity.class);
+                                Intent intent = new Intent(AdminNewOrdersActivity.this, NotTraderActivity.class);
                                 if (intent != null) {
-                                    intent.putExtra("traderorcustomer", traderoruser);
-                                    intent.putExtra("role", type);
+                                    intent.putExtra("traderorcustomer", traderID);
+                                    intent.putExtra("role", role);
                                     startActivity(intent);
                                 }
                             }
@@ -1894,10 +1062,10 @@ public  class  AdminNewOrdersActivity  extends AppCompatActivity
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(AdminAllCustomers.this, AdminCustomerServed.class);
+                                Intent intent = new Intent(AdminNewOrdersActivity.this, AdminCustomerServed.class);
                                 if (intent != null) {
-                                    intent.putExtra("traderorcustomer", traderoruser);
-                                    intent.putExtra("role", type);
+                                    intent.putExtra("traderorcustomer", traderID);
+                                    intent.putExtra("role", role);
                                     startActivity(intent);
                                 }
                             }
@@ -1907,17 +1075,17 @@ public  class  AdminNewOrdersActivity  extends AppCompatActivity
 
                 if (id == R.id.allordershistory) {
 
-                    if (!type.equals("Trader")) {
+                    if (!role.equals("Trader")) {
                         if (FirebaseAuth.getInstance() != null) {
                             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                             if (user != null) {
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(AdminAllCustomers.this, NotTraderActivity.class);
+                                Intent intent = new Intent(AdminNewOrdersActivity.this, NotTraderActivity.class);
                                 if (intent != null) {
-                                    intent.putExtra("traderorcustomer", traderoruser);
-                                    intent.putExtra("role", type);
+                                    intent.putExtra("traderorcustomer", traderID);
+                                    intent.putExtra("role", role);
                                     startActivity(intent);
                                 }
                             }
@@ -1930,10 +1098,10 @@ public  class  AdminNewOrdersActivity  extends AppCompatActivity
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(AdminAllCustomers.this, AdminAllOrderHistory.class);
+                                Intent intent = new Intent(AdminNewOrdersActivity.this, AdminAllOrderHistory.class);
                                 if (intent != null) {
-                                    intent.putExtra("traderorcustomer", traderoruser);
-                                    intent.putExtra("role", type);
+                                    intent.putExtra("traderorcustomer", traderID);
+                                    intent.putExtra("role", role);
                                     startActivity(intent);
                                 }
                             }
@@ -1957,21 +1125,21 @@ public  class  AdminNewOrdersActivity  extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.viewmap) {
-            if (!type.equals("Trader")) {
+            if (!role.equals("Trader")) {
 
-                Intent intent = new Intent(AdminAllCustomers.this, NotTraderActivity.class);
+                Intent intent = new Intent(AdminNewOrdersActivity.this, NotTraderActivity.class);
                 if (intent != null) {
-                    intent.putExtra("traderorcustomer", traderoruser);
-                    intent.putExtra("role", type);
+                    intent.putExtra("traderorcustomer", traderID);
+                    intent.putExtra("role", role);
                     startActivity(intent);
                     finish();
                 }
             } else {
 
-                Intent intent = new Intent(AdminAllCustomers.this, DriverMapActivity.class);
+                Intent intent = new Intent(AdminNewOrdersActivity.this, DriverMapActivity.class);
                 if (intent != null) {
-                    intent.putExtra("traderorcustomer", traderoruser);
-                    intent.putExtra("role", type);
+                    intent.putExtra("traderorcustomer", traderID);
+                    intent.putExtra("role", role);
                     startActivity(intent);
                     finish();
                 }
@@ -1982,17 +1150,17 @@ public  class  AdminNewOrdersActivity  extends AppCompatActivity
 
 
         if (id == R.id.nav_cart) {
-            if (!type.equals("Trader")) {
+            if (!role.equals("Trader")) {
                 if (FirebaseAuth.getInstance() != null) {
                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                     if (user != null) {
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(AdminAllCustomers.this, NotTraderActivity.class);
+                        Intent intent = new Intent(AdminNewOrdersActivity.this, NotTraderActivity.class);
                         if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderoruser);
-                            intent.putExtra("role", type);
+                            intent.putExtra("traderorcustomer", traderID);
+                            intent.putExtra("role", role);
                             startActivity(intent);
                         }
                     }
@@ -2005,10 +1173,10 @@ public  class  AdminNewOrdersActivity  extends AppCompatActivity
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(AdminAllCustomers.this, CartActivity.class);
+                        Intent intent = new Intent(AdminNewOrdersActivity.this, CartActivity.class);
                         if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderoruser);
-                            intent.putExtra("role", type);
+                            intent.putExtra("traderorcustomer", traderID);
+                            intent.putExtra("role", role);
                             startActivity(intent);
                         }
                     }
@@ -2018,17 +1186,17 @@ public  class  AdminNewOrdersActivity  extends AppCompatActivity
 
 
             if (id == R.id.nav_social_media) {
-                if (!type.equals("Trader")) {
+                if (!role.equals("Trader")) {
                     if (FirebaseAuth.getInstance() != null) {
                         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                         if (user != null) {
                             String cusomerId = "";
 
                             cusomerId = user.getUid();
-                            Intent intent = new Intent(AdminAllCustomers.this, NotTraderActivity.class);
+                            Intent intent = new Intent(AdminNewOrdersActivity.this, NotTraderActivity.class);
                             if (intent != null) {
-                                intent.putExtra("traderorcustomer", traderoruser);
-                                intent.putExtra("role", type);
+                                intent.putExtra("traderorcustomer", traderID);
+                                intent.putExtra("role", role);
                                 startActivity(intent);
                             }
                         }
@@ -2041,10 +1209,10 @@ public  class  AdminNewOrdersActivity  extends AppCompatActivity
                             String cusomerId = "";
                             cusomerId = user.getUid();
 
-                            Intent intent = new Intent(AdminAllCustomers.this, InstagramHomeActivity.class);
+                            Intent intent = new Intent(AdminNewOrdersActivity.this, InstagramHomeActivity.class);
                             if (intent != null) {
-                                intent.putExtra("traderorcustomer", traderoruser);
-                                intent.putExtra("role", type);
+                                intent.putExtra("traderorcustomer", traderID);
+                                intent.putExtra("role", role);
                                 startActivity(intent);
                             }
                         }
@@ -2054,17 +1222,17 @@ public  class  AdminNewOrdersActivity  extends AppCompatActivity
 
 
                 if (id == R.id.viewproducts) {
-                    if (!type.equals("Trader")) {
+                    if (!role.equals("Trader")) {
                         if (FirebaseAuth.getInstance() != null) {
                             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                             if (user != null) {
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(AdminAllCustomers.this, NotTraderActivity.class);
+                                Intent intent = new Intent(AdminNewOrdersActivity.this, NotTraderActivity.class);
                                 if (intent != null) {
-                                    intent.putExtra("traderorcustomer", traderoruser);
-                                    intent.putExtra("role", type);
+                                    intent.putExtra("traderorcustomer", traderID);
+                                    intent.putExtra("role", role);
                                     startActivity(intent);
                                 }
                             }
@@ -2077,27 +1245,27 @@ public  class  AdminNewOrdersActivity  extends AppCompatActivity
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(AdminAllCustomers.this, AdminAllProducts.class);
+                                Intent intent = new Intent(AdminNewOrdersActivity.this, AdminAllProducts.class);
                                 if (intent != null) {
-                                    intent.putExtra("traderorcustomer", traderoruser);
-                                    intent.putExtra("role", type);
+                                    intent.putExtra("traderorcustomer", traderID);
+                                    intent.putExtra("role", role);
                                     startActivity(intent);
                                 }
                             }
                         }
 
                         if (id == R.id.nav_searchforproducts) {
-                            if (!type.equals("Trader")) {
+                            if (!role.equals("Trader")) {
                                 if (FirebaseAuth.getInstance() != null) {
                                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                                     if (user != null) {
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(AdminAllCustomers.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(AdminNewOrdersActivity.this, NotTraderActivity.class);
                                         if (intent != null) {
-                                            intent.putExtra("traderorcustomer", traderoruser);
-                                            intent.putExtra("role", type);
+                                            intent.putExtra("traderorcustomer", traderID);
+                                            intent.putExtra("role", role);
                                             startActivity(intent);
                                         }
                                     }
@@ -2110,10 +1278,10 @@ public  class  AdminNewOrdersActivity  extends AppCompatActivity
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(AdminAllCustomers.this, SearchForAdminProductsActivity.class);
+                                        Intent intent = new Intent(AdminNewOrdersActivity.this, SearchForAdminProductsActivity.class);
                                         if (intent != null) {
-                                            intent.putExtra("traderorcustomer", traderoruser);
-                                            intent.putExtra("role", type);
+                                            intent.putExtra("traderorcustomer", traderID);
+                                            intent.putExtra("role", role);
                                             startActivity(intent);
                                         }
                                     }
@@ -2126,7 +1294,7 @@ public  class  AdminNewOrdersActivity  extends AppCompatActivity
                             if (FirebaseAuth.getInstance() != null) {
                                 FirebaseAuth.getInstance().signOut();
                                 if (mGoogleApiClient != null) {
-                                    mGoogleSignInClient.signOut().addOnCompleteListener(AdminAllCustomers.this,
+                                    mGoogleSignInClient.signOut().addOnCompleteListener(AdminNewOrdersActivity.this,
                                             new OnCompleteListener<Void>() {
                                                 @Override
                                                 public void onComplete(@NonNull Task<Void> task) {
@@ -2135,7 +1303,7 @@ public  class  AdminNewOrdersActivity  extends AppCompatActivity
                                             });
                                 }
                             }
-                            Intent intent = new Intent(AdminAllCustomers.this, com.simcoder.bimbo.MainActivity.class);
+                            Intent intent = new Intent(AdminNewOrdersActivity.this, com.simcoder.bimbo.MainActivity.class);
                             if (intent != null) {
                                 startActivity(intent);
                                 finish();
@@ -2143,17 +1311,17 @@ public  class  AdminNewOrdersActivity  extends AppCompatActivity
                         }
 
                         if (id == R.id.nav_settings) {
-                            if (!type.equals("Trader")) {
+                            if (!role.equals("Trader")) {
                                 if (FirebaseAuth.getInstance() != null) {
                                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                                     if (user != null) {
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(AdminAllCustomers.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(AdminNewOrdersActivity.this, NotTraderActivity.class);
                                         if (intent != null) {
-                                            intent.putExtra("traderorcustomer", traderoruser);
-                                            intent.putExtra("role", type);
+                                            intent.putExtra("traderorcustomer", traderID);
+                                            intent.putExtra("role", role);
                                             startActivity(intent);
                                         }
                                     }
@@ -2166,10 +1334,10 @@ public  class  AdminNewOrdersActivity  extends AppCompatActivity
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(AdminAllCustomers.this, com.simcoder.bimbo.WorkActivities.SettinsActivity.class);
+                                        Intent intent = new Intent(AdminNewOrdersActivity.this, com.simcoder.bimbo.WorkActivities.SettinsActivity.class);
                                         if (intent != null) {
-                                            intent.putExtra("traderorcustomer", traderoruser);
-                                            intent.putExtra("role", type);
+                                            intent.putExtra("traderorcustomer", traderID);
+                                            intent.putExtra("role", role);
                                             startActivity(intent);
                                         }
                                     }
@@ -2177,17 +1345,17 @@ public  class  AdminNewOrdersActivity  extends AppCompatActivity
                             }
                         }
                         if (id == R.id.nav_history) {
-                            if (!type.equals("Trader")) {
+                            if (!role.equals("Trader")) {
                                 if (FirebaseAuth.getInstance() != null) {
                                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                                     if (user != null) {
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(AdminAllCustomers.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(AdminNewOrdersActivity.this, NotTraderActivity.class);
                                         if (intent != null) {
-                                            intent.putExtra("traderorcustomer", traderoruser);
-                                            intent.putExtra("role", type);
+                                            intent.putExtra("traderorcustomer", traderID);
+                                            intent.putExtra("role", role);
                                             startActivity(intent);
                                         }
                                     }
@@ -2200,10 +1368,10 @@ public  class  AdminNewOrdersActivity  extends AppCompatActivity
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(AdminAllCustomers.this, HistoryActivity.class);
+                                        Intent intent = new Intent(AdminNewOrdersActivity.this, HistoryActivity.class);
                                         if (intent != null) {
-                                            intent.putExtra("traderorcustomer", traderoruser);
-                                            intent.putExtra("role", type);
+                                            intent.putExtra("traderorcustomer", traderID);
+                                            intent.putExtra("role", role);
                                             startActivity(intent);
                                         }
                                     }
@@ -2213,17 +1381,17 @@ public  class  AdminNewOrdersActivity  extends AppCompatActivity
 
 
                         if (id == R.id.nav_viewprofilehome) {
-                            if (!type.equals("Trader")) {
+                            if (!role.equals("Trader")) {
                                 if (FirebaseAuth.getInstance() != null) {
                                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                                     if (user != null) {
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(AdminAllCustomers.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(AdminNewOrdersActivity.this, NotTraderActivity.class);
                                         if (intent != null) {
-                                            intent.putExtra("traderorcustomer", traderoruser);
-                                            intent.putExtra("role", type);
+                                            intent.putExtra("traderorcustomer", traderID);
+                                            intent.putExtra("role", role);
                                             startActivity(intent);
                                         }
                                     }
@@ -2236,10 +1404,10 @@ public  class  AdminNewOrdersActivity  extends AppCompatActivity
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(AdminAllCustomers.this, TraderProfile.class);
+                                        Intent intent = new Intent(AdminNewOrdersActivity.this, TraderProfile.class);
                                         if (intent != null) {
-                                            intent.putExtra("traderorcustomer", traderoruser);
-                                            intent.putExtra("role", type);
+                                            intent.putExtra("traderorcustomer", traderID);
+                                            intent.putExtra("role", role);
                                             startActivity(intent);
                                         }
                                     }
@@ -2249,17 +1417,17 @@ public  class  AdminNewOrdersActivity  extends AppCompatActivity
 
 
                         if (id == R.id.viewallcustomershere) {
-                            if (!type.equals("Trader")) {
+                            if (!role.equals("Trader")) {
                                 if (FirebaseAuth.getInstance() != null) {
                                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                                     if (user != null) {
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(AdminAllCustomers.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(AdminNewOrdersActivity.this, NotTraderActivity.class);
                                         if (intent != null) {
-                                            intent.putExtra("traderorcustomer", traderoruser);
-                                            intent.putExtra("role", type);
+                                            intent.putExtra("traderorcustomer", traderID);
+                                            intent.putExtra("role", role);
                                             startActivity(intent);
                                         }
                                     }
@@ -2272,10 +1440,10 @@ public  class  AdminNewOrdersActivity  extends AppCompatActivity
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(AdminAllCustomers.this, AdminAllCustomers.class);
+                                        Intent intent = new Intent(AdminNewOrdersActivity.this, AdminAllCustomers.class);
                                         if (intent != null) {
-                                            intent.putExtra("traderorcustomer", traderoruser);
-                                            intent.putExtra("role", type);
+                                            intent.putExtra("traderorcustomer", traderID);
+                                            intent.putExtra("role", role);
                                             startActivity(intent);
                                         }
                                     }
@@ -2286,17 +1454,17 @@ public  class  AdminNewOrdersActivity  extends AppCompatActivity
 
                         if (id == R.id.addnewproducthere) {
 
-                            if (!type.equals("Trader")) {
+                            if (!role.equals("Trader")) {
                                 if (FirebaseAuth.getInstance() != null) {
                                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                                     if (user != null) {
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(AdminAllCustomers.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(AdminNewOrdersActivity.this, NotTraderActivity.class);
                                         if (intent != null) {
-                                            intent.putExtra("traderorcustomer", traderoruser);
-                                            intent.putExtra("role", type);
+                                            intent.putExtra("traderorcustomer", traderID);
+                                            intent.putExtra("role", role);
                                             startActivity(intent);
                                         }
                                     }
@@ -2309,10 +1477,10 @@ public  class  AdminNewOrdersActivity  extends AppCompatActivity
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(AdminAllCustomers.this, AdminAddNewProductActivityII.class);
+                                        Intent intent = new Intent(AdminNewOrdersActivity.this, AdminAddNewProductActivityII.class);
                                         if (intent != null) {
-                                            intent.putExtra("traderorcustomer", traderoruser);
-                                            intent.putExtra("role", type);
+                                            intent.putExtra("traderorcustomer", traderID);
+                                            intent.putExtra("role", role);
                                             startActivity(intent);
                                         }
                                     }
@@ -2322,17 +1490,17 @@ public  class  AdminNewOrdersActivity  extends AppCompatActivity
 
 
                         if (id == R.id.goodsbought) {
-                            if (!type.equals("Trader")) {
+                            if (!role.equals("Trader")) {
                                 if (FirebaseAuth.getInstance() != null) {
                                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                                     if (user != null) {
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(AdminAllCustomers.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(AdminNewOrdersActivity.this, NotTraderActivity.class);
                                         if (intent != null) {
-                                            intent.putExtra("traderorcustomer", traderoruser);
-                                            intent.putExtra("role", type);
+                                            intent.putExtra("traderorcustomer", traderID);
+                                            intent.putExtra("role", role);
                                             startActivity(intent);
                                         }
                                     }
@@ -2345,10 +1513,10 @@ public  class  AdminNewOrdersActivity  extends AppCompatActivity
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(AdminAllCustomers.this, AllGoodsBought.class);
+                                        Intent intent = new Intent(AdminNewOrdersActivity.this, AllGoodsBought.class);
                                         if (intent != null) {
-                                            intent.putExtra("traderorcustomer", traderoruser);
-                                            intent.putExtra("role", type);
+                                            intent.putExtra("traderorcustomer", traderID);
+                                            intent.putExtra("role", role);
                                             startActivity(intent);
                                         }
                                     }
@@ -2358,17 +1526,17 @@ public  class  AdminNewOrdersActivity  extends AppCompatActivity
 
 
                         if (id == R.id.nav_paymenthome) {
-                            if (!type.equals("Trader")) {
+                            if (!role.equals("Trader")) {
                                 if (FirebaseAuth.getInstance() != null) {
                                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                                     if (user != null) {
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(AdminAllCustomers.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(AdminNewOrdersActivity.this, NotTraderActivity.class);
                                         if (intent != null) {
-                                            intent.putExtra("traderorcustomer", traderoruser);
-                                            intent.putExtra("role", type);
+                                            intent.putExtra("traderorcustomer", traderID);
+                                            intent.putExtra("role", role);
                                             startActivity(intent);
                                         }
                                     }
@@ -2381,10 +1549,10 @@ public  class  AdminNewOrdersActivity  extends AppCompatActivity
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(AdminAllCustomers.this, AdminPaymentHere.class);
+                                        Intent intent = new Intent(AdminNewOrdersActivity.this, AdminPaymentHere.class);
                                         if (intent != null) {
-                                            intent.putExtra("traderorcustomer", traderoruser);
-                                            intent.putExtra("role", type);
+                                            intent.putExtra("traderorcustomer", traderID);
+                                            intent.putExtra("role", role);
                                             startActivity(intent);
                                         }
                                     }
@@ -2394,17 +1562,17 @@ public  class  AdminNewOrdersActivity  extends AppCompatActivity
 
 
                         if (id == R.id.nav_settings) {
-                            if (!type.equals("Trader")) {
+                            if (!role.equals("Trader")) {
                                 if (FirebaseAuth.getInstance() != null) {
                                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                                     if (user != null) {
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(AdminAllCustomers.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(AdminNewOrdersActivity.this, NotTraderActivity.class);
                                         if (intent != null) {
-                                            intent.putExtra("traderorcustomer", traderoruser);
-                                            intent.putExtra("role", type);
+                                            intent.putExtra("traderorcustomer", traderID);
+                                            intent.putExtra("role", role);
                                             startActivity(intent);
                                         }
                                     }
@@ -2417,10 +1585,10 @@ public  class  AdminNewOrdersActivity  extends AppCompatActivity
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(AdminAllCustomers.this, AdminSettings.class);
+                                        Intent intent = new Intent(AdminNewOrdersActivity.this, AdminSettings.class);
                                         if (intent != null) {
-                                            intent.putExtra("traderorcustomer", traderoruser);
-                                            intent.putExtra("role", type);
+                                            intent.putExtra("traderorcustomer", traderID);
+                                            intent.putExtra("role", role);
                                             startActivity(intent);
                                         }
                                     }
@@ -2440,7 +1608,6 @@ public  class  AdminNewOrdersActivity  extends AppCompatActivity
         }
         return true;
     }
-
 
 }
 
