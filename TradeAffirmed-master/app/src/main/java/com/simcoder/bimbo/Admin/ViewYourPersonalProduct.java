@@ -778,7 +778,7 @@ public  class ViewYourPersonalProduct extends AppCompatActivity
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(AdminAllCustomers.this, NotTraderActivity.class);
+                        Intent intent = new Intent(ViewYourPersonalProduct.this, NotTraderActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderoruser);
                             intent.putExtra("role", type);
@@ -794,7 +794,7 @@ public  class ViewYourPersonalProduct extends AppCompatActivity
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(AdminAllCustomers.this, AdminAllCustomers.class);
+                        Intent intent = new Intent(ViewYourPersonalProduct.this, AdminAllCustomers.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderoruser);
                             intent.putExtra("role", type);
@@ -816,7 +816,7 @@ public  class ViewYourPersonalProduct extends AppCompatActivity
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(AdminAllCustomers.this, NotTraderActivity.class);
+                        Intent intent = new Intent(ViewYourPersonalProduct.this, NotTraderActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderoruser);
                             intent.putExtra("role", type);
@@ -832,7 +832,7 @@ public  class ViewYourPersonalProduct extends AppCompatActivity
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(AdminAllCustomers.this, ViewAllCarts.class);
+                        Intent intent = new Intent(ViewYourPersonalProduct.this, ViewAllCarts.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderoruser);
                             intent.putExtra("role", type);
@@ -853,7 +853,7 @@ public  class ViewYourPersonalProduct extends AppCompatActivity
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(AdminAllCustomers.this, NotTraderActivity.class);
+                        Intent intent = new Intent(ViewYourPersonalProduct.this, NotTraderActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderoruser);
                             intent.putExtra("role", type);
@@ -869,7 +869,7 @@ public  class ViewYourPersonalProduct extends AppCompatActivity
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(AdminAllCustomers.this, AdminAddNewProductActivityII.class);
+                        Intent intent = new Intent(ViewYourPersonalProduct.this, AdminAddNewProductActivityII.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderoruser);
                             intent.putExtra("role", type);
@@ -888,7 +888,7 @@ public  class ViewYourPersonalProduct extends AppCompatActivity
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(AdminAllCustomers.this, NotTraderActivity.class);
+                        Intent intent = new Intent(ViewYourPersonalProduct.this, NotTraderActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderoruser);
                             intent.putExtra("role", type);
@@ -904,7 +904,7 @@ public  class ViewYourPersonalProduct extends AppCompatActivity
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(AdminAllCustomers.this, AdminAllProducts.class);
+                        Intent intent = new Intent(ViewYourPersonalProduct.this, AdminAllProducts.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderoruser);
                             intent.putExtra("role", type);
@@ -920,7 +920,7 @@ public  class ViewYourPersonalProduct extends AppCompatActivity
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(AdminAllCustomers.this, NotTraderActivity.class);
+                                Intent intent = new Intent(ViewYourPersonalProduct.this, NotTraderActivity.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderoruser);
                                     intent.putExtra("role", type);
@@ -936,7 +936,7 @@ public  class ViewYourPersonalProduct extends AppCompatActivity
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(AdminAllCustomers.this, AllProductsPurchased.class);
+                                Intent intent = new Intent(ViewYourPersonalProduct.this, AllProductsPurchased.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderoruser);
                                     intent.putExtra("role", type);
@@ -956,7 +956,7 @@ public  class ViewYourPersonalProduct extends AppCompatActivity
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(AdminAllCustomers.this, NotTraderActivity.class);
+                                Intent intent = new Intent(ViewYourPersonalProduct.this, NotTraderActivity.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderoruser);
                                     intent.putExtra("role", type);
@@ -972,7 +972,7 @@ public  class ViewYourPersonalProduct extends AppCompatActivity
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(AdminAllCustomers.this, ViewAllCustomers.class);
+                                Intent intent = new Intent(ViewYourPersonalProduct.this, ViewAllCustomers.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderoruser);
                                     intent.putExtra("role", type);
@@ -991,7 +991,7 @@ public  class ViewYourPersonalProduct extends AppCompatActivity
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(AdminAllCustomers.this, NotTraderActivity.class);
+                                Intent intent = new Intent(ViewYourPersonalProduct.this, NotTraderActivity.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderoruser);
                                     intent.putExtra("role", type);
@@ -1007,7 +1007,7 @@ public  class ViewYourPersonalProduct extends AppCompatActivity
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(AdminAllCustomers.this, TradersFollowing.class);
+                                Intent intent = new Intent(ViewYourPersonalProduct.this, TradersFollowing.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderoruser);
                                     intent.putExtra("role", type);
@@ -1028,7 +1028,7 @@ public  class ViewYourPersonalProduct extends AppCompatActivity
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(AdminAllCustomers.this, NotTraderActivity.class);
+                                Intent intent = new Intent(ViewYourPersonalProduct.this, NotTraderActivity.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderoruser);
                                     intent.putExtra("role", type);
@@ -1044,7 +1044,7 @@ public  class ViewYourPersonalProduct extends AppCompatActivity
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(AdminAllCustomers.this, AdminNewOrdersActivity.class);
+                                Intent intent = new Intent(ViewYourPersonalProduct.this, AdminNewOrdersActivity.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderoruser);
                                     intent.putExtra("role", type);
@@ -1065,7 +1065,7 @@ public  class ViewYourPersonalProduct extends AppCompatActivity
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(AdminAllCustomers.this, NotTraderActivity.class);
+                                Intent intent = new Intent(ViewYourPersonalProduct.this, NotTraderActivity.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderoruser);
                                     intent.putExtra("role", type);
@@ -1081,7 +1081,7 @@ public  class ViewYourPersonalProduct extends AppCompatActivity
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(AdminAllCustomers.this, AdminCustomerServed.class);
+                                Intent intent = new Intent(ViewYourPersonalProduct.this, AdminCustomerServed.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderoruser);
                                     intent.putExtra("role", type);
@@ -1101,7 +1101,7 @@ public  class ViewYourPersonalProduct extends AppCompatActivity
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(AdminAllCustomers.this, NotTraderActivity.class);
+                                Intent intent = new Intent(ViewYourPersonalProduct.this, NotTraderActivity.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderoruser);
                                     intent.putExtra("role", type);
@@ -1117,7 +1117,7 @@ public  class ViewYourPersonalProduct extends AppCompatActivity
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(AdminAllCustomers.this, AdminAllOrderHistory.class);
+                                Intent intent = new Intent(ViewYourPersonalProduct.this, AdminAllOrderHistory.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderoruser);
                                     intent.putExtra("role", type);
@@ -1146,7 +1146,7 @@ public  class ViewYourPersonalProduct extends AppCompatActivity
         if (id == R.id.viewmap) {
             if (!type.equals("Trader")) {
 
-                Intent intent = new Intent(AdminAllCustomers.this, NotTraderActivity.class);
+                Intent intent = new Intent(ViewYourPersonalProduct.this, NotTraderActivity.class);
                 if (intent != null) {
                     intent.putExtra("traderorcustomer", traderoruser);
                     intent.putExtra("role", type);
@@ -1155,7 +1155,7 @@ public  class ViewYourPersonalProduct extends AppCompatActivity
                 }
             } else {
 
-                Intent intent = new Intent(AdminAllCustomers.this, DriverMapActivity.class);
+                Intent intent = new Intent(ViewYourPersonalProduct.this, DriverMapActivity.class);
                 if (intent != null) {
                     intent.putExtra("traderorcustomer", traderoruser);
                     intent.putExtra("role", type);
@@ -1176,7 +1176,7 @@ public  class ViewYourPersonalProduct extends AppCompatActivity
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(AdminAllCustomers.this, NotTraderActivity.class);
+                        Intent intent = new Intent(ViewYourPersonalProduct.this, NotTraderActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderoruser);
                             intent.putExtra("role", type);
@@ -1192,7 +1192,7 @@ public  class ViewYourPersonalProduct extends AppCompatActivity
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(AdminAllCustomers.this, CartActivity.class);
+                        Intent intent = new Intent(ViewYourPersonalProduct.this, CartActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderoruser);
                             intent.putExtra("role", type);
@@ -1212,7 +1212,7 @@ public  class ViewYourPersonalProduct extends AppCompatActivity
                             String cusomerId = "";
 
                             cusomerId = user.getUid();
-                            Intent intent = new Intent(AdminAllCustomers.this, NotTraderActivity.class);
+                            Intent intent = new Intent(ViewYourPersonalProduct.this, NotTraderActivity.class);
                             if (intent != null) {
                                 intent.putExtra("traderorcustomer", traderoruser);
                                 intent.putExtra("role", type);
@@ -1228,7 +1228,7 @@ public  class ViewYourPersonalProduct extends AppCompatActivity
                             String cusomerId = "";
                             cusomerId = user.getUid();
 
-                            Intent intent = new Intent(AdminAllCustomers.this, InstagramHomeActivity.class);
+                            Intent intent = new Intent(ViewYourPersonalProduct.this, InstagramHomeActivity.class);
                             if (intent != null) {
                                 intent.putExtra("traderorcustomer", traderoruser);
                                 intent.putExtra("role", type);
@@ -1248,7 +1248,7 @@ public  class ViewYourPersonalProduct extends AppCompatActivity
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(AdminAllCustomers.this, NotTraderActivity.class);
+                                Intent intent = new Intent(ViewYourPersonalProduct.this, NotTraderActivity.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderoruser);
                                     intent.putExtra("role", type);
@@ -1264,7 +1264,7 @@ public  class ViewYourPersonalProduct extends AppCompatActivity
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(AdminAllCustomers.this, AdminAllProducts.class);
+                                Intent intent = new Intent(ViewYourPersonalProduct.this, AdminAllProducts.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderoruser);
                                     intent.putExtra("role", type);
@@ -1281,7 +1281,7 @@ public  class ViewYourPersonalProduct extends AppCompatActivity
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(AdminAllCustomers.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(ViewYourPersonalProduct.this, NotTraderActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderoruser);
                                             intent.putExtra("role", type);
@@ -1297,7 +1297,7 @@ public  class ViewYourPersonalProduct extends AppCompatActivity
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(AdminAllCustomers.this, SearchForAdminProductsActivity.class);
+                                        Intent intent = new Intent(ViewYourPersonalProduct.this, SearchForAdminProductsActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderoruser);
                                             intent.putExtra("role", type);
@@ -1313,7 +1313,7 @@ public  class ViewYourPersonalProduct extends AppCompatActivity
                             if (FirebaseAuth.getInstance() != null) {
                                 FirebaseAuth.getInstance().signOut();
                                 if (mGoogleApiClient != null) {
-                                    mGoogleSignInClient.signOut().addOnCompleteListener(AdminAllCustomers.this,
+                                    mGoogleSignInClient.signOut().addOnCompleteListener(ViewYourPersonalProduct.this,
                                             new OnCompleteListener<Void>() {
                                                 @Override
                                                 public void onComplete(@NonNull Task<Void> task) {
@@ -1322,7 +1322,7 @@ public  class ViewYourPersonalProduct extends AppCompatActivity
                                             });
                                 }
                             }
-                            Intent intent = new Intent(AdminAllCustomers.this, com.simcoder.bimbo.MainActivity.class);
+                            Intent intent = new Intent(ViewYourPersonalProduct.this, com.simcoder.bimbo.MainActivity.class);
                             if (intent != null) {
                                 startActivity(intent);
                                 finish();
@@ -1337,7 +1337,7 @@ public  class ViewYourPersonalProduct extends AppCompatActivity
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(AdminAllCustomers.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(ViewYourPersonalProduct.this, NotTraderActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderoruser);
                                             intent.putExtra("role", type);
@@ -1353,7 +1353,7 @@ public  class ViewYourPersonalProduct extends AppCompatActivity
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(AdminAllCustomers.this, com.simcoder.bimbo.WorkActivities.SettinsActivity.class);
+                                        Intent intent = new Intent(ViewYourPersonalProduct.this, com.simcoder.bimbo.WorkActivities.SettinsActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderoruser);
                                             intent.putExtra("role", type);
@@ -1371,7 +1371,7 @@ public  class ViewYourPersonalProduct extends AppCompatActivity
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(AdminAllCustomers.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(ViewYourPersonalProduct.this, NotTraderActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderoruser);
                                             intent.putExtra("role", type);
@@ -1387,7 +1387,7 @@ public  class ViewYourPersonalProduct extends AppCompatActivity
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(AdminAllCustomers.this, HistoryActivity.class);
+                                        Intent intent = new Intent(ViewYourPersonalProduct.this, HistoryActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderoruser);
                                             intent.putExtra("role", type);
@@ -1407,7 +1407,7 @@ public  class ViewYourPersonalProduct extends AppCompatActivity
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(AdminAllCustomers.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(ViewYourPersonalProduct.this, NotTraderActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderoruser);
                                             intent.putExtra("role", type);
@@ -1423,7 +1423,7 @@ public  class ViewYourPersonalProduct extends AppCompatActivity
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(AdminAllCustomers.this, TraderProfile.class);
+                                        Intent intent = new Intent(ViewYourPersonalProduct.this, TraderProfile.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderoruser);
                                             intent.putExtra("role", type);
@@ -1443,7 +1443,7 @@ public  class ViewYourPersonalProduct extends AppCompatActivity
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(AdminAllCustomers.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(ViewYourPersonalProduct.this, NotTraderActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderoruser);
                                             intent.putExtra("role", type);
@@ -1459,7 +1459,7 @@ public  class ViewYourPersonalProduct extends AppCompatActivity
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(AdminAllCustomers.this, AdminAllCustomers.class);
+                                        Intent intent = new Intent(ViewYourPersonalProduct.this, AdminAllCustomers.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderoruser);
                                             intent.putExtra("role", type);
@@ -1480,7 +1480,7 @@ public  class ViewYourPersonalProduct extends AppCompatActivity
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(AdminAllCustomers.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(ViewYourPersonalProduct.this, NotTraderActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderoruser);
                                             intent.putExtra("role", type);
@@ -1496,7 +1496,7 @@ public  class ViewYourPersonalProduct extends AppCompatActivity
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(AdminAllCustomers.this, AdminAddNewProductActivityII.class);
+                                        Intent intent = new Intent(ViewYourPersonalProduct.this, AdminAddNewProductActivityII.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderoruser);
                                             intent.putExtra("role", type);
@@ -1516,7 +1516,7 @@ public  class ViewYourPersonalProduct extends AppCompatActivity
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(AdminAllCustomers.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(ViewYourPersonalProduct.this, NotTraderActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderoruser);
                                             intent.putExtra("role", type);
@@ -1532,7 +1532,7 @@ public  class ViewYourPersonalProduct extends AppCompatActivity
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(AdminAllCustomers.this, AllGoodsBought.class);
+                                        Intent intent = new Intent(ViewYourPersonalProduct.this, AllGoodsBought.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderoruser);
                                             intent.putExtra("role", type);
@@ -1552,7 +1552,7 @@ public  class ViewYourPersonalProduct extends AppCompatActivity
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(AdminAllCustomers.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(ViewYourPersonalProduct.this, NotTraderActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderoruser);
                                             intent.putExtra("role", type);
@@ -1568,7 +1568,7 @@ public  class ViewYourPersonalProduct extends AppCompatActivity
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(AdminAllCustomers.this, AdminPaymentHere.class);
+                                        Intent intent = new Intent(ViewYourPersonalProduct.this, AdminPaymentHere.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderoruser);
                                             intent.putExtra("role", type);
@@ -1588,7 +1588,7 @@ public  class ViewYourPersonalProduct extends AppCompatActivity
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(AdminAllCustomers.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(ViewYourPersonalProduct.this, NotTraderActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderoruser);
                                             intent.putExtra("role", type);
@@ -1604,7 +1604,7 @@ public  class ViewYourPersonalProduct extends AppCompatActivity
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(AdminAllCustomers.this, AdminSettings.class);
+                                        Intent intent = new Intent(ViewYourPersonalProduct.this, AdminSettings.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderoruser);
                                             intent.putExtra("role", type);

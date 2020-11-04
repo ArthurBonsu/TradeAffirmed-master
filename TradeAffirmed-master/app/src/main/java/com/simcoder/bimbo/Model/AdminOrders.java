@@ -28,11 +28,50 @@ public class AdminOrders {
 
     String pname;
     String pimage;
+    String delivered;
 
 
     public AdminOrders() {
     }
+    public AdminOrders(String date, String time,String tid,  String traderimage, String tradername, String uid, String name, String image) {
+        this.date = date;
+        this.time = time;
+        this.tid = tid;
+        this.traderimage = traderimage;
+         this.tradername = tradername;
+         this.uid = uid;
+         this.name = name;
+         this.image = image;
 
+    }
+
+
+    public AdminOrders(String date, String  time, String  tid, String  traderimage,String  tradername,String  address,String amount, String city,String  delivered, String  distance,String image, String uid,String name, String  mode,
+
+                   String number, String phone,String quantity, String  shippingcost,String  state) {
+
+        this.date = date;
+        this.time = time;
+        this.tid = tid;
+        this.traderimage = traderimage;
+        this.traderimage = traderimage;
+        this.tradername = tradername;
+        this.address = address;
+        this.amount = amount;
+        this.city = city;
+        this.delivered = delivered;
+        this.distance = distance;
+        this.image = image;
+        this.uid = uid;
+        this.name = name;
+        this.mode = mode;
+        this.number = number;
+        this.phone = phone;
+        this.quantity = quantity;
+        this.shippingcost = shippingcost;
+        this.shippingcost = shippingcost;
+        this.state = state;
+    }
     public AdminOrders(
             String desc, String image, String title, String name, String phone, String discount, String pid, String price, String quantity, String tid, String traderID,
 
@@ -45,9 +84,6 @@ public class AdminOrders {
             String job, String quote, String role, String car, String descriptions, String field, String followersname, String customerPaid, String driverPaidOut,
             String timestamp, String operations, String reviewBy, String residences, String service, String setinformations, String baseprice, String commentkey, String likeid,
                String subject,  String photoid, String orderkey, String reply, String replyid, String traderimage, String tradername, String pname, String pimage
-
-
-
 
     ) {
 
@@ -677,5 +713,12 @@ public class AdminOrders {
     }
     public void setuid(String uid) {
         this.uid = uid;
+    }
+
+    public String getdelivered(String delivered) {
+        return delivered;
+    }
+    public void setdelivered(String delivered) {
+        this.delivered = delivered;
     }
 }

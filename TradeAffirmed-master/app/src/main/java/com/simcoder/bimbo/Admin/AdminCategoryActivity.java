@@ -177,6 +177,7 @@ public class AdminCategoryActivity extends AppCompatActivity implements GoogleAp
                              });
 
                          }
+
                          if (HomeBtn != null) {
                              HomeBtn.setOnClickListener(new View.OnClickListener() {
                                  @Override
@@ -243,6 +244,7 @@ public class AdminCategoryActivity extends AppCompatActivity implements GoogleAp
                 }
             });
         }
+
 
         if (sportsTShirts != null) {
             sportsTShirts.setOnClickListener(new View.OnClickListener() {

@@ -387,9 +387,9 @@ public  class  AdminAllCustomers extends AppCompatActivity
                                       /*
                                       String commentkey = snapshot.child("Comments").getKey();
                                       String likekey = snapshot.child("Likes").getKey();
-
-
 */
+
+
                                         Log.i(TAG, "AdminAllCustomers " + snapshot);
 
 
@@ -436,7 +436,6 @@ public  class  AdminAllCustomers extends AppCompatActivity
                                         if (snapshot.child("distance").getValue(String.class) != null) {
                                             distance = snapshot.child("distance").getValue(String.class);
                                         }
-
 
                                         if (snapshot.child("image").getValue(String.class) != null) {
                                             image = snapshot.child("image").getValue(String.class);
@@ -505,11 +504,13 @@ public  class  AdminAllCustomers extends AppCompatActivity
                         if (model != null) {
                             holders = holder;
 
+
                             holder.allcustomersname.setText(name);
                             holder.allcustomersphonenumber.setText(phone);
 
+
                             Log.d(TAG, "The Customers here " + name + phone );
-                            holder.setallcustomersimage(getApplicationContext(), thetraderimage);
+                            holder.setallcustomersimage(getApplicationContext(), image);
 
 
                             myfirebaseDatabase = FirebaseDatabase.getInstance();
@@ -553,7 +554,7 @@ public  class  AdminAllCustomers extends AppCompatActivity
 
 
                             if (allcustomersimage != null) {
-                                Picasso.get().load(thetraderimage).placeholder(R.drawable.profile).into(allcustomersimage);
+                                Picasso.get().load(image).placeholder(R.drawable.profile).into(allcustomersimage);
                             }
 
                             if (holder.allcustomersname != null) {
