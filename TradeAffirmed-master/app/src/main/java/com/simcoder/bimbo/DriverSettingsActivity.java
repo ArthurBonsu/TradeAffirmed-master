@@ -255,4 +255,6 @@ public class DriverSettingsActivity extends AppCompatActivity {
             mProfileImage.setImageURI(resultUri);
         }
     }
+
+
 }

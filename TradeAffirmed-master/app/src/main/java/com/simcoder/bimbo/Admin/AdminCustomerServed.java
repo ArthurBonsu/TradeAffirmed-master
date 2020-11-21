@@ -126,7 +126,7 @@ public  class  AdminCustomerServed extends AppCompatActivity
     String userkey;
     String hasbeeserviced;
     String orderkey;
-    String userandserved;
+    String useranddelivered;
 /*
     addnewproducthere
             allproductshere
@@ -518,12 +518,12 @@ public  class  AdminCustomerServed extends AppCompatActivity
 
 
                             myfirebaseDatabase = FirebaseDatabase.getInstance();
-                            userandserved = uid + delivered;
-                            if (userandserved == uid + "true") {
+                            useranddelivered = uid + "true";
+
 
                                 OrdersReference = myfirebaseDatabase.getReference().child("Orders").child("products");
                                 UsersRef.keepSynced(true);
-                                Query firebasequery = myfirebaseDatabase.getReference().child("Orders").orderByChild("useranddelivered").equalTo(userandserved);
+                                Query firebasequery = myfirebaseDatabase.getReference().child("Orders").orderByChild("useranddelivered").equalTo(useranddelivered);
 
                                 firebasequery.addValueEventListener(new ValueEventListener() {
                                     @Override
@@ -612,7 +612,7 @@ public  class  AdminCustomerServed extends AppCompatActivity
 
 
 
-    }}
+    }
     @Nullable
     @Override
     public void onStart() {
