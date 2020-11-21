@@ -263,13 +263,13 @@ public class AdminAddNewProductActivity extends AppCompatActivity implements Nav
 
             Calendar calendar = Calendar.getInstance();
 
-            SimpleDateFormat currentDate = new SimpleDateFormat("MMM dd, yyyy");
-            if (currentDate != null) {
-                saveCurrentDate = currentDate.format(calendar.getTime());
+                           SimpleDateFormat currentDate = new SimpleDateFormat("MMM dd, yyyy");
+                    if (currentDate != null) {
+                        saveCurrentDate = currentDate.format(calendar.getTime());
 
-                SimpleDateFormat currentTime = new SimpleDateFormat("HH:mm:ss a");
-                if (currentTime != null) {
-                    saveCurrentTime = currentTime.format(calendar.getTime());
+                        SimpleDateFormat currentTime = new SimpleDateFormat("HH:mm:ss a");
+                        if (currentTime != null) {
+                            saveCurrentTime = currentTime.format(calendar.getTime());
 
 
                     final StorageReference filePath = ProductImagesRef.child(ImageUri.getLastPathSegment() + productRandomKey + ".jpg");

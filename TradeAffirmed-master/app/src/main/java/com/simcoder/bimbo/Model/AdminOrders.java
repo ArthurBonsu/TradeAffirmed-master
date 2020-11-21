@@ -29,6 +29,10 @@ public class AdminOrders {
     String pname;
     String pimage;
     String delivered;
+       String newornot;
+       String paymentkey;
+       String size;
+       String categoryname;
 
 
     public AdminOrders() {
@@ -83,7 +87,7 @@ public class AdminOrders {
             String driverFoundID, String customer, String driver, String predictDistance, String lat, String lng, String rating, String triptime,
             String job, String quote, String role, String car, String descriptions, String field, String followersname, String customerPaid, String driverPaidOut,
             String timestamp, String operations, String reviewBy, String residences, String service, String setinformations, String baseprice, String commentkey, String likeid,
-               String subject,  String photoid, String orderkey, String reply, String replyid, String traderimage, String tradername, String pname, String pimage
+               String subject,  String photoid, String orderkey, String reply, String replyid, String traderimage, String tradername, String pname, String pimage, String newornot, String paymentkey, String size, String categoryname
 
     ) {
 
@@ -153,11 +157,30 @@ public class AdminOrders {
         this.subject =subject;
         this.photoid = photoid;
         this.orderkey = orderkey;
+        this.newornot = newornot;
+        this.paymentkey = paymentkey;
 
+    }
 
+    public AdminOrders(String categoryname, String date, String desc, String discount, String time, String pid, String pimage, String pname, String price, String image, String name, String size, String tradername, String traderimage, String tid, String number, String uid) {
 
-
-
+       this.categoryname =categoryname;
+       this.date = date;
+        this.desc = desc;
+        this.discount = discount;
+        this.time = time;
+        this.pid = pid;
+        this.pimage = pimage;
+        this.pname = pname;
+        this.price = price;
+        this.image = image;
+        this.name = name;
+        this.size = size;
+        this.tradername= tradername;
+        this.traderimage = traderimage;
+        this.tid = tid;
+        this.number = number;
+        this.uid = uid;
 
     }
 
@@ -179,6 +202,25 @@ public class AdminOrders {
         return reply;
     }
 
+    public String getnewornot() {
+        return newornot;
+    }
+
+
+
+    public void setnewornot(String newornot) {
+        this.newornot = newornot;
+    }
+
+    public String getpaymentkey() {
+        return paymentkey;
+    }
+
+    public void setpaymentkey(String paymentkey) {
+        this.paymentkey = paymentkey;
+    }
+
+
 
     public String getreplyid() {
         return replyid;
@@ -199,6 +241,23 @@ public class AdminOrders {
         this.traderimage = traderimage;
     }
 
+    public String getcategoryname() {
+        return categoryname;
+    }
+
+    public void setcategoryname(String categoryname) {
+        this.categoryname = categoryname;
+    }
+
+    public String getsize() {
+        return size;
+    }
+
+    public void setsize(String size) {
+        this.size = size;
+    }
+
+
 
     public String getpname() {
         return pname;
@@ -207,8 +266,6 @@ public class AdminOrders {
     public void setpname(String pname) {
         this.pname = pname;
     }
-
-
 
 
 

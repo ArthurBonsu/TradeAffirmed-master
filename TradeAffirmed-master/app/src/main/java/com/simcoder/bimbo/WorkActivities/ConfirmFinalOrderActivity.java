@@ -67,6 +67,7 @@ import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 
@@ -90,6 +91,7 @@ public class ConfirmFinalOrderActivity extends AppCompatActivity implements Navi
     FirebaseDatabase Firebaseorders;
     FirebaseUser user;
     String uid;
+    int i;
 
 
     private FirebaseAuth.AuthStateListener firebaseAuthListener;
@@ -161,6 +163,11 @@ public class ConfirmFinalOrderActivity extends AppCompatActivity implements Navi
     TextView stateofconfirmedorder; TextView confirmedordertrader; TextView traderIDconfirmedhere; TextView productstobeboughtttle;
     TextView timofpost; TextView dateofpost; RadioGroup transportradio; RadioButton car; RadioButton motor; RadioButton bicycle;
     RadioButton walking; RecyclerView confirmorderrecyclerview; Button confirm_final_order_btn;
+    ArrayList<String> productkeylist;
+    ArrayList<String> pricekeylist;
+    ArrayList<String>imagekeylist;
+    ArrayList<String> namekeylist;
+    String  userandbought;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -242,6 +249,10 @@ public class ConfirmFinalOrderActivity extends AppCompatActivity implements Navi
         }
 
 
+        productkeylist = new ArrayList<>();
+         pricekeylist = new ArrayList<>();
+         imagekeylist = new ArrayList<>();
+         namekeylist = new ArrayList<>();
 
         myfirebasedatabase = FirebaseDatabase.getInstance();
         UsersRef = myfirebasedatabase.getReference().child("Users");
@@ -427,7 +438,8 @@ public class ConfirmFinalOrderActivity extends AppCompatActivity implements Navi
 
 
 
-
+        //UNIQUE KEY SETUP QUERY
+         //We will come to this later
 
 
         HashMap<String, Object> ordersMap = new HashMap<>();
@@ -440,14 +452,20 @@ public class ConfirmFinalOrderActivity extends AppCompatActivity implements Navi
         ordersMap.put("date", saveCurrentDate);
         ordersMap.put("time", saveCurrentTime);
         ordersMap.put("state", "not shipped");
+        ordersMap.put("newornot", "true");
+        ordersMap.put("paid", "true");
 
         HashMap<String, Object> productMap = new HashMap<>();
+        ArrayList<String> productkey = new ArrayList<>();
 
-        productMap.put("pid", productIDHERE);
-        productMap.put("image", productImage);
-        productMap.put("name", productname);
-         ProductsRef.updateChildren(productMap);
-
+        for (i = 0; i<=productkeylist.lastIndexOf(productkeylist); i++) {
+            productMap.put("pid", productkeylist.get(i));
+            productMap.put("image", imagekeylist.get(i));
+            productMap.put("name", namekeylist.get(i));
+            productMap.put("price",pricekeylist.get(i) );
+            ProductsRef.push().setValue(productkeylist.get(i));
+            ProductsRef.child(productkeylist.get(i)).updateChildren(productMap);
+        }
 
         Intent intent = new Intent(ConfirmFinalOrderActivity.this, CartActivity.class);
         intent.putExtra("orderkey", orderKey);
@@ -455,7 +473,7 @@ public class ConfirmFinalOrderActivity extends AppCompatActivity implements Navi
         // AFTER EVERYTHING IS SUCCESSFUL MOVE IT FROM CART TO TO ORDERS,
         //clear cut
         ordersRef.child(orderKey).updateChildren(ordersMap).addOnCompleteListener(new OnCompleteListener<Void>() {
-
+         //Payment to be added as well
 
             @Override
             public void onComplete(@NonNull Task<Void> task)
@@ -786,6 +804,10 @@ public class ConfirmFinalOrderActivity extends AppCompatActivity implements Navi
                     if (thetraderpicturebeingloaded != null) {
                         Picasso.get().load(traderimage).placeholder(R.drawable.profile).into(thetraderpicturebeingloaded);
                     }
+                       productkeylist.add(pid);
+                       pricekeylist.add(price);
+                       imagekeylist.add(image);
+                       namekeylist.add(name);
 
 
                     holder.setImage(getApplicationContext(), pimage);

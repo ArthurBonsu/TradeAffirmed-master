@@ -22,6 +22,7 @@ public class Users {
     private String timestamp, operations, reviewBy, residences, service, setinformations;
     private String baseprice;
     private String comment;
+    String approved;
 
     private List<Like> likes;
 
@@ -39,6 +40,8 @@ public class Users {
 
     String pname;
     String pimage;
+    String newornot;
+    String paymentkey;
 
 
 
@@ -57,7 +60,7 @@ public class Users {
             String coverimage, String g, String one, String zero, String customerId, String customerRideId, String destination, String destinationLat, String destinationLng,
             String driverFoundID, String customer, String driver, String predictDistance, String lat, String lng, String rating, String triptime,
             String job, String quote, String role, String car, String descriptions, String field, String followersname, String customerPaid, String driverPaidOut,
-            String timestamp, String operations, String reviewBy, String residences, String service, String setinformations, String baseprice, String commentkey, String likeid
+            String timestamp, String operations, String reviewBy, String residences, String service, String setinformations, String baseprice, String commentkey, String likeid, String newornot, String paymentkey
     ) {
 
 
@@ -123,6 +126,8 @@ public class Users {
         this.baseprice = baseprice;
         this.commentkey = commentkey;
         this. likeid = likeid;
+        this.newornot = newornot;
+        this.paymentkey = paymentkey;
 
 
     }
@@ -162,7 +167,7 @@ public class Users {
 
     }
 
-    public Users(String date, String time, String tid, String thetraderimage, String tradername, String address, String amount, String city, String delivered, String distance, String image, String uid, String name, String mode, String number, String phone, String quantity, String shippingcost, String state) {
+    public Users(String date, String time, String tid, String traderimage, String tradername, String address, String amount, String city, String delivered, String distance, String image, String uid, String name, String mode, String number, String phone, String quantity, String shippingcost, String state) {
 
         this.desc = desc;
         this.image = image;
@@ -235,8 +240,7 @@ public class Users {
 
     }
 
-    public Users(String orderkey, String date, String time, String tid, String thetraderimage, String tradername, String address, String amount, String city, String delivered, String distance, String image, String uid, String name, String mode, String number, String phone, String quantity, String shippingcost, String state) {
-
+    public Users(String date, String time, String tid, String traderimage, String tradername, String address, String amount, String city, String delivered, String distance, String image, String uid, String name, String mode, String number, String phone, String quantity, String shippingcost, String state,  String approved) {
 
         this.desc = desc;
         this.image = image;
@@ -253,13 +257,14 @@ public class Users {
         this.amount = amount;
         this.city = city;
         this.date = date;
-        this.state = state;
+        this.approved = approved;
         this.distance = distance;
         this.mode = mode;
         this.number = number;
         this.shippingcost = shippingcost;
         this.time = time;
         this.delivered = delivered;
+        this.state = state;
 
 
         this.count = count;
@@ -304,9 +309,34 @@ public class Users {
         this.baseprice = baseprice;
         this.commentkey = commentkey;
         this. likeid = likeid;
-        this.orderkey = orderkey;
 
 
+
+    }
+
+
+    public Users(String orderkey, String date, String time, String tid, String traderimage, String tradername, String address, String amount, String city, String delivered, String distance, String image, String uid, String name, String mode, String number, String phone, String quantity, String state, String shippingcost, String approved) {
+    this.orderkey = orderkey;
+    this.date = date;
+    this.time = time;
+    this.tid = tid;
+    this.traderimage = traderimage;
+    this.tradername = tradername;
+    this.address = address;
+    this.amount =amount;
+    this.city = city;
+    this.delivered = delivered;
+    this.distance = distance;
+    this.image = image;
+    this.uid = uid;
+    this.name = name;
+    this.mode = mode;
+    this.number = number;
+    this.phone = phone;
+    this.quantity = quantity;
+    this.state = state;
+    this.shippingcost = shippingcost;
+    this.approved = approved;
     }
 
 
@@ -332,13 +362,37 @@ public class Users {
         return replyid;
     }
 
+    public String getpaymentkey() {
+        return paymentkey;
+    }
+
+    public void setpaymentkey(String paymentkey) {
+        this.paymentkey = paymentkey;
+    }
+
 
 
     public void setreplyid(String replyid) {
         this.replyid = replyid;
     }
 
+    public String getapproved() {
+        return approved;
+    }
 
+    public void setnewornot(String newornot) {
+        this.newornot = newornot;
+    }
+
+    public String getnewornot() {
+        return newornot;
+    }
+
+
+
+    public void setapproved(String approved) {
+        this.approved = approved;
+    }
     public String gettraderimage() {
         return traderimage;
     }

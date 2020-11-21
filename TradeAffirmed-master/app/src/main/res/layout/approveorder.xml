@@ -109,51 +109,22 @@
 
 
     </LinearLayout>
-    <Button
-        android:id="@+id/show_all_products_btn"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/theorderinfohere"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="52dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginBottom="10dp"
-        android:background="@android:color/white"
-        android:text="Show The Previous Order List of User"
-        android:textAllCaps="false"
-        android:textColor="@color/colorPrimaryDark"
-        android:textSize="15sp" />
 
     <Button
-        android:id="@+id/showallcarteduserproducts"
+        android:id="@+id/shipapprove"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/show_all_products_btn"
         android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
         android:layout_marginTop="29dp"
-        android:layout_marginRight="20dp"
         android:layout_marginBottom="10dp"
-        android:background="@android:color/white"
-        android:text="Show Products Ordered Now By User"
-        android:textAllCaps="false"
+        android:text="@string/approve9"
         android:textColor="@color/colorPrimaryDark"
-        android:textSize="15sp" />
-
-        <Button
-            android:id="@+id/shipapprove"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_marginTop="29dp"
-            android:layout_marginBottom="10dp"
-            android:text="@string/approve9"
-            android:textColor="@color/colorPrimaryDark"
-            android:textSize="15sp"
-            android:textAllCaps="false"
-            android:background="@android:color/white"
-            android:layout_below="@+id/showallcarteduserproducts"
-            />
+        android:textSize="15sp"
+        android:textAllCaps="false"
+        android:background="@android:color/white"
+        android:layout_below="@+id/showallcarteduserproducts"
+        />
 
 
 

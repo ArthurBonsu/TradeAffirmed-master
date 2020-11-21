@@ -79,6 +79,7 @@ public  class  AdminCustomerServed extends AppCompatActivity
     String ProductID;
     FirebaseDatabase myfirebaseDatabase;
     FirebaseDatabase FollowerDatabase;
+    DatabaseReference OrdersReference;
 
     public  ViewHolder holders;
 
@@ -124,7 +125,8 @@ public  class  AdminCustomerServed extends AppCompatActivity
     Getmyfollowings getmyfollowingsagain;
     String userkey;
     String hasbeeserviced;
-
+    String orderkey;
+    String userandserved;
 /*
     addnewproducthere
             allproductshere
@@ -376,12 +378,12 @@ public  class  AdminCustomerServed extends AppCompatActivity
 
                 FirebaseRecyclerOptions<AdminOrders> options =
                         new FirebaseRecyclerOptions.Builder<AdminOrders>()
-                                .setQuery(queryhere, new SnapshotParser<Users>() {
+                                .setQuery(queryhere, new SnapshotParser<AdminOrders>() {
 
 
                                     @Nullable
                                     @Override
-                                    public Users parseSnapshot(@Nullable DataSnapshot snapshot) {
+                                    public AdminOrders parseSnapshot(@Nullable DataSnapshot snapshot) {
 
 
                                       /*
@@ -469,12 +471,11 @@ public  class  AdminCustomerServed extends AppCompatActivity
                                         if (snapshot.child("state").getValue(String.class) != null) {
                                             state = snapshot.child("state").getValue(String.class);
                                         }
+                                        if (snapshot.child("state").getValue(String.class) != null) {
+                                            orderkey = snapshot.child("state").getValue(String.class);
+                                        }
 
-
-
-                                        return new AdminOrders(date, time, tid, thetraderimage, tradername, address, amount, city, delivered, distance, image, uid, name, mode,
-
-                                                number, phone, quantity, shippingcost, state, delivered);
+                                        return new AdminOrders(date, time, tid, thetraderimage, tradername,uid,name,image);
 
 
                                     }
@@ -501,8 +502,8 @@ public  class  AdminCustomerServed extends AppCompatActivity
                     }
 
                     @Override
-                    protected void onBindViewHolder(@Nullable final ViewHolder holder, int position, @Nullable Users model) {
-                        if (model != null) {
+                    protected void onBindViewHolder(@NonNull ViewHolder holder, int i, @NonNull AdminOrders adminOrders) {
+                        if (adminOrders != null) {
 
                             hasbeeserviced = tid + delivered;
                             holders = holder;
@@ -512,98 +513,106 @@ public  class  AdminCustomerServed extends AppCompatActivity
                             holder.allcustomersphonenumber.setText(phone);
 
 
-                            Log.d(TAG, "The Customers here " + name + phone );
+                            Log.d(TAG, "The Customers here " + name + phone);
                             holder.setallcustomersimage(getApplicationContext(), image);
 
 
                             myfirebaseDatabase = FirebaseDatabase.getInstance();
+                            userandserved = uid + delivered;
+                            if (userandserved == uid + "true") {
 
-                            OrdersReference = myfirebaseDatabase.getReference().child("Orders").child("products");
-                            UsersRef.keepSynced(true);
-                            Query firebasequery =  myfirebaseDatabase.getReference().child("Users").child("Customers").orderByChild("uid").equalTo(uid);
+                                OrdersReference = myfirebaseDatabase.getReference().child("Orders").child("products");
+                                UsersRef.keepSynced(true);
+                                Query firebasequery = myfirebaseDatabase.getReference().child("Orders").orderByChild("useranddelivered").equalTo(userandserved);
 
-                            firebasequery.addValueEventListener(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(DataSnapshot dataSnapshot) {
-
-                                    for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
-
-
-
-                                        userkey = dataSnapshot1.getKey();
-                                        Log.d(TAG, "The Photokey " + userkey);
-
-                                        Log.d(TAG, "UserID here  " + uid );
-                                        if (dataSnapshot1.child("job").getValue() != null) {
-                                            thecustomersjob = dataSnapshot1.child("job").getValue(String.class);
-                                            holders.allcustomersjob.setText(thecustomersjob);
-                                            Log.d(TAG, "The CustomerJob " + thecustomersjob);
+                                firebasequery.addValueEventListener(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(DataSnapshot dataSnapshot) {
 
 
 
-                                            useValue (thecustomersjob);
-                                            Log.d(TAG, "The UseValueJob " + thecustomersjob);
+
+                                            userkey = dataSnapshot.getKey();
+                                            Log.d(TAG, "The ServedPeopleKey " + uid);
+
+                                            Log.d(TAG, "Served people key here  " + uid);
+                                            if (dataSnapshot.child("name").getValue() != null) {
+                                                name = dataSnapshot.child("name").getValue(String.class);
+                                                holders.allcustomersname.setText(name);
+                                                Log.d(TAG, "The customer " + name);
+                                            }
+                                        if (dataSnapshot.child("phone").getValue() != null) {
+                                            phone = dataSnapshot.child("phone").getValue(String.class);
+                                            holders.allcustomersphonenumber.setText(phone);
+                                            Log.d(TAG, "The customer phone " + phone);
                                         }
+                                        if (dataSnapshot.child("image").getValue() != null) {
+                                            image = dataSnapshot.child("image").getValue(String.class);
+                                            holders.allcustomersphonenumber.setText(image);
+                                            Log.d(TAG, "The customer image " + image);
+                                        }
+                                        if (allcustomersimage != null) {
+                                            Picasso.get().load(image).placeholder(R.drawable.profile).into(allcustomersimage);
+                                        }
+
+
                                     }
-                                }
-
-
-                                @Override
-                                public void onCancelled(DatabaseError databaseError) {
-
-                                }
-                            });
 
 
 
-                            if (allcustomersimage != null) {
-                                Picasso.get().load(image).placeholder(R.drawable.profile).into(allcustomersimage);
-                            }
-
-                            if (holder.allcustomersname != null) {
-                                holder.allcustomersname.setOnClickListener(new View.OnClickListener() {
                                     @Override
-                                    public void onClick(View view) {
-                                        Intent allcustomernameesintent = new Intent(AdminCustomerServed.this, CustomerProfile.class);
-
-                                        startActivity(allcustomernameesintent);
+                                    public void onCancelled(DatabaseError databaseError) {
 
                                     }
                                 });
+
+
+
+
+                                if (holder.allcustomersname != null) {
+                                    holder.allcustomersname.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+                                            Intent allcustomernameesintent = new Intent(AdminCustomerServed.this, CustomerProfile.class);
+
+                                            startActivity(allcustomernameesintent);
+
+                                        }
+                                    });
+                                }
+                                if (holder.allcustomersimage != null) {
+                                    holder.allcustomersimage.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+                                            Intent allcustomerimagesintent = new Intent(AdminCustomerServed.this, CustomerProfile.class);
+
+                                            startActivity(allcustomerimagesintent);
+
+                                        }
+                                    });
+                                }
+
+
                             }
-                            if (holder.allcustomersimage != null) {
-                                holder.allcustomersimage.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
-                                        Intent allcustomerimagesintent = new Intent(AdminCustomerServed.this, CustomerProfile.class);
-
-                                        startActivity(allcustomerimagesintent);
-
-                                    }
-                                });
-                            }
-
-
                         }
+
+
                     }
 
-
-                };
-
-
-
-            }
+                    ;
 
 
 
+            };
 
             if (recyclerView != null) {
                 recyclerView.setAdapter(feedadapter);
             }
+                    }
 
-        }
 
-    }
+
+    }}
     @Nullable
     @Override
     public void onStart() {

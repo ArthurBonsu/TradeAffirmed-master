@@ -27,15 +27,21 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.simcoder.bimbo.DriverMapActivity;
 import com.simcoder.bimbo.HistoryActivity;
+import com.simcoder.bimbo.Model.HashMaps;
+import com.simcoder.bimbo.Model.Users;
 import com.simcoder.bimbo.R;
 import com.simcoder.bimbo.WorkActivities.CartActivity;
 import com.simcoder.bimbo.WorkActivities.TraderProfile;
@@ -43,6 +49,8 @@ import com.simcoder.bimbo.instagram.Home.InstagramHomeActivity;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
+
+import java.util.Map;
 
 public class AdminProductDetails extends AppCompatActivity implements View.OnClickListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
     private Button ViewBuyers;
@@ -54,6 +62,7 @@ public class AdminProductDetails extends AppCompatActivity implements View.OnCli
     String traderID;
     Query myproductsdetails;
     DatabaseReference mDatabaseLikeCount;
+    DatabaseReference ProductsRefDatabase;
 String    productdetailsimage;
 String
         pname, pimage,desc,number;
@@ -96,7 +105,13 @@ String
     TextView adminproductimagenumberoflikes;
     TextView adminproductimageprice;
 
-
+    String productinfokey;
+     String productidkey;
+     String name;
+     String productimage;
+     String productsdescription;
+     String productsprice;
+     String productslikes;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -263,7 +278,7 @@ String
 
 
              mAuth = FirebaseAuth.getInstance();
-        myfirebasedatabase = FirebaseDatabase.getInstance();
+            myfirebasedatabase = FirebaseDatabase.getInstance();
 
         user = mAuth.getCurrentUser();
         if (user != null) {
@@ -291,19 +306,70 @@ String
             buildGoogleApiClient();
 
 
-            if (adminproductdetailsimage != null) {
-                adminproductimageproductname.setText(pname);
-            }
-            if (adminproductimagedescription != null) {
-                adminproductimagedescription.setText(desc);
-            }
-            if (adminproductimagenumberoflikes != null) {
-                adminproductimagenumberoflikes.setText(number);
-            }
-            if (adminproductimageprice != null) {
-                adminproductimageprice.setText(price);
+            ProductsRefDatabase = myfirebasedatabase.getInstance().getReference().child("Products");
 
-            }
+            ProductsRefDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.exists() && dataSnapshot.getChildrenCount() > 0) {
+                        if (dataSnapshot != null) {
+                            dataSnapshot.getValue(Users.class);
+
+                            if (productID != null) {
+
+
+
+                                // I don't know which one to use , what is mostly seen is the datasnapshot.child(productID).getkey() area
+                                 productinfokey = dataSnapshot.getKey();
+                                productidkey = dataSnapshot.child(productID).getKey();
+                                name = dataSnapshot.child(productID).child("name").getValue(String.class);
+
+                                if (adminproductimageproductname != null) {
+                                    adminproductimageproductname.setText(name);
+                                }
+
+                                productimage = dataSnapshot.child(productID).child("image").getValue(String.class);
+
+                                if (adminproductdetailsimage != null) {
+                                    if (productimage != null) {
+                                        adminproductdetailsimage.setImageResource(Integer.parseInt(productimage));
+                                    }
+                                }
+                                productsdescription = dataSnapshot.child(productID).child("desc").getValue(String.class);
+                                if (adminproductimagedescription != null) {
+                                    adminproductimagedescription.setText(productsdescription);
+                                }
+
+                                productsprice = dataSnapshot.child(productID).child("price").getValue(String.class);
+                                if (adminproductimageprice != null) {
+                                    adminproductimageprice.setText(productsprice);
+                                }
+                                productslikes = dataSnapshot.child(productID).child("number").getValue(String.class);
+
+
+
+                                if (adminproductimagenumberoflikes != null) {
+                                    adminproductimagenumberoflikes.setText(productslikes);
+                                }
+
+
+                                                          }
+
+
+                        }
+                    }
+                }
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+
+
+            });
+
+
+
+      
         }
 
 
@@ -334,7 +400,7 @@ String
             ViewBuyers.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent myintent = new Intent(AdminProductDetails.this, ViewSpecificUsersCart.class);
+                    Intent myintent = new Intent(AdminProductDetails.this, View.class);
 
                     myintent.putExtra("productIDfromadminproductdetailstoviewbuyers", productID);
 
