@@ -567,7 +567,7 @@ public  class  AdminUserOrderDetails extends AppCompatActivity
                                         myfirebaseDatabase = FirebaseDatabase.getInstance();
 
 
-                                        OrdersReference = myfirebaseDatabase.getReference().child("Orders").child("products");
+                                        OrdersReference = myfirebaseDatabase.getReference().child("Orders");
 
                                         OrdersReference.keepSynced(true);
                                         Query firebasequery = myfirebaseDatabase.getReference().child("Orders").orderByChild("uid").equalTo(uid);

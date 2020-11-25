@@ -167,6 +167,7 @@ public class ConfirmFinalOrderActivity extends AppCompatActivity implements Navi
     ArrayList<String> pricekeylist;
     ArrayList<String>imagekeylist;
     ArrayList<String> namekeylist;
+    ArrayList<String> traderkeylist;
     String  userandbought;
 
     @Override
@@ -253,6 +254,7 @@ public class ConfirmFinalOrderActivity extends AppCompatActivity implements Navi
          pricekeylist = new ArrayList<>();
          imagekeylist = new ArrayList<>();
          namekeylist = new ArrayList<>();
+        traderkeylist = new ArrayList<>();
 
         myfirebasedatabase = FirebaseDatabase.getInstance();
         UsersRef = myfirebasedatabase.getReference().child("Users");
@@ -463,6 +465,7 @@ public class ConfirmFinalOrderActivity extends AppCompatActivity implements Navi
             productMap.put("image", imagekeylist.get(i));
             productMap.put("name", namekeylist.get(i));
             productMap.put("price",pricekeylist.get(i) );
+            productMap.put("traderandpaid", traderkeylist.get(i) + true);
             ProductsRef.push().setValue(productkeylist.get(i));
             ProductsRef.child(productkeylist.get(i)).updateChildren(productMap);
         }
@@ -808,6 +811,7 @@ public class ConfirmFinalOrderActivity extends AppCompatActivity implements Navi
                        pricekeylist.add(price);
                        imagekeylist.add(image);
                        namekeylist.add(name);
+                       traderkeylist.add(tid);
 
 
                     holder.setImage(getApplicationContext(), pimage);

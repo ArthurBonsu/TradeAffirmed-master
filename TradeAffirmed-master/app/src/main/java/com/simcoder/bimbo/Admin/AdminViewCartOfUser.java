@@ -35,7 +35,9 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.rey.material.widget.ImageView;
 import com.simcoder.bimbo.WorkActivities.CartActivity;
 import com.simcoder.bimbo.WorkActivities.CustomerProfile;
@@ -67,7 +69,7 @@ public  class  AdminViewCartOfUser extends AppCompatActivity
     private DatabaseReference ProductsRefwithproduct;
     private RecyclerView recyclerView;
     RecyclerView.LayoutManager layoutManager;
-    DatabaseReference UsersRef;
+    DatabaseReference CartRef;
     DatabaseReference FollowerDatabaseReference;
     String productkey;
     String traderkeyhere;
@@ -101,7 +103,7 @@ public  class  AdminViewCartOfUser extends AppCompatActivity
     String tradename;
     String traderimage;
     FirebaseUser user;
-
+    String thetraderuser;
 
     String categoryname, date, desc, discount, time, pid, pimage, pname, price, image, name, size, tradername, tid;
     String thetraderimage;
@@ -146,6 +148,7 @@ public  class  AdminViewCartOfUser extends AppCompatActivity
     TextView admincarttime;
     ImageView admincartimageofuser;
     TextView            admincartusername;
+    TextView admincarted_date;
 
 
     ImageView admincartimageofprouct;
@@ -225,7 +228,7 @@ public  class  AdminViewCartOfUser extends AppCompatActivity
 
         admincart_price = findViewById(R.id.admincart_price);
         admincarttime = findViewById(R.id.admincarttime);
-
+        admincarted_date = findViewById(R.id.admincartdate);
         admincartimageofprouct = (ImageView) findViewById(R.id.admincartimageofproduct);
         admincartimageofuser = (ImageView) findViewById(R.id.admincartimageofuser);
         admincartusername = (TextView) findViewById(R.id.admincartusername);
@@ -279,16 +282,16 @@ public  class  AdminViewCartOfUser extends AppCompatActivity
                 if (mAuth != null) {
                     user = mAuth.getCurrentUser();
                     if (user != null) {
-                        userID = user.getUid();
+                        traderID = user.getUid();
 
                     }
 
                     myfirebaseDatabase = FirebaseDatabase.getInstance();
 
-                    UsersRef = myfirebaseDatabase.getReference().child("Cart");
+                    CartRef = myfirebaseDatabase.getReference().child("Cart");
 
 
-                    userkey = UsersRef.getKey();
+                    userkey = CartRef.getKey();
                     // GET FROM FOLLOWING KEY
 
 
@@ -352,10 +355,11 @@ public  class  AdminViewCartOfUser extends AppCompatActivity
 
         public TextView admincartquantity;
         public TextView admincart_price;
-        TextView admincarttime;
+        public  TextView admincarttime;
+          public   TextView   admincartdate;
         public android.widget.ImageView admincartimageofproduct;
         public android.widget.ImageView admincartimageofuser;
-        TextView admincartusername;
+       public  TextView admincartusername;
 
 
         public ItemClickListner listner;
@@ -371,10 +375,12 @@ public  class  AdminViewCartOfUser extends AppCompatActivity
             admincart_price = itemView.findViewById(R.id.admincart_price);
 
             admincarttime = itemView.findViewById(R.id.admincarttime);
+            admincartdate = itemView.findViewById(R.id.admincartdate);
 
             admincartimageofuser = itemView.findViewById(R.id.admincartimageofuser);
 
             admincartusername = itemView.findViewById(R.id.admincartusername);
+            admincartimageofproduct = itemView.findViewById(R.id.admincartimageofproduct);
 
 
         }
@@ -402,10 +408,13 @@ public  class  AdminViewCartOfUser extends AppCompatActivity
 
             admincarttime.setText(alladmincarttime);
         }
+        public void setaadmincartdate(String admincartdates) {
 
+            admincartdate.setText(admincartdates);
+        }
         public void setadmincartusername(String alladmincartusername) {
 
-            admincarttime.setText(alladmincartusername);
+            admincartusername.setText(alladmincartusername);
         }
 
 
@@ -467,15 +476,18 @@ public  class  AdminViewCartOfUser extends AppCompatActivity
         if (mAuth != null) {
             user = mAuth.getCurrentUser();
             if (user != null) {
-                traderoruser = user.getUid();
+                traderID = user.getUid();
 
             }
+
+
+            traderoruser = traderID + userID;
 
             @Nullable
 
             Query queryhere =
 
-                    FirebaseDatabase.getInstance().getReference().child("Cart").orderByChild("uid").equalTo(userID);
+                    FirebaseDatabase.getInstance().getReference().child("Cart").orderByChild("traderoruser").equalTo(traderoruser);
             if (queryhere != null) {
 
                 FirebaseRecyclerOptions<Cart> options =
@@ -609,10 +621,14 @@ public  class  AdminViewCartOfUser extends AppCompatActivity
                             holder.admincart_price.setText("Product Price       " +price);
                             holder.admincarttime.setText("Product Time          " + time);
                             holder.admincartusername.setText("Users Name        " + name );
+                            holder.admincartdate.setText(" cartdate" + date);
 
                             Log.d(TAG, "The Product here " + pname + price );
                             holder.setadmincartimageofproduct(getApplicationContext(), pimage);
                             holder.setadmincartimageofuser(getApplicationContext(), image);
+
+
+
 
                             if (admincartimageofproduct != null) {
                                 Picasso.get().load(pimage).placeholder(R.drawable.profile).into(admincartimageofproduct);
@@ -660,6 +676,21 @@ public  class  AdminViewCartOfUser extends AppCompatActivity
 
                                     }
                                 });
+
+                                if (holder.admincartimageofproduct != null) {
+                                    holder.admincartimageofproduct.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+                                            Intent viewingtheproductactivityhere = new Intent(AdminViewCartOfUser.this, AdminProductDetails.class);
+                                            viewingtheproductactivityhere.putExtra("rolefromadmincartadminproductdetails", role);
+                                            viewingtheproductactivityhere.putExtra("fromadmintcatactivitytoadminproductdetails", tid);
+                                            viewingtheproductactivityhere.putExtra("fromuserTHEIDcartactivitydminproductdetails", traderoruser);
+                                            viewingtheproductactivityhere.putExtra("fromusercartactivitydminproductdetails", pid);
+
+                                            startActivity(viewingtheproductactivityhere);
+
+                                        }
+                                    });
                             }
 
 
@@ -671,7 +702,7 @@ public  class  AdminViewCartOfUser extends AppCompatActivity
 
 
 
-            }
+            };
 
 
 
@@ -682,7 +713,7 @@ public  class  AdminViewCartOfUser extends AppCompatActivity
 
         }
 
-    }
+    }}
     @Nullable
     @Override
     public void onStart() {
@@ -699,7 +730,7 @@ public  class  AdminViewCartOfUser extends AppCompatActivity
                 if (mAuth != null) {
                     if (user != null) {
 
-                        traderoruser = user.getUid();
+                        traderID = user.getUid();
                     }
 
                     // I HAVE TO TRY TO GET THE SETUP INFORMATION , IF THEY ARE ALREADY PROVIDED WE TAKE TO THE NEXT STAGE
