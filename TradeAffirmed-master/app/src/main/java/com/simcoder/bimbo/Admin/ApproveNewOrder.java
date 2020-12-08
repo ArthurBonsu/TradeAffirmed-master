@@ -157,6 +157,8 @@ public  class  ApproveNewOrder  extends AppCompatActivity
     private ProgressDialog mProgress;
     String orderID;
     Button shipapprove;
+
+    String  userandbought;
     String saveCurrentDate;
     String saveCurrentTime;
     long elapsedDays;
@@ -385,12 +387,12 @@ public  class  ApproveNewOrder  extends AppCompatActivity
                 traderoruser = user.getUid();
 
             }
-
+               String newornot = user + "true";
             @Nullable
 
             Query queryhere =
 
-                    FirebaseDatabase.getInstance().getReference().child("Orders").orderByChild("tid").equalTo(traderoruser);
+                    FirebaseDatabase.getInstance().getReference().child("Orders").orderByChild("newornot").equalTo(newornot);
             if (queryhere != null) {
 
                 FirebaseRecyclerOptions<Users> options =
@@ -560,6 +562,9 @@ public  class  ApproveNewOrder  extends AppCompatActivity
                                 elapsedSeconds = different / secondsInMilli;
 
                             }}
+                        // This says that after 24 hours it should show this information.
+                        // This may not be necessary  as such
+
                         if (elapsedHours <= 24 ){
                             if (model != null) {
                                 if (holder.userName != null) {

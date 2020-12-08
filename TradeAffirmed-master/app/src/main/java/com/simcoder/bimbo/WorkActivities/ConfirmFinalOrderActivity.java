@@ -168,7 +168,16 @@ public class ConfirmFinalOrderActivity extends AppCompatActivity implements Navi
     ArrayList<String>imagekeylist;
     ArrayList<String> namekeylist;
     ArrayList<String> traderkeylist;
+
+    // User Agreement
+    String saveCurrentDate, saveCurrentTime;
     String  userandbought;
+    SimpleDateFormat currentDate;
+
+    long elapsedDays;
+    long elapsedHours;
+    long elapsedMinutes;
+    long elapsedSeconds;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -286,7 +295,7 @@ public class ConfirmFinalOrderActivity extends AppCompatActivity implements Navi
 
     private void ConfirmOrder()
     {
-        final String saveCurrentDate, saveCurrentTime;
+        String saveCurrentDate, saveCurrentTime;
 
         Calendar calForDate = Calendar.getInstance();
         SimpleDateFormat currentDate = new SimpleDateFormat("MMM dd, yyyy");
@@ -454,7 +463,52 @@ public class ConfirmFinalOrderActivity extends AppCompatActivity implements Navi
         ordersMap.put("date", saveCurrentDate);
         ordersMap.put("time", saveCurrentTime);
         ordersMap.put("state", "not shipped");
-        ordersMap.put("newornot", "true");
+        // Setting the determiner of  current time
+
+
+
+
+
+
+        Calendar calendar = Calendar.getInstance();
+       currentDate = new SimpleDateFormat("MMM dd, yyyy");
+        if (currentDate != null) {
+            saveCurrentDate = currentDate.format(calendar.getTime());
+
+           currentTime = new SimpleDateFormat("HH:mm:ss a");
+            if (currentTime != null) {
+                saveCurrentTime = currentTime.format(calendar.getTime());
+
+
+
+                long different =  (long) Double.parseDouble(saveCurrentTime) - (long) Double.parseDouble(saveCurrentTime);
+
+                System.out.println("saveDate : " + saveCurrentDate);
+                System.out.println("saveTime : " + saveCurrentTime);
+                System.out.println("different : " + different);
+
+                long secondsInMilli = 1000;
+                long minutesInMilli = secondsInMilli * 60;
+                long hoursInMilli = minutesInMilli * 60;
+                long daysInMilli = hoursInMilli * 24;
+
+                elapsedDays = different / daysInMilli;
+                different = different % daysInMilli;
+                elapsedHours = different / hoursInMilli;
+                different = different % hoursInMilli;
+
+                elapsedMinutes = different / minutesInMilli;
+                different = different % minutesInMilli;
+
+                elapsedSeconds = different / secondsInMilli;
+
+            }}
+        // This says that after 24 hours it should show this information.
+        // This may not be necessary  as such
+
+        if (elapsedHours <= 24 ) {
+            ordersMap.put("newornot", "true");
+        }
         ordersMap.put("paid", "true");
 
         HashMap<String, Object> productMap = new HashMap<>();
