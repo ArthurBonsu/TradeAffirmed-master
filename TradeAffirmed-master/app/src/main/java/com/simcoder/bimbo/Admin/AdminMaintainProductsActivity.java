@@ -45,7 +45,7 @@ import java.util.HashMap;
 
 
 
-
+ // This activity takes care of trying to update the information of the various products that have been uploaded by traders
 public class AdminMaintainProductsActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
     private Button applyChangesBtn, deleteBtn;
     private EditText name, price, description;

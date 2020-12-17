@@ -59,7 +59,8 @@ import com.squareup.picasso.Picasso;
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.paperdb.Paper;
 
-
+     // This class name can be confusing, it just means that we want to get the product orders of a particular user who made bought the goods of this
+     // trader
 public  class ViewYourPersonalProduct extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     DatabaseReference ProductsRef;
@@ -477,7 +478,8 @@ public  class ViewYourPersonalProduct extends AppCompatActivity
                 traderoruser = user.getUid();
 
             }
-
+               // This will query for the product or order for a particular user so it first queries the trader and the queries the user
+            // So here we just query the products of the order we have sent, just the details of the  product from orders
             traderuser = traderoruser+userID;
             @Nullable
 

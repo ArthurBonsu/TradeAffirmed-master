@@ -516,7 +516,9 @@ public  class  AdminCustomerServed extends AppCompatActivity
                             Log.d(TAG, "The Customers here " + name + phone);
                             holder.setallcustomersimage(getApplicationContext(), image);
 
-
+              // This is a rare scenario, it is called a three layer scenario
+                            // In this case we are trying to query for the information that is subject to the user
+                            //SO THE RULES ARE , YOU QUERY TRADER AND THEN QUERY USER + INDEX( WHETHER DELIVERED OR NOT)
                             myfirebaseDatabase = FirebaseDatabase.getInstance();
                             useranddelivered = uid + "true";
 
@@ -528,9 +530,6 @@ public  class  AdminCustomerServed extends AppCompatActivity
                                 firebasequery.addValueEventListener(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(DataSnapshot dataSnapshot) {
-
-
-
 
                                             userkey = dataSnapshot.getKey();
                                             Log.d(TAG, "The ServedPeopleKey " + uid);

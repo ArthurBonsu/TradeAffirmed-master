@@ -687,6 +687,7 @@ public  class ViewSpecificUsersCart extends AppCompatActivity
                                     }
                                 });
                             }
+                            // Product Details
                             if (holder.admincarttitlehere != null) {
                                 holder.admincarttitlehere.setOnClickListener(new View.OnClickListener() {
                                     @Override

@@ -180,6 +180,7 @@ public  class  HomeActivity extends AppCompatActivity
                         public void onClick(View view) {
 
                             Intent intent = new Intent(HomeActivity.this, CartActivity.class);
+                             intent.putExtra("pid" ,pid);
                             startActivity(intent);
                         }
 
@@ -294,7 +295,7 @@ public  class  HomeActivity extends AppCompatActivity
                     QueryFollowingsshere.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-
+                                // Name of trader being followed
                             for (DataSnapshot ds : dataSnapshot.getChildren()) {
                                 if (ds.child("tid").getValue() != null) {
                                     followingid = ds.child("tid").getValue(String.class);
@@ -562,6 +563,7 @@ public  class  HomeActivity extends AppCompatActivity
                     }}
 
                 if (traderoruser != null) {
+                    // No. has to give the whole population details of the product
                     if (ProductsRef != null) {
                         Query ProductsQuery = ProductsRef.orderByChild("tid").equalTo(traderoruser);
 

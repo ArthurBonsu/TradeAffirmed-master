@@ -383,18 +383,18 @@ public  class ViewSpecificUsersOrder extends AppCompatActivity
                 traderoruser = user.getUid();
 
             }
-
+               String traderuser = traderoruser + userID;
             @Nullable
 
             Query queryhere =
 
-                    FirebaseDatabase.getInstance().getReference().child("Orders").orderByChild("tid").equalTo(traderoruser);
-            Query previoususerorderquery = queryhere.getRef().orderByChild("uid").equalTo(userID);
-            if (previoususerorderquery != null) {
+                    FirebaseDatabase.getInstance().getReference().child("Orders").orderByChild("traderuser").equalTo(traderoruser);
+
+            if (queryhere != null) {
 
                 FirebaseRecyclerOptions<Users> options =
                         new FirebaseRecyclerOptions.Builder<Users>()
-                                .setQuery(previoususerorderquery, new SnapshotParser<Users>() {
+                                .setQuery(queryhere, new SnapshotParser<Users>() {
 
 
                                     @Nullable
