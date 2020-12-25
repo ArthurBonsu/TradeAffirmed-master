@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -12,7 +12,7 @@
 
 
         <ImageView
-            android:id="@+id/thetraderimageforproduct"
+            android:id="@+id/thetraderimagehere"
             android:layout_width="100sp"
             android:layout_height="100sp"
 
@@ -24,7 +24,7 @@
             tools:visibility="visible" />
 
         <TextView
-            android:id="@+id/thetraderiknow"
+            android:id="@+id/thetradername"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
 
@@ -34,7 +34,9 @@
             android:textColor="@color/colorPrimary"
             android:textSize="24sp"
             android:visibility="visible"
-            tools:visibility="visible" />
+            tools:visibility="visible"
+            android:gravity="center_horizontal"
+            android:layout_below="@+id/thetraderimagehere"/>
 
         <TextView
             android:id="@+id/product_name"
@@ -45,7 +47,9 @@
             android:textAlignment="center"
             android:textColor="@color/colorPrimary"
             android:textSize="24sp"
-            android:visibility="visible" />
+            android:visibility="visible"
+            android:layout_below="@+id/thetradername"
+            android:gravity="center_horizontal" />
 
         <ImageView
             android:id="@+id/product_imagehere"
@@ -56,7 +60,8 @@
             android:scaleType="fitCenter"
             android:visibility="visible"
             app:srcCompat="@drawable/chickend"
-            tools:visibility="visible" />
+            tools:visibility="visible"
+            android:layout_below="@+id/product_name"/>
 
 
         <TextView
@@ -69,7 +74,29 @@
             android:textColor="@color/colorPrimary"
             android:textSize="24sp"
             android:visibility="visible"
-            tools:visibility="visible" />
+            tools:visibility="visible"
+            android:layout_below="@+id/product_imagehere"
+            android:gravity="center_horizontal"
+            />
+
+        <TextView
+            android:id="@+id/product_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:paddingBottom="@dimen/activity_vertical_margin"
+            android:text="@string/product_description"
+            android:textAlignment="center"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="24sp"
+            android:layout_below="@+id/product_price"
+            android:visibility="visible"
+            tools:visibility="visible"
+            android:gravity="center_horizontal"
+            tools:ignore="DuplicateIds"
+            android:layout_below="@+id/product_price"
+            />
+
 
         <TextView
             android:id="@+id/product_description"
@@ -82,7 +109,10 @@
             android:textColor="@color/colorPrimaryDark"
             android:textSize="24sp"
             android:visibility="visible"
-            tools:visibility="visible" />
+            tools:visibility="visible"
+            android:layout_below="@+id/product_description"
+            android:gravity="center_horizontal"
+            tools:ignore="NotSibling" />
 
         <TextView
             android:id="@+id/thefollowerid"
@@ -91,4 +121,4 @@
             android:text="TextView" />
 
 
-</LinearLayout>
+</RelativeLayout>

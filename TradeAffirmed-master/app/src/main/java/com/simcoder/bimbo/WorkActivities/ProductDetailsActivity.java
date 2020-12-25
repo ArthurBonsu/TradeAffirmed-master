@@ -290,6 +290,8 @@ public class ProductDetailsActivity extends AppCompatActivity   implements Navig
             }
         }
     }
+
+
     @Override
     protected void onStart()
     {

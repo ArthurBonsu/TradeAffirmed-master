@@ -433,7 +433,7 @@ public class Products {
         this.phone = phone;
     }
 
-    public String getdiscount(String discount) {
+    public String getdiscount() {
         return discount;
     }
     public void setdiscount(String discount) {

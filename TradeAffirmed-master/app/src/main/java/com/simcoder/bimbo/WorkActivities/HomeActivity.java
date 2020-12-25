@@ -179,7 +179,7 @@ public  class  HomeActivity extends AppCompatActivity
                         @Override
                         public void onClick(View view) {
 
-                            Intent intent = new Intent(HomeActivity.this, CartActivity.class);
+                            Intent intent = new Intent(HomeActivity.this, ProductDetailsActivity.class);
                              intent.putExtra("pid" ,pid);
                             startActivity(intent);
                         }

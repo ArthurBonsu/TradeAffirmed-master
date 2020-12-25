@@ -435,5 +435,12 @@
     <string name="todo2">TODO</string>
     <string name="you_are_marked_at_kotoka">You are marked at Kotoka</string>
     <string name="admincarted_date">admincarted_date</string>
+    <string name="thepoductimage">thepoductimage</string>
+    <string name="product_price">Product Price</string>
+    <string name="product_name">Product Name</string>
+    <string name="product_description">Product Description</string>
+    <string name="tradername">Tradername</string>
+    <string name="_1">1</string>
+    <string name="add_to_cart">Add to Cart</string>
 
 </resources>
