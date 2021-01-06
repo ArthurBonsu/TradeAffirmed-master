@@ -584,6 +584,8 @@ public  class  CartActivity1 extends AppCompatActivity
 
                     myProducts = myfirebasedatabase.getReference().child("Products");
                     myProducts.keepSynced(true);
+
+                   /*
                     Query firebasequery =  myfirebasedatabase.getReference().child("Products").orderByChild("pid").equalTo(pid);
 
                     firebasequery.addValueEventListener(new ValueEventListener() {
@@ -615,6 +617,8 @@ public  class  CartActivity1 extends AppCompatActivity
 
                         }
                     });
+
+                    */
 
                     key = model.getpid();
                     traderkey = model.gettid();
