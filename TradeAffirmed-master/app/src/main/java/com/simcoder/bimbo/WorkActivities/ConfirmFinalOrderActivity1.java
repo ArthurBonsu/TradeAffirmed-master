@@ -2,33 +2,27 @@ package com.simcoder.bimbo.WorkActivities;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
 import com.google.android.material.navigation.NavigationView;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
-import android.os.Bundle;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import androidx.appcompat.widget.Toolbar;
-
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.firebase.ui.database.FirebaseRecyclerAdapter;
-import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.firebase.ui.database.SnapshotParser;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -37,6 +31,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -56,8 +52,8 @@ import com.simcoder.bimbo.DriverMapActivity;
 import com.simcoder.bimbo.HistoryActivity;
 import com.simcoder.bimbo.Interface.ItemClickListner;
 import com.simcoder.bimbo.Model.Cart;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.simcoder.bimbo.R;
@@ -66,59 +62,43 @@ import com.squareup.picasso.Callback;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashMap;
-
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.paperdb.Paper;
 
 
-public class ConfirmFinalOrderActivity1 extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
-    private EditText nameEditText, phoneEditText, addressEditText, cityEditText;
-    private Button confirmOrderBtn;
-    String productIDHERE;
-    String orderKey;
-    String cartkey;
-    String userID= "";
-    String productImage;
-    String productname;
-    private String totalAmount = "";
+public  class  CartActivity1 extends AppCompatActivity
+        implements NavigationView.OnNavigationItemSelectedListener {
+    private RecyclerView recyclerView;
+    private RecyclerView.LayoutManager layoutManager;
+
+    private Button NextProcessBtn;
+    private  Button cartthenextactivityhere;
+    public TextView txtTotalAmount, txtMsg1;
+
+    public int overTotalPrice = 0;
+    String productID = "";
+    String userID = "";
+    DatabaseReference UserRef;
+
+    String cartkey = "";
+    String orderkey = "";
+    String role;
+    DatabaseReference UserDetailsRef;
     private static final int RC_SIGN_IN = 1;
-    Query CartQuery;
-    DatabaseReference CartDatabase;
-    FirebaseDatabase Firebaseorders;
-    FirebaseUser user;
-    String uid;
-    int i;
-
-
     private FirebaseAuth.AuthStateListener firebaseAuthListener;
+    private FirebaseRecyclerAdapter adapter;
+    TextView therealnumberoflikes;
+
+    ViewHolder holders;
 
     //AUTHENTICATORS
+
+
     private GoogleMap mMap;
     GoogleApiClient mGoogleApiClient;
     private static final String TAG = "Google Activity";
     private FirebaseAuth mAuth;
     private GoogleSignInClient mGoogleSignInClient;
-
-    private RecyclerView recyclerView;
-    private RecyclerView.LayoutManager layoutManager;
-
-    private Button NextProcessBtn;
-    Button confirmorderbutton;
-    private  Button cartthenextactivityhere;
-    public TextView txtTotalAmount, txtMsg1;
-    public int overTotalPrice = 0;
-    String productID = "";
-    DatabaseReference UserRef;
-    String role;
-    DatabaseReference UserDetailsRef;
-    private FirebaseRecyclerAdapter adapter;
-    TextView therealnumberoflikes;
-    ViewHolder holders;
-    //AUTHENTICATORS
     private ImageView cartimageonscreen;
     private ImageView cartproductimageonscreeen;
     private ImageView numberoflikesimage;
@@ -136,6 +116,7 @@ public class ConfirmFinalOrderActivity1 extends AppCompatActivity implements Nav
     String customerid;
     String somerole;
     String key;
+    String uid;
     public  int oneTyprProductTPrice =0;
     TextView cartquantity;
     String traderkey;
@@ -146,86 +127,87 @@ public class ConfirmFinalOrderActivity1 extends AppCompatActivity implements Nav
     android.widget.ImageView  thetraderpicturebeingloaded;
     FirebaseDatabase myfirebasedatabase;
     DatabaseReference UsersRef;
-    DatabaseReference ordersRef;
-    DatabaseReference cartRef;
-
-    DatabaseReference ProductsRef;
+    FirebaseUser user;
     String  numberoflikes;
     Query cartquery;
     Query thelikequery;
     String productkey;
-    String     address,city, phone;
+
     DatabaseReference myProducts;
-    DatabaseReference myOrders;
     String date, desc, discount, name, photoid,pid, pimage, pname,tid, traderimage;
-    TextView theseareshipmenttitle;
-    TextView nameofuser; TextView totalamountposted; TextView thecity; TextView addresshere; TextView shippingcostforconstruction;
-    TextView stateofconfirmedorder; TextView confirmedordertrader; TextView traderIDconfirmedhere; TextView productstobeboughtttle;
-    TextView timofpost; TextView dateofpost; RadioGroup transportradio; RadioButton car; RadioButton motor; RadioButton bicycle;
-    RadioButton walking; RecyclerView confirmorderrecyclerview; Button confirm_final_order_btn;
-    ArrayList<String> productkeylist;
-    ArrayList<String> pricekeylist;
-    ArrayList<String>imagekeylist;
-    ArrayList<String> namekeylist;
-    ArrayList<String> traderkeylist;
 
-    // User Agreement
-    String saveCurrentDate, saveCurrentTime;
-    String  userandbought;
-    SimpleDateFormat currentDate;
-
-    long elapsedDays;
-    long elapsedHours;
-    long elapsedMinutes;
-    long elapsedSeconds;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activityconfirmorder);
-        theseareshipmenttitle = findViewById(R.id.theseareshipmenttitle);
-        nameofuser = findViewById(R.id.nameofuser);
-        totalamountposted = findViewById(R.id.totalamountposted);
-        thecity = findViewById( R.id.thecity);
-        addresshere = findViewById(R.id.addresshere);
-        shippingcostforconstruction = findViewById(R.id.shippingcostforconstruction);
-        stateofconfirmedorder = findViewById(R.id.stateofconfirmedorder);
-        confirmedordertrader = findViewById(R.id.confirmedordertrader);
-        traderIDconfirmedhere = findViewById(R.id.traderIDconfirmedhere) ;
-        productstobeboughtttle = findViewById(R.id.productstobeboughtttle);
-        timofpost = findViewById(R.id.timofpost);
-        dateofpost = findViewById(R.id.dateofpost);
-        transportradio = findViewById(R.id.transportradio);
-        car = findViewById(R.id.car);
-        motor = findViewById(R.id.motor);
-        bicycle = findViewById(R.id.bicycle);
-
-        walking = findViewById(R.id.walking);
-        confirmorderrecyclerview = findViewById(R.id.confirmorderrecyclerview);
-        confirm_final_order_btn = findViewById(R.id.confirm_final_order_btn);
+        setContentView(
+                (R.layout.activitynewcart));
+        Intent intent = getIntent();
+        Bundle bundle = intent.getExtras();
+        if (bundle != null)
+        // TYPE IS THE SAME AS ROLE
 
 
-        Intent cartkeyintent = getIntent();
-        if (cartkeyintent.getExtras().getString("cartkey") != null) {
-            cartkey = cartkeyintent.getExtras().getString("cartkey");
+        {  if (getIntent().getStringExtra("cartkey") != null) {
+            cartkey = getIntent().getStringExtra("cartkey");
         }
-        Intent totalamountintent = getIntent();
-        if (totalamountintent.getExtras().getString("Total Price") != null) {
-            totalAmount = totalamountintent.getExtras().getString("Total Price");
-        }
-        Intent productintent = getIntent();
-        if (productintent.getExtras().getString("pid") != null) {
-            productIDHERE = productintent.getExtras().getString("pid");
         }
 
+        recyclerView = findViewById(R.id.stickyheaderrecyler);
+        final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        if (recyclerView != null) {
+            recyclerView.setLayoutManager(layoutManager);
+        }
+        if (recyclerView != null) {
+            recyclerView.setHasFixedSize(true);
+
+        }
+
+        /*
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                LinearLayoutManager layoutManager=LinearLayoutManager.class.cast(recyclerView.getLayoutManager());
+                int totalItemCount = layoutManager.getItemCount();
+                int lastVisible = layoutManager.findLastVisibleItemPosition();
+
+                boolean endHasBeenReached = lastVisible + 5 >= totalItemCount;
+                if (!(totalItemCount > 0) && endHasBeenReached) {
+                    //you have reached to the bottom of your recycler view
+
+                    txtTotalAmount.setVisibility(View.GONE);
+                    cartthenextactivityhere.setVisibility(View.GONE);
+
+                }
+                else {
+
+                    txtTotalAmount.setVisibility(View.VISIBLE);
+                    cartthenextactivityhere.setVisibility(View.VISIBLE);
+
+                    cartthenextactivityhere.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view)
+                        {
+                            txtTotalAmount.setText("Total Price = $" + String.valueOf(overTotalPrice));
+
+                            Intent intent = new Intent(CartActivity.this, ConfirmFinalOrderActivity.class);
+                            intent.putExtra("Total Price", String.valueOf(overTotalPrice));
+                            startActivity(intent);
+                            finish();
+                        }
+                    });
+                }
+            }
+        });
+
+*/
 
 
         Paper.init(this);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         if (toolbar != null) {
-            toolbar.setTitle("Order Activity");
+            toolbar.setTitle("Cart Activity");
         }
 //        setSupportActionBar(toolbar);
 
@@ -247,341 +229,134 @@ public class ConfirmFinalOrderActivity1 extends AppCompatActivity implements Nav
             TextView userNameTextView = headerView.findViewById(R.id.user_profile_name);
             CircleImageView profileImageView = headerView.findViewById(R.id.user_profile_image);
         }
+        cartthenextactivityhere = (Button) findViewById(R.id.cartnextbutton2);
+        txtTotalAmount = (TextView) findViewById(R.id.total_price1);
+        cartthenextactivityhere.setVisibility(View.GONE);
+        txtTotalAmount.setVisibility(View.GONE);
 
-        confirmOrderBtn = (Button) findViewById(R.id.confirm_final_order_btn);
+        thepicturebeingloaded = (android.widget.ImageView) findViewById(R.id.cartproductimageonscreeen);
+        thetraderpicturebeingloaded = (android.widget.ImageView) findViewById(R.id.carttraderimageonscreen);
 
+        therealnumberoflikes = (TextView) findViewById(R.id.therealnumberoflikes);
+        cartquantity = (TextView) findViewById(R.id.cartquantity);
 
-        mAuth = FirebaseAuth.getInstance();
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
         if (user != null) {
             uid = user.getUid();
-        }
 
 
-        productkeylist = new ArrayList<>();
-        pricekeylist = new ArrayList<>();
-        imagekeylist = new ArrayList<>();
-        namekeylist = new ArrayList<>();
-        traderkeylist = new ArrayList<>();
-
-        myfirebasedatabase = FirebaseDatabase.getInstance();
-        UsersRef = myfirebasedatabase.getReference().child("Users");
-        Firebaseorders = FirebaseDatabase.getInstance();
-        CartDatabase = Firebaseorders.getReference().child("Cart");
-        CartDatabase.keepSynced(true);
-        myProducts = myfirebasedatabase.getReference().child("Products");
-        myProducts.keepSynced(true);
+            myfirebasedatabase = FirebaseDatabase.getInstance();
+            UsersRef = myfirebasedatabase.getReference().child("Users");
+            UsersRef.keepSynced(true);
+            CartListRef = myfirebasedatabase.getReference().child("Cart");
+            CartListRef.keepSynced(true);
+            myProducts = myfirebasedatabase.getReference().child("Products");
+            myProducts.keepSynced(true);
 
 
-        Toast.makeText(this, "Total Price =  $ " + totalAmount, Toast.LENGTH_SHORT).show();
+            fetch();
 
+            //     recyclerView.setAdapter(adapter);
 
-        totalamountposted.setText(totalAmount);
+            //    if (recyclerView != null) {
+            //       recyclerView.setAdapter(adapter);
+            //   }
 
 
 
-        if (confirmOrderBtn != null) {
-            confirmOrderBtn.setOnClickListener(new View.OnClickListener() {
+            GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestIdToken(getString(R.string.default_web_client_id)).requestEmail().build();
+            if (mGoogleApiClient != null) {
+
+                mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+            }
+
+            if (mGoogleApiClient != null) {
+                mGoogleApiClient = new GoogleApiClient.Builder(this).enableAutoManage(CartActivity1.this,
+                        new GoogleApiClient.OnConnectionFailedListener() {
+                            @Override
+                            public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+                            }
+                        }).addApi(Auth.GOOGLE_SIGN_IN_API, gso).build();
+            }
+
+
+            // USER
+           /*
+            cartthenextactivityhere.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(View view) {
-                    ConfirmOrder();
+                public void onClick(View v) {
+                    Intent cartactivityintent = new Intent(CartActivity.this, ConfirmFinalOrderActivity.class);
+                    if (cartactivityintent != null) {
+                        cartactivityintent.putExtra("totalprice", overTotalPrice);
+                        startActivity(cartactivityintent);
+                    }
                 }
             });
+*/
+            final boolean[] loading = {true};
+
+            recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                @Override
+                public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                    super.onScrollStateChanged(recyclerView, newState);
+                }
+
+
+                @Override
+                public void onScrolled(RecyclerView recyclerView, int dx, int dy)
+                {
+
+                    if (loading[0]) {
+                        if (dy > 0) //check for scroll down
+                        {
+                            int numItems  = layoutManager.getChildCount();
+                            int totalItemCount = layoutManager.getItemCount()-1;
+                            int pos = layoutManager.findFirstVisibleItemPosition();
+
+                            if ((numItems + pos) >= totalItemCount) {
+                                loading[0] = false;
+
+                                Log.v("...", " Reached Last Item");
+                                cartthenextactivityhere.setVisibility(View.VISIBLE);
+                                txtTotalAmount.setVisibility(View.VISIBLE);
+                                txtTotalAmount.setText(String.valueOf(overTotalPrice));
+                            }
+
+                        }
+                    }
+                }
+            });
+
+            cartthenextactivityhere.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(CartActivity1.this, ConfirmFinalOrderActivity.class);
+                    intent.putExtra("Total Price", String.valueOf(overTotalPrice));
+                    startActivity(intent);
+                    finish();
+
+                  /*  if (txtTotalAmount != null){
+                    if (txtTotalAmount.getText() !=null){
+                        if (txtTotalAmount.getText().toString() !=null){
+                            //WE SHOULD PASS THE PARAMETER OF THE CART KEY AND ORDER KEY TO THE CONFIRM ORDER
+
+                            overTotalPrice = Integer.parseInt(txtTotalAmount.getText().toString());
+
+                        }}}}*/
+                }   });
+/*
+            int pos = layoutManager.findLastCompletelyVisibleItemPosition();
+            int numItems =  adapter.getItemCount();
+            if (pos >= numItems - 1 ){
+
+
+
+            };*/
         }}
 
 
-
-// WE PRESS TO CONFIRM HERE
-    private void ConfirmOrder()
-    {
-        String saveCurrentDate, saveCurrentTime;
-
-        Calendar calForDate = Calendar.getInstance();
-        SimpleDateFormat currentDate = new SimpleDateFormat("MMM dd, yyyy");
-        saveCurrentDate = currentDate.format(calForDate.getTime());
-
-        SimpleDateFormat currentTime = new SimpleDateFormat("HH:mm:ss a");
-        saveCurrentTime = currentDate.format(calForDate.getTime());
-
-
-        DatabaseReference ordersRef = FirebaseDatabase.getInstance().getReference()
-                .child("Orders");
-
-
-        orderKey =ordersRef.push().getKey();
-        DatabaseReference cartRef = FirebaseDatabase.getInstance().getReference()
-                .child("Cart");
-        DatabaseReference UsersRef = FirebaseDatabase.getInstance().getReference()
-                .child("Users");
-
-        ordersRef = FirebaseDatabase.getInstance().getReference()
-                .child("Orders");
-
-        orderKey =ordersRef.push().getKey();
-        cartRef = FirebaseDatabase.getInstance().getReference()
-                .child("Cart");
-        UsersRef = FirebaseDatabase.getInstance().getReference()
-                .child("Users").child("Customers");
-        ProductsRef = FirebaseDatabase.getInstance().getReference()
-                .child("Orders").child(orderKey).child("products");
-
-            // WE QUERY FOR THE NAME OF THE USER // WE QUERY FOR THE NAME OF THE USER
-        Query userquery;
-        if (mAuth.getCurrentUser() !=null) {
-            userquery = UsersRef.child((mAuth.getCurrentUser().getUid())).orderByChild("uid").equalTo(mAuth.getCurrentUser().getUid());
-            userquery.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    if (dataSnapshot.exists()) {
-
-                        // CURRENT USERNAME HERE
-                        if (dataSnapshot.child("name").getValue() != null) {
-                            name = dataSnapshot.child("name").getValue(String.class);
-
-                        }
-                        nameofuser.setText(name);
-
-                        if (dataSnapshot.child("address").getValue() != null) {
-                            address = dataSnapshot.child("address").getValue(String.class);
-
-                        }
-
-                        addresshere.setText(address);
-                        if (dataSnapshot.child("city").getValue() != null) {
-                            city = dataSnapshot.child("city").getValue(String.class);
-
-                        }
-                        thecity.setText(city);
-
-                        if (dataSnapshot.child("image").getValue() != null) {
-                            image = dataSnapshot.child("image").getValue(String.class);
-                        }
-                        if (dataSnapshot.child("uid").getValue() != null) {
-                            uid = dataSnapshot.child("uid").getValue(String.class);
-                        }
-
-                        if (dataSnapshot.child("phone").getValue() != null) {
-                            phone = dataSnapshot.child("phone").getValue(String.class);
-                        }
-
-
-                    }
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-
-                }
-            });
-
-        }
-
-
-
-
-
-        recyclerView = findViewById(R.id.confirmorderrecyclerview);
-        final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        if (recyclerView != null) {
-            recyclerView.setLayoutManager(layoutManager);
-        }
-        if (recyclerView != null) {
-            recyclerView.setHasFixedSize(true);
-
-        }
-
-        fetch();
-
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestIdToken(getString(R.string.default_web_client_id)).requestEmail().build();
-        if (mGoogleApiClient != null) {
-            mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
-        }
-
-        if (mGoogleApiClient != null) {
-            mGoogleApiClient = new GoogleApiClient.Builder(this).enableAutoManage(ConfirmFinalOrderActivity1.this,
-                    new GoogleApiClient.OnConnectionFailedListener() {
-                        @Override
-                        public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
-                        }
-                    }).addApi(Auth.GOOGLE_SIGN_IN_API, gso).build();
-        }
-
-
-
-        // I HAVE TO TRY TO GET THE SETUP INFORMATION , IF THEY ARE ALREADY PROVIDED WE TAKE TO THE NEXT STAGE
-        // WHICH IS CUSTOMER TO BE ADDED.
-        // PULLING DATABASE REFERENCE IS NULL, WE CHANGE BACK TO THE SETUP PAGE ELSE WE GO STRAIGHT TO MAP PAGE
-
-        final boolean[] loading = {true};
-
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-            }
-
-
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy)
-            {
-
-                if (loading[0]) {
-                    if (dy > 0) //check for scroll down
-                    {
-                        int numItems  = layoutManager.getChildCount();
-                        int totalItemCount = layoutManager.getItemCount()-1;
-                        int pos = layoutManager.findFirstVisibleItemPosition();
-
-                        if ((numItems + pos) >= totalItemCount) {
-                            loading[0] = false;
-
-                            Log.v("...", " Reached Last Item");
-                            cartthenextactivityhere.setVisibility(View.VISIBLE);
-                            txtTotalAmount.setVisibility(View.VISIBLE);
-                            txtTotalAmount.setText(String.valueOf(overTotalPrice));
-                        }
-
-                    }
-                }
-            }
-        });
-
-
-
-
-        //UNIQUE KEY SETUP QUERY
-        //We will come to this later
-
-
-        HashMap<String, Object> ordersMap = new HashMap<>();
-
-        ordersMap.put("amount", totalAmount);
-        ordersMap.put("name", nameEditText.getText().toString());
-        ordersMap.put("phone", phoneEditText.getText().toString());
-        ordersMap.put("address", addressEditText.getText().toString());
-        ordersMap.put("city", cityEditText.getText().toString());
-        ordersMap.put("date", saveCurrentDate);
-        ordersMap.put("time", saveCurrentTime);
-        ordersMap.put("pid",productIDHERE);
-        ordersMap.put("traderandpaid", tid + "true");
-        ordersMap.put("tid", tid);
-        ordersMap.put("quantity",quantity);
-        ordersMap.put("price",price);
-        ordersMap.put("desc",desc);
-        ordersMap.put("pname",pname);
-        ordersMap.put("discount",discount);
-        ordersMap.put("name",name);
-        ordersMap.put("image",image);
-        ordersMap.put("tradername",tradername);
-        ordersMap.put("traderimage",traderimage);
-
-
-
-
-
-        // Setting the determiner of  current time
-
-        Calendar calendar = Calendar.getInstance();
-        currentDate = new SimpleDateFormat("MMM dd, yyyy");
-        if (currentDate != null) {
-            saveCurrentDate = currentDate.format(calendar.getTime());
-
-            currentTime = new SimpleDateFormat("HH:mm:ss a");
-            if (currentTime != null) {
-                saveCurrentTime = currentTime.format(calendar.getTime());
-
-
-
-                long different =  (long) Double.parseDouble(saveCurrentTime) - (long) Double.parseDouble(saveCurrentTime);
-
-                System.out.println("saveDate : " + saveCurrentDate);
-                System.out.println("saveTime : " + saveCurrentTime);
-                System.out.println("different : " + different);
-
-                long secondsInMilli = 1000;
-                long minutesInMilli = secondsInMilli * 60;
-                long hoursInMilli = minutesInMilli * 60;
-                long daysInMilli = hoursInMilli * 24;
-
-                elapsedDays = different / daysInMilli;
-                different = different % daysInMilli;
-                elapsedHours = different / hoursInMilli;
-                different = different % hoursInMilli;
-
-                elapsedMinutes = different / minutesInMilli;
-                different = different % minutesInMilli;
-
-                elapsedSeconds = different / secondsInMilli;
-
-            }}
-        // This says that after 24 hours it should show this information.
-        // This may not be necessary  as such
-
-        if (elapsedHours <= 24 ) {
-            ordersMap.put("newornot", "true");
-        }
-        ordersMap.put("paid", "true");
-
-
-
-
-
-       /*       //THIS WAS THE PREVIOUS LIST HERE
-        HashMap<String, Object> productMap = new HashMap<>();
-        ArrayList<String> productkey = new ArrayList<>();
-
-        for (i = 0; i<=productkeylist.lastIndexOf(productkeylist); i++) {
-            productMap.put("pid", productkeylist.get(i));
-            productMap.put("image", imagekeylist.get(i));
-            productMap.put("name", namekeylist.get(i));
-            productMap.put("price",pricekeylist.get(i) );
-            productMap.put("traderandpaid", traderkeylist.get(i) + true);
-            ProductsRef.push().setValue(productkeylist.get(i));
-            ProductsRef.child(productkeylist.get(i)).updateChildren(productMap);
-        }
-*/
-        Intent intent = new Intent(ConfirmFinalOrderActivity1.this, CartActivity.class);
-        intent.putExtra("orderkey", orderKey);
-
-        // AFTER EVERYTHING IS SUCCESSFUL MOVE IT FROM CART TO TO ORDERS,
-        //clear cut
-        ordersRef.child(orderKey).updateChildren(ordersMap).addOnCompleteListener(new OnCompleteListener<Void>() {
-            //Payment to be added as well
-
-            @Override
-            public void onComplete(@NonNull Task<Void> task)
-            {
-                if (task.isSuccessful())
-                {       if (cartkey != null) {
-                    FirebaseDatabase.getInstance().getReference()
-                            .child("Cart List").child(cartkey)
-
-
-                            .removeValue()
-                            .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    if (task.isSuccessful()) {
-                                        Toast.makeText(ConfirmFinalOrderActivity1.this, "your final order has been placed successfully.", Toast.LENGTH_SHORT).show();
-
-                                        Intent intent = new Intent(ConfirmFinalOrderActivity1.this, HistoryActivity.class);
-                                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                        startActivity(intent);
-                                        finish();
-                                    }
-                                }
-                            });
-                }            }
-            }
-        });
-    }
-
-    @Override
-    public void onPointerCaptureChanged(boolean hasCapture) {
-
-    }
 
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -592,13 +367,13 @@ public class ConfirmFinalOrderActivity1 extends AppCompatActivity implements Nav
         public TextView cartdescriptionhere;
         public TextView cartquantity;
         public  TextView  therealnumberoflikes;
-        public  TextView  addresshere;
-        public  TextView nameofuser;
-        public  TextView thecity;
+
+
         public android.widget.ImageView cartimageonscreen;
         public android.widget.ImageView cartproductimageonscreeen;
         public android.widget.ImageView numberoflikesimage;
         public ItemClickListner listner;
+        public  android.widget.ImageView thetraderpicturebeingloaded;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -609,13 +384,11 @@ public class ConfirmFinalOrderActivity1 extends AppCompatActivity implements Nav
             cartquantity = itemView.findViewById(R.id.cartquantity);
 
             //cartimage referst to the trader of the product
-            cartimageonscreen = itemView.findViewById(R.id.cartimageonscreen);
+            thetraderpicturebeingloaded = itemView.findViewById(R.id.carttraderimageonscreen);
             cartproductimageonscreeen = itemView.findViewById(R.id.cartproductimageonscreeen);
             numberoflikesimage = itemView.findViewById(R.id.numberoflikesimage);
             therealnumberoflikes =  itemView.findViewById(R.id.therealnumberoflikes);
-            addresshere = findViewById(R.id.addresshere);
-            nameofuser = findViewById(R.id.nameofuser);
-            thecity = findViewById( R.id.thecity);
+
         }
 
         public void setItemClickListner(ItemClickListner listner) {
@@ -625,15 +398,6 @@ public class ConfirmFinalOrderActivity1 extends AppCompatActivity implements Nav
         public void setcartproductname(String cartproductname) {
 
             carttheproductname.setText(cartproductname);
-        }
-        public void setaddress(String addressfoundhere) {
-
-            addresshere.setText(addressfoundhere);
-        }
-
-        public void setcity(String cityfoundhere) {
-
-            thecity.setText(cityfoundhere);
         }
 
         public void setproductprice(String price) {
@@ -656,10 +420,6 @@ public class ConfirmFinalOrderActivity1 extends AppCompatActivity implements Nav
         public void setcartquantity(String quantity) {
 
             cartquantity.setText(quantity);
-        }
-        public void setnameofuser(String nameofuserhere) {
-
-            nameofuser.setText(nameofuserhere);
         }
 
 
@@ -689,9 +449,9 @@ public class ConfirmFinalOrderActivity1 extends AppCompatActivity implements Nav
         }
 
         public void setTraderImage(final Context ctx, final String image) {
-            final android.widget.ImageView cartimageonscreen = (android.widget.ImageView) itemView.findViewById(R.id.cartimageonscreen);
+            thetraderpicturebeingloaded = (android.widget.ImageView) itemView.findViewById(R.id.carttraderimageonscreen);
 
-            Picasso.get().load(image).resize(400, 0).networkPolicy(NetworkPolicy.OFFLINE).into(cartimageonscreen, new Callback() {
+            Picasso.get().load(image).resize(400, 0).networkPolicy(NetworkPolicy.OFFLINE).into(thetraderpicturebeingloaded, new Callback() {
 
 
                 @Override
@@ -710,7 +470,7 @@ public class ConfirmFinalOrderActivity1 extends AppCompatActivity implements Nav
 
         }
 
-        public void setNumberofimage(final Context ctx, final String image) {
+        public void setNumberofimagelikes(final Context ctx, final String image) {
             final android.widget.ImageView numberoflikesimage = (android.widget.ImageView) itemView.findViewById(R.id.numberoflikesimage);
 
             Picasso.get().load(image).resize(400, 0).networkPolicy(NetworkPolicy.OFFLINE).into(numberoflikesimage, new Callback() {
@@ -738,106 +498,106 @@ public class ConfirmFinalOrderActivity1 extends AppCompatActivity implements Nav
     }
 
     private void fetch() {
+        //WE PULL FROM CART ACTIVITY AFTER WE HAVE PUSHED THE CONTENTS TO CART ACTIVITY
+        if (cartkey != null) {
+            Query query = FirebaseDatabase.getInstance()
+                    .getReference()
+                    .child("Cart").orderByChild("cartkey").equalTo(cartkey).limitToFirst(1);
+            if (query != null) {
+
+                FirebaseRecyclerOptions<Cart> options =
+                        new FirebaseRecyclerOptions.Builder<Cart>()
+                                .setQuery(query, new SnapshotParser<Cart>() {
 
 
-        Query query = myfirebasedatabase
-                .getReference()
-                .child("Cart").orderByChild("cartkey").equalTo(cartkey);
-        if (query != null) {
-
-            FirebaseRecyclerOptions<Cart> options =
-                    new FirebaseRecyclerOptions.Builder<Cart>()
-                            .setQuery(query, new SnapshotParser<Cart>() {
+                                    @NonNull
+                                    @Override
+                                    public Cart parseSnapshot(@NonNull DataSnapshot snapshot) {
 
 
-                                @NonNull
-                                @Override
-                                public Cart parseSnapshot(@NonNull DataSnapshot snapshot) {
+                                        if (snapshot.child("pid").getValue() != null) {
+                                            pid = snapshot.child("pid").getValue(String.class);
+                                        }
+                                        if (snapshot.child("tid").getValue() != null) {
+                                            tid = snapshot.child("tid").getValue(String.class);
+                                        }
+
+                                        if (snapshot.child("quantity").getValue() != null) {
+                                            quantity = snapshot.child("quantity").getValue(String.class);
+                                        }
+                                        if (snapshot.child("price").getValue() != null) {
+                                            price = snapshot.child("price").getValue(String.class);
+
+                                        }
+
+                                        if (snapshot.child("desc").getValue() != null) {
+                                            desc = snapshot.child("desc").getValue(String.class);
+                                        }
 
 
+                                        if (snapshot.child("pimage").getValue() != null) {
+                                            pimage = snapshot.child("pimage").getValue(String.class);
+                                        }
+                                        if (snapshot.child("pname").getValue() != null) {
+                                            pname = snapshot.child("pname").getValue(String.class);
+                                        }
 
-                                    if (snapshot.child("pid").getValue() != null) {
-                                        pid = snapshot.child("pid").getValue(String.class);
+
+                                        if (snapshot.child("discount").getValue() != null) {
+                                            discount = snapshot.child("discount").getValue(String.class);
+                                        }
+
+                                        if (snapshot.child("name").getValue() != null) {
+                                            name = snapshot.child("name").getValue(String.class);
+                                        }
+
+
+                                        if (snapshot.child("image").getValue() != null) {
+                                            image = snapshot.child("image").getValue(String.class);
+                                        }
+
+                                        if (snapshot.child("tradername").getValue() != null) {
+                                            tradername = snapshot.child("tradername").getValue(String.class);
+                                        }
+
+                                        if (snapshot.child("traderimage").getValue() != null) {
+                                            traderimage = snapshot.child("traderimage").getValue(String.class);
+                                        }
+
+
+                                        return new Cart(pid, tid, quantity, price, desc, pimage, pname, discount, name, image, tradername, traderimage);
+
+
                                     }
-                                    if (snapshot.child("tid").getValue() != null) {
-                                        tid = snapshot.child("tid").getValue(String.class);
-                                    }
 
-                                    if (snapshot.child("quantity").getValue() != null) {
-                                        quantity = snapshot.child("quantity").getValue(String.class);
-                                    }
-                                    if (snapshot.child("price").getValue() != null) {
-                                        price = snapshot.child("price").getValue(String.class);
-
-                                    }
-
-                                    if (snapshot.child("desc").getValue() != null) {
-                                        desc = snapshot.child("desc").getValue(String.class);
-                                    }
+                                }).build();
 
 
-                                    if (snapshot.child("pimage").getValue() != null) {
-                                        pimage = snapshot.child("pimage").getValue(String.class);
-                                    }
-                                    if (snapshot.child("pname").getValue() != null) {
-                                        pname = snapshot.child("pname").getValue(String.class);
-                                    }
+                adapter = new FirebaseRecyclerAdapter<Cart, ViewHolder>(options) {
+                    @Override
+                    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+                        View view = LayoutInflater.from(parent.getContext())
+                                .inflate(R.layout.cart_items_layout, parent, false);
+
+                        return new ViewHolder(view);
+                    }
 
 
-                                    if (snapshot.child("discount").getValue() != null) {
-                                        discount = snapshot.child("discount").getValue(String.class);
-                                    }
+                    @Override
+                    protected void onBindViewHolder(final ViewHolder holder, final int position, final Cart model) {
 
-                                    if (snapshot.child("name").getValue() != null) {
-                                        name = snapshot.child("name").getValue(String.class);
-                                    }
+                        holders = holder;
+                        holder.carttheproductname.setText(pname);
+                        holder.carttheproductprice.setText("Price = " + price + "$");
+                        holder.cartdescriptionhere.setText(desc);
+                        holder.cartquantity.setText(quantity);
+                        holder.carttradernamehere.setText(tradername);
+                        myfirebasedatabase = FirebaseDatabase.getInstance();
 
+                        myProducts = myfirebasedatabase.getReference().child("Products");
+                        myProducts.keepSynced(true);
 
-                                    if (snapshot.child("image").getValue() != null) {
-                                        image = snapshot.child("image").getValue(String.class);
-                                    }
-
-                                    if (snapshot.child("tradername").getValue() != null) {
-                                        tradername = snapshot.child("tradername").getValue(String.class);
-                                    }
-
-                                    if (snapshot.child("traderimage").getValue() != null) {
-                                        traderimage = snapshot.child("traderimage").getValue(String.class);
-                                    }
-
-
-
-                                    return new Cart(pid, tid, quantity, price, desc, pimage, pname, discount, name, image, tradername, traderimage);
-
-
-                                }
-
-                            }).build();
-
-
-            adapter = new FirebaseRecyclerAdapter<Cart, ConfirmFinalOrderActivity1.ViewHolder>(options) {
-                @Override
-                public ConfirmFinalOrderActivity1.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-                    View view = LayoutInflater.from(parent.getContext())
-                            .inflate(R.layout.cart_items_layout, parent, false);
-
-                    return new ConfirmFinalOrderActivity1.ViewHolder(view);
-                }
-
-
-                @Override
-                protected void onBindViewHolder(final ConfirmFinalOrderActivity1.ViewHolder holder, final int position, final Cart model) {
-
-                    holders = holder;
-                    holder.carttheproductname.setText(pname);
-                    holder.carttheproductprice.setText("Price = " + price + "$");
-                    holder.cartdescriptionhere.setText(desc);
-                    holder.cartquantity.setText(quantity);
-                    holder.carttradernamehere.setText(tradername);
-                    myfirebasedatabase = FirebaseDatabase.getInstance();
-
-                    myProducts = myfirebasedatabase.getReference().child("Products");
-                    myProducts.keepSynced(true);
+                   /*
                     Query firebasequery =  myfirebasedatabase.getReference().child("Products").orderByChild("pid").equalTo(pid);
 
                     firebasequery.addValueEventListener(new ValueEventListener() {
@@ -870,129 +630,68 @@ public class ConfirmFinalOrderActivity1 extends AppCompatActivity implements Nav
                         }
                     });
 
-                    key = model.getpid();
-                    traderkey = model.gettid();
+                    */
 
-                    if (thepicturebeingloaded != null) {
-                        Picasso.get().load(pimage).placeholder(R.drawable.profile).into(thepicturebeingloaded);
-                    }
+                        key = model.getpid();
+                        traderkey = model.gettid();
 
-                    if (thetraderpicturebeingloaded != null) {
-                        Picasso.get().load(traderimage).placeholder(R.drawable.profile).into(thetraderpicturebeingloaded);
-                    }
-                  /*  productkeylist.add(pid);
-                    pricekeylist.add(price);
-                    imagekeylist.add(image);
-                    namekeylist.add(name);
-                    traderkeylist.add(tid);
+                        if (thepicturebeingloaded != null) {
+                            Picasso.get().load(pimage).placeholder(R.drawable.profile).into(thepicturebeingloaded);
+                        }
 
-*/
-                    holder.setImage(getApplicationContext(), pimage);
-                    holder.setTraderImage(getApplication(), traderimage);
+                        if (thetraderpicturebeingloaded != null) {
+                            Picasso.get().load(traderimage).placeholder(R.drawable.profile).into(thetraderpicturebeingloaded);
+                        }
 
-                    if(price != null) {
-                        if (quantity != null) {
 
-                            oneTyprProductTPrice = ((Integer.valueOf(price))) * Integer.valueOf(quantity);
+                        holder.setImage(getApplicationContext(), pimage);
+                        holder.setTraderImage(getApplicationContext(), traderimage);
+                  /*
+                        if (price != null) {
                             if (quantity != null) {
-                                if (price != null) {
 
-                                    Log.d("Price of Cart Activity", price);
-                                    Log.d("QuantityCart Activity", quantity );
+                                oneTyprProductTPrice = ((Integer.valueOf(price))) * Integer.valueOf(quantity);
+                                if (quantity != null) {
+                                    if (price != null) {
+
+                                        Log.d("Price of Cart Activity", price);
+                                        Log.d("QuantityCart Activity", quantity);
+                                    }
                                 }
+                                overTotalPrice = overTotalPrice + oneTyprProductTPrice;
                             }
-                            overTotalPrice = overTotalPrice + oneTyprProductTPrice;
-                        } }
-                    Toast.makeText(getApplicationContext(),"This represents the total price", overTotalPrice);
+                        }
+                        Toast.makeText(getApplicationContext(), "This represents the total price", overTotalPrice);
+*/
 
+                        if (holder != null) {
+                            holder.carttheproductname.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    if (role.equals("Trader")) {
+                                        Intent intent = new Intent(CartActivity1.this, ProductDetailsActivity.class);
+                                        if (intent != null) {
+                                            intent.putExtra("pid", key);
+                                            intent.putExtra("fromthehomeactivitytraderkey", traderkey);
+                                            intent.putExtra("fromthehomeactivityname", name);
+                                            intent.putExtra("fromthehomeactivityprice", price);
+                                            intent.putExtra("fromthehomeactivitydesc", desc);
+                                            intent.putExtra("fromthehomeactivityname", thetraderhere);
+                                            intent.putExtra("fromthehomeactivityimage", pimage);
 
-                    ordersRef = FirebaseDatabase.getInstance().getReference()
-                            .child("Orders");
-
-                    orderKey =ordersRef.push().getKey();
-                    cartRef = FirebaseDatabase.getInstance().getReference()
-                            .child("Cart");
-                    UsersRef = FirebaseDatabase.getInstance().getReference()
-                            .child("Users").child("Customers");
-                    ProductsRef = FirebaseDatabase.getInstance().getReference()
-                            .child("Orders").child(orderKey).child("products");
-                    Query userquery;
-                    if (mAuth.getCurrentUser() !=null) {
-                        userquery = UsersRef.child((mAuth.getCurrentUser().getUid())).orderByChild("uid").equalTo(mAuth.getCurrentUser().getUid());
-                        userquery.addValueEventListener(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                if (dataSnapshot.exists()) {
-
-                                    // CURRENT USERNAME HERE
-                                    if (dataSnapshot.child("name").getValue() != null) {
-                                        name = dataSnapshot.child("name").getValue(String.class);
-
+                                        }
+                                        startActivity(intent);
+                                    } else {
+                                        Intent intent = new Intent(CartActivity1.this, ProductDetailsActivity.class);
+                                        if (intent != null) {
+                                            intent.putExtra("fromthehomeactivitytoproductdetails", traderkey);
+                                        }
+                                        startActivity(intent);
                                     }
-                                    holder.nameofuser.setText(name);
-
-                                    if (dataSnapshot.child("address").getValue() != null) {
-                                        address = dataSnapshot.child("address").getValue(String.class);
-
-                                    }
-                                    holder.addresshere.setText(address);
-                                    if (dataSnapshot.child("city").getValue() != null) {
-                                        city = dataSnapshot.child("city").getValue(String.class);
-
-                                    }
-                                    holder.thecity.setText(city);
-
-                                    if (dataSnapshot.child("image").getValue() != null) {
-                                        image = dataSnapshot.child("image").getValue(String.class);
-                                    }
-                                    if (dataSnapshot.child("uid").getValue() != null) {
-                                        uid = dataSnapshot.child("uid").getValue(String.class);
-                                    }
-
-                                    if (dataSnapshot.child("phone").getValue() != null) {
-                                        phone = dataSnapshot.child("phone").getValue(String.class);
-                                    }
-
-
                                 }
-                            }
+                            });
 
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
-
-                            }
-                        });
-
-                    }
-
-                    if (holder != null) {
-                        holder.carttheproductname.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                if (role.equals("Trader")) {
-                                    Intent intent = new Intent(ConfirmFinalOrderActivity1.this, ProductDetailsActivity.class);
-                                    if (intent != null) {
-                                        intent.putExtra("pid", key);
-                                        intent.putExtra("fromthehomeactivitytraderkey", traderkey);
-                                        intent.putExtra("fromthehomeactivityname", name);
-                                        intent.putExtra("fromthehomeactivityprice", price);
-                                        intent.putExtra("fromthehomeactivitydesc", desc);
-                                        intent.putExtra("fromthehomeactivityname", thetraderhere);
-                                        intent.putExtra("fromthehomeactivityimage", pimage);
-
-                                    }
-                                    startActivity(intent);
-                                } else {
-                                    Intent intent = new Intent(ConfirmFinalOrderActivity1.this, ProductDetailsActivity.class);
-                                    if (intent != null) {
-                                        intent.putExtra("fromthehomeactivitytoproductdetails", traderkey);
-                                    }
-                                    startActivity(intent);
-                                }
-                            }
-                        });
-
-                    }
+                        }
 /*
                      oneTyprProductTPrice = ((Integer.valueOf(price))) * Integer.valueOf(quantity);
                                if (quantity != null) {
@@ -1003,40 +702,61 @@ public class ConfirmFinalOrderActivity1 extends AppCompatActivity implements Nav
                                    overTotalPrice = overTotalPrice + oneTyprProductTPrice;
 */
 
-                    productID = pid;
+                        productID = pid;
 
-                    if (holder != null) {
-                        holder.carttradernamehere.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                if (role.equals("Trader")) {
-                                    Intent intent = new Intent(ConfirmFinalOrderActivity1.this, TraderProfile.class);
-                                    intent.putExtra("pid", key);
-                                    intent.putExtra("fromhomeactivitytotraderprofile", traderkey);
+                        if (holder != null) {
+                            holder.carttradernamehere.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    if (role.equals("Trader")) {
+                                        Intent intent = new Intent(CartActivity1.this, TraderProfile.class);
+                                        intent.putExtra("pid", key);
+                                        intent.putExtra("fromhomeactivitytotraderprofile", traderkey);
 
-                                    startActivity(intent);
-                                } else {
-                                    Intent intent = new Intent(ConfirmFinalOrderActivity1.this, TraderProfile.class);
-                                    intent.putExtra("pid", key);
-                                    intent.putExtra("fromhomeactivitytotraderprofile", traderkey);
+                                        startActivity(intent);
+                                    } else {
+                                        Intent intent = new Intent(CartActivity1.this, TraderProfile.class);
+                                        intent.putExtra("pid", key);
+                                        intent.putExtra("fromhomeactivitytotraderprofile", traderkey);
 
-                                    startActivity(intent);
+                                        startActivity(intent);
+                                    }
                                 }
-                            }
-                        });
+                            });
+                        }
+
+
+                        if (holder != null) {
+                            holder.thetraderpicturebeingloaded.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    if (role.equals("Trader")) {
+                                        Intent intent = new Intent(CartActivity1.this, TraderProfile.class);
+                                        intent.putExtra("pid", key);
+                                        intent.putExtra("fromhomeactivitytotraderprofile", traderkey);
+
+                                        startActivity(intent);
+                                    } else {
+                                        Intent intent = new Intent(CartActivity1.this, TraderProfile.class);
+                                        intent.putExtra("pid", key);
+                                        intent.putExtra("fromhomeactivitytotraderprofile", traderkey);
+
+                                        startActivity(intent);
+                                    }
+                                }
+                            });
+                        }
+
                     }
 
+                };
+                recyclerView.setAdapter(adapter);
+            }
+            ;
 
-                }
 
-            };
-            recyclerView.setAdapter(adapter);
         }
-        ;
-
-
     }
-
 
 
     @Override
@@ -1061,12 +781,12 @@ public class ConfirmFinalOrderActivity1 extends AppCompatActivity implements Nav
         };
         // cartthenextactivityhere.setVisibility(View.GONE);
         //   txtTotalAmount.setVisibility(View.GONE);
-        if (adapter !=null) {
-            adapter.startListening();
-            if (mAuth != null) {
-                mAuth.addAuthStateListener(firebaseAuthListener);
-            }
+
+        adapter.startListening();
+        if (mAuth != null) {
+            mAuth.addAuthStateListener(firebaseAuthListener);
         }
+
 
     }
 
@@ -1074,13 +794,12 @@ public class ConfirmFinalOrderActivity1 extends AppCompatActivity implements Nav
     @Override
     protected void onStop () {
         super.onStop();
-        if (adapter !=null){
-            adapter.stopListening();
-            //     mProgress.hide();
-            if (mAuth != null) {
-                mAuth.removeAuthStateListener(firebaseAuthListener);
-            }
-        }}
+        adapter.stopListening();
+        //     mProgress.hide();
+        if (mAuth != null) {
+            mAuth.removeAuthStateListener(firebaseAuthListener);
+        }
+    }
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -1121,7 +840,7 @@ public class ConfirmFinalOrderActivity1 extends AppCompatActivity implements Nav
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(ConfirmFinalOrderActivity1.this, AdminAllCustomers.class);
+                        Intent intent = new Intent(CartActivity1.this, AdminAllCustomers.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", customerid);
                             intent.putExtra("role", role);
@@ -1137,7 +856,7 @@ public class ConfirmFinalOrderActivity1 extends AppCompatActivity implements Nav
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(ConfirmFinalOrderActivity1.this, AdminAllCustomers.class);
+                        Intent intent = new Intent(CartActivity1.this, AdminAllCustomers.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", customerid);
                             intent.putExtra("role", role);
@@ -1158,7 +877,7 @@ public class ConfirmFinalOrderActivity1 extends AppCompatActivity implements Nav
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(ConfirmFinalOrderActivity1.this, AdminAddNewProductActivity.class);
+                        Intent intent = new Intent(CartActivity1.this, AdminAddNewProductActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", customerid);
                             intent.putExtra("role", role);
@@ -1174,7 +893,7 @@ public class ConfirmFinalOrderActivity1 extends AppCompatActivity implements Nav
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(ConfirmFinalOrderActivity1.this, AdminAddNewProductActivity.class);
+                        Intent intent = new Intent(CartActivity1.this, AdminAddNewProductActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", customerid);
                             intent.putExtra("role", role);
@@ -1195,7 +914,7 @@ public class ConfirmFinalOrderActivity1 extends AppCompatActivity implements Nav
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(ConfirmFinalOrderActivity1.this, ViewYourPersonalProduct.class);
+                        Intent intent = new Intent(CartActivity1.this, ViewYourPersonalProduct.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", customerid);
                             intent.putExtra("role", role);
@@ -1211,7 +930,7 @@ public class ConfirmFinalOrderActivity1 extends AppCompatActivity implements Nav
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(ConfirmFinalOrderActivity1.this, ViewYourPersonalProduct.class);
+                        Intent intent = new Intent(CartActivity1.this, ViewYourPersonalProduct.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", customerid);
                             intent.putExtra("role", role);
@@ -1232,7 +951,7 @@ public class ConfirmFinalOrderActivity1 extends AppCompatActivity implements Nav
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(ConfirmFinalOrderActivity1.this, ViewSpecificUsersCart.class);
+                        Intent intent = new Intent(CartActivity1.this, ViewSpecificUsersCart.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", customerid);
                             intent.putExtra("role", role);
@@ -1248,7 +967,7 @@ public class ConfirmFinalOrderActivity1 extends AppCompatActivity implements Nav
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(ConfirmFinalOrderActivity1.this, ViewSpecificUsersCart.class);
+                        Intent intent = new Intent(CartActivity1.this, ViewSpecificUsersCart.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", customerid);
                             intent.putExtra("role", role);
@@ -1269,7 +988,7 @@ public class ConfirmFinalOrderActivity1 extends AppCompatActivity implements Nav
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(ConfirmFinalOrderActivity1.this, ViewAllCarts.class);
+                        Intent intent = new Intent(CartActivity1.this, ViewAllCarts.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", customerid);
                             intent.putExtra("role", role);
@@ -1285,7 +1004,7 @@ public class ConfirmFinalOrderActivity1 extends AppCompatActivity implements Nav
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(ConfirmFinalOrderActivity1.this, ViewAllCarts.class);
+                        Intent intent = new Intent(CartActivity1.this, ViewAllCarts.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", customerid);
                             intent.putExtra("role", role);
@@ -1305,7 +1024,7 @@ public class ConfirmFinalOrderActivity1 extends AppCompatActivity implements Nav
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(ConfirmFinalOrderActivity1.this, AdminProductDetails.class);
+                        Intent intent = new Intent(CartActivity1.this, AdminProductDetails.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", customerid);
                             intent.putExtra("role", role);
@@ -1321,7 +1040,7 @@ public class ConfirmFinalOrderActivity1 extends AppCompatActivity implements Nav
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(ConfirmFinalOrderActivity1.this, AdminProductDetails.class);
+                        Intent intent = new Intent(CartActivity1.this, AdminProductDetails.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", customerid);
                             intent.putExtra("role", role);
@@ -1341,7 +1060,7 @@ public class ConfirmFinalOrderActivity1 extends AppCompatActivity implements Nav
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(ConfirmFinalOrderActivity1.this, AdminMaintainProductsActivity.class);
+                        Intent intent = new Intent(CartActivity1.this, AdminMaintainProductsActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", customerid);
                             intent.putExtra("role", role);
@@ -1357,7 +1076,7 @@ public class ConfirmFinalOrderActivity1 extends AppCompatActivity implements Nav
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(ConfirmFinalOrderActivity1.this, AdminMaintainProductsActivity.class);
+                        Intent intent = new Intent(CartActivity1.this, AdminMaintainProductsActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", customerid);
                             intent.putExtra("role", role);
@@ -1378,7 +1097,7 @@ public class ConfirmFinalOrderActivity1 extends AppCompatActivity implements Nav
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(ConfirmFinalOrderActivity1.this, AdminCategoryActivity.class);
+                        Intent intent = new Intent(CartActivity1.this, AdminCategoryActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", customerid);
                             intent.putExtra("role", role);
@@ -1394,7 +1113,7 @@ public class ConfirmFinalOrderActivity1 extends AppCompatActivity implements Nav
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(ConfirmFinalOrderActivity1.this, AdminCategoryActivity.class);
+                        Intent intent = new Intent(CartActivity1.this, AdminCategoryActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", customerid);
                             intent.putExtra("role", role);
@@ -1414,7 +1133,7 @@ public class ConfirmFinalOrderActivity1 extends AppCompatActivity implements Nav
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(ConfirmFinalOrderActivity1.this, AdminAllCustomers.class);
+                        Intent intent = new Intent(CartActivity1.this, AdminAllCustomers.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", customerid);
                             intent.putExtra("role", role);
@@ -1430,7 +1149,7 @@ public class ConfirmFinalOrderActivity1 extends AppCompatActivity implements Nav
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(ConfirmFinalOrderActivity1.this, AdminAllCustomers.class);
+                        Intent intent = new Intent(CartActivity1.this, AdminAllCustomers.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", customerid);
                             intent.putExtra("role", role);
@@ -1452,7 +1171,7 @@ public class ConfirmFinalOrderActivity1 extends AppCompatActivity implements Nav
         if (id == R.id.viewmap) {
             if (!role.equals("Trader")) {
 
-                Intent intent = new Intent(ConfirmFinalOrderActivity1.this, com.simcoder.bimbo.CustomerMapActivity.class);
+                Intent intent = new Intent(CartActivity1.this, com.simcoder.bimbo.CustomerMapActivity.class);
                 if (intent != null) {
                     intent.putExtra("roledhomeactivitytocustomermapactivity", role);
                     intent.putExtra("fromhomeactivitytocustomermapactivity", customerid);
@@ -1461,7 +1180,7 @@ public class ConfirmFinalOrderActivity1 extends AppCompatActivity implements Nav
                 }
             } else {
 
-                Intent intent = new Intent(ConfirmFinalOrderActivity1.this, DriverMapActivity.class);
+                Intent intent = new Intent(CartActivity1.this, DriverMapActivity.class);
                 if (intent != null) {
                     intent.putExtra("rolefromhomeactivitytodrivermapactivity", role);
                     intent.putExtra("fromhomeactivitytodrivermapactivity", customerid);
@@ -1477,7 +1196,7 @@ public class ConfirmFinalOrderActivity1 extends AppCompatActivity implements Nav
         if (id == R.id.nav_social_media) {
             if (!role.equals("Trader")) {
 
-                Intent intent = new Intent(ConfirmFinalOrderActivity1.this, InstagramHomeActivity.class);
+                Intent intent = new Intent(CartActivity1.this, InstagramHomeActivity.class);
                 if (intent != null) {
                     intent.putExtra("roledhomeactivitytocustomermapactivity", role);
                     intent.putExtra("fromhomeactivitytocustomermapactivity", customerid);
@@ -1486,7 +1205,7 @@ public class ConfirmFinalOrderActivity1 extends AppCompatActivity implements Nav
                 }
             } else {
 
-                Intent intent = new Intent(ConfirmFinalOrderActivity1.this, InstagramHomeActivity.class);
+                Intent intent = new Intent(CartActivity1.this, InstagramHomeActivity.class);
                 if (intent != null) {
                     intent.putExtra("rolefromhomeactivitytodrivermapactivity", role);
                     intent.putExtra("fromhomeactivitytodrivermapactivity", customerid);
@@ -1499,7 +1218,7 @@ public class ConfirmFinalOrderActivity1 extends AppCompatActivity implements Nav
         }
         if (id == R.id.nav_cart) {
             if (!role.equals("Trader")) {
-                Intent intent = new Intent(ConfirmFinalOrderActivity1.this, CartActivity.class);
+                Intent intent = new Intent(CartActivity1.this, CartActivity.class);
                 if (intent != null) {
                     startActivity(intent);
                 }
@@ -1510,7 +1229,7 @@ public class ConfirmFinalOrderActivity1 extends AppCompatActivity implements Nav
 
         if (id == R.id.viewproducts) {
             if (!role.equals("Trader")) {
-                Intent intent = new Intent(ConfirmFinalOrderActivity1.this, HomeActivity.class);
+                Intent intent = new Intent(CartActivity1.this, HomeActivity.class);
                 if (intent != null) {
                     startActivity(intent);
                 }
@@ -1520,7 +1239,7 @@ public class ConfirmFinalOrderActivity1 extends AppCompatActivity implements Nav
         }
         if (id == R.id.nav_search) {
             if (!role.equals("Trader")) {
-                Intent intent = new Intent(ConfirmFinalOrderActivity1.this, SearchProductsActivity.class);
+                Intent intent = new Intent(CartActivity1.this, SearchProductsActivity.class);
                 if (intent != null) {
                     startActivity(intent);
                 }
@@ -1533,7 +1252,7 @@ public class ConfirmFinalOrderActivity1 extends AppCompatActivity implements Nav
             if (FirebaseAuth.getInstance() != null) {
                 FirebaseAuth.getInstance().signOut();
                 if (mGoogleApiClient != null) {
-                    mGoogleSignInClient.signOut().addOnCompleteListener(ConfirmFinalOrderActivity1.this,
+                    mGoogleSignInClient.signOut().addOnCompleteListener(CartActivity1.this,
                             new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
@@ -1542,7 +1261,7 @@ public class ConfirmFinalOrderActivity1 extends AppCompatActivity implements Nav
                             });
                 }
             }
-            Intent intent = new Intent(ConfirmFinalOrderActivity1.this, com.simcoder.bimbo.MainActivity.class);
+            Intent intent = new Intent(CartActivity1.this, com.simcoder.bimbo.MainActivity.class);
             if (intent != null) {
                 startActivity(intent);
                 finish();
@@ -1551,7 +1270,7 @@ public class ConfirmFinalOrderActivity1 extends AppCompatActivity implements Nav
 
         if (id == R.id.nav_settings) {
             if (!role.equals("Trader")) {
-                Intent intent = new Intent(ConfirmFinalOrderActivity1.this, com.simcoder.bimbo.WorkActivities.SettinsActivity.class);
+                Intent intent = new Intent(CartActivity1.this, com.simcoder.bimbo.WorkActivities.SettinsActivity.class);
                 if (intent != null) {
                     startActivity(intent);
                 }
@@ -1560,7 +1279,7 @@ public class ConfirmFinalOrderActivity1 extends AppCompatActivity implements Nav
         }
         if (id == R.id.nav_history) {
             if (!role.equals("Trader")) {
-                Intent intent = new Intent(ConfirmFinalOrderActivity1.this, HistoryActivity.class);
+                Intent intent = new Intent(CartActivity1.this, HistoryActivity.class);
                 if (intent != null) {
                     startActivity(intent);
                 }
@@ -1578,7 +1297,7 @@ public class ConfirmFinalOrderActivity1 extends AppCompatActivity implements Nav
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(ConfirmFinalOrderActivity1.this, CustomerProfile.class);
+                        Intent intent = new Intent(CartActivity1.this, CustomerProfile.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", cusomerId);
                             intent.putExtra("role", role);
@@ -1594,7 +1313,7 @@ public class ConfirmFinalOrderActivity1 extends AppCompatActivity implements Nav
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(ConfirmFinalOrderActivity1.this, TraderProfile.class);
+                        Intent intent = new Intent(CartActivity1.this, TraderProfile.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", cusomerId);
                             intent.putExtra("role", role);
@@ -1612,7 +1331,7 @@ public class ConfirmFinalOrderActivity1 extends AppCompatActivity implements Nav
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(ConfirmFinalOrderActivity1.this, HomeActivity.class);
+                        Intent intent = new Intent(CartActivity1.this, HomeActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", cusomerId);
                             intent.putExtra("role", role);
@@ -1628,7 +1347,7 @@ public class ConfirmFinalOrderActivity1 extends AppCompatActivity implements Nav
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(ConfirmFinalOrderActivity1.this, AdminAllCustomers.class);
+                        Intent intent = new Intent(CartActivity1.this, AdminAllCustomers.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", cusomerId);
                             intent.putExtra("role", role);
@@ -1649,7 +1368,7 @@ public class ConfirmFinalOrderActivity1 extends AppCompatActivity implements Nav
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(ConfirmFinalOrderActivity1.this, HomeActivity.class);
+                        Intent intent = new Intent(CartActivity1.this, HomeActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", cusomerId);
                             intent.putExtra("role", role);
@@ -1665,7 +1384,7 @@ public class ConfirmFinalOrderActivity1 extends AppCompatActivity implements Nav
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(ConfirmFinalOrderActivity1.this, AdminAddNewProductActivity.class);
+                        Intent intent = new Intent(CartActivity1.this, AdminAddNewProductActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", cusomerId);
                             intent.putExtra("role", role);
@@ -1686,7 +1405,7 @@ public class ConfirmFinalOrderActivity1 extends AppCompatActivity implements Nav
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(ConfirmFinalOrderActivity1.this, HomeActivity.class);
+                        Intent intent = new Intent(CartActivity1.this, HomeActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", cusomerId);
                             intent.putExtra("role", role);
@@ -1702,7 +1421,7 @@ public class ConfirmFinalOrderActivity1 extends AppCompatActivity implements Nav
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(ConfirmFinalOrderActivity1.this, ViewYourPersonalProduct.class);
+                        Intent intent = new Intent(CartActivity1.this, ViewYourPersonalProduct.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", cusomerId);
                             intent.putExtra("role", role);
@@ -1723,7 +1442,7 @@ public class ConfirmFinalOrderActivity1 extends AppCompatActivity implements Nav
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(ConfirmFinalOrderActivity1.this, HomeActivity.class);
+                        Intent intent = new Intent(CartActivity1.this, HomeActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", cusomerId);
                             intent.putExtra("role", role);
@@ -1739,7 +1458,7 @@ public class ConfirmFinalOrderActivity1 extends AppCompatActivity implements Nav
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(ConfirmFinalOrderActivity1.this, ViewSpecificUsersCart.class);
+                        Intent intent = new Intent(CartActivity1.this, ViewSpecificUsersCart.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", cusomerId);
                             intent.putExtra("role", role);
@@ -1760,7 +1479,7 @@ public class ConfirmFinalOrderActivity1 extends AppCompatActivity implements Nav
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(ConfirmFinalOrderActivity1.this, HomeActivity.class);
+                        Intent intent = new Intent(CartActivity1.this, HomeActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", cusomerId);
                             intent.putExtra("role", role);
@@ -1776,7 +1495,7 @@ public class ConfirmFinalOrderActivity1 extends AppCompatActivity implements Nav
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(ConfirmFinalOrderActivity1.this, ViewAllCarts.class);
+                        Intent intent = new Intent(CartActivity1.this, ViewAllCarts.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", cusomerId);
                             intent.putExtra("role", role);
@@ -1796,7 +1515,7 @@ public class ConfirmFinalOrderActivity1 extends AppCompatActivity implements Nav
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(ConfirmFinalOrderActivity1.this, HomeActivity.class);
+                        Intent intent = new Intent(CartActivity1.this, HomeActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", cusomerId);
                             intent.putExtra("role", role);
@@ -1812,7 +1531,7 @@ public class ConfirmFinalOrderActivity1 extends AppCompatActivity implements Nav
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(ConfirmFinalOrderActivity1.this, AdminProductDetails.class);
+                        Intent intent = new Intent(CartActivity1.this, AdminProductDetails.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", cusomerId);
                             intent.putExtra("role", role);
@@ -1832,7 +1551,7 @@ public class ConfirmFinalOrderActivity1 extends AppCompatActivity implements Nav
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(ConfirmFinalOrderActivity1.this, HomeActivity.class);
+                        Intent intent = new Intent(CartActivity1.this, HomeActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", cusomerId);
                             intent.putExtra("role", role);
@@ -1848,7 +1567,7 @@ public class ConfirmFinalOrderActivity1 extends AppCompatActivity implements Nav
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(ConfirmFinalOrderActivity1.this, AdminMaintainProductsActivity.class);
+                        Intent intent = new Intent(CartActivity1.this, AdminMaintainProductsActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", cusomerId);
                             intent.putExtra("role", role);
@@ -1869,7 +1588,7 @@ public class ConfirmFinalOrderActivity1 extends AppCompatActivity implements Nav
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(ConfirmFinalOrderActivity1.this, HomeActivity.class);
+                        Intent intent = new Intent(CartActivity1.this, HomeActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", cusomerId);
                             intent.putExtra("role", role);
@@ -1885,7 +1604,7 @@ public class ConfirmFinalOrderActivity1 extends AppCompatActivity implements Nav
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(ConfirmFinalOrderActivity1.this, AdminCategoryActivity.class);
+                        Intent intent = new Intent(CartActivity1.this, AdminCategoryActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", cusomerId);
                             intent.putExtra("role", role);
@@ -1905,7 +1624,7 @@ public class ConfirmFinalOrderActivity1 extends AppCompatActivity implements Nav
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(ConfirmFinalOrderActivity1.this, HomeActivity.class);
+                        Intent intent = new Intent(CartActivity1.this, HomeActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", cusomerId);
                             intent.putExtra("role", role);
@@ -1921,7 +1640,7 @@ public class ConfirmFinalOrderActivity1 extends AppCompatActivity implements Nav
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(ConfirmFinalOrderActivity1.this, AdminAllCustomers.class);
+                        Intent intent = new Intent(CartActivity1.this, AdminAllCustomers.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", cusomerId);
                             intent.putExtra("role", role);
@@ -1940,7 +1659,5 @@ public class ConfirmFinalOrderActivity1 extends AppCompatActivity implements Nav
    */
         return true;
     }
-
-
 
 }

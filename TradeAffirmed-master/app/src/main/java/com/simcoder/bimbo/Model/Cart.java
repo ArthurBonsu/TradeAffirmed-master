@@ -230,6 +230,32 @@ public class Cart {
 
     }
 
+    public Cart( String pid,String tid, String price, String amount,String desc,String pimage,String pname,String discount,String name,String image,String tradername,String traderimage,String date,String time,String uid,String quantity) {
+
+
+        this.cartkey = cartkey;
+        this.pid = pid;
+        this.tid = tid;
+        this.quantity = quantity;
+        this.price = price;
+        this.desc = desc;
+
+        this.discount = discount;
+        this.name = name;
+        this.image = image;
+        this.tradername = tradername;
+        this.traderimage = traderimage;
+        this.pname = pname;
+        this.pimage = pimage;
+        this.date =date;
+        this.photoid = photoid;
+        this.uid = uid;
+        this.state = state;
+        this.pimage = pimage;
+        this.time = time;
+        this.amount = amount;
+
+    }
 
 
     public String gettradername() {

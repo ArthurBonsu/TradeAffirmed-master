@@ -591,7 +591,7 @@ public class ConfirmFinalOrderActivity extends AppCompatActivity implements Navi
             cartquantity = itemView.findViewById(R.id.cartquantity);
 
             //cartimage referst to the trader of the product
-            cartimageonscreen = itemView.findViewById(R.id.cartimageonscreen);
+            cartimageonscreen = itemView.findViewById(R.id.carttraderimageonscreen);
             cartproductimageonscreeen = itemView.findViewById(R.id.cartproductimageonscreeen);
             numberoflikesimage = itemView.findViewById(R.id.numberoflikesimage);
             therealnumberoflikes =  itemView.findViewById(R.id.therealnumberoflikes);
@@ -671,7 +671,7 @@ public class ConfirmFinalOrderActivity extends AppCompatActivity implements Navi
         }
 
         public void setTraderImage(final Context ctx, final String image) {
-            final android.widget.ImageView cartimageonscreen = (android.widget.ImageView) itemView.findViewById(R.id.cartimageonscreen);
+            final android.widget.ImageView cartimageonscreen = (android.widget.ImageView) itemView.findViewById(R.id.carttraderimageonscreen);
 
             Picasso.get().load(image).resize(400, 0).networkPolicy(NetworkPolicy.OFFLINE).into(cartimageonscreen, new Callback() {
 

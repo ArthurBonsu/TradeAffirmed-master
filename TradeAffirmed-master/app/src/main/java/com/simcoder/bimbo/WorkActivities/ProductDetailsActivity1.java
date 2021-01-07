@@ -133,7 +133,8 @@ public class ProductDetailsActivity1 extends AppCompatActivity   implements Navi
    TextView likesgiven;
     ImageView traderimagehere;
     DatabaseReference cartListRef;
-
+    ProductDetailsViewHolders1 holders;
+       int currentprice;
 
 
     @Override
@@ -467,7 +468,7 @@ public class ProductDetailsActivity1 extends AppCompatActivity   implements Navi
        // CheckOrderState();
     }
 
-    private void addingToCartList() {
+    public void addingToCartList() {
         String saveCurrentTime, saveCurrentDate;
 
         Calendar calForDate = Calendar.getInstance();
@@ -501,6 +502,7 @@ public class ProductDetailsActivity1 extends AppCompatActivity   implements Navi
         cartMap.put("pid", pid);
         cartMap.put("tid", tid);
         cartMap.put("price", price);
+        cartMap.put("amount", currentprice);
         cartMap.put("desc", desc);
         cartMap.put("pimage", pimage);
         cartMap.put("pname", pname);
@@ -591,7 +593,7 @@ public class ProductDetailsActivity1 extends AppCompatActivity   implements Navi
 
         Query query = myfirebaseDatabase
                 .getReference()
-                .child("Product").orderByChild("pid").equalTo(productID);
+                .child("Product").orderByChild("pid").equalTo(productID).limitToFirst(1);
         if (query != null) {
 
             FirebaseRecyclerOptions<Products> options =
@@ -662,6 +664,7 @@ public class ProductDetailsActivity1 extends AppCompatActivity   implements Navi
             adapter = new FirebaseRecyclerAdapter<Products, ProductDetailsActivity1.ProductDetailsViewHolders1>(options) {
                 @Override
                 protected void onBindViewHolder(@NonNull ProductDetailsActivity1.ProductDetailsViewHolders1 holder, int i, @NonNull Products model) {
+                    holders = holder;
                     if (holder != null) {
 
 
@@ -686,7 +689,9 @@ public class ProductDetailsActivity1 extends AppCompatActivity   implements Navi
                         @Override
                         public void onClick(View v) {
                             quantityselected = +1;
-                            quantityselectedandshown.setText(quantityselected);
+                            holders.quantityselectedandshown.setText(quantityselected);
+                              currentprice  =  Integer.parseInt(model.getprice()) * quantityselected;
+                            holders.product_price_details.setText(currentprice);
                         }
                     });
 

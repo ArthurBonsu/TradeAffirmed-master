@@ -115,6 +115,7 @@ public  class  HomeActivity extends AppCompatActivity
     String followingimage;
     String userid;
     TextView thefollowerid;
+    TextView  product_discount;
 
     FloatingActionButton fab;
   public  static   String thefolloweridgrabber;
@@ -207,7 +208,7 @@ public  class  HomeActivity extends AppCompatActivity
             product_imagehere = (ImageView) findViewById(R.id.product_imagehere);
             thetraderimageforproduct = (ImageView) findViewById(R.id.thetraderimageforproduct);
             thefollowerid = (TextView) findViewById(R.id.thefollowerid);
-
+            product_discount = (TextView)findViewById(R.id.product_discount);
             Paper.init(this);
 
             Toolbar toolbar = (Toolbar) findViewById(R.id.hometoolbar);
@@ -259,7 +260,7 @@ public  class  HomeActivity extends AppCompatActivity
             productkey = ProductsRef.getKey();
             // GET FROM FOLLOWING KEY
 
-            productkey = ProductsRef.getKey();
+
 
             fetch();
             recyclerView.setAdapter(adapter);
@@ -394,7 +395,7 @@ public  class  HomeActivity extends AppCompatActivity
 
         public TextView product_name;
         public TextView product_price;
-
+        public  TextView product_discount;
         public TextView product_description;
         public TextView thetraderiknow;
 
@@ -417,7 +418,7 @@ public  class  HomeActivity extends AppCompatActivity
             product_price = itemView.findViewById(R.id.product_price);
             product_description = itemView.findViewById(R.id.product_description);
             thetraderiknow = itemView.findViewById(R.id.thetraderiknow);
-
+            product_discount = itemView.findViewById(R.id.product_discount);
 
             //cartimage referst to the trader of the product
             product_imagehere = itemView.findViewById(R.id.product_imagehere);
@@ -449,6 +450,10 @@ public  class  HomeActivity extends AppCompatActivity
         public void setcartdescriptionhere(String currentdescription) {
 
             product_description.setText(currentdescription);
+        }
+        public void setproduct_discount(String product_discount1) {
+
+            product_discount.setText(product_discount1);
         }
 
         public void setTraderImage(final Context ctx, final String image) {
@@ -648,7 +653,6 @@ public  class  HomeActivity extends AppCompatActivity
                                                         tid = snapshot.child("tid").getValue(String.class);
                                                     }
 
-
                                                     return new Products(categoryname, date, desc, discount, time, pid, pimage, pname, price, image, name, size, tradername, traderimage, tid);
 
 
@@ -681,7 +685,7 @@ public  class  HomeActivity extends AppCompatActivity
 
                                     holder.product_description.setText(desc);
                                     holder.product_price.setText("Price = " +  "$" +price );
-
+                                    holder.product_discount.setText(discount);
 
 
 

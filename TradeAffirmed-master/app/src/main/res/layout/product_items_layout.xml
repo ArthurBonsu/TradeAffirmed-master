@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -94,17 +94,17 @@
             tools:visibility="visible"
             android:gravity="center_horizontal"
             tools:ignore="DuplicateIds"
-            android:layout_below="@+id/product_price"
+
             />
 
 
         <TextView
-            android:id="@+id/product_description"
+            android:id="@+id/product_discount"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
             android:paddingBottom="@dimen/activity_vertical_margin"
-            android:text="@string/product_description"
+            android:text="discount"
             android:textAlignment="center"
             android:textColor="@color/colorPrimaryDark"
             android:textSize="24sp"
@@ -118,7 +118,24 @@
             android:id="@+id/thefollowerid"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="TextView" />
+            android:text="Followerid" />
 
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="@dimen/tw__btn_bar_margin_left">
 
-</RelativeLayout>
+        <ImageButton
+            android:id="@+id/thehomelikebutton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Click to like product" />
+
+                <TextView
+                    android:id="@+id/thenumberoflikes"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Number of likes" />
+        </LinearLayout>
+</LinearLayout>
