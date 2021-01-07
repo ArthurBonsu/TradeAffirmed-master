@@ -132,7 +132,7 @@ public  class  HomeActivity extends AppCompatActivity
     public interface Getmyfollowings {
 
         void onCallback(String followingid, String followingname, String followingimage);
-
+       String onfollowining(String following);
 
     }
 
@@ -319,7 +319,7 @@ public  class  HomeActivity extends AppCompatActivity
                                     if (followingid != null && followingname != null && followingimage != null) {
 
                                         getmyfollowingsagain.onCallback(followingid, followingname, followingimage);
-
+                                         getmyfollowingsagain.onfollowining(followingid);
 
                                     }
                                 }
@@ -547,7 +547,7 @@ public  class  HomeActivity extends AppCompatActivity
                                         if (followingid != null && followingname != null && followingimage != null) {
 
                                             getmyfollowingsagain.onCallback(followingid, followingname, followingimage);
-
+                                             getmyfollowingsagain.onfollowining(followingid);
 
                                         }
                                     }
@@ -561,11 +561,11 @@ public  class  HomeActivity extends AppCompatActivity
                             }
                         });
                     }}
-
+                    String getfollowingid  = getmyfollowingsagain.onfollowining(followingid);
                 if (traderoruser != null) {
                     // No. has to give the whole population details of the product
                     if (ProductsRef != null) {
-                        Query ProductsQuery = ProductsRef.orderByChild("tid").equalTo(traderoruser);
+                        Query ProductsQuery = ProductsRef.orderByChild("tid").equalTo(getfollowingid);
 
 
                         if (ProductsQuery != null) {
