@@ -56,11 +56,16 @@ import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.simcoder.bimbo.Model.Users;
 import com.simcoder.bimbo.R;
 import com.simcoder.bimbo.instagram.Home.InstagramHomeActivity;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.HashMap;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.paperdb.Paper;
@@ -88,7 +93,7 @@ public  class  ConfirmFinalOrderActivity1 extends AppCompatActivity
     private FirebaseAuth.AuthStateListener firebaseAuthListener;
     private FirebaseRecyclerAdapter adapter;
     TextView therealnumberoflikes;
-
+     TextView gobacktohomefromconfirm;
     ViewHolder holders;
 
     //AUTHENTICATORS
@@ -132,26 +137,18 @@ public  class  ConfirmFinalOrderActivity1 extends AppCompatActivity
     Query cartquery;
     Query thelikequery;
     String productkey;
-
     DatabaseReference myProducts;
     String date, desc, discount, name, photoid,pid, pimage, pname,tid, traderimage;
+    String  state, city,phone,address;
+    DatabaseReference OrdersRef;
 
-
+    String orderKey; String amount;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(
-                (R.layout.activitynewcart));
-        Intent intent = getIntent();
-        Bundle bundle = intent.getExtras();
-        if (bundle != null)
-        // TYPE IS THE SAME AS ROLE
+                (R.layout.confirmreceitfromcart));
 
-
-        {  if (getIntent().getStringExtra("cartkey") != null) {
-            cartkey = getIntent().getStringExtra("cartkey");
-        }
-        }
 
         recyclerView = findViewById(R.id.stickyheaderrecyler);
         final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
@@ -229,10 +226,11 @@ public  class  ConfirmFinalOrderActivity1 extends AppCompatActivity
             TextView userNameTextView = headerView.findViewById(R.id.user_profile_name);
             CircleImageView profileImageView = headerView.findViewById(R.id.user_profile_image);
         }
-        cartthenextactivityhere = (Button) findViewById(R.id.cartnextbutton2);
+        cartthenextactivityhere = (Button) findViewById(R.id.confirmtherderbutton);
         txtTotalAmount = (TextView) findViewById(R.id.total_price1);
         cartthenextactivityhere.setVisibility(View.GONE);
         txtTotalAmount.setVisibility(View.GONE);
+        gobacktohomefromconfirm  = (TextView)findViewById(R.id.gobacktohomefromconfirm);
 
         thepicturebeingloaded = (android.widget.ImageView) findViewById(R.id.cartproductimageonscreeen);
         thetraderpicturebeingloaded = (android.widget.ImageView) findViewById(R.id.carttraderimageonscreen);
@@ -295,7 +293,7 @@ public  class  ConfirmFinalOrderActivity1 extends AppCompatActivity
                 }
             });
 */
-            final boolean[] loading = {true};
+          /*  final boolean[] loading = {true};
 
             recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
                 @Override
@@ -329,23 +327,30 @@ public  class  ConfirmFinalOrderActivity1 extends AppCompatActivity
                 }
             });
 
+
+           */
             cartthenextactivityhere.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(View view) {
+                public void onClick(View view)
+                {  // confirmorder();
                     Intent intent = new Intent(ConfirmFinalOrderActivity1.this, ConfirmFinalOrderActivity.class);
-                    intent.putExtra("Total Price", String.valueOf(overTotalPrice));
+                    intent.putExtra("orderkey", orderKey);
                     startActivity(intent);
                     finish();
 
-                  /*  if (txtTotalAmount != null){
-                    if (txtTotalAmount.getText() !=null){
-                        if (txtTotalAmount.getText().toString() !=null){
-                            //WE SHOULD PASS THE PARAMETER OF THE CART KEY AND ORDER KEY TO THE CONFIRM ORDER
 
-                            overTotalPrice = Integer.parseInt(txtTotalAmount.getText().toString());
+                }
+            });
 
-                        }}}}*/
-                }   });
+            gobacktohomefromconfirm.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(ConfirmFinalOrderActivity1.this, HomeActivity.class);
+                   startActivity(intent);
+                    finish();
+
+                }
+            });
 /*
             int pos = layoutManager.findLastCompletelyVisibleItemPosition();
             int numItems =  adapter.getItemCount();
@@ -354,9 +359,12 @@ public  class  ConfirmFinalOrderActivity1 extends AppCompatActivity
 
 
             };*/
+
+
+            //  confirmorder()
+
+
         }}
-
-
 
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -366,14 +374,14 @@ public  class  ConfirmFinalOrderActivity1 extends AppCompatActivity
         public TextView carttradernamehere;
         public TextView cartdescriptionhere;
         public TextView cartquantity;
-        public  TextView  therealnumberoflikes;
+        public TextView therealnumberoflikes;
 
 
         public android.widget.ImageView cartimageonscreen;
         public android.widget.ImageView cartproductimageonscreeen;
         public android.widget.ImageView numberoflikesimage;
         public ItemClickListner listner;
-        public  android.widget.ImageView thetraderpicturebeingloaded;
+        public android.widget.ImageView thetraderpicturebeingloaded;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -387,7 +395,7 @@ public  class  ConfirmFinalOrderActivity1 extends AppCompatActivity
             thetraderpicturebeingloaded = itemView.findViewById(R.id.carttraderimageonscreen);
             cartproductimageonscreeen = itemView.findViewById(R.id.cartproductimageonscreeen);
             numberoflikesimage = itemView.findViewById(R.id.numberoflikesimage);
-            therealnumberoflikes =  itemView.findViewById(R.id.therealnumberoflikes);
+            therealnumberoflikes = itemView.findViewById(R.id.therealnumberoflikes);
 
         }
 
@@ -445,7 +453,8 @@ public  class  ConfirmFinalOrderActivity1 extends AppCompatActivity
 
                     });
 
-                }}
+                }
+            }
         }
 
         public void setTraderImage(final Context ctx, final String image) {
@@ -488,16 +497,13 @@ public  class  ConfirmFinalOrderActivity1 extends AppCompatActivity
 
 
             });
-
-
         }
-
-
-
 
     }
 
     private void fetch() {
+
+
         //WE PULL FROM CART ACTIVITY AFTER WE HAVE PUSHED THE CONTENTS TO CART ACTIVITY
         if (cartkey != null) {
             Query query = FirebaseDatabase.getInstance()
@@ -528,6 +534,9 @@ public  class  ConfirmFinalOrderActivity1 extends AppCompatActivity
                                         if (snapshot.child("price").getValue() != null) {
                                             price = snapshot.child("price").getValue(String.class);
 
+                                        }
+                                        if (snapshot.child("amount").getValue() != null) {
+                                            amount = snapshot.child("amount").getValue(String.class);
                                         }
 
                                         if (snapshot.child("desc").getValue() != null) {
@@ -563,15 +572,22 @@ public  class  ConfirmFinalOrderActivity1 extends AppCompatActivity
                                         if (snapshot.child("traderimage").getValue() != null) {
                                             traderimage = snapshot.child("traderimage").getValue(String.class);
                                         }
+                                        if (snapshot.child("date").getValue() != null) {
+                                            date = snapshot.child("date").getValue(String.class);
+                                        }
+                                        if (snapshot.child("time").getValue() != null) {
+                                            time = snapshot.child("time").getValue(String.class);
+                                        }
+                                        if (snapshot.child("uid").getValue() != null) {
+                                            uid = snapshot.child("uid").getValue(String.class);
+                                        }
 
-
-                                        return new Cart(pid, tid, quantity, price, desc, pimage, pname, discount, name, image, tradername, traderimage);
+                                        return new Cart(pid, tid, price, amount, desc, pimage, pname, discount, name, image, tradername, traderimage, date, time, uid, quantity);
 
 
                                     }
 
                                 }).build();
-
 
                 adapter = new FirebaseRecyclerAdapter<Cart, ViewHolder>(options) {
                     @Override
@@ -596,8 +612,7 @@ public  class  ConfirmFinalOrderActivity1 extends AppCompatActivity
 
                         myProducts = myfirebasedatabase.getReference().child("Products");
                         myProducts.keepSynced(true);
-
-                   /*
+                /*
                     Query firebasequery =  myfirebasedatabase.getReference().child("Products").orderByChild("pid").equalTo(pid);
 
                     firebasequery.addValueEventListener(new ValueEventListener() {
@@ -624,13 +639,13 @@ public  class  ConfirmFinalOrderActivity1 extends AppCompatActivity
                         }
 
 
+
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
 
                         }
                     });
-
-                    */
+*/
 
                         key = model.getpid();
                         traderkey = model.gettid();
@@ -646,24 +661,24 @@ public  class  ConfirmFinalOrderActivity1 extends AppCompatActivity
 
                         holder.setImage(getApplicationContext(), pimage);
                         holder.setTraderImage(getApplicationContext(), traderimage);
-                  /*
-                        if (price != null) {
+
+/*
+                    if(price != null) {
+                        if (quantity != null) {
+
+                            oneTyprProductTPrice = ((Integer.valueOf(price))) * Integer.valueOf(quantity);
                             if (quantity != null) {
+                                if (price != null) {
 
-                                oneTyprProductTPrice = ((Integer.valueOf(price))) * Integer.valueOf(quantity);
-                                if (quantity != null) {
-                                    if (price != null) {
-
-                                        Log.d("Price of Cart Activity", price);
-                                        Log.d("QuantityCart Activity", quantity);
-                                    }
+                                    Log.d("Price of Cart Activity", price);
+                                    Log.d("QuantityCart Activity", quantity );
                                 }
-                                overTotalPrice = overTotalPrice + oneTyprProductTPrice;
                             }
-                        }
-                        Toast.makeText(getApplicationContext(), "This represents the total price", overTotalPrice);
-*/
+                            overTotalPrice = overTotalPrice + oneTyprProductTPrice;
+                        } }
+                    Toast.makeText(getApplicationContext(),"This represents the total price", overTotalPrice);
 
+*/
                         if (holder != null) {
                             holder.carttheproductname.setOnClickListener(new View.OnClickListener() {
                                 @Override
@@ -692,6 +707,15 @@ public  class  ConfirmFinalOrderActivity1 extends AppCompatActivity
                             });
 
                         }
+/*
+                     oneTyprProductTPrice = ((Integer.valueOf(price))) * Integer.valueOf(quantity);
+                               if (quantity != null) {
+                                   if (price != null) {
+
+                                   Log.d("Price of Cart Activity", quantity + price);
+                               }}
+                                   overTotalPrice = overTotalPrice + oneTyprProductTPrice;
+*/
 /*
                      oneTyprProductTPrice = ((Integer.valueOf(price))) * Integer.valueOf(quantity);
                                if (quantity != null) {
@@ -753,10 +777,11 @@ public  class  ConfirmFinalOrderActivity1 extends AppCompatActivity
                 recyclerView.setAdapter(adapter);
             }
             ;
+        }}
 
 
-        }
-    }
+
+
 
 
     @Override
@@ -840,7 +865,7 @@ public  class  ConfirmFinalOrderActivity1 extends AppCompatActivity
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(CartActivity1.this, AdminAllCustomers.class);
+                        Intent intent = new Intent(ConfirmFinalOrderActivity1.this, AdminAllCustomers.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", customerid);
                             intent.putExtra("role", role);

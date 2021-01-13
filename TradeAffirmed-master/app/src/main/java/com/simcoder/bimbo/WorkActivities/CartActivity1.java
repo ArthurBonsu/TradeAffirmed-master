@@ -226,7 +226,7 @@ public  class  CartActivity1 extends AppCompatActivity
             TextView userNameTextView = headerView.findViewById(R.id.user_profile_name);
             CircleImageView profileImageView = headerView.findViewById(R.id.user_profile_image);
         }
-        cartthenextactivityhere = (Button) findViewById(R.id.cartnextbutton2);
+        cartthenextactivityhere = (Button) findViewById(R.id.confirmtherderbutton);
         txtTotalAmount = (TextView) findViewById(R.id.total_price1);
         cartthenextactivityhere.setVisibility(View.GONE);
         txtTotalAmount.setVisibility(View.GONE);
@@ -348,6 +348,11 @@ public  class  CartActivity1 extends AppCompatActivity
 
 
             };*/
+
+
+          //  confirmorder()
+
+
         }}
 
 
@@ -439,7 +444,8 @@ public  class  CartActivity1 extends AppCompatActivity
                                   if (task.isSuccessful()) {
                                       Toast.makeText(CartActivity1.this, "Order Sent", Toast.LENGTH_SHORT).show();
 
-                                      Intent intent = new Intent(CartActivity1.this, HomeActivity.class);
+                                      Intent intent = new Intent(CartActivity1.this, ConfirmFinalOrderActivity1.class);
+                                      intent.putExtra("orderkey", orderKey);
                                       startActivity(intent);
                                   }
                               }

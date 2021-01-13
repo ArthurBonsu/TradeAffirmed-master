@@ -72,33 +72,55 @@
         tools:visibility="gone" />
 
 
-<androidx.drawerlayout.widget.DrawerLayout
-android:id="@+id/drawer_layout"
-android:layout_width="250dp"
-android:layout_height="700dp"
+    <androidx.drawerlayout.widget.DrawerLayout
+        android:id="@+id/drawer_layout"
+        android:layout_width="250dp"
+        android:layout_height="700dp"
 
-android:layout_marginEnd="8dp"
-android:layout_marginRight="8dp"
-android:visibility="visible"
-tools:openDrawer="start">
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:visibility="visible"
+        tools:openDrawer="start">
 
-<!--主页内容-->
-
-
-<com.google.android.material.navigation.NavigationView
-    android:id="@+id/nav_view"
-    tools="start"
-    android:layout_width="250dp"
-    android:layout_height="700dp"
-    android:layout_gravity="start"
-    android:fitsSystemWindows="true"
-    android:visibility="visible"
-    app:headerLayout="@layout/nav_header_home"
-    app:menu="@menu/activity_home_drawer">
+        <!--主页内容-->
 
 
+        <com.google.android.material.navigation.NavigationView
+            android:id="@+id/nav_view"
+            tools="start"
+            android:layout_width="250dp"
+            android:layout_height="700dp"
+            android:layout_gravity="start"
+            android:fitsSystemWindows="true"
+            android:visibility="visible"
+            app:headerLayout="@layout/nav_header_home"
+            app:menu="@menu/activity_home_drawer">
 
-</com.google.android.material.navigation.NavigationView>
-</androidx.drawerlayout.widget.DrawerLayout>
 
+
+        </com.google.android.material.navigation.NavigationView>
+    </androidx.drawerlayout.widget.DrawerLayout>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="GO BACK TO HOME "
+        android:id="@+id/gobacktohomefromconfirm">
+
+    </Button>
+
+        <TextView
+        android:id="@+id/thanksforpurchase"
+        android:layout_width="384dp"
+        android:layout_height="42dp"
+        android:layout_marginTop="400sp"
+        android:text="thanksforpurchase"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:visibility="gone"
+        tools:visibility="gone" />
+    </RelativeLayout>
 </FrameLayout>
