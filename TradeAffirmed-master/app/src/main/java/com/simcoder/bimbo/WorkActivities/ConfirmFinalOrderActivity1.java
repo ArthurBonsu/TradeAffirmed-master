@@ -66,7 +66,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import io.paperdb.Paper;
 
 
-public  class  CartActivity1 extends AppCompatActivity
+public  class  ConfirmFinalOrderActivity1 extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager layoutManager;
@@ -272,7 +272,7 @@ public  class  CartActivity1 extends AppCompatActivity
             }
 
             if (mGoogleApiClient != null) {
-                mGoogleApiClient = new GoogleApiClient.Builder(this).enableAutoManage(CartActivity1.this,
+                mGoogleApiClient = new GoogleApiClient.Builder(this).enableAutoManage(ConfirmFinalOrderActivity1.this,
                         new GoogleApiClient.OnConnectionFailedListener() {
                             @Override
                             public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
@@ -332,7 +332,7 @@ public  class  CartActivity1 extends AppCompatActivity
             cartthenextactivityhere.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent intent = new Intent(CartActivity1.this, ConfirmFinalOrderActivity.class);
+                    Intent intent = new Intent(ConfirmFinalOrderActivity1.this, ConfirmFinalOrderActivity.class);
                     intent.putExtra("Total Price", String.valueOf(overTotalPrice));
                     startActivity(intent);
                     finish();
@@ -669,7 +669,7 @@ public  class  CartActivity1 extends AppCompatActivity
                                 @Override
                                 public void onClick(View view) {
                                     if (role.equals("Trader")) {
-                                        Intent intent = new Intent(CartActivity1.this, ProductDetailsActivity.class);
+                                        Intent intent = new Intent(ConfirmFinalOrderActivity1.this, ProductDetailsActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("pid", key);
                                             intent.putExtra("fromthehomeactivitytraderkey", traderkey);
@@ -682,7 +682,7 @@ public  class  CartActivity1 extends AppCompatActivity
                                         }
                                         startActivity(intent);
                                     } else {
-                                        Intent intent = new Intent(CartActivity1.this, ProductDetailsActivity.class);
+                                        Intent intent = new Intent(ConfirmFinalOrderActivity1.this, ProductDetailsActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("fromthehomeactivitytoproductdetails", traderkey);
                                         }
@@ -709,13 +709,13 @@ public  class  CartActivity1 extends AppCompatActivity
                                 @Override
                                 public void onClick(View view) {
                                     if (role.equals("Trader")) {
-                                        Intent intent = new Intent(CartActivity1.this, TraderProfile.class);
+                                        Intent intent = new Intent(ConfirmFinalOrderActivity1.this, TraderProfile.class);
                                         intent.putExtra("pid", key);
                                         intent.putExtra("fromhomeactivitytotraderprofile", traderkey);
 
                                         startActivity(intent);
                                     } else {
-                                        Intent intent = new Intent(CartActivity1.this, TraderProfile.class);
+                                        Intent intent = new Intent(ConfirmFinalOrderActivity1.this, TraderProfile.class);
                                         intent.putExtra("pid", key);
                                         intent.putExtra("fromhomeactivitytotraderprofile", traderkey);
 
@@ -731,13 +731,13 @@ public  class  CartActivity1 extends AppCompatActivity
                                 @Override
                                 public void onClick(View view) {
                                     if (role.equals("Trader")) {
-                                        Intent intent = new Intent(CartActivity1.this, TraderProfile.class);
+                                        Intent intent = new Intent(ConfirmFinalOrderActivity1.this, TraderProfile.class);
                                         intent.putExtra("pid", key);
                                         intent.putExtra("fromhomeactivitytotraderprofile", traderkey);
 
                                         startActivity(intent);
                                     } else {
-                                        Intent intent = new Intent(CartActivity1.this, TraderProfile.class);
+                                        Intent intent = new Intent(ConfirmFinalOrderActivity1.this, TraderProfile.class);
                                         intent.putExtra("pid", key);
                                         intent.putExtra("fromhomeactivitytotraderprofile", traderkey);
 
@@ -856,7 +856,7 @@ public  class  CartActivity1 extends AppCompatActivity
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(CartActivity1.this, AdminAllCustomers.class);
+                        Intent intent = new Intent(ConfirmFinalOrderActivity1.this, AdminAllCustomers.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", customerid);
                             intent.putExtra("role", role);
@@ -877,7 +877,7 @@ public  class  CartActivity1 extends AppCompatActivity
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(CartActivity1.this, AdminAddNewProductActivity.class);
+                        Intent intent = new Intent(ConfirmFinalOrderActivity1.this, AdminAddNewProductActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", customerid);
                             intent.putExtra("role", role);
@@ -893,7 +893,7 @@ public  class  CartActivity1 extends AppCompatActivity
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(CartActivity1.this, AdminAddNewProductActivity.class);
+                        Intent intent = new Intent(ConfirmFinalOrderActivity1.this, AdminAddNewProductActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", customerid);
                             intent.putExtra("role", role);
@@ -914,7 +914,7 @@ public  class  CartActivity1 extends AppCompatActivity
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(CartActivity1.this, ViewYourPersonalProduct.class);
+                        Intent intent = new Intent(ConfirmFinalOrderActivity1.this, ViewYourPersonalProduct.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", customerid);
                             intent.putExtra("role", role);
@@ -930,7 +930,7 @@ public  class  CartActivity1 extends AppCompatActivity
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(CartActivity1.this, ViewYourPersonalProduct.class);
+                        Intent intent = new Intent(ConfirmFinalOrderActivity1.this, ViewYourPersonalProduct.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", customerid);
                             intent.putExtra("role", role);
@@ -951,7 +951,7 @@ public  class  CartActivity1 extends AppCompatActivity
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(CartActivity1.this, ViewSpecificUsersCart.class);
+                        Intent intent = new Intent(ConfirmFinalOrderActivity1.this, ViewSpecificUsersCart.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", customerid);
                             intent.putExtra("role", role);
@@ -967,7 +967,7 @@ public  class  CartActivity1 extends AppCompatActivity
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(CartActivity1.this, ViewSpecificUsersCart.class);
+                        Intent intent = new Intent(ConfirmFinalOrderActivity1.this, ViewSpecificUsersCart.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", customerid);
                             intent.putExtra("role", role);
@@ -988,7 +988,7 @@ public  class  CartActivity1 extends AppCompatActivity
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(CartActivity1.this, ViewAllCarts.class);
+                        Intent intent = new Intent(ConfirmFinalOrderActivity1.this, ViewAllCarts.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", customerid);
                             intent.putExtra("role", role);
@@ -1004,7 +1004,7 @@ public  class  CartActivity1 extends AppCompatActivity
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(CartActivity1.this, ViewAllCarts.class);
+                        Intent intent = new Intent(ConfirmFinalOrderActivity1.this, ViewAllCarts.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", customerid);
                             intent.putExtra("role", role);
@@ -1024,7 +1024,7 @@ public  class  CartActivity1 extends AppCompatActivity
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(CartActivity1.this, AdminProductDetails.class);
+                        Intent intent = new Intent(ConfirmFinalOrderActivity1.this, AdminProductDetails.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", customerid);
                             intent.putExtra("role", role);
@@ -1040,7 +1040,7 @@ public  class  CartActivity1 extends AppCompatActivity
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(CartActivity1.this, AdminProductDetails.class);
+                        Intent intent = new Intent(ConfirmFinalOrderActivity1.this, AdminProductDetails.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", customerid);
                             intent.putExtra("role", role);
@@ -1060,7 +1060,7 @@ public  class  CartActivity1 extends AppCompatActivity
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(CartActivity1.this, AdminMaintainProductsActivity.class);
+                        Intent intent = new Intent(ConfirmFinalOrderActivity1.this, AdminMaintainProductsActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", customerid);
                             intent.putExtra("role", role);
@@ -1076,7 +1076,7 @@ public  class  CartActivity1 extends AppCompatActivity
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(CartActivity1.this, AdminMaintainProductsActivity.class);
+                        Intent intent = new Intent(ConfirmFinalOrderActivity1.this, AdminMaintainProductsActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", customerid);
                             intent.putExtra("role", role);
@@ -1097,7 +1097,7 @@ public  class  CartActivity1 extends AppCompatActivity
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(CartActivity1.this, AdminCategoryActivity.class);
+                        Intent intent = new Intent(ConfirmFinalOrderActivity1.this, AdminCategoryActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", customerid);
                             intent.putExtra("role", role);
@@ -1113,7 +1113,7 @@ public  class  CartActivity1 extends AppCompatActivity
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(CartActivity1.this, AdminCategoryActivity.class);
+                        Intent intent = new Intent(ConfirmFinalOrderActivity1.this, AdminCategoryActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", customerid);
                             intent.putExtra("role", role);
@@ -1133,7 +1133,7 @@ public  class  CartActivity1 extends AppCompatActivity
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(CartActivity1.this, AdminAllCustomers.class);
+                        Intent intent = new Intent(ConfirmFinalOrderActivity1.this, AdminAllCustomers.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", customerid);
                             intent.putExtra("role", role);
@@ -1149,7 +1149,7 @@ public  class  CartActivity1 extends AppCompatActivity
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(CartActivity1.this, AdminAllCustomers.class);
+                        Intent intent = new Intent(ConfirmFinalOrderActivity1.this, AdminAllCustomers.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", customerid);
                             intent.putExtra("role", role);
@@ -1171,7 +1171,7 @@ public  class  CartActivity1 extends AppCompatActivity
         if (id == R.id.viewmap) {
             if (!role.equals("Trader")) {
 
-                Intent intent = new Intent(CartActivity1.this, com.simcoder.bimbo.CustomerMapActivity.class);
+                Intent intent = new Intent(ConfirmFinalOrderActivity1.this, com.simcoder.bimbo.CustomerMapActivity.class);
                 if (intent != null) {
                     intent.putExtra("roledhomeactivitytocustomermapactivity", role);
                     intent.putExtra("fromhomeactivitytocustomermapactivity", customerid);
@@ -1180,7 +1180,7 @@ public  class  CartActivity1 extends AppCompatActivity
                 }
             } else {
 
-                Intent intent = new Intent(CartActivity1.this, DriverMapActivity.class);
+                Intent intent = new Intent(ConfirmFinalOrderActivity1.this, DriverMapActivity.class);
                 if (intent != null) {
                     intent.putExtra("rolefromhomeactivitytodrivermapactivity", role);
                     intent.putExtra("fromhomeactivitytodrivermapactivity", customerid);
@@ -1196,7 +1196,7 @@ public  class  CartActivity1 extends AppCompatActivity
         if (id == R.id.nav_social_media) {
             if (!role.equals("Trader")) {
 
-                Intent intent = new Intent(CartActivity1.this, InstagramHomeActivity.class);
+                Intent intent = new Intent(ConfirmFinalOrderActivity1.this, InstagramHomeActivity.class);
                 if (intent != null) {
                     intent.putExtra("roledhomeactivitytocustomermapactivity", role);
                     intent.putExtra("fromhomeactivitytocustomermapactivity", customerid);
@@ -1205,7 +1205,7 @@ public  class  CartActivity1 extends AppCompatActivity
                 }
             } else {
 
-                Intent intent = new Intent(CartActivity1.this, InstagramHomeActivity.class);
+                Intent intent = new Intent(ConfirmFinalOrderActivity1.this, InstagramHomeActivity.class);
                 if (intent != null) {
                     intent.putExtra("rolefromhomeactivitytodrivermapactivity", role);
                     intent.putExtra("fromhomeactivitytodrivermapactivity", customerid);
@@ -1218,7 +1218,7 @@ public  class  CartActivity1 extends AppCompatActivity
         }
         if (id == R.id.nav_cart) {
             if (!role.equals("Trader")) {
-                Intent intent = new Intent(CartActivity1.this, CartActivity.class);
+                Intent intent = new Intent(ConfirmFinalOrderActivity1.this, CartActivity.class);
                 if (intent != null) {
                     startActivity(intent);
                 }
@@ -1229,7 +1229,7 @@ public  class  CartActivity1 extends AppCompatActivity
 
         if (id == R.id.viewproducts) {
             if (!role.equals("Trader")) {
-                Intent intent = new Intent(CartActivity1.this, HomeActivity.class);
+                Intent intent = new Intent(ConfirmFinalOrderActivity1.this, HomeActivity.class);
                 if (intent != null) {
                     startActivity(intent);
                 }
@@ -1239,7 +1239,7 @@ public  class  CartActivity1 extends AppCompatActivity
         }
         if (id == R.id.nav_search) {
             if (!role.equals("Trader")) {
-                Intent intent = new Intent(CartActivity1.this, SearchProductsActivity.class);
+                Intent intent = new Intent(ConfirmFinalOrderActivity1.this, SearchProductsActivity.class);
                 if (intent != null) {
                     startActivity(intent);
                 }
@@ -1252,7 +1252,7 @@ public  class  CartActivity1 extends AppCompatActivity
             if (FirebaseAuth.getInstance() != null) {
                 FirebaseAuth.getInstance().signOut();
                 if (mGoogleApiClient != null) {
-                    mGoogleSignInClient.signOut().addOnCompleteListener(CartActivity1.this,
+                    mGoogleSignInClient.signOut().addOnCompleteListener(ConfirmFinalOrderActivity1.this,
                             new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
@@ -1261,7 +1261,7 @@ public  class  CartActivity1 extends AppCompatActivity
                             });
                 }
             }
-            Intent intent = new Intent(CartActivity1.this, com.simcoder.bimbo.MainActivity.class);
+            Intent intent = new Intent(ConfirmFinalOrderActivity1.this, com.simcoder.bimbo.MainActivity.class);
             if (intent != null) {
                 startActivity(intent);
                 finish();
@@ -1270,7 +1270,7 @@ public  class  CartActivity1 extends AppCompatActivity
 
         if (id == R.id.nav_settings) {
             if (!role.equals("Trader")) {
-                Intent intent = new Intent(CartActivity1.this, com.simcoder.bimbo.WorkActivities.SettinsActivity.class);
+                Intent intent = new Intent(ConfirmFinalOrderActivity1.this, com.simcoder.bimbo.WorkActivities.SettinsActivity.class);
                 if (intent != null) {
                     startActivity(intent);
                 }
@@ -1279,7 +1279,7 @@ public  class  CartActivity1 extends AppCompatActivity
         }
         if (id == R.id.nav_history) {
             if (!role.equals("Trader")) {
-                Intent intent = new Intent(CartActivity1.this, HistoryActivity.class);
+                Intent intent = new Intent(ConfirmFinalOrderActivity1.this, HistoryActivity.class);
                 if (intent != null) {
                     startActivity(intent);
                 }
@@ -1297,7 +1297,7 @@ public  class  CartActivity1 extends AppCompatActivity
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(CartActivity1.this, CustomerProfile.class);
+                        Intent intent = new Intent(ConfirmFinalOrderActivity1.this, CustomerProfile.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", cusomerId);
                             intent.putExtra("role", role);
@@ -1313,7 +1313,7 @@ public  class  CartActivity1 extends AppCompatActivity
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(CartActivity1.this, TraderProfile.class);
+                        Intent intent = new Intent(ConfirmFinalOrderActivity1.this, TraderProfile.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", cusomerId);
                             intent.putExtra("role", role);
@@ -1331,7 +1331,7 @@ public  class  CartActivity1 extends AppCompatActivity
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(CartActivity1.this, HomeActivity.class);
+                        Intent intent = new Intent(ConfirmFinalOrderActivity1.this, HomeActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", cusomerId);
                             intent.putExtra("role", role);
@@ -1347,7 +1347,7 @@ public  class  CartActivity1 extends AppCompatActivity
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(CartActivity1.this, AdminAllCustomers.class);
+                        Intent intent = new Intent(ConfirmFinalOrderActivity1.this, AdminAllCustomers.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", cusomerId);
                             intent.putExtra("role", role);
@@ -1368,7 +1368,7 @@ public  class  CartActivity1 extends AppCompatActivity
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(CartActivity1.this, HomeActivity.class);
+                        Intent intent = new Intent(ConfirmFinalOrderActivity1.this, HomeActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", cusomerId);
                             intent.putExtra("role", role);
@@ -1384,7 +1384,7 @@ public  class  CartActivity1 extends AppCompatActivity
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(CartActivity1.this, AdminAddNewProductActivity.class);
+                        Intent intent = new Intent(ConfirmFinalOrderActivity1.this, AdminAddNewProductActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", cusomerId);
                             intent.putExtra("role", role);
@@ -1405,7 +1405,7 @@ public  class  CartActivity1 extends AppCompatActivity
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(CartActivity1.this, HomeActivity.class);
+                        Intent intent = new Intent(ConfirmFinalOrderActivity1.this, HomeActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", cusomerId);
                             intent.putExtra("role", role);
@@ -1421,7 +1421,7 @@ public  class  CartActivity1 extends AppCompatActivity
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(CartActivity1.this, ViewYourPersonalProduct.class);
+                        Intent intent = new Intent(ConfirmFinalOrderActivity1.this, ViewYourPersonalProduct.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", cusomerId);
                             intent.putExtra("role", role);
@@ -1442,7 +1442,7 @@ public  class  CartActivity1 extends AppCompatActivity
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(CartActivity1.this, HomeActivity.class);
+                        Intent intent = new Intent(ConfirmFinalOrderActivity1.this, HomeActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", cusomerId);
                             intent.putExtra("role", role);
@@ -1458,7 +1458,7 @@ public  class  CartActivity1 extends AppCompatActivity
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(CartActivity1.this, ViewSpecificUsersCart.class);
+                        Intent intent = new Intent(ConfirmFinalOrderActivity1.this, ViewSpecificUsersCart.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", cusomerId);
                             intent.putExtra("role", role);
@@ -1479,7 +1479,7 @@ public  class  CartActivity1 extends AppCompatActivity
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(CartActivity1.this, HomeActivity.class);
+                        Intent intent = new Intent(ConfirmFinalOrderActivity1.this, HomeActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", cusomerId);
                             intent.putExtra("role", role);
@@ -1495,7 +1495,7 @@ public  class  CartActivity1 extends AppCompatActivity
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(CartActivity1.this, ViewAllCarts.class);
+                        Intent intent = new Intent(ConfirmFinalOrderActivity1.this, ViewAllCarts.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", cusomerId);
                             intent.putExtra("role", role);
@@ -1515,7 +1515,7 @@ public  class  CartActivity1 extends AppCompatActivity
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(CartActivity1.this, HomeActivity.class);
+                        Intent intent = new Intent(ConfirmFinalOrderActivity1.this, HomeActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", cusomerId);
                             intent.putExtra("role", role);
@@ -1531,7 +1531,7 @@ public  class  CartActivity1 extends AppCompatActivity
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(CartActivity1.this, AdminProductDetails.class);
+                        Intent intent = new Intent(ConfirmFinalOrderActivity1.this, AdminProductDetails.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", cusomerId);
                             intent.putExtra("role", role);
@@ -1551,7 +1551,7 @@ public  class  CartActivity1 extends AppCompatActivity
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(CartActivity1.this, HomeActivity.class);
+                        Intent intent = new Intent(ConfirmFinalOrderActivity1.this, HomeActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", cusomerId);
                             intent.putExtra("role", role);
@@ -1567,7 +1567,7 @@ public  class  CartActivity1 extends AppCompatActivity
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(CartActivity1.this, AdminMaintainProductsActivity.class);
+                        Intent intent = new Intent(ConfirmFinalOrderActivity1.this, AdminMaintainProductsActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", cusomerId);
                             intent.putExtra("role", role);
@@ -1588,7 +1588,7 @@ public  class  CartActivity1 extends AppCompatActivity
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(CartActivity1.this, HomeActivity.class);
+                        Intent intent = new Intent(ConfirmFinalOrderActivity1.this, HomeActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", cusomerId);
                             intent.putExtra("role", role);
@@ -1604,7 +1604,7 @@ public  class  CartActivity1 extends AppCompatActivity
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(CartActivity1.this, AdminCategoryActivity.class);
+                        Intent intent = new Intent(ConfirmFinalOrderActivity1.this, AdminCategoryActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", cusomerId);
                             intent.putExtra("role", role);
@@ -1624,7 +1624,7 @@ public  class  CartActivity1 extends AppCompatActivity
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(CartActivity1.this, HomeActivity.class);
+                        Intent intent = new Intent(ConfirmFinalOrderActivity1.this, HomeActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", cusomerId);
                             intent.putExtra("role", role);
@@ -1640,7 +1640,7 @@ public  class  CartActivity1 extends AppCompatActivity
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(CartActivity1.this, AdminAllCustomers.class);
+                        Intent intent = new Intent(ConfirmFinalOrderActivity1.this, AdminAllCustomers.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", cusomerId);
                             intent.putExtra("role", role);
