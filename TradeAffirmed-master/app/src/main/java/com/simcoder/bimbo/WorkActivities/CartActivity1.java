@@ -269,7 +269,7 @@ public  class  CartActivity1 extends AppCompatActivity
             }
 
             if (mGoogleApiClient != null) {
-                mGoogleApiClient = new GoogleApiClient.Builder(this).enableAutoManage(CartActivity.this,
+                mGoogleApiClient = new GoogleApiClient.Builder(this).enableAutoManage(CartActivity1.this,
                         new GoogleApiClient.OnConnectionFailedListener() {
                             @Override
                             public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
@@ -411,7 +411,6 @@ public  class  CartActivity1 extends AppCompatActivity
                           ordersMap.put("pid", "pid");
                           ordersMap.put("tid", "tid");
                           ordersMap.put("price", "price");
-                          ordersMap.put("amount", "amount");
                           ordersMap.put("desc", "desc");
                           ordersMap.put("pimage", "pimage");
                           ordersMap.put("discount", "discount");
@@ -420,14 +419,25 @@ public  class  CartActivity1 extends AppCompatActivity
                           ordersMap.put("traderimage", "traderimage");
                           ordersMap.put("uid", "uid");
                           ordersMap.put("quantity", "quantity");
+                          ordersMap.put("newornot", "true");
+                          ordersMap.put("paid", "true");
+                          ordersMap.put("traderandpaid", "true");
+                          ordersMap.put("traderanduser", "true");
+
                           // Setting the determiner of  current time
+
+                          //ordersMap.put("newornot", "true");
+                          //ordersMap.put("paid", "true");
+                          //ordersMap.put("traderandpaid", "true");
+                          //ordersMap.put("traderanduser", "true");
+
                           OrdersRef.child(orderKey)
                                   .updateChildren(ordersMap).addOnCompleteListener(new OnCompleteListener<Void>() {
 
                                       @Override
                               public void onComplete(@NonNull Task<Void> task) {
                                   if (task.isSuccessful()) {
-                                      Toast.makeText(CartActivity1.this, "Cart Investor.", Toast.LENGTH_SHORT).show();
+                                      Toast.makeText(CartActivity1.this, "Order Sent", Toast.LENGTH_SHORT).show();
 
                                       Intent intent = new Intent(CartActivity1.this, HomeActivity.class);
                                       startActivity(intent);
