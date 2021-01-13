@@ -510,10 +510,7 @@ public class ConfirmFinalOrderActivity extends AppCompatActivity implements Navi
             ordersMap.put("newornot", "true");
         }
         ordersMap.put("paid", "true");
-//ordersMap.put("newornot", "true");
-        //ordersMap.put("paid", "true");
-        //ordersMap.put("traderandpaid", "true");
-        //ordersMap.put("traderanduser", "true");
+
         HashMap<String, Object> productMap = new HashMap<>();
         ArrayList<String> productkey = new ArrayList<>();
 

@@ -219,13 +219,13 @@ public  class  CartActivity extends AppCompatActivity
             TextView userNameTextView = headerView.findViewById(R.id.user_profile_name);
             CircleImageView profileImageView = headerView.findViewById(R.id.user_profile_image);
         }
-        cartthenextactivityhere = (Button) findViewById(R.id.cartnextbutton2);
+        cartthenextactivityhere = (Button) findViewById(R.id.confirmtherderbutton);
         txtTotalAmount = (TextView) findViewById(R.id.total_price1);
         cartthenextactivityhere.setVisibility(View.GONE);
         txtTotalAmount.setVisibility(View.GONE);
 
         thepicturebeingloaded = (android.widget.ImageView) findViewById(R.id.cartproductimageonscreeen);
-        thetraderpicturebeingloaded = (android.widget.ImageView) findViewById(R.id.cartimageonscreen);
+        thetraderpicturebeingloaded = (android.widget.ImageView) findViewById(R.id.carttraderimageonscreen);
 
         therealnumberoflikes = (TextView) findViewById(R.id.therealnumberoflikes);
         cartquantity = (TextView) findViewById(R.id.cartquantity);
@@ -369,7 +369,7 @@ public  class  CartActivity extends AppCompatActivity
             cartquantity = itemView.findViewById(R.id.cartquantity);
 
             //cartimage referst to the trader of the product
-            cartimageonscreen = itemView.findViewById(R.id.cartimageonscreen);
+            cartimageonscreen = itemView.findViewById(R.id.carttraderimageonscreen);
             cartproductimageonscreeen = itemView.findViewById(R.id.cartproductimageonscreeen);
             numberoflikesimage = itemView.findViewById(R.id.numberoflikesimage);
             therealnumberoflikes =  itemView.findViewById(R.id.therealnumberoflikes);
@@ -434,7 +434,7 @@ public  class  CartActivity extends AppCompatActivity
         }
 
        public void setTraderImage(final Context ctx, final String image) {
-            final android.widget.ImageView cartimageonscreen = (android.widget.ImageView) itemView.findViewById(R.id.cartimageonscreen);
+            final android.widget.ImageView cartimageonscreen = (android.widget.ImageView) itemView.findViewById(R.id.carttraderimageonscreen);
 
             Picasso.get().load(image).resize(400, 0).networkPolicy(NetworkPolicy.OFFLINE).into(cartimageonscreen, new Callback() {
 
