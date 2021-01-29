@@ -123,7 +123,7 @@ public  class  AdminAllOrderHistory extends AppCompatActivity
     String state;
     String thecustomersjob;
     String orderkey;
-
+    String newornot;
     Getmyfollowings getmyfollowingsagain;
     String userkey;
     TextView  orderid;
@@ -415,7 +415,7 @@ public  class  AdminAllOrderHistory extends AppCompatActivity
 */
 
 
-                                        Log.i(TAG, "AdminAllCustomers " + snapshot);
+                                        Log.i(TAG, "Admin All Order History  " + snapshot);
 
 
                                         if (snapshot.child("date").getValue(String.class) != null) {
@@ -497,13 +497,16 @@ public  class  AdminAllOrderHistory extends AppCompatActivity
                                         if (snapshot.child("state").getValue(String.class) != null) {
                                             orderkey = snapshot.child("state").getValue(String.class);
                                         }
+                                        if (snapshot.child("newornot").getValue(String.class) != null) {
+                                            newornot = snapshot.child("newornot").getValue(String.class);
+                                        }
+                                        return new AdminOrders(orderkey, date, time, tid, thetraderimage, tradername, address, amount, city, delivered, distance, image, uid, name, mode,
 
-                                        return new AdminOrders(date, time, tid, thetraderimage, tradername,uid,name,image);
-
-
+                                                number, phone, quantity, shippingcost, state,newornot);
                                     }
 
                                 }).build();
+
 
 
                 feedadapter = new FirebaseRecyclerAdapter<AdminOrders, AdminAllOrderHistory.AllOrderViewHolder>(options) {

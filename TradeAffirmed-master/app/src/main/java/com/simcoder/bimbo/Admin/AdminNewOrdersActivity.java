@@ -498,9 +498,7 @@ public  class  AdminNewOrdersActivity  extends AppCompatActivity
 
                                         return new AdminOrders(orderkey, date, time, tid, thetraderimage, tradername, address, amount, city, delivered, distance, image, uid, name, mode,
 
-                                                number, phone, quantity, shippingcost, state);
-
-
+                                                number, phone, quantity, shippingcost, state,newornot);
                                     }
 
                                 }).build();

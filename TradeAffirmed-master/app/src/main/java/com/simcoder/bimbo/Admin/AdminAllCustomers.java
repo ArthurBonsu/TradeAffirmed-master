@@ -39,6 +39,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.rey.material.widget.ImageView;
+import com.simcoder.bimbo.Model.AdminOrders;
 import com.simcoder.bimbo.Model.Users;
 import com.simcoder.bimbo.WorkActivities.CartActivity;
 import com.simcoder.bimbo.WorkActivities.CustomerProfile;
@@ -124,6 +125,8 @@ public  class  AdminAllCustomers extends AppCompatActivity
 
     Getmyfollowings getmyfollowingsagain;
     String userkey;
+    String orderkey;
+    String newornot;
 
 /*
     addnewproducthere
@@ -377,14 +380,14 @@ public  class  AdminAllCustomers extends AppCompatActivity
                     FirebaseDatabase.getInstance().getReference().child("Orders").orderByChild("tid").equalTo(traderID);
             if (queryhere != null) {
 
-                FirebaseRecyclerOptions<Users> options =
-                        new FirebaseRecyclerOptions.Builder<Users>()
-                                .setQuery(queryhere, new SnapshotParser<Users>() {
+                FirebaseRecyclerOptions<AdminOrders> options =
+                        new FirebaseRecyclerOptions.Builder<AdminOrders>()
+                                .setQuery(queryhere, new SnapshotParser<AdminOrders>() {
 
 
                                     @Nullable
                                     @Override
-                                    public Users parseSnapshot(@Nullable DataSnapshot snapshot) {
+                                    public AdminOrders parseSnapshot(@Nullable DataSnapshot snapshot) {
 
 
                                       /*
@@ -393,8 +396,10 @@ public  class  AdminAllCustomers extends AppCompatActivity
 */
 
 
-                                        Log.i(TAG, "AdminAllCustomers " + snapshot);
-
+                                        Log.i(TAG, "Admin All Customers " + snapshot);
+                                        if (snapshot.child("orderkey").getValue(String.class) != null) {
+                                            orderkey = snapshot.child("orderkey").getValue(String.class);
+                                        }
 
                                         if (snapshot.child("date").getValue(String.class) != null) {
                                             date = snapshot.child("date").getValue(String.class);
@@ -472,19 +477,19 @@ public  class  AdminAllCustomers extends AppCompatActivity
                                         if (snapshot.child("state").getValue(String.class) != null) {
                                             state = snapshot.child("state").getValue(String.class);
                                         }
+                                        if (snapshot.child("newornot").getValue(String.class) != null) {
+                                            newornot = snapshot.child("newornot").getValue(String.class);
+                                        }
+                                        return new AdminOrders(orderkey, date, time, tid, thetraderimage, tradername, address, amount, city, delivered, distance, image, uid, name, mode,
 
-
-                                        return new Users(date, time, tid, thetraderimage, tradername, address, amount, city, delivered, distance, image, uid, name, mode,
-
-                                                number, phone, quantity, shippingcost, state);
-
-
+                                                number, phone, quantity, shippingcost, state,newornot);
                                     }
 
                                 }).build();
 
 
-                feedadapter = new FirebaseRecyclerAdapter<Users, ViewHolder>(options) {
+
+                feedadapter = new FirebaseRecyclerAdapter<AdminOrders, ViewHolder>(options) {
                     @Nullable
                     @Override
                     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewrole) {
@@ -503,7 +508,7 @@ public  class  AdminAllCustomers extends AppCompatActivity
                     }
 
                     @Override
-                    protected void onBindViewHolder(@Nullable final ViewHolder holder, int position, @Nullable Users model) {
+                    protected void onBindViewHolder(@Nullable final ViewHolder holder, int position, @Nullable AdminOrders model) {
                         if (model != null) {
                             holders = holder;
 

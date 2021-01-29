@@ -184,6 +184,31 @@ public class AdminOrders {
 
     }
 
+    public AdminOrders(String orderkey, String date, String time, String tid, String thetraderimage, String tradername, String address, String amount, String city, String delivered, String distance, String image, String uid, String name, String mode, String number, String phone, String quantity, String shippingcost, String state, String newornot) {
+
+         this.orderkey = orderkey;
+         this.date = date;
+         this.time = time;
+         this.tid = tid;
+         this.traderimage = thetraderimage;
+         this.tradername = tradername;
+         this.address = address;
+         this.amount = amount;
+         this.city = city;
+         this.delivered = delivered;
+         this.distance  = distance;
+         this.image = image;
+         this.uid = uid;
+         this.name = name;
+         this.mode = mode;
+         this.number = number;
+         this.phone = phone;
+         this.quantity =quantity;
+         this.shippingcost = shippingcost;
+         this.state = state;
+         this.newornot = newornot;
+    }
+
 
     public String gettradername() {
         return tradername;

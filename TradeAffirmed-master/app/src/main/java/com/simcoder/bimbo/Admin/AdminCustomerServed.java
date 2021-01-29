@@ -127,18 +127,7 @@ public  class  AdminCustomerServed extends AppCompatActivity
     String hasbeeserviced;
     String orderkey;
     String useranddelivered;
-/*
-    addnewproducthere
-            allproductshere
-    allproductspurchased
-            viewallcustomershere
-    tradersfollowing
-            Maintainnewordershere
-    AdminNewOrders
-            allcustomersincart
-    allcustomersserved
-            allorders
-  */
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -174,7 +163,7 @@ public  class  AdminCustomerServed extends AppCompatActivity
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.hometoolbar);
         if (toolbar != null) {
-            toolbar.setTitle("All Customers");
+            toolbar.setTitle("Customers Served");
         }
 
 
@@ -347,9 +336,6 @@ public  class  AdminCustomerServed extends AppCompatActivity
 
             });
         }
-
-
-
 
     };
 
