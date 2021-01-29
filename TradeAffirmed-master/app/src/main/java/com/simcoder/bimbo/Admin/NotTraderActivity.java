@@ -164,117 +164,21 @@ public class NotTraderActivity extends AppCompatActivity implements View.OnClick
         }
 
 
-        // FROM ALL PRODUCTS
+
         Intent roleintent = getIntent();
-        if( roleintent.getExtras().getString("rolefromsingleusertoadminproductdetails") != null) {
-            role = roleintent.getExtras().getString("rolefromsingleusertoadminproductdetails");
+        if (roleintent.getExtras().getString("role") != null) {
+            role = roleintent.getExtras().getString("role");
         }
 
-        Intent traderintent = getIntent();
-        if( traderintent.getExtras().getString("fromadminsingleusertoadminproductdetails") != null) {
-            traderID = traderintent.getExtras().getString("fromadminsingleusertoadminproductdetails");
+        Intent traderIDintent = getIntent();
+        if (traderIDintent.getExtras().getString("traderID") != null) {
+            traderID = traderIDintent.getExtras().getString("traderID");
         }
-                   /*
-                        if (getIntent().getStringExtra("fromadminsingleusertoadminproductdetails") != null) {
-                            traderID = getIntent().getStringExtra("fromadminsingleusertoadminproductdetails");
-                        }
-
-                    */
         Intent userintent = getIntent();
-        if( userintent.getExtras().getString("neworderUserID") != null) {
-            userID = userintent.getExtras().getString("neworderUserID");
+        if( userintent.getExtras().getString("userID") != null) {
+            userID = userintent.getExtras().getString("userID");
         }
 
-
-        /*
-                        if (getIntent().getStringExtra("neworderUserID") != null) {
-                            userID = getIntent().getStringExtra("neworderUserID");
-                        }
-*/
-
-        // FROM ALL PRODUCTS
-        Intent productIDintent = getIntent();
-        if( productIDintent.getExtras().getString("productIDfromallproducttoproductdetails") != null) {
-            productID = productIDintent.getExtras().getString("productIDfromallproducttoproductdetails");
-            if (productID != null) {
-                Log.i("productID2", productID);
-            }
-        }
-
-
-        /*                if (getIntent().getStringExtra("productIDfromallproducttoproductdetails") != null) {
-                            productID = getIntent().getStringExtra("productIDfromallproducttoproductdetails");
-                        }
-*/
-        Intent roleintentfromproduct = getIntent();
-        if( roleintentfromproduct.getExtras().getString("rolefromallproductdetails") != null) {
-            role = roleintentfromproduct.getExtras().getString("rolefromallproductdetails");
-        }
-      /*
-        if (getIntent().getStringExtra("rolefromallproductdetails") != null) {
-                            role = getIntent().getStringExtra("rolefromallproductdetails").toString();
-                        }
-
-*/
-
-
-        Intent traderidfromallproducttoproductdetailsintent = getIntent();
-        if( traderidfromallproducttoproductdetailsintent.getExtras().getString("fromtheallproducttoadmiproductdetails") != null) {
-            traderID = traderidfromallproducttoproductdetailsintent.getExtras().getString("fromtheallproducttoadmiproductdetails");
-        }
-
-        /*
-                        if (getIntent().getStringExtra("fromtheallproducttoadmiproductdetails") != null) {
-                            traderID = getIntent().getStringExtra("fromtheallproducttoadmiproductdetails");
-                        }
-*/
-
-        // FROM CART ACTIVITY
-
-
-        Intent productintent = getIntent();
-        if( productintent.getExtras().getString("fromusercartactivitydminproductdetails") != null) {
-            productID = productintent.getExtras().getString("fromusercartactivitydminproductdetails");
-            if (productID != null) {
-                Log.i("productID", productID);
-            }
-        }
-                       /*
-                        if (getIntent().getStringExtra("fromusercartactivitydminproductdetails") != null) {
-                            productID = getIntent().getStringExtra("fromusercartactivitydminproductdetails");
-                        }
-                        */
-
-
-        Intent useridintent = getIntent();
-        if( useridintent.getExtras().getString("fromuserTHEIDcartactivitydminproductdetails") != null) {
-            userID = useridintent.getExtras().getString("fromuserTHEIDcartactivitydminproductdetails");
-
-        }
-                      /*  if (getIntent().getStringExtra("fromuserTHEIDcartactivitydminproductdetails") != null) {
-                            userID = getIntent().getStringExtra("fromuserTHEIDcartactivitydminproductdetails");
-                        }
-*/
-
-        Intent userrole = getIntent();
-        if( userrole.getExtras().getString("rolefromadmincartadminproductdetails") != null) {
-            role = userrole.getExtras().getString("rolefromadmincartadminproductdetails");
-        }
-        /*
-                        if (getIntent().getStringExtra("rolefromadmincartadminproductdetails") != null) {
-                            role = getIntent().getStringExtra("rolefromadmincartadminproductdetails").toString();
-                        }
-*/
-        Intent carttrader = getIntent();
-        if( carttrader.getExtras().getString("fromadmintcatactivitytoadminproductdetails") != null) {
-            traderID = carttrader.getExtras().getString("fromadmintcatactivitytoadminproductdetails");
-
-        }
-        /*
-                        if (getIntent().getStringExtra("fromadmintcatactivitytoadminproductdetails") != null) {
-                            traderID = getIntent().getStringExtra("fromadmintcatactivitytoadminproductdetails");
-                        }
-*/
 
 
         mAuth = FirebaseAuth.getInstance();

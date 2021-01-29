@@ -86,15 +86,14 @@ public class AdminMaintainProductsActivity extends AppCompatActivity implements 
         }
 
         Intent roleintent = getIntent();
-        if( roleintent.getExtras().getString("maintainrolefromadmincategory") != null) {
-            role = roleintent.getExtras().getString("maintainrolefromadmincategory");
+        if (roleintent.getExtras().getString("role") != null) {
+            role = roleintent.getExtras().getString("role");
         }
 
         Intent traderIDintent = getIntent();
-        if( traderIDintent.getExtras().getString("maintainfromadmincategoryactivity") != null) {
-            traderID = traderIDintent.getExtras().getString("maintainfromadmincategoryactivity");
+        if (traderIDintent.getExtras().getString("traderID") != null) {
+            traderID = traderIDintent.getExtras().getString("traderID");
         }
-
 
 
         /*

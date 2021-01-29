@@ -163,37 +163,15 @@ public  class AdminNewCart extends AppCompatActivity
         setContentView(
                 (R.layout.stickynoterecycler));
 
-        Intent userintent = getIntent();
-        if( userintent.getExtras().getString("userID") != null) {
-            userID = userintent.getExtras().getString("userID");
+        Intent roleintent = getIntent();
+        if (roleintent.getExtras().getString("role") != null) {
+            role = roleintent.getExtras().getString("role");
         }
 
-        Intent userIDintent = getIntent();
-        if( userIDintent.getExtras().getString("userkey") != null) {
-            userID = userIDintent.getExtras().getString("userkey");
-        }
-
-        Intent roleidintent = getIntent();
-        if( roleidintent.getExtras().getString("rolefromnewordertouserproduct") != null) {
-            role = roleidintent.getExtras().getString("rolefromnewordertouserproduct");
-        }
-
-
-
-            /*
-        if (getIntent().getStringExtra("rolefromnewordertouserproduct") != null) {
-                    role = getIntent().getStringExtra("rolefromnewordertouserproduct").toString();
-                }
-*/
         Intent traderIDintent = getIntent();
-        if( traderIDintent.getExtras().getString("fromnewordertousersproductactivity") != null) {
-            traderID = traderIDintent.getExtras().getString("fromnewordertousersproductactivity");
+        if (traderIDintent.getExtras().getString("traderID") != null) {
+            traderID = traderIDintent.getExtras().getString("traderID");
         }
-               /* if (getIntent().getStringExtra("fromnewordertousersproductactivity") != null) {
-                    traderID = getIntent().getStringExtra("fromnewordertousersproductactivity");
-                }
-            */
-
 
 
 
@@ -206,11 +184,7 @@ public  class AdminNewCart extends AppCompatActivity
             recyclerView.setHasFixedSize(true);
 
         }
-     /*  if (recyclerView != null) {
-            recyclerView.setHasFixedSize(true);
 
-        }
-*/
 
 
 

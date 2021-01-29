@@ -132,25 +132,21 @@ public  class  AllOrdersAccepted extends AppCompatActivity
     TextView orderedtime;
     TextView ordereddate;
 
-/*
-    addnewproducthere
-            allproductshere
-    allproductspurchased
-            viewallcustomershere
-    tradersfollowing
-            Maintainnewordershere
-    AdminNewOrders
-            allcustomersincart
-    allcustomersserved
-            allorders
-  */
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(
                 (R.layout.activityhomeforadmin));
 
+        Intent roleintent = getIntent();
+        if (roleintent.getExtras().getString("role") != null) {
+            role = roleintent.getExtras().getString("role");
+        }
+
+        Intent traderIDintent = getIntent();
+        if (traderIDintent.getExtras().getString("traderID") != null) {
+            traderID = traderIDintent.getExtras().getString("traderID");
+        }
 
         recyclerView = findViewById(R.id.recycler_menu);
 
@@ -161,11 +157,6 @@ public  class  AllOrdersAccepted extends AppCompatActivity
         if (recyclerView != null) {
             recyclerView.setLayoutManager(layoutManager);
         }
-     /*  if (recyclerView != null) {
-            recyclerView.setHasFixedSize(true);
-
-        }
-*/
 
 
         orderid = findViewById(R.id.orderid);

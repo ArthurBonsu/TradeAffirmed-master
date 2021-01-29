@@ -387,10 +387,6 @@ public  class  ViewPeopleWhoBoughtProduct extends AppCompatActivity
                                     public AdminOrders parseSnapshot(@Nullable DataSnapshot snapshot) {
 
 
-                                      /*
-                                      String commentkey = snapshot.child("Comments").getKey();
-                                      String likekey = snapshot.child("Likes").getKey();
-*/
 
 
                                         Log.i(TAG, "AdminAllCustomers " + snapshot);

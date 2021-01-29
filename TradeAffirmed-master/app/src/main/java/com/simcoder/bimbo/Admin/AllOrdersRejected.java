@@ -151,6 +151,15 @@ public  class  AllOrdersRejected extends AppCompatActivity
         setContentView(
                 (R.layout.activityhomeforadmin));
 
+        Intent roleintent = getIntent();
+        if (roleintent.getExtras().getString("role") != null) {
+            role = roleintent.getExtras().getString("role");
+        }
+
+        Intent traderIDintent = getIntent();
+        if (traderIDintent.getExtras().getString("traderID") != null) {
+            traderID = traderIDintent.getExtras().getString("traderID");
+        }
 
         recyclerView = findViewById(R.id.recycler_menu);
 

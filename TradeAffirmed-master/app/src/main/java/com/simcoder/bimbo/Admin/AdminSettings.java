@@ -150,12 +150,15 @@ public class AdminSettings extends AppCompatActivity implements GoogleApiClient.
     public AdminSettings() {
         super();
 
+        Intent roleintent = getIntent();
+        if (roleintent.getExtras().getString("role") != null) {
+            role = roleintent.getExtras().getString("role");
+        }
 
-
-
-
-
-
+        Intent traderIDintent = getIntent();
+        if (traderIDintent.getExtras().getString("traderID") != null) {
+            traderID = traderIDintent.getExtras().getString("traderID");
+        }
 
 
 

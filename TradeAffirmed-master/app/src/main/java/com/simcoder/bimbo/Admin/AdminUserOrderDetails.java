@@ -143,17 +143,17 @@ public  class  AdminUserOrderDetails extends AppCompatActivity
 
 
 
-        Intent  rolesintent = getIntent();
-
-        if (rolesintent.getExtras().getString("rolefromadmincategorytoallproducts") != null) {
-            role = rolesintent.getExtras().getString("rolefromadmincategorytoallproducts");
+        Intent roleintent = getIntent();
+        if (roleintent.getExtras().getString("role") != null) {
+            role = roleintent.getExtras().getString("role");
         }
 
-        Intent  traderIDIntent = getIntent();
-        if (traderIDIntent.getExtras().getString("fromuserinsingleusertoadminproductdetails") != null) {
-            traderID = traderIDIntent.getExtras().getString("fromuserinsingleusertoadminproductdetails");
-
+        Intent traderIDintent = getIntent();
+        if (traderIDintent.getExtras().getString("traderID") != null) {
+            traderID = traderIDintent.getExtras().getString("traderID");
         }
+
+
 
 
 
