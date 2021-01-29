@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import android.media.Image;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -32,6 +33,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.simcoder.bimbo.DriverLoginActivity;
 import com.simcoder.bimbo.DriverMapActivity;
 import com.simcoder.bimbo.HistoryActivity;
 import com.simcoder.bimbo.WorkActivities.CartActivity;
@@ -61,6 +63,8 @@ public class AdminHomeActivity extends AppCompatActivity implements GoogleApiCli
        TextView checkorderstext;
         TextView viewproductstext;
      TextView viewgoodsboughttext;
+   TextView adminmaintainproducttext;
+    ImageView adminmaintainproduct;
 
    TextView   adminrevenuetext;
     ImageView viewsocial;
@@ -75,6 +79,7 @@ public class AdminHomeActivity extends AppCompatActivity implements GoogleApiCli
     FirebaseUser user;
     ImageView adminsettings;
     TextView adminsettingstext;
+    Button backfromadminhomegrid;
     //AUTHENTICATORS
 
 
@@ -122,14 +127,15 @@ public class AdminHomeActivity extends AppCompatActivity implements GoogleApiCli
         checkorderstext = (TextView) findViewById(R.id.checkorderstext);
         viewproductstext = (TextView) findViewById(R.id.viewproductstext);
         viewgoodsboughttext = (TextView) findViewById(R.id.viewgoodsboughttext);
-
+        adminmaintainproducttext = (TextView)findViewById(R.id.adminmaintainproducttext);
+        adminmaintainproduct = (ImageView)findViewById(R.id.adminmaintainproduct);
 
         adminsettings = (ImageView) findViewById(R.id.adminsettings);
         adminsettingstext = (TextView) findViewById(R.id.adminsettingstext);
         viewsocial = (ImageView) findViewById(R.id.viewsocial);
         viewsocialtext = (TextView) findViewById(R.id.viewsocialtext);
         adminprofiletext = (TextView) findViewById(R.id.adminprofiletext);
-
+        backfromadminhomegrid = (Button)findViewById(R.id.backfromadminordergrid);
 
         //AUTHENTICATORS
         FirebaseAuth.getInstance();
@@ -222,7 +228,6 @@ public class AdminHomeActivity extends AppCompatActivity implements GoogleApiCli
                     @Override
                     public void onClick(View view) {
                         Intent intent = new Intent(AdminHomeActivity.this, ViewAllCarts.class);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
                         startActivity(intent);
                         finish();
@@ -234,7 +239,7 @@ public class AdminHomeActivity extends AppCompatActivity implements GoogleApiCli
                 checkorders.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Intent intent = new Intent(AdminHomeActivity.this, AdminNewOrdersActivity.class);
+                        Intent intent = new Intent(AdminHomeActivity.this, AdminOrdersHomeActivity.class);
                         intent.putExtra("role", role);
                         intent.putExtra("traderID", traderID);
                         startActivity(intent);
@@ -323,7 +328,22 @@ public class AdminHomeActivity extends AppCompatActivity implements GoogleApiCli
                 @Override
                 public void onClick(View view) {
                     //SHOULD HAVE TRADER ID  AND PASS IT TO role TO SEE WHETHER ADMIN OR NOT, SO WE HAVE TO SET A PARAMETER
-                    Intent intent = new Intent(AdminHomeActivity.this, InstagramHomeActivity.class);
+                    Intent intent = new Intent(AdminHomeActivity.this, AdminRevenueActivity.class);
+                    intent.putExtra("role", role);
+                    intent.putExtra("traderID", traderID);
+                    startActivity(intent);
+                }
+            });
+
+
+        }
+
+        if (backfromadminhomegrid != null) {
+            backfromadminhomegrid.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    //SENDING BACK TO THE DRIVER LOGIN
+                    Intent intent = new Intent(AdminHomeActivity.this, DriverLoginActivity.class);
                     intent.putExtra("role", role);
                     intent.putExtra("traderID", traderID);
                     startActivity(intent);

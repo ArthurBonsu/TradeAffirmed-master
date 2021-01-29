@@ -62,7 +62,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import io.paperdb.Paper;
 
 
-public  class  AdminAllProducts extends AppCompatActivity
+public  class  AdminProductInQueueToDelivery extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     DatabaseReference ProductsRef;
     private DatabaseReference Userdetails;
@@ -136,149 +136,154 @@ public  class  AdminAllProducts extends AppCompatActivity
 
 
 
-        Intent roleintent = getIntent();
+        Intent  rolesintent = getIntent();
 
-        if (roleintent.getExtras().getString("role") != null) {
-            role = roleintent.getExtras().getString("role");
-        }
-        Intent fromaddadmincategorytrader = getIntent();
-        if (fromaddadmincategorytrader.getExtras().getString("traderID") != null){
-            traderID = fromaddadmincategorytrader.getExtras().getString("traderID");
+        if (rolesintent.getExtras().getString("rolefromadmincategorytoallproducts") != null) {
+            role = rolesintent.getExtras().getString("rolefromadmincategorytoallproducts");
         }
 
+        Intent  traderIDIntent = getIntent();
+        if (traderIDIntent.getExtras().getString("fromuserinsingleusertoadminproductdetails") != null) {
+            traderID = traderIDIntent.getExtras().getString("fromuserinsingleusertoadminproductdetails");
 
-            recyclerView = findViewById(R.id.recycler_menu);
-
-
-            LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-            if (recyclerView != null) {
-                recyclerView.setLayoutManager(layoutManager);
-            }
+        }
 
 
-            thetraderview = findViewById(R.id.thetraderiknow);
 
-            product_imagehere = (ImageView) findViewById(R.id.product_imagehere);
-            thetraderimageforproduct = (ImageView)findViewById(R.id.thetraderimageforproduct);
+
+
+        recyclerView = findViewById(R.id.recycler_menu);
+
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        if (recyclerView != null) {
+            recyclerView.setLayoutManager(layoutManager);
+        }
+
+
+        thetraderview = findViewById(R.id.thetraderiknow);
+
+        product_imagehere = (ImageView) findViewById(R.id.product_imagehere);
+        thetraderimageforproduct = (ImageView)findViewById(R.id.thetraderimageforproduct);
         maintainproduct = findViewById(R.id.maintainproduct);
 
-            Paper.init(this);
+        Paper.init(this);
 
-            Toolbar toolbar = (Toolbar) findViewById(R.id.hometoolbar);
-            if (toolbar != null) {
-                toolbar.setTitle(" All Products Posted");
+        Toolbar toolbar = (Toolbar) findViewById(R.id.hometoolbar);
+        if (toolbar != null) {
+            toolbar.setTitle(" All Products Posted");
+        }
+
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if (drawer != null) {
+            ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                    this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+            drawer.addDrawerListener(toggle);
+            if (toggle != null) {
+                toggle.syncState();
             }
 
+            NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+            if (navigationView != null) {
+                navigationView.setNavigationItemSelectedListener(this);
+            }
+            View headerView = navigationView.getHeaderView(0);
+            TextView userNameTextView = headerView.findViewById(R.id.user_profile_name);
+            CircleImageView profileImageView = headerView.findViewById(R.id.user_profile_image);
 
-            DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-            if (drawer != null) {
-                ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                        this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-                drawer.addDrawerListener(toggle);
-                if (toggle != null) {
-                    toggle.syncState();
-                }
-
-                NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-                if (navigationView != null) {
-                    navigationView.setNavigationItemSelectedListener(this);
-                }
-                View headerView = navigationView.getHeaderView(0);
-                TextView userNameTextView = headerView.findViewById(R.id.user_profile_name);
-                CircleImageView profileImageView = headerView.findViewById(R.id.user_profile_image);
-
-                // USER
+            // USER
 
 
 
-                mAuth = FirebaseAuth.getInstance();
+            mAuth = FirebaseAuth.getInstance();
 
 
-                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
 
 
 
+            if (user.getDisplayName() != null) {
                 if (user.getDisplayName() != null) {
-                    if (user.getDisplayName() != null) {
-                        userNameTextView.setText(user.getDisplayName());
+                    userNameTextView.setText(user.getDisplayName());
 
-                        Picasso.get().load(user.getPhotoUrl()).placeholder(R.drawable.profile).into(profileImageView);
-                    }
-                }}
-
-            myfirebaseDatabase = FirebaseDatabase.getInstance();
-
-            ProductsRef = myfirebaseDatabase.getReference().child("Product");
-
-            productkey = ProductsRef.getKey();
-            // GET FROM FOLLOWING KEY
-
-
-
-            fetch();
-            recyclerView.setAdapter(adapter);
-
-            ProductsRef.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-
-                    for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                        // This method is called once with the initial value and again
-
-                        tradename = ds.child("tradername").getValue(String.class);
-                        traderimage = ds.child("traderimage").getValue(String.class);
-                        Log.d(TAG, "Value is 1: " + tradename + traderimage);
-                    }
+                    Picasso.get().load(user.getPhotoUrl()).placeholder(R.drawable.profile).into(profileImageView);
                 }
+            }}
 
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
+        myfirebaseDatabase = FirebaseDatabase.getInstance();
 
+        ProductsRef = myfirebaseDatabase.getReference().child("Product");
+
+        productkey = ProductsRef.getKey();
+        // GET FROM FOLLOWING KEY
+
+
+
+        fetch();
+        recyclerView.setAdapter(adapter);
+
+        ProductsRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                    // This method is called once with the initial value and again
+
+                    tradename = ds.child("tradername").getValue(String.class);
+                    traderimage = ds.child("traderimage").getValue(String.class);
+                    Log.d(TAG, "Value is 1: " + tradename + traderimage);
                 }
-            });
-            if (mAuth != null){
-                user = mAuth.getCurrentUser();
-                if (user != null) {
-                    traderID = user.getUid();
+            }
 
-                }}
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+        if (mAuth != null){
+            user = mAuth.getCurrentUser();
+            if (user != null) {
+                traderID = user.getUid();
+
+            }}
 
 
 
-                        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestIdToken(getString(R.string.default_web_client_id)).requestEmail().build();
-                        if (mGoogleApiClient != null) {
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestIdToken(getString(R.string.default_web_client_id)).requestEmail().build();
+        if (mGoogleApiClient != null) {
 
-                            mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+            mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+        }
+
+        if (mGoogleApiClient != null) {
+            mGoogleApiClient = new GoogleApiClient.Builder(this).enableAutoManage(AdminProductInQueueToDelivery.this,
+                    new GoogleApiClient.OnConnectionFailedListener() {
+                        @Override
+                        public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
                         }
-
-                        if (mGoogleApiClient != null) {
-                            mGoogleApiClient = new GoogleApiClient.Builder(this).enableAutoManage(AdminAllProducts.this,
-                                    new GoogleApiClient.OnConnectionFailedListener() {
-                                        @Override
-                                        public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
-                                        }
-                                    }).addApi(Auth.GOOGLE_SIGN_IN_API, gso).build();
-                        }
+                    }).addApi(Auth.GOOGLE_SIGN_IN_API, gso).build();
+        }
 
 
 
 
 
 
-                        // USER
-                        user = mAuth.getCurrentUser();
+        // USER
+        user = mAuth.getCurrentUser();
 
 
 
-                        if (user != null) {
-                            traderID = "";
-                            traderID = user.getUid();
-                        }
+        if (user != null) {
+            traderID = "";
+            traderID = user.getUid();
+        }
 
 
-                    }
+    }
 
 
     public interface Getmyfollowings {
@@ -546,14 +551,14 @@ public  class  AdminAllProducts extends AppCompatActivity
                                         @Override
                                         public void onClick(View v) {
                                             if (role.equals("Trader")) {
-                                                Intent intent = new Intent(AdminAllProducts.this, AdminMaintainProductsActivity.class);
+                                                Intent intent = new Intent(AdminProductInQueueToDelivery.this, AdminMaintainProductsActivity.class);
                                                 if (intent != null) {
                                                     intent.putExtra("pid", pid);
 
                                                 }
                                                 startActivity(intent);
                                             } else {
-                                                Intent intent = new Intent(AdminAllProducts.this, AdminMaintainProductsActivity.class);
+                                                Intent intent = new Intent(AdminProductInQueueToDelivery.this, AdminMaintainProductsActivity.class);
                                                 if (intent != null) {
                                                     intent.putExtra("pid", pid);
                                                 }
@@ -566,79 +571,79 @@ public  class  AdminAllProducts extends AppCompatActivity
 
 
 
-                                                    holder.product_imagehere.setOnClickListener(new View.OnClickListener() {
-                                                        @Override
-                                                        public void onClick(View view) {
-                                                            if (role.equals("Trader")) {
-                                                                Intent intent = new Intent(AdminAllProducts.this, AdminProductDetails.class);
-                                                                if (intent != null) {
-                                                                    intent.putExtra("productIDfromallproducttoproductdetails", pid);
+                                    holder.product_imagehere.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+                                            if (role.equals("Trader")) {
+                                                Intent intent = new Intent(AdminProductInQueueToDelivery.this, AdminProductDetails.class);
+                                                if (intent != null) {
+                                                    intent.putExtra("productIDfromallproducttoproductdetails", pid);
 
-                                                                    intent.putExtra("fromtheallproducttoadmiproductdetails", tid);
-                                                                    intent.putExtra("rolefromallproductdetails", role);
+                                                    intent.putExtra("fromtheallproducttoadmiproductdetails", tid);
+                                                    intent.putExtra("rolefromallproductdetails", role);
 
-                                                                    intent.putExtra("pimage", pimage);
-                                                                    intent.putExtra("pname", pname);
-                                                                    intent.putExtra("desc", desc);
-                                                                    intent.putExtra("productlikes", number);
-                                                                    intent.putExtra("price", price);
-
-                                                                }
-                                                                startActivity(intent);
-                                                            } else {
-                                                                Intent intent = new Intent(AdminAllProducts.this, AdminProductDetails.class);
-                                                                intent.putExtra("productIDfromallproducttoproductdetails", pid);
-
-                                                                intent.putExtra("fromtheallproducttoadmiproductdetails", tid);
-                                                                intent.putExtra("rolefromallproductdetails", role);
-
-
-                                                                intent.putExtra("pimage", pimage);
-                                                                intent.putExtra("pname", pname);
-                                                                intent.putExtra("desc", desc);
-                                                                intent.putExtra("productlikes", number);
-                                                                intent.putExtra("price", price);
-
-                                                                startActivity(intent);
-                                                            }
-                                                        }
-                                                    });
-
-
-
-
-
-                                            holder.thetraderimageforproduct.setOnClickListener(new View.OnClickListener() {
-                                                @Override
-                                                public void onClick(View view) {
-                                                    if (role.equals("Trader")) {
-                                                        Intent intent = new Intent(AdminAllProducts.this, TraderProfile.class);
-                                                        intent.putExtra("pid", pid);
-                                                        intent.putExtra("fromhomeactivitytotraderprofile", tid);
-
-                                                        startActivity(intent);
-                                                    } else {
-                                                        Intent intent = new Intent(AdminAllProducts.this, TraderProfile.class);
-                                                        intent.putExtra("pid", pid);
-                                                        intent.putExtra("fromhomeactivitytotraderprofile", tid);
-
-                                                        startActivity(intent);
-                                                    }
+                                                    intent.putExtra("pimage", pimage);
+                                                    intent.putExtra("pname", pname);
+                                                    intent.putExtra("desc", desc);
+                                                    intent.putExtra("productlikes", number);
+                                                    intent.putExtra("price", price);
 
                                                 }
+                                                startActivity(intent);
+                                            } else {
+                                                Intent intent = new Intent(AdminProductInQueueToDelivery.this, AdminProductDetails.class);
+                                                intent.putExtra("productIDfromallproducttoproductdetails", pid);
 
-                                            });
+                                                intent.putExtra("fromtheallproducttoadmiproductdetails", tid);
+                                                intent.putExtra("rolefromallproductdetails", role);
+
+
+                                                intent.putExtra("pimage", pimage);
+                                                intent.putExtra("pname", pname);
+                                                intent.putExtra("desc", desc);
+                                                intent.putExtra("productlikes", number);
+                                                intent.putExtra("price", price);
+
+                                                startActivity(intent);
+                                            }
+                                        }
+                                    });
+
+
+
+
+
+                                    holder.thetraderimageforproduct.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+                                            if (role.equals("Trader")) {
+                                                Intent intent = new Intent(AdminProductInQueueToDelivery.this, TraderProfile.class);
+                                                intent.putExtra("pid", pid);
+                                                intent.putExtra("fromhomeactivitytotraderprofile", tid);
+
+                                                startActivity(intent);
+                                            } else {
+                                                Intent intent = new Intent(AdminProductInQueueToDelivery.this, TraderProfile.class);
+                                                intent.putExtra("pid", pid);
+                                                intent.putExtra("fromhomeactivitytotraderprofile", tid);
+
+                                                startActivity(intent);
+                                            }
 
                                         }
 
-
-                                    }
-                                    ;
+                                    });
 
                                 }
 
 
-                            }}}}}
+                            }
+                            ;
+
+                        }
+
+
+                    }}}}}
 
     @Override
     protected void onStart() {
@@ -729,7 +734,7 @@ public  class  AdminAllProducts extends AppCompatActivity
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(AdminAllProducts.this, AdminAllCustomers.class);
+                        Intent intent = new Intent(AdminProductInQueueToDelivery.this, AdminAllCustomers.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderID);
                             intent.putExtra("role", role);
@@ -745,7 +750,7 @@ public  class  AdminAllProducts extends AppCompatActivity
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(AdminAllProducts.this, AdminAllCustomers.class);
+                        Intent intent = new Intent(AdminProductInQueueToDelivery.this, AdminAllCustomers.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderID);
                             intent.putExtra("role", role);
@@ -766,7 +771,7 @@ public  class  AdminAllProducts extends AppCompatActivity
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(AdminAllProducts.this, AdminAddNewProductActivityII.class);
+                        Intent intent = new Intent(AdminProductInQueueToDelivery.this, AdminAddNewProductActivityII.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderID);
                             intent.putExtra("role", role);
@@ -782,7 +787,7 @@ public  class  AdminAllProducts extends AppCompatActivity
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(AdminAllProducts.this, AdminAddNewProductActivityII.class);
+                        Intent intent = new Intent(AdminProductInQueueToDelivery.this, AdminAddNewProductActivityII.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderID);
                             intent.putExtra("role", role);
@@ -803,7 +808,7 @@ public  class  AdminAllProducts extends AppCompatActivity
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(AdminAllProducts.this, ViewYourPersonalProduct.class);
+                        Intent intent = new Intent(AdminProductInQueueToDelivery.this, ViewYourPersonalProduct.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderID);
                             intent.putExtra("role", role);
@@ -819,7 +824,7 @@ public  class  AdminAllProducts extends AppCompatActivity
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(AdminAllProducts.this, ViewYourPersonalProduct.class);
+                        Intent intent = new Intent(AdminProductInQueueToDelivery.this, ViewYourPersonalProduct.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderID);
                             intent.putExtra("role", role);
@@ -839,7 +844,7 @@ public  class  AdminAllProducts extends AppCompatActivity
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(AdminAllProducts.this, ViewSpecificUsersCart.class);
+                        Intent intent = new Intent(AdminProductInQueueToDelivery.this, ViewSpecificUsersCart.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderID);
                             intent.putExtra("role", role);
@@ -855,7 +860,7 @@ public  class  AdminAllProducts extends AppCompatActivity
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(AdminAllProducts.this, ViewSpecificUsersCart.class);
+                        Intent intent = new Intent(AdminProductInQueueToDelivery.this, ViewSpecificUsersCart.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderID);
                             intent.putExtra("role", role);
@@ -876,7 +881,7 @@ public  class  AdminAllProducts extends AppCompatActivity
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(AdminAllProducts.this, ViewAllCarts.class);
+                        Intent intent = new Intent(AdminProductInQueueToDelivery.this, ViewAllCarts.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderID);
                             intent.putExtra("role", role);
@@ -892,7 +897,7 @@ public  class  AdminAllProducts extends AppCompatActivity
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(AdminAllProducts.this, ViewAllCarts.class);
+                        Intent intent = new Intent(AdminProductInQueueToDelivery.this, ViewAllCarts.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderID);
                             intent.putExtra("role", role);
@@ -912,7 +917,7 @@ public  class  AdminAllProducts extends AppCompatActivity
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(AdminAllProducts.this, AdminProductDetails.class);
+                        Intent intent = new Intent(AdminProductInQueueToDelivery.this, AdminProductDetails.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderID);
                             intent.putExtra("role", role);
@@ -928,7 +933,7 @@ public  class  AdminAllProducts extends AppCompatActivity
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(AdminAllProducts.this, AdminProductDetails.class);
+                        Intent intent = new Intent(AdminProductInQueueToDelivery.this, AdminProductDetails.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderID);
                             intent.putExtra("role", role);
@@ -948,7 +953,7 @@ public  class  AdminAllProducts extends AppCompatActivity
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(AdminAllProducts.this, AdminMaintainProductsActivity.class);
+                        Intent intent = new Intent(AdminProductInQueueToDelivery.this, AdminMaintainProductsActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderID);
                             intent.putExtra("role", role);
@@ -964,7 +969,7 @@ public  class  AdminAllProducts extends AppCompatActivity
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(AdminAllProducts.this, AdminMaintainProductsActivity.class);
+                        Intent intent = new Intent(AdminProductInQueueToDelivery.this, AdminMaintainProductsActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderID);
                             intent.putExtra("role", role);
@@ -985,7 +990,7 @@ public  class  AdminAllProducts extends AppCompatActivity
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(AdminAllProducts.this, AdminCategoryActivity.class);
+                        Intent intent = new Intent(AdminProductInQueueToDelivery.this, AdminCategoryActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderID);
                             intent.putExtra("role", role);
@@ -1001,7 +1006,7 @@ public  class  AdminAllProducts extends AppCompatActivity
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(AdminAllProducts.this, AdminCategoryActivity.class);
+                        Intent intent = new Intent(AdminProductInQueueToDelivery.this, AdminCategoryActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderID);
                             intent.putExtra("role", role);
@@ -1021,7 +1026,7 @@ public  class  AdminAllProducts extends AppCompatActivity
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(AdminAllProducts.this, AdminAllProducts.class);
+                        Intent intent = new Intent(AdminProductInQueueToDelivery.this, AdminAllProducts.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderID);
                             intent.putExtra("role", role);
@@ -1037,7 +1042,7 @@ public  class  AdminAllProducts extends AppCompatActivity
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(AdminAllProducts.this, AdminAllProducts.class);
+                        Intent intent = new Intent(AdminProductInQueueToDelivery.this, AdminAllProducts.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderID);
                             intent.putExtra("role", role);
@@ -1059,7 +1064,7 @@ public  class  AdminAllProducts extends AppCompatActivity
         if (id == R.id.viewmap) {
             if (!role.equals("Trader")) {
 
-                Intent intent = new Intent(AdminAllProducts.this, com.simcoder.bimbo.CustomerMapActivity.class);
+                Intent intent = new Intent(AdminProductInQueueToDelivery.this, com.simcoder.bimbo.CustomerMapActivity.class);
                 if (intent != null) {
                     intent.putExtra("roledhomeactivitytocustomermapactivity", role);
                     intent.putExtra("fromhomeactivitytocustomermapactivity", traderID);
@@ -1068,7 +1073,7 @@ public  class  AdminAllProducts extends AppCompatActivity
                 }
             } else {
 
-                Intent intent = new Intent(AdminAllProducts.this, DriverMapActivity.class);
+                Intent intent = new Intent(AdminProductInQueueToDelivery.this, DriverMapActivity.class);
                 if (intent != null) {
                     intent.putExtra("rolefromhomeactivitytodrivermapactivity", role);
                     intent.putExtra("fromhomeactivitytodrivermapactivity", traderID);
@@ -1081,7 +1086,7 @@ public  class  AdminAllProducts extends AppCompatActivity
         }
         if (id == R.id.nav_cart) {
             if (!role.equals("Trader")) {
-                Intent intent = new Intent(AdminAllProducts.this, CartActivity.class);
+                Intent intent = new Intent(AdminProductInQueueToDelivery.this, CartActivity.class);
                 if (intent != null) {
                     startActivity(intent);
                 }
@@ -1091,7 +1096,7 @@ public  class  AdminAllProducts extends AppCompatActivity
 
         if (id == R.id.viewproducts) {
             if (!role.equals("Trader")) {
-                Intent intent = new Intent(AdminAllProducts.this, HomeActivity.class);
+                Intent intent = new Intent(AdminProductInQueueToDelivery.this, HomeActivity.class);
                 if (intent != null) {
                     startActivity(intent);
                 }
@@ -1101,7 +1106,7 @@ public  class  AdminAllProducts extends AppCompatActivity
         }
         if (id == R.id.nav_search) {
             if (!role.equals("Trader")) {
-                Intent intent = new Intent(AdminAllProducts.this, SearchProductsActivity.class);
+                Intent intent = new Intent(AdminProductInQueueToDelivery.this, SearchProductsActivity.class);
                 if (intent != null) {
                     startActivity(intent);
                 }
@@ -1114,7 +1119,7 @@ public  class  AdminAllProducts extends AppCompatActivity
             if (FirebaseAuth.getInstance() != null) {
                 FirebaseAuth.getInstance().signOut();
                 if (mGoogleApiClient != null) {
-                    mGoogleSignInClient.signOut().addOnCompleteListener(AdminAllProducts.this,
+                    mGoogleSignInClient.signOut().addOnCompleteListener(AdminProductInQueueToDelivery.this,
                             new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
@@ -1123,7 +1128,7 @@ public  class  AdminAllProducts extends AppCompatActivity
                             });
                 }
             }
-            Intent intent = new Intent(AdminAllProducts.this, com.simcoder.bimbo.MainActivity.class);
+            Intent intent = new Intent(AdminProductInQueueToDelivery.this, com.simcoder.bimbo.MainActivity.class);
             if (intent != null) {
                 startActivity(intent);
                 finish();
@@ -1132,7 +1137,7 @@ public  class  AdminAllProducts extends AppCompatActivity
 
         if (id == R.id.nav_settings) {
             if (!role.equals("Trader")) {
-                Intent intent = new Intent(AdminAllProducts.this, com.simcoder.bimbo.WorkActivities.SettinsActivity.class);
+                Intent intent = new Intent(AdminProductInQueueToDelivery.this, com.simcoder.bimbo.WorkActivities.SettinsActivity.class);
                 if (intent != null) {
                     startActivity(intent);
                 }
@@ -1141,7 +1146,7 @@ public  class  AdminAllProducts extends AppCompatActivity
         }
         if (id == R.id.nav_history) {
             if (!role.equals("Trader")) {
-                Intent intent = new Intent(AdminAllProducts.this, HistoryActivity.class);
+                Intent intent = new Intent(AdminProductInQueueToDelivery.this, HistoryActivity.class);
                 if (intent != null) {
                     startActivity(intent);
                 }
@@ -1159,7 +1164,7 @@ public  class  AdminAllProducts extends AppCompatActivity
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(AdminAllProducts.this, CustomerProfile.class);
+                        Intent intent = new Intent(AdminProductInQueueToDelivery.this, CustomerProfile.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderID);
                             intent.putExtra("role", role);
@@ -1175,7 +1180,7 @@ public  class  AdminAllProducts extends AppCompatActivity
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(AdminAllProducts.this, TraderProfile.class);
+                        Intent intent = new Intent(AdminProductInQueueToDelivery.this, TraderProfile.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderID);
                             intent.putExtra("role", role);
@@ -1193,7 +1198,7 @@ public  class  AdminAllProducts extends AppCompatActivity
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(AdminAllProducts.this, HomeActivity.class);
+                        Intent intent = new Intent(AdminProductInQueueToDelivery.this, HomeActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderID);
                             intent.putExtra("role", role);
@@ -1209,7 +1214,7 @@ public  class  AdminAllProducts extends AppCompatActivity
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(AdminAllProducts.this, AdminAllCustomers.class);
+                        Intent intent = new Intent(AdminProductInQueueToDelivery.this, AdminAllCustomers.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderID);
                             intent.putExtra("role", role);
@@ -1230,7 +1235,7 @@ public  class  AdminAllProducts extends AppCompatActivity
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(AdminAllProducts.this, HomeActivity.class);
+                        Intent intent = new Intent(AdminProductInQueueToDelivery.this, HomeActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderID);
                             intent.putExtra("role", role);
@@ -1246,7 +1251,7 @@ public  class  AdminAllProducts extends AppCompatActivity
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(AdminAllProducts.this, AdminAddNewProductActivityII.class);
+                        Intent intent = new Intent(AdminProductInQueueToDelivery.this, AdminAddNewProductActivityII.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderID);
                             intent.putExtra("role", role);
@@ -1267,7 +1272,7 @@ public  class  AdminAllProducts extends AppCompatActivity
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(AdminAllProducts.this, HomeActivity.class);
+                        Intent intent = new Intent(AdminProductInQueueToDelivery.this, HomeActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderID);
                             intent.putExtra("role", role);
@@ -1283,7 +1288,7 @@ public  class  AdminAllProducts extends AppCompatActivity
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(AdminAllProducts.this, ViewYourPersonalProduct.class);
+                        Intent intent = new Intent(AdminProductInQueueToDelivery.this, ViewYourPersonalProduct.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderID);
                             intent.putExtra("role", role);
@@ -1304,7 +1309,7 @@ public  class  AdminAllProducts extends AppCompatActivity
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(AdminAllProducts.this, HomeActivity.class);
+                        Intent intent = new Intent(AdminProductInQueueToDelivery.this, HomeActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderID);
                             intent.putExtra("role", role);
@@ -1320,7 +1325,7 @@ public  class  AdminAllProducts extends AppCompatActivity
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(AdminAllProducts.this, ViewSpecificUsersCart.class);
+                        Intent intent = new Intent(AdminProductInQueueToDelivery.this, ViewSpecificUsersCart.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderID);
                             intent.putExtra("role", role);
@@ -1341,7 +1346,7 @@ public  class  AdminAllProducts extends AppCompatActivity
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(AdminAllProducts.this, HomeActivity.class);
+                        Intent intent = new Intent(AdminProductInQueueToDelivery.this, HomeActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderID);
                             intent.putExtra("role", role);
@@ -1357,7 +1362,7 @@ public  class  AdminAllProducts extends AppCompatActivity
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(AdminAllProducts.this, ViewAllCarts.class);
+                        Intent intent = new Intent(AdminProductInQueueToDelivery.this, ViewAllCarts.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderID);
                             intent.putExtra("role", role);
@@ -1377,7 +1382,7 @@ public  class  AdminAllProducts extends AppCompatActivity
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(AdminAllProducts.this, HomeActivity.class);
+                        Intent intent = new Intent(AdminProductInQueueToDelivery.this, HomeActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderID);
                             intent.putExtra("role", role);
@@ -1393,7 +1398,7 @@ public  class  AdminAllProducts extends AppCompatActivity
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(AdminAllProducts.this, AdminProductDetails.class);
+                        Intent intent = new Intent(AdminProductInQueueToDelivery.this, AdminProductDetails.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderID);
                             intent.putExtra("role", role);
@@ -1413,7 +1418,7 @@ public  class  AdminAllProducts extends AppCompatActivity
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(AdminAllProducts.this, HomeActivity.class);
+                        Intent intent = new Intent(AdminProductInQueueToDelivery.this, HomeActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderID);
                             intent.putExtra("role", role);
@@ -1429,7 +1434,7 @@ public  class  AdminAllProducts extends AppCompatActivity
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(AdminAllProducts.this, AdminMaintainProductsActivity.class);
+                        Intent intent = new Intent(AdminProductInQueueToDelivery.this, AdminMaintainProductsActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderID);
                             intent.putExtra("role", role);
@@ -1450,7 +1455,7 @@ public  class  AdminAllProducts extends AppCompatActivity
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(AdminAllProducts.this, HomeActivity.class);
+                        Intent intent = new Intent(AdminProductInQueueToDelivery.this, HomeActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderID);
                             intent.putExtra("role", role);
@@ -1466,7 +1471,7 @@ public  class  AdminAllProducts extends AppCompatActivity
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(AdminAllProducts.this, AdminCategoryActivity.class);
+                        Intent intent = new Intent(AdminProductInQueueToDelivery.this, AdminCategoryActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderID);
                             intent.putExtra("role", role);
@@ -1486,7 +1491,7 @@ public  class  AdminAllProducts extends AppCompatActivity
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(AdminAllProducts.this, AdminAllProducts.class);
+                        Intent intent = new Intent(AdminProductInQueueToDelivery.this, AdminAllProducts.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderID);
                             intent.putExtra("role", role);
@@ -1502,7 +1507,7 @@ public  class  AdminAllProducts extends AppCompatActivity
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(AdminAllProducts.this, AdminAllProducts.class);
+                        Intent intent = new Intent(AdminProductInQueueToDelivery.this, AdminAllProducts.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderID);
                             intent.putExtra("role", role);

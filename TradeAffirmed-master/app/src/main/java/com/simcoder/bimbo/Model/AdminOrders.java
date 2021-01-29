@@ -35,7 +35,7 @@ public class AdminOrders {
        String categoryname;
 
 
-    public AdminOrders() {
+    public AdminOrders(String orderkey, String date, String time, String tid, String thetraderimage, String tradername, String address, String amount, String city, String delivered, String distance, String image, String uid, String name, String mode, String number, String phone, String quantity, String shippingcost, String state) {
     }
     public AdminOrders(String date, String time,String tid,  String traderimage, String tradername, String uid, String name, String image) {
         this.date = date;

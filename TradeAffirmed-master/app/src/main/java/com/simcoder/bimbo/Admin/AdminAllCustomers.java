@@ -144,7 +144,15 @@ public  class  AdminAllCustomers extends AppCompatActivity
         setContentView(
                 (R.layout.activityhomeforadmin));
 
+        Intent roleintent = getIntent();
 
+        if (roleintent.getExtras().getString("role") != null) {
+            role = roleintent.getExtras().getString("role");
+        }
+        Intent fromaddadmincategorytrader = getIntent();
+        if (fromaddadmincategorytrader.getExtras().getString("traderID") != null){
+            traderID = fromaddadmincategorytrader.getExtras().getString("traderID");
+        }
         recyclerView = findViewById(R.id.recycler_menu);
 
 
@@ -268,12 +276,7 @@ public  class  AdminAllCustomers extends AppCompatActivity
 
     }
 
-
-
-
-
     //GETFOLLOWING WILL PULL FROM DIFFERENT DATASTORE( THE USER DATASTORE)
-
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public LinearLayout root;
@@ -590,9 +593,6 @@ public  class  AdminAllCustomers extends AppCompatActivity
 
 
             }
-
-
-
 
             if (recyclerView != null) {
                 recyclerView.setAdapter(feedadapter);

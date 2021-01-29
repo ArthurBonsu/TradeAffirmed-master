@@ -79,19 +79,16 @@ public class AdminAddNewProductActivity extends AppCompatActivity implements Nav
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin_add_new_product);
 
-        Intent category = getIntent();
-        if( category.getExtras().getString("category") != null) {
-            CategoryName = category.getExtras().getString("category");
-        }
+
 
                        // KEYS PASSED IN FROM ADMINCATEGORY
         Intent roleintent = getIntent();
-        if( roleintent.getExtras().getString("rolefromadmincategorytoaddadmin") != null) {
-            role = roleintent.getExtras().getString("rolefromadmincategorytoaddadmin");
+        if( roleintent.getExtras().getString("role") != null) {
+            role = roleintent.getExtras().getString("role");
         }
         Intent traderintent = getIntent();
-        if( traderintent.getExtras().getString("fromadmincategoryactivitytoaddadmin") != null) {
-            traderID = category.getExtras().getString("fromadmincategoryactivitytoaddadmin");
+        if( traderintent.getExtras().getString("traderID") != null) {
+            traderID = traderintent.getExtras().getString("traderID");
         }
 
 

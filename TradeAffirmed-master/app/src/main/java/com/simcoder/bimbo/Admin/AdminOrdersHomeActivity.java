@@ -67,7 +67,7 @@ public class AdminOrdersHomeActivity extends AppCompatActivity implements Google
            TextView ordergridordergridacceptedordertext;
      ImageView ordergridrejectedorder;
          TextView   ordergridrejectedordertext;
-
+         Button backfromadminordergrid;
 
 
 
@@ -105,18 +105,11 @@ public class AdminOrdersHomeActivity extends AppCompatActivity implements Google
             traderID = traderIDintent.getExtras().getString("traderID");
         }
 
-
-        LogoutBtn = (Button) findViewById(R.id.admin_logout_btn);
-        CheckOrdersBtn = (Button) findViewById(R.id.check_orders_btn);
-        maintainProductsBtn = (Button) findViewById(R.id.maintain_btn);
-        HomeBtn = (Button) findViewById(R.id.homebuttonhere);
-        InCart = (Button) findViewById(R.id.incarts);
-        AllProducts = (Button) findViewById(R.id.allproducts);
-
+        //    maintainProductsBtn = (Button) findViewById(R.id.maintain_btn);
+        //
         ordergridneworders = (ImageView) findViewById(R.id.ordergridneworders);
         ordergridneworderstext = (TextView) findViewById(R.id.ordergridneworderstext);
         ordergridincart = (ImageView) findViewById(R.id.ordergridincart);
-
         ordergridincarttext = (TextView) findViewById(R.id.ordergridincarttext);
         ordergriddelivery = (ImageView) findViewById(R.id.ordergriddelivery);
         ordergriddeliverytext = (TextView) findViewById(R.id.ordergriddeliverytext);
@@ -125,17 +118,15 @@ public class AdminOrdersHomeActivity extends AppCompatActivity implements Google
         ordergridspecificuserorder = (ImageView) findViewById(R.id.ordergridspecificuserorder);
         ordergridspecificuserordertext = (TextView) findViewById(R.id.ordergridspecificuserordertext);
         ordergridspecificproductorder = (ImageView) findViewById(R.id.ordergridspecificproductorder);
-
         ordergridspecificproductordertext = (TextView) findViewById(R.id.ordergridspecificproductordertext);
         ordergridacceptedorder = (ImageView) findViewById(R.id.ordergridacceptedorder);
         ordergridordergridacceptedordertext = (TextView) findViewById(R.id.ordergridordergridacceptedordertext);
         ordergridrejectedorder = (ImageView) findViewById(R.id.ordergridrejectedorder);
         ordergridrejectedordertext = (TextView) findViewById(R.id.ordergridrejectedordertext);
+        backfromadminordergrid = (Button) findViewById(R.id.backfromadminordergrid);
 
 
-
-
-       //AUTHENTICATORS
+        //AUTHENTICATORS
         FirebaseAuth.getInstance();
         mAuth = FirebaseAuth.getInstance();
 
@@ -178,111 +169,45 @@ public class AdminOrdersHomeActivity extends AppCompatActivity implements Google
         if (user != null) {
             traderID = "";
             traderID = user.getUid();
-            RoleReference = FirebaseDatabase.getInstance().getReference().child("Users").child("Drivers").child(traderID).child("role");
 
-            if (RoleReference != null) {
-                RoleReference.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-
-                    }
-
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                    }
-                });
-            }
-
-
-            if (maintainProductsBtn != null) {
-                maintainProductsBtn.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        //SHOULD HAVE TRADER ID  AND PASS IT TO role TO SEE WHETHER ADMIN OR NOT, SO WE HAVE TO SET A PARAMETER
-                        Intent intent = new Intent(AdminOrdersHomeActivity.this, AdminMaintainProductsActivity.class);
-                        intent.putExtra("role", role);
-                        intent.putExtra("traderID", traderID);
-                        startActivity(intent);
-                    }
-                });
-
-            }
-            if (LogoutBtn != null) {
-                LogoutBtn.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Intent intent = new Intent(AdminOrdersHomeActivity.this, MainActivity.class);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-
-                        startActivity(intent);
-                        finish();
-                    }
-                });
-            }
-
-            if (InCart != null) {
-                InCart.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Intent intent = new Intent(AdminOrdersHomeActivity.this, ViewAllCarts.class);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-
-                        startActivity(intent);
-                        finish();
-                    }
-                });
-            }
-            // This is to see new orders
-            if (checkorders != null) {
-                checkorders.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Intent intent = new Intent(AdminOrdersHomeActivity.this, AdminNewOrdersActivity.class);
-                        intent.putExtra("role", role);
-                        intent.putExtra("traderID", traderID);
-                        startActivity(intent);
-                    }
-                });
-
-            }
-
-            if (viewproducts != null) {
-                viewproducts.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Intent intent = new Intent(AdminOrdersHomeActivity.this, AdminAllProducts.class);
-                        intent.putExtra("role", role);
-                        intent.putExtra("traderID", traderID);
-
-
-                        startActivity(intent);
-                    }
-                });
-
-            }
-
-            if (viewgoodsbought != null) {
-                viewgoodsbought.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        //SHOULD HAVE TRADER ID  AND PASS IT TO role TO SEE WHETHER ADMIN OR NOT, SO WE HAVE TO SET A PARAMETER
-                        Intent intent = new Intent(AdminOrdersHomeActivity.this, AllGoodsBought.class);
-                        intent.putExtra("role", role);
-                        intent.putExtra("traderID", traderID);
-                        startActivity(intent);
-                    }
-                });
-
-            }
         }
 
-        if (adminsettings != null) {
-            adminsettings.setOnClickListener(new View.OnClickListener() {
+
+        // This is to see new orders
+        if (ordergridneworders != null) {
+            ordergridneworders.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(AdminOrdersHomeActivity.this, AdminNewOrdersActivity.class);
+                    intent.putExtra("role", role);
+                    intent.putExtra("traderID", traderID);
+                    startActivity(intent);
+                }
+            });
+
+        }
+
+        if (ordergridincart != null) {
+            ordergridincart.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(AdminOrdersHomeActivity.this, ViewAllCarts.class);
+                    intent.putExtra("role", role);
+                    intent.putExtra("traderID", traderID);
+
+
+                    startActivity(intent);
+                }
+            });
+
+        }
+
+        if (ordergriddelivery != null) {
+            ordergriddelivery.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     //SHOULD HAVE TRADER ID  AND PASS IT TO role TO SEE WHETHER ADMIN OR NOT, SO WE HAVE TO SET A PARAMETER
-                    Intent intent = new Intent(AdminOrdersHomeActivity.this, AdminSettings.class);
+                    Intent intent = new Intent(AdminOrdersHomeActivity.this, AllOrdersDelivered.class);
                     intent.putExtra("role", role);
                     intent.putExtra("traderID", traderID);
                     startActivity(intent);
@@ -292,12 +217,12 @@ public class AdminOrdersHomeActivity extends AppCompatActivity implements Google
         }
 
 
-        if (adminprofile != null) {
-            adminprofile.setOnClickListener(new View.OnClickListener() {
+        if (ordergridinqueue != null) {
+            ordergridinqueue.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     //SHOULD HAVE TRADER ID  AND PASS IT TO role TO SEE WHETHER ADMIN OR NOT, SO WE HAVE TO SET A PARAMETER
-                    Intent intent = new Intent(AdminOrdersHomeActivity.this, ProfileActivity.class);
+                    Intent intent = new Intent(AdminOrdersHomeActivity.this, AdminProductInQueueToDelivery.class);
                     intent.putExtra("role", role);
                     intent.putExtra("traderID", traderID);
                     startActivity(intent);
@@ -307,12 +232,12 @@ public class AdminOrdersHomeActivity extends AppCompatActivity implements Google
         }
 
 
-        if (viewsocial != null) {
-            viewsocial.setOnClickListener(new View.OnClickListener() {
+        if (ordergridspecificuserorder != null) {
+            ordergridspecificuserorder.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     //SHOULD HAVE TRADER ID  AND PASS IT TO role TO SEE WHETHER ADMIN OR NOT, SO WE HAVE TO SET A PARAMETER
-                    Intent intent = new Intent(AdminOrdersHomeActivity.this, InstagramHomeActivity.class);
+                    Intent intent = new Intent(AdminOrdersHomeActivity.this, ViewSpecificUsersOrder.class);
                     intent.putExtra("role", role);
                     intent.putExtra("traderID", traderID);
                     startActivity(intent);
@@ -322,12 +247,27 @@ public class AdminOrdersHomeActivity extends AppCompatActivity implements Google
         }
 
 
-        if (adminrevenue != null) {
-            adminrevenue.setOnClickListener(new View.OnClickListener() {
+        if (ordergridacceptedorder != null) {
+            ordergridacceptedorder.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     //SHOULD HAVE TRADER ID  AND PASS IT TO role TO SEE WHETHER ADMIN OR NOT, SO WE HAVE TO SET A PARAMETER
-                    Intent intent = new Intent(AdminOrdersHomeActivity.this, InstagramHomeActivity.class);
+                    Intent intent = new Intent(AdminOrdersHomeActivity.this, AllOrdersAccepted.class);
+                    intent.putExtra("role", role);
+                    intent.putExtra("traderID", traderID);
+                    startActivity(intent);
+                }
+            });
+
+        }
+
+
+        if (ordergridrejectedorder != null) {
+            ordergridrejectedorder.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    //SHOULD HAVE TRADER ID  AND PASS IT TO role TO SEE WHETHER ADMIN OR NOT, SO WE HAVE TO SET A PARAMETER
+                    Intent intent = new Intent(AdminOrdersHomeActivity.this, AllOrdersRejected.class);
                     intent.putExtra("role", role);
                     intent.putExtra("traderID", traderID);
                     startActivity(intent);
@@ -336,8 +276,22 @@ public class AdminOrdersHomeActivity extends AppCompatActivity implements Google
 
 
         }
+        if (backfromadminordergrid != null) {
+            backfromadminordergrid.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    //SHOULD HAVE TRADER ID  AND PASS IT TO role TO SEE WHETHER ADMIN OR NOT, SO WE HAVE TO SET A PARAMETER
+                    Intent intent = new Intent(AdminOrdersHomeActivity.this, AdminHomeActivity.class);
+                    intent.putExtra("role", role);
+                    intent.putExtra("traderID", traderID);
+                    startActivity(intent);
+                }
+            });
+
+
+        }
+
     }
-
     protected synchronized void buildGoogleApiClient() {
         if (mGoogleApiClient != null) {
             mGoogleApiClient = new GoogleApiClient.Builder(this)

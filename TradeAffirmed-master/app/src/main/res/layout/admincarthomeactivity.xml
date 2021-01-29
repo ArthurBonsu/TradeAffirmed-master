@@ -4,12 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/adminordershome">
+    android:id="@+id/mainGrid">
+
     <Button android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/backfromadminordergrid">
+        android:id="@+id/backfromadmincartgrid">
 
     </Button>
+
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -27,7 +30,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:text="ADMIN ORDERS PANEL"
+                android:text="CART HOME ACTIVITY"
                 android:textColor="@android:color/white"
                 android:textSize="34sp" />
 
@@ -62,33 +65,10 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id = "@+id/ordergridneworders"/>
-
-            ordergridneworders
-            ordergridneworderstext
-            ordergridincart
-            ordergridincarttext
-            ordergriddelivery
-            ordergriddeliverytext
-            ordergridpaiddelivery
-            ordergriddeliverytext
-            ordergridhistory
-            ordergridhistorytext
-            ordergridinqueue
-            ordergridinqueuetext
-            ordergridspecificuserorder
-            ordergridspecificuserordertext
-            ordergridspecificproductorder
-            ordergridspecificproductordertext
-            ordergridacceptedorder
-            ordergridordergridacceptedordertext
-            ordergridrejectedorder
-            ordergridrejectedordertext
-
-
+                android:id = "@+id/atadmingridviewcart"/>
 
             <TextView
-                android:text="New Orders"
+                android:text="View All Cart"
                 android:textAlignment="center"
                 android:textColor="@android:color/black"
                 android:textSize="18sp"
@@ -96,7 +76,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
-                android:id = "@+id/ordergridneworderstext"/>
+                android:id = "@+id/atadmingridviewcarttext"/>
             <!--   addproducttext
                checkorderstext
                viewproductstext
@@ -136,10 +116,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:contentDescription="@string/todo"
-                android:id = "@+id/ordergridincart"/>
+                android:id = "@+id/atadmingridnewcart"/>
 
             <TextView
-                android:text="In Cart"
+                android:text="New Cart"
                 android:textAlignment="center"
                 android:textColor="@android:color/black"
                 android:textSize="18sp"
@@ -147,7 +127,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
-                android:id = "@+id/ordergridincarttext"/>
+                android:id = "@+id/atadmingridnewcarttext"/>
 
         </LinearLayout>
 
@@ -180,10 +160,10 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id = "@+id/ordergriddelivery"/>
+                android:id = "@+id/atadmingridnewcartsearchcartpid"/>
 
             <TextView
-                android:text="Delivered"
+                android:text="View Product"
                 android:textAlignment="center"
                 android:textColor="@android:color/black"
                 android:textSize="18sp"
@@ -191,7 +171,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
-                android:id = "@+id/ordergriddeliverytext"/>
+                android:id = "@+id/atadmingridnewcartsearchcartpidtext"/>
 
         </LinearLayout>
 
@@ -222,7 +202,7 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id = "@+id/ordergridpaiddelivery"/>
+                android:id = "@+id/atadmingridnewcartsearchcartbyname"/>
 
             <TextView
                 android:text="View Goods Bought"
@@ -233,7 +213,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
-                android:id = "@+id/ordergridpaiddeliverytext"/>
+                android:id = "@+id/atadmingridnewcartsearchcartbynametext"/>
 
         </LinearLayout>
 
@@ -268,10 +248,10 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id = "@+id/ordergridhistory"/>
+                android:id = "@+id/atadmingridnewcartmessageuser"/>
 
             <TextView
-                android:text="Order History"
+                android:text="Settings"
                 android:textAlignment="center"
                 android:textColor="@android:color/black"
                 android:textSize="18sp"
@@ -279,209 +259,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
-                android:id = "@+id/ordergridhistorytext"/>
+                android:id = "@+id/atadmingridnewcartmessageusertext"/>
 
         </LinearLayout>
 
     </android.support.v7.widget.CardView>
 
 
-    <android.support.v7.widget.CardView
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_columnWeight="1"
-        android:layout_rowWeight="1"
-        android:layout_marginBottom="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        app:cardElevation="8dp"
-        app:cardCornerRadius="8dp"
-        >
 
-        <LinearLayout
-            android:layout_gravity="center_horizontal|center_vertical"
-            android:layout_margin="16dp"
-            android:orientation="vertical"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            >
-
-            <ImageView
-                android:src="@drawable/calendar"
-                android:layout_gravity="center_horizontal"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id = "@+id/ordergridinqueue"/>
-
-            <TextView
-                android:text="In Queue"
-                android:textAlignment="center"
-                android:textColor="@android:color/black"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
-                android:id = "@+id/ordergridinqueuetext"/>
-
-        </LinearLayout>
-
-
-        <LinearLayout
-            android:layout_gravity="center_horizontal|center_vertical"
-            android:layout_margin="16dp"
-            android:orientation="vertical"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            >
-
-            <ImageView
-                android:src="@drawable/calendar"
-                android:layout_gravity="center_horizontal"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id = "@+id/ordergridspecificuserorder"/>
-
-            <TextView
-                android:text="Specific User Order"
-                android:textAlignment="center"
-                android:textColor="@android:color/black"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
-                android:id = "@+id/ordergridspecificuserordertext"/>
-
-        </LinearLayout>
-
-
-    </android.support.v7.widget.CardView>
-
-
-
-    <android.support.v7.widget.CardView
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_columnWeight="1"
-        android:layout_rowWeight="1"
-        android:layout_marginBottom="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        app:cardElevation="8dp"
-        app:cardCornerRadius="8dp"
-        >
-
-        <LinearLayout
-            android:layout_gravity="center_horizontal|center_vertical"
-            android:layout_margin="16dp"
-            android:orientation="vertical"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
-            <ImageView
-                android:src="@drawable/calendar"
-                android:layout_gravity="center_horizontal"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id = "@+id/ordergridspecificproductorder"/>
-
-            <TextView
-                android:text="Specific Product Order"
-                android:textAlignment="center"
-                android:textColor="@android:color/black"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
-                android:id = "@+id/ordergridspecificproductordertext"/>
-
-        </LinearLayout>
-
-    </android.support.v7.widget.CardView>
-
-    <android.support.v7.widget.CardView
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_columnWeight="1"
-        android:layout_rowWeight="1"
-        android:layout_marginBottom="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        app:cardElevation="8dp"
-        app:cardCornerRadius="8dp"
-        >
-
-        <LinearLayout
-            android:layout_gravity="center_horizontal|center_vertical"
-            android:layout_margin="16dp"
-            android:orientation="vertical"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
-            <ImageView
-                android:src="@drawable/calendar"
-                android:layout_gravity="center_horizontal"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id = "@+id/ordergridacceptedorder"/>
-
-            <TextView
-                android:text="Accepted Order"
-                android:textAlignment="center"
-                android:textColor="@android:color/black"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
-                android:id = "@+id/ordergridordergridacceptedordertext"/>
-
-        </LinearLayout>
-
-    </android.support.v7.widget.CardView>
-
-    <android.support.v7.widget.CardView
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_columnWeight="1"
-        android:layout_rowWeight="1"
-        android:layout_marginBottom="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        app:cardElevation="8dp"
-        app:cardCornerRadius="8dp"
-        >
-
-        <LinearLayout
-            android:layout_gravity="center_horizontal|center_vertical"
-            android:layout_margin="16dp"
-            android:orientation="vertical"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
-            <ImageView
-                android:src="@drawable/calendar"
-                android:layout_gravity="center_horizontal"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id = "@+id/ordergridrejectedorder"/>
-
-            <TextView
-                android:text="Rejected Order"
-                android:textAlignment="center"
-                android:textColor="@android:color/black"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
-                android:id = "@+id/ordergridrejectedordertext"/>
-
-        </LinearLayout>
-
-    </android.support.v7.widget.CardView>
 
 
 

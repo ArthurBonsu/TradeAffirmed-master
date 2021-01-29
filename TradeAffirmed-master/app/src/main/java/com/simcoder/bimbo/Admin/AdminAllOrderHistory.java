@@ -151,7 +151,15 @@ public  class  AdminAllOrderHistory extends AppCompatActivity
         setContentView(
                 (R.layout.activityhomeforadmin));
 
+        Intent roleintent = getIntent();
 
+        if (roleintent.getExtras().getString("role") != null) {
+            role = roleintent.getExtras().getString("role");
+        }
+        Intent fromaddadmincategorytrader = getIntent();
+        if (fromaddadmincategorytrader.getExtras().getString("traderID") != null){
+            traderID = fromaddadmincategorytrader.getExtras().getString("traderID");
+        }
         recyclerView = findViewById(R.id.recycler_menu);
 
 

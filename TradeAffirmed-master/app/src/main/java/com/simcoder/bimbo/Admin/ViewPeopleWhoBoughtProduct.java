@@ -39,6 +39,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.rey.material.widget.ImageView;
+import com.simcoder.bimbo.Model.AdminOrders;
 import com.simcoder.bimbo.Model.Users;
 import com.simcoder.bimbo.WorkActivities.CartActivity;
 import com.simcoder.bimbo.WorkActivities.CustomerProfile;
@@ -376,14 +377,14 @@ public  class  ViewPeopleWhoBoughtProduct extends AppCompatActivity
                     FirebaseDatabase.getInstance().getReference().child("Orders").orderByChild("tid").equalTo(traderID);
             if (queryhere != null) {
 
-                FirebaseRecyclerOptions<Users> options =
-                        new FirebaseRecyclerOptions.Builder<Users>()
-                                .setQuery(queryhere, new SnapshotParser<Users>() {
+                FirebaseRecyclerOptions<AdminOrders> options =
+                        new FirebaseRecyclerOptions.Builder<AdminOrders>()
+                                .setQuery(queryhere, new SnapshotParser<AdminOrders>() {
 
 
                                     @Nullable
                                     @Override
-                                    public Users parseSnapshot(@Nullable DataSnapshot snapshot) {
+                                    public AdminOrders parseSnapshot(@Nullable DataSnapshot snapshot) {
 
 
                                       /*
@@ -473,7 +474,7 @@ public  class  ViewPeopleWhoBoughtProduct extends AppCompatActivity
                                         }
 
 
-                                        return new Users(date, time, tid, thetraderimage, tradername, address, amount, city, delivered, distance, image, uid, name, mode,
+                                        return new AdminOrders(date, time, tid, thetraderimage, tradername, address, amount, city, delivered, distance, image, uid, name, mode,
 
                                                 number, phone, quantity, shippingcost, state);
 
@@ -483,7 +484,7 @@ public  class  ViewPeopleWhoBoughtProduct extends AppCompatActivity
                                 }).build();
 
 
-                feedadapter = new FirebaseRecyclerAdapter<Users, ViewHolder>(options) {
+                feedadapter = new FirebaseRecyclerAdapter<AdminOrders, ViewHolder>(options) {
                     @Nullable
                     @Override
                     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewrole) {
@@ -502,18 +503,9 @@ public  class  ViewPeopleWhoBoughtProduct extends AppCompatActivity
                     }
 
                     @Override
-                    protected void onBindViewHolder(@Nullable final ViewHolder holder, int position, @Nullable Users model) {
+                    protected void onBindViewHolder(@Nullable final ViewHolder holder, int position, @Nullable AdminOrders model) {
                         if (model != null) {
                             holders = holder;
-
-
-
-
-
-
-
-
-
 
                             myfirebaseDatabase = FirebaseDatabase.getInstance();
 

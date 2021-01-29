@@ -145,10 +145,7 @@ public class AdminAddNewProductActivityII extends AppCompatActivity implements G
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin_add_new_product);
 
-              Intent sendcategory = getIntent();
-              if( sendcategory.getExtras().getString("category") != null) {
-                CategoryName = sendcategory.getExtras().getString("category");
-            }
+
             // KEYS PASSED IN FROM ADMINCATEGORY
                   Intent roleintent = getIntent();
 
@@ -156,8 +153,8 @@ public class AdminAddNewProductActivityII extends AppCompatActivity implements G
                 role = roleintent.getExtras().getString("role");
             }
                 Intent fromaddadmincategorytrader = getIntent();
-            if (fromaddadmincategorytrader.getExtras().getString("traderid") != null){
-                traderID = fromaddadmincategorytrader.getExtras().getString("traderid");
+            if (fromaddadmincategorytrader.getExtras().getString("traderID") != null){
+                traderID = fromaddadmincategorytrader.getExtras().getString("traderID");
             }
 
 

@@ -61,14 +61,16 @@ import com.squareup.picasso.Picasso;
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.paperdb.Paper;
 
-public  class  AdminCustomerServed extends AppCompatActivity
+public  class  AllOrdersRejected extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     DatabaseReference ProductsRef;
     private DatabaseReference Userdetails;
     private DatabaseReference ProductsRefwithproduct;
+    private  DatabaseReference UsersRef;
     private RecyclerView recyclerView;
     RecyclerView.LayoutManager layoutManager;
-    DatabaseReference UsersRef;
+
+    DatabaseReference AllOrderDatabaseRef;
     DatabaseReference FollowerDatabaseReference;
     String productkey;
     String traderkeyhere;
@@ -79,9 +81,8 @@ public  class  AdminCustomerServed extends AppCompatActivity
     String ProductID;
     FirebaseDatabase myfirebaseDatabase;
     FirebaseDatabase FollowerDatabase;
-    DatabaseReference OrdersReference;
 
-    public  ViewHolder holders;
+    public AllOrderViewHolder holders;
 
     public FirebaseRecyclerAdapter feedadapter;
 
@@ -121,12 +122,16 @@ public  class  AdminCustomerServed extends AppCompatActivity
     String shippingcost;
     String state;
     String thecustomersjob;
+    String orderkey;
 
     Getmyfollowings getmyfollowingsagain;
     String userkey;
-    String hasbeeserviced;
-    String orderkey;
-    String useranddelivered;
+    TextView  orderid;
+    TextView customername;
+    TextView thetradername;
+    TextView orderedtime;
+    TextView ordereddate;
+
 /*
     addnewproducthere
             allproductshere
@@ -151,6 +156,8 @@ public  class  AdminCustomerServed extends AppCompatActivity
 
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        layoutManager.setReverseLayout(true);
+        layoutManager.setStackFromEnd(true);
         if (recyclerView != null) {
             recyclerView.setLayoutManager(layoutManager);
         }
@@ -161,20 +168,21 @@ public  class  AdminCustomerServed extends AppCompatActivity
 */
 
 
-        allcustomersname = findViewById(R.id.allcustomersname);
-        allcustomersphonenumber = findViewById(R.id.allcustomersphonenumber);
+        orderid = findViewById(R.id.orderid);
+        customername = findViewById(R.id.customername);
 
-        allcustomersjob = findViewById(R.id.allcustomersjob);
-
+        thetradername = findViewById(R.id.tradername);
 
         allcustomersimage = (ImageView) findViewById(R.id.allcustomersimage);
+        orderedtime = (TextView)findViewById(R.id.orderedtime);
+        ordereddate = (TextView)findViewById(R.id.ordereddate);
 
 
         Paper.init(this);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.hometoolbar);
         if (toolbar != null) {
-            toolbar.setTitle("All Customers");
+            toolbar.setTitle("All Orders");
         }
 
 
@@ -243,7 +251,7 @@ public  class  AdminCustomerServed extends AppCompatActivity
                     }
 
                     if (mGoogleApiClient != null) {
-                        mGoogleApiClient = new GoogleApiClient.Builder(this).enableAutoManage(AdminCustomerServed.this,
+                        mGoogleApiClient = new GoogleApiClient.Builder(this).enableAutoManage(AllOrdersRejected.this,
                                 new GoogleApiClient.OnConnectionFailedListener() {
                                     @Override
                                     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
@@ -277,31 +285,31 @@ public  class  AdminCustomerServed extends AppCompatActivity
     //GETFOLLOWING WILL PULL FROM DIFFERENT DATASTORE( THE USER DATASTORE)
 
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public class AllOrderViewHolder extends RecyclerView.ViewHolder {
         public LinearLayout root;
 
 
 
+        public TextView orderid;
+        public TextView customername;
 
-
-        public TextView allcustomersname;
-        public TextView allcustomersphonenumber;
-
-        public TextView allcustomersjob;
+        public TextView thetradername;
+        public TextView ordereddate;
+        public TextView orderedtime;
 
         public android.widget.ImageView allcustomersimage;
         public ItemClickListner listner;
 
-        public ViewHolder(View itemView) {
+        public AllOrderViewHolder(View itemView) {
             super(itemView);
 
 
 
-
-            allcustomersname = itemView.findViewById(R.id.allcustomersname);
-            allcustomersphonenumber = itemView.findViewById(R.id.allcustomersphonenumber);
-            allcustomersjob = itemView.findViewById(R.id.allcustomersjob);
-
+            orderid = itemView.findViewById(R.id.orderid);
+            customername = itemView.findViewById(R.id.customername);
+            thetradername = itemView.findViewById(R.id.tradername);
+            ordereddate = itemView.findViewById(R.id.ordereddate);
+            orderedtime = itemView.findViewById(R.id.orderedtime);
 
 
 
@@ -311,22 +319,29 @@ public  class  AdminCustomerServed extends AppCompatActivity
             this.listner = listner;
         }
 
-        public void setallcustomersshown(String allcustomershownname) {
+        public void setallorderid(String allorderids) {
 
-            allcustomersname.setText(allcustomershownname);
+            orderid.setText(allorderids);
         }
 
-        public void setallcustomerphoneinformation(String customersphonenumber) {
+        public void setallcustomername(String thatcustomername) {
 
-            allcustomersphonenumber.setText(customersphonenumber);
+            customername.setText(thatcustomername);
         }
 
-        public void settradername(String setthecustomerjob) {
+        public void settradername(String thetradernamereceived) {
 
-            allcustomersjob.setText(setthecustomerjob);
+            thetradername.setText(thetradernamereceived);
         }
 
+        public void setordereddate(String ordereddatehere) {
 
+            ordereddate.setText(ordereddatehere);
+        }
+        public void setorderedtime(String orderedtimereceived) {
+
+            orderedtime.setText(orderedtimereceived);
+        }
 
         public void setallcustomersimage(final Context ctx, final String image) {
             final android.widget.ImageView allcustomersimage = (android.widget.ImageView) itemView.findViewById(R.id.allcustomersimage);
@@ -471,10 +486,10 @@ public  class  AdminCustomerServed extends AppCompatActivity
                                         if (snapshot.child("state").getValue(String.class) != null) {
                                             state = snapshot.child("state").getValue(String.class);
                                         }
-                                        if (snapshot.child("orderkey").getValue(String.class) != null) {
-                                            orderkey = snapshot.child("orderkey").getValue(String.class);
+                                        if (snapshot.child("state").getValue(String.class) != null) {
+                                            orderkey = snapshot.child("state").getValue(String.class);
                                         }
-                                            // ADMINSERVED MORETO BE ADDED
+
                                         return new AdminOrders(date, time, tid, thetraderimage, tradername,uid,name,image);
 
 
@@ -483,16 +498,16 @@ public  class  AdminCustomerServed extends AppCompatActivity
                                 }).build();
 
 
-                feedadapter = new FirebaseRecyclerAdapter<AdminOrders, ViewHolder>(options) {
+                feedadapter = new FirebaseRecyclerAdapter<AdminOrders, AllOrdersRejected.AllOrderViewHolder>(options) {
                     @Nullable
                     @Override
-                    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewrole) {
+                    public AllOrderViewHolder onCreateViewHolder(ViewGroup parent, int viewrole) {
 
                         @Nullable
                         View view = LayoutInflater.from(parent.getContext())
-                                .inflate(R.layout.admincustomeractivity, parent, false);
+                                .inflate(R.layout.adminallorder, parent, false);
 
-                        return new ViewHolder(view);
+                        return new AllOrderViewHolder(view);
                     }
 
 
@@ -501,115 +516,128 @@ public  class  AdminCustomerServed extends AppCompatActivity
                         return super.getItemCount();
                     }
 
-                    @Override
-                    protected void onBindViewHolder(@NonNull ViewHolder holder, int i, @NonNull AdminOrders adminOrders) {
-                        if (adminOrders != null) {
 
-                            hasbeeserviced = tid + delivered;
+
+                    @Override
+                    protected void onBindViewHolder(@Nullable final AllOrdersRejected.AllOrderViewHolder holder, int position, @Nullable AdminOrders model) {
+                        if (model != null) {
                             holders = holder;
 
 
-                            holder.allcustomersname.setText(name);
-                            holder.allcustomersphonenumber.setText(phone);
+                            holder.orderid.setText(orderkey);
+                            holder.customername.setText(name);
+                            holder.thetradername.setText(tradername);
+                            holder.ordereddate.setText(date);
+                            holder.orderedtime.setText(time);
 
-
-                            Log.d(TAG, "The Customers here " + name + phone);
+                            Log.d(TAG, "The Customers here " + name + phone );
                             holder.setallcustomersimage(getApplicationContext(), image);
 
-              // This is a rare scenario, it is called a three layer scenario
-                            // In this case we are trying to query for the information that is subject to the user
-                            //SO THE RULES ARE , YOU QUERY TRADER AND THEN QUERY USER + INDEX( WHETHER DELIVERED OR NOT)
+
                             myfirebaseDatabase = FirebaseDatabase.getInstance();
-                            useranddelivered = uid + "true";
+
+                            AllOrderDatabaseRef = myfirebaseDatabase.getReference().child("Users").child("Customers");
+                            AllOrderDatabaseRef.keepSynced(true);
+             /*
+                            Query firebasequery =  myfirebaseDatabase.getReference().child("Users").child("Customers").orderByChild("uid").equalTo(uid);
+
+                            firebasequery.addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+
+                                    for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
 
 
-                                OrdersReference = myfirebaseDatabase.getReference().child("Orders").child("products");
-                                UsersRef.keepSynced(true);
-                                Query firebasequery = myfirebaseDatabase.getReference().child("Orders").orderByChild("useranddelivered").equalTo(useranddelivered);
 
-                                firebasequery.addValueEventListener(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(DataSnapshot dataSnapshot) {
+                                        userkey = dataSnapshot1.getKey();
+                                        Log.d(TAG, "The Photokey " + userkey);
 
-                                            userkey = dataSnapshot.getKey();
-                                            Log.d(TAG, "The ServedPeopleKey " + uid);
+                                        Log.d(TAG, "UserID here  " + uid );
+                                        if (dataSnapshot1.child("job").getValue() != null) {
+                                            thecustomersjob = dataSnapshot1.child("job").getValue(String.class);
+                                            holders.allcustomersjob.setText(thecustomersjob);
+                                            Log.d(TAG, "The CustomerJob " + thecustomersjob);
 
-                                            Log.d(TAG, "Served people key here  " + uid);
-                                            if (dataSnapshot.child("name").getValue() != null) {
-                                                name = dataSnapshot.child("name").getValue(String.class);
-                                                holders.allcustomersname.setText(name);
-                                                Log.d(TAG, "The customer " + name);
-                                            }
-                                        if (dataSnapshot.child("phone").getValue() != null) {
-                                            phone = dataSnapshot.child("phone").getValue(String.class);
-                                            holders.allcustomersphonenumber.setText(phone);
-                                            Log.d(TAG, "The customer phone " + phone);
+
+
+                                            useValue (thecustomersjob);
+                                            Log.d(TAG, "The UseValueJob " + thecustomersjob);
                                         }
-                                        if (dataSnapshot.child("image").getValue() != null) {
-                                            image = dataSnapshot.child("image").getValue(String.class);
-                                            holders.allcustomersphonenumber.setText(image);
-                                            Log.d(TAG, "The customer image " + image);
-                                        }
-                                        if (allcustomersimage != null) {
-                                            Picasso.get().load(image).placeholder(R.drawable.profile).into(allcustomersimage);
-                                        }
-
-
                                     }
+                                }
 
 
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
 
+                                }
+                            });
+ */
+
+
+                            if (allcustomersimage != null) {
+                                Picasso.get().load(image).placeholder(R.drawable.profile).into(allcustomersimage);
+                            }
+                            holder.orderid.setText(orderkey);
+                            holder.customername.setText(name);
+                            holder.thetradername.setText(tradername);
+                            holder.ordereddate.setText(date);
+                            holder.orderedtime.setText(time);
+                            if (holder.orderid != null) {
+                                holder.orderid.setOnClickListener(new View.OnClickListener() {
                                     @Override
-                                    public void onCancelled(DatabaseError databaseError) {
+                                    public void onClick(View view) {
+                                        Intent checkspecificorderidintent = new Intent(AllOrdersRejected.this, ViewSpecificUsersOrder.class);
+
+                                        startActivity(checkspecificorderidintent);
 
                                     }
                                 });
-
-
-
-
-                                if (holder.allcustomersname != null) {
-                                    holder.allcustomersname.setOnClickListener(new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View view) {
-                                            Intent allcustomernameesintent = new Intent(AdminCustomerServed.this, CustomerProfile.class);
-
-                                            startActivity(allcustomernameesintent);
-
-                                        }
-                                    });
-                                }
-                                if (holder.allcustomersimage != null) {
-                                    holder.allcustomersimage.setOnClickListener(new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View view) {
-                                            Intent allcustomerimagesintent = new Intent(AdminCustomerServed.this, CustomerProfile.class);
-
-                                            startActivity(allcustomerimagesintent);
-
-                                        }
-                                    });
-                                }
-
-
                             }
+
+                            if (holder.customername != null) {
+                                holder.customername.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        Intent checkcustomerwhoorderedintent = new Intent(AllOrdersRejected.this, CustomerProfile.class);
+
+                                        startActivity(checkcustomerwhoorderedintent);
+
+                                    }
+                                });
+                            }
+
+                            if (holder.allcustomersimage != null) {
+                                holder.allcustomersimage.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        Intent allcustomerimagesintent = new Intent(AllOrdersRejected.this, CustomerProfile.class);
+
+                                        startActivity(allcustomerimagesintent);
+
+                                    }
+                                });
+                            }
+
+
                         }
-
-
                     }
 
-                    ;
+
+                };
 
 
 
-            };
+            }
+
+
+
 
             if (recyclerView != null) {
                 recyclerView.setAdapter(feedadapter);
             }
-                    }
 
-
+        }
 
     }
     @Nullable
@@ -661,10 +689,6 @@ public  class  AdminCustomerServed extends AppCompatActivity
 
 
 
-
-
-
-
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -708,7 +732,7 @@ public  class  AdminCustomerServed extends AppCompatActivity
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(AdminCustomerServed.this, NotTraderActivity.class);
+                        Intent intent = new Intent(AllOrdersRejected.this, NotTraderActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderID);
                             intent.putExtra("role", role);
@@ -724,7 +748,7 @@ public  class  AdminCustomerServed extends AppCompatActivity
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(AdminCustomerServed.this, AdminAllCustomers.class);
+                        Intent intent = new Intent(AllOrdersRejected.this, AdminAllCustomers.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderID);
                             intent.putExtra("role", role);
@@ -746,7 +770,7 @@ public  class  AdminCustomerServed extends AppCompatActivity
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(AdminCustomerServed.this, NotTraderActivity.class);
+                        Intent intent = new Intent(AllOrdersRejected.this, NotTraderActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderID);
                             intent.putExtra("role", role);
@@ -762,7 +786,7 @@ public  class  AdminCustomerServed extends AppCompatActivity
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(AdminCustomerServed.this, ViewAllCarts.class);
+                        Intent intent = new Intent(AllOrdersRejected.this, ViewAllCarts.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderID);
                             intent.putExtra("role", role);
@@ -783,7 +807,7 @@ public  class  AdminCustomerServed extends AppCompatActivity
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(AdminCustomerServed.this, NotTraderActivity.class);
+                        Intent intent = new Intent(AllOrdersRejected.this, NotTraderActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderID);
                             intent.putExtra("role", role);
@@ -799,7 +823,7 @@ public  class  AdminCustomerServed extends AppCompatActivity
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(AdminCustomerServed.this, AdminAddNewProductActivityII.class);
+                        Intent intent = new Intent(AllOrdersRejected.this, AdminAddNewProductActivityII.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderID);
                             intent.putExtra("role", role);
@@ -818,7 +842,7 @@ public  class  AdminCustomerServed extends AppCompatActivity
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(AdminCustomerServed.this, NotTraderActivity.class);
+                        Intent intent = new Intent(AllOrdersRejected.this, NotTraderActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderID);
                             intent.putExtra("role", role);
@@ -834,7 +858,7 @@ public  class  AdminCustomerServed extends AppCompatActivity
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(AdminCustomerServed.this, AdminAllProducts.class);
+                        Intent intent = new Intent(AllOrdersRejected.this, AdminAllProducts.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderID);
                             intent.putExtra("role", role);
@@ -850,7 +874,7 @@ public  class  AdminCustomerServed extends AppCompatActivity
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(AdminCustomerServed.this, NotTraderActivity.class);
+                                Intent intent = new Intent(AllOrdersRejected.this, NotTraderActivity.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
@@ -866,7 +890,7 @@ public  class  AdminCustomerServed extends AppCompatActivity
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(AdminCustomerServed.this, AllProductsPurchased.class);
+                                Intent intent = new Intent(AllOrdersRejected.this, AllProductsPurchased.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
@@ -886,7 +910,7 @@ public  class  AdminCustomerServed extends AppCompatActivity
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(AdminCustomerServed.this, NotTraderActivity.class);
+                                Intent intent = new Intent(AllOrdersRejected.this, NotTraderActivity.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
@@ -902,7 +926,7 @@ public  class  AdminCustomerServed extends AppCompatActivity
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(AdminCustomerServed.this, ViewAllCustomers.class);
+                                Intent intent = new Intent(AllOrdersRejected.this, ViewAllCustomers.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
@@ -921,7 +945,7 @@ public  class  AdminCustomerServed extends AppCompatActivity
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(AdminCustomerServed.this, NotTraderActivity.class);
+                                Intent intent = new Intent(AllOrdersRejected.this, NotTraderActivity.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
@@ -937,7 +961,7 @@ public  class  AdminCustomerServed extends AppCompatActivity
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(AdminCustomerServed.this, TradersFollowing.class);
+                                Intent intent = new Intent(AllOrdersRejected.this, TradersFollowing.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
@@ -958,7 +982,7 @@ public  class  AdminCustomerServed extends AppCompatActivity
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(AdminCustomerServed.this, NotTraderActivity.class);
+                                Intent intent = new Intent(AllOrdersRejected.this, NotTraderActivity.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
@@ -974,7 +998,7 @@ public  class  AdminCustomerServed extends AppCompatActivity
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(AdminCustomerServed.this, AdminNewOrdersActivity.class);
+                                Intent intent = new Intent(AllOrdersRejected.this, AdminNewOrdersActivity.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
@@ -995,7 +1019,7 @@ public  class  AdminCustomerServed extends AppCompatActivity
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(AdminCustomerServed.this, NotTraderActivity.class);
+                                Intent intent = new Intent(AllOrdersRejected.this, NotTraderActivity.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
@@ -1011,7 +1035,7 @@ public  class  AdminCustomerServed extends AppCompatActivity
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(AdminCustomerServed.this, AdminCustomerServed.class);
+                                Intent intent = new Intent(AllOrdersRejected.this, AdminCustomerServed.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
@@ -1031,7 +1055,7 @@ public  class  AdminCustomerServed extends AppCompatActivity
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(AdminCustomerServed.this, NotTraderActivity.class);
+                                Intent intent = new Intent(AllOrdersRejected.this, NotTraderActivity.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
@@ -1047,7 +1071,7 @@ public  class  AdminCustomerServed extends AppCompatActivity
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(AdminCustomerServed.this, AdminAllOrderHistory.class);
+                                Intent intent = new Intent(AllOrdersRejected.this, AdminAllOrderHistory.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
@@ -1076,7 +1100,7 @@ public  class  AdminCustomerServed extends AppCompatActivity
         if (id == R.id.viewmap) {
             if (!role.equals("Trader")) {
 
-                Intent intent = new Intent(AdminCustomerServed.this, NotTraderActivity.class);
+                Intent intent = new Intent(AllOrdersRejected.this, NotTraderActivity.class);
                 if (intent != null) {
                     intent.putExtra("traderorcustomer", traderID);
                     intent.putExtra("role", role);
@@ -1085,7 +1109,7 @@ public  class  AdminCustomerServed extends AppCompatActivity
                 }
             } else {
 
-                Intent intent = new Intent(AdminCustomerServed.this, DriverMapActivity.class);
+                Intent intent = new Intent(AllOrdersRejected.this, DriverMapActivity.class);
                 if (intent != null) {
                     intent.putExtra("traderorcustomer", traderID);
                     intent.putExtra("role", role);
@@ -1106,7 +1130,7 @@ public  class  AdminCustomerServed extends AppCompatActivity
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(AdminCustomerServed.this, NotTraderActivity.class);
+                        Intent intent = new Intent(AllOrdersRejected.this, NotTraderActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderID);
                             intent.putExtra("role", role);
@@ -1122,7 +1146,7 @@ public  class  AdminCustomerServed extends AppCompatActivity
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(AdminCustomerServed.this, CartActivity.class);
+                        Intent intent = new Intent(AllOrdersRejected.this, CartActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderID);
                             intent.putExtra("role", role);
@@ -1142,7 +1166,7 @@ public  class  AdminCustomerServed extends AppCompatActivity
                             String cusomerId = "";
 
                             cusomerId = user.getUid();
-                            Intent intent = new Intent(AdminCustomerServed.this, NotTraderActivity.class);
+                            Intent intent = new Intent(AllOrdersRejected.this, NotTraderActivity.class);
                             if (intent != null) {
                                 intent.putExtra("traderorcustomer", traderID);
                                 intent.putExtra("role", role);
@@ -1158,7 +1182,7 @@ public  class  AdminCustomerServed extends AppCompatActivity
                             String cusomerId = "";
                             cusomerId = user.getUid();
 
-                            Intent intent = new Intent(AdminCustomerServed.this, InstagramHomeActivity.class);
+                            Intent intent = new Intent(AllOrdersRejected.this, InstagramHomeActivity.class);
                             if (intent != null) {
                                 intent.putExtra("traderorcustomer", traderID);
                                 intent.putExtra("role", role);
@@ -1178,7 +1202,7 @@ public  class  AdminCustomerServed extends AppCompatActivity
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(AdminCustomerServed.this, NotTraderActivity.class);
+                                Intent intent = new Intent(AllOrdersRejected.this, NotTraderActivity.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
@@ -1194,7 +1218,7 @@ public  class  AdminCustomerServed extends AppCompatActivity
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(AdminCustomerServed.this, AdminAllProducts.class);
+                                Intent intent = new Intent(AllOrdersRejected.this, AdminAllProducts.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
@@ -1211,7 +1235,7 @@ public  class  AdminCustomerServed extends AppCompatActivity
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(AdminCustomerServed.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(AllOrdersRejected.this, NotTraderActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1227,7 +1251,7 @@ public  class  AdminCustomerServed extends AppCompatActivity
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(AdminCustomerServed.this, SearchForAdminProductsActivity.class);
+                                        Intent intent = new Intent(AllOrdersRejected.this, SearchForAdminProductsActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1243,7 +1267,7 @@ public  class  AdminCustomerServed extends AppCompatActivity
                             if (FirebaseAuth.getInstance() != null) {
                                 FirebaseAuth.getInstance().signOut();
                                 if (mGoogleApiClient != null) {
-                                    mGoogleSignInClient.signOut().addOnCompleteListener(AdminCustomerServed.this,
+                                    mGoogleSignInClient.signOut().addOnCompleteListener(AllOrdersRejected.this,
                                             new OnCompleteListener<Void>() {
                                                 @Override
                                                 public void onComplete(@NonNull Task<Void> task) {
@@ -1252,7 +1276,7 @@ public  class  AdminCustomerServed extends AppCompatActivity
                                             });
                                 }
                             }
-                            Intent intent = new Intent(AdminCustomerServed.this, com.simcoder.bimbo.MainActivity.class);
+                            Intent intent = new Intent(AllOrdersRejected.this, com.simcoder.bimbo.MainActivity.class);
                             if (intent != null) {
                                 startActivity(intent);
                                 finish();
@@ -1267,7 +1291,7 @@ public  class  AdminCustomerServed extends AppCompatActivity
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(AdminCustomerServed.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(AllOrdersRejected.this, NotTraderActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1283,7 +1307,7 @@ public  class  AdminCustomerServed extends AppCompatActivity
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(AdminCustomerServed.this, com.simcoder.bimbo.WorkActivities.SettinsActivity.class);
+                                        Intent intent = new Intent(AllOrdersRejected.this, com.simcoder.bimbo.WorkActivities.SettinsActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1301,7 +1325,7 @@ public  class  AdminCustomerServed extends AppCompatActivity
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(AdminCustomerServed.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(AllOrdersRejected.this, NotTraderActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1317,7 +1341,7 @@ public  class  AdminCustomerServed extends AppCompatActivity
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(AdminCustomerServed.this, HistoryActivity.class);
+                                        Intent intent = new Intent(AllOrdersRejected.this, HistoryActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1337,7 +1361,7 @@ public  class  AdminCustomerServed extends AppCompatActivity
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(AdminCustomerServed.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(AllOrdersRejected.this, NotTraderActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1353,7 +1377,7 @@ public  class  AdminCustomerServed extends AppCompatActivity
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(AdminCustomerServed.this, TraderProfile.class);
+                                        Intent intent = new Intent(AllOrdersRejected.this, TraderProfile.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1373,7 +1397,7 @@ public  class  AdminCustomerServed extends AppCompatActivity
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(AdminCustomerServed.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(AllOrdersRejected.this, NotTraderActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1389,7 +1413,7 @@ public  class  AdminCustomerServed extends AppCompatActivity
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(AdminCustomerServed.this, AdminAllCustomers.class);
+                                        Intent intent = new Intent(AllOrdersRejected.this, AdminAllCustomers.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1410,7 +1434,7 @@ public  class  AdminCustomerServed extends AppCompatActivity
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(AdminCustomerServed.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(AllOrdersRejected.this, NotTraderActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1426,7 +1450,7 @@ public  class  AdminCustomerServed extends AppCompatActivity
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(AdminCustomerServed.this, AdminAddNewProductActivityII.class);
+                                        Intent intent = new Intent(AllOrdersRejected.this, AdminAddNewProductActivityII.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1446,7 +1470,7 @@ public  class  AdminCustomerServed extends AppCompatActivity
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(AdminCustomerServed.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(AllOrdersRejected.this, NotTraderActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1462,7 +1486,7 @@ public  class  AdminCustomerServed extends AppCompatActivity
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(AdminCustomerServed.this, AllGoodsBought.class);
+                                        Intent intent = new Intent(AllOrdersRejected.this, AllGoodsBought.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1482,7 +1506,7 @@ public  class  AdminCustomerServed extends AppCompatActivity
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(AdminCustomerServed.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(AllOrdersRejected.this, NotTraderActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1498,7 +1522,7 @@ public  class  AdminCustomerServed extends AppCompatActivity
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(AdminCustomerServed.this, AdminPaymentHere.class);
+                                        Intent intent = new Intent(AllOrdersRejected.this, AdminPaymentHere.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1518,7 +1542,7 @@ public  class  AdminCustomerServed extends AppCompatActivity
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(AdminCustomerServed.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(AllOrdersRejected.this, NotTraderActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1534,7 +1558,7 @@ public  class  AdminCustomerServed extends AppCompatActivity
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(AdminCustomerServed.this, AdminSettings.class);
+                                        Intent intent = new Intent(AllOrdersRejected.this, AdminSettings.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1549,12 +1573,10 @@ public  class  AdminCustomerServed extends AppCompatActivity
                     }
                 }
 
-
-                return true;
             }
 
-            return true;
         }
-        return true;
-    }
-}
+        return false;
+    }}
+
+
