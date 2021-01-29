@@ -128,18 +128,6 @@ public  class  ViewPeopleWhoBoughtProduct extends AppCompatActivity
    String imageofperson;
            String phoneofuser;
    String nameofperson;
-/*
-    addnewproducthere
-            allproductshere
-    allproductspurchased
-            viewallcustomershere
-    tradersfollowing
-            Maintainnewordershere
-    AdminNewOrders
-            allcustomersincart
-    allcustomersserved
-            allorders
-  */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -147,6 +135,15 @@ public  class  ViewPeopleWhoBoughtProduct extends AppCompatActivity
         setContentView(
                 (R.layout.activityhomeforadmin));
 
+        Intent roleintent = getIntent();
+        if (roleintent.getExtras().getString("role") != null) {
+            role = roleintent.getExtras().getString("role");
+        }
+
+        Intent traderIDintent = getIntent();
+        if (traderIDintent.getExtras().getString("traderID") != null) {
+            traderID = traderIDintent.getExtras().getString("traderID");
+        }
 
         recyclerView = findViewById(R.id.recycler_menu);
 
@@ -155,11 +152,7 @@ public  class  ViewPeopleWhoBoughtProduct extends AppCompatActivity
         if (recyclerView != null) {
             recyclerView.setLayoutManager(layoutManager);
         }
-     /*  if (recyclerView != null) {
-            recyclerView.setHasFixedSize(true);
 
-        }
-*/
 
 
         allcustomersname = findViewById(R.id.allcustomersname);

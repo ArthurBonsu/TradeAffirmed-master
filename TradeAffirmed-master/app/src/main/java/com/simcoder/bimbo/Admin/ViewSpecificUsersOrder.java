@@ -165,18 +165,18 @@ public  class ViewSpecificUsersOrder extends AppCompatActivity
                 (R.layout.activityhomeforadmin));
 
         Intent roleintent = getIntent();
-        if (roleintent.getExtras().getString("rolefromadmincategorytoadminneworder") != null) {
-            role = roleintent.getExtras().getString("rolefromadmincategorytoadminneworder");
+        if (roleintent.getExtras().getString("role") != null) {
+            role = roleintent.getExtras().getString("role");
         }
 
         Intent traderIDintent = getIntent();
-        if (traderIDintent.getExtras().getString("fromadmincategoryactivityadminnewordder") != null) {
-            traderID = traderIDintent.getExtras().getString("fromadmincategoryactivityadminnewordder");
+        if (traderIDintent.getExtras().getString("traderID") != null) {
+            traderID = traderIDintent.getExtras().getString("traderID");
         }
 
         Intent videotraderintenet = getIntent();
-        if (videotraderintenet.getExtras().getString("uidfromviewcart") != null) {
-            userID = videotraderintenet.getExtras().getString("uidfromviewcart");
+        if (videotraderintenet.getExtras().getString("userID") != null) {
+            userID = videotraderintenet.getExtras().getString("userID");
         }
 
 
@@ -403,13 +403,7 @@ public  class ViewSpecificUsersOrder extends AppCompatActivity
                                     public AdminOrders parseSnapshot(@Nullable DataSnapshot snapshot) {
 
 
-                                      /*
-                                      String commentkey = snapshot.child("Comments").getKey();
-                                      String likekey = snapshot.child("Likes").getKey();
-
-
-*/
-                                        Log.i(TAG, "Admin New Customers " + snapshot);
+                                    Log.i(TAG, "Admin New Customers " + snapshot);
                                         if (snapshot.child("orderkey").getValue(String.class) != null) {
                                             orderkey = snapshot.child("orderkey").getValue(String.class);
                                         }
