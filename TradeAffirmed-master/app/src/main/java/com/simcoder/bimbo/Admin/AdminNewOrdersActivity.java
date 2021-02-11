@@ -471,8 +471,8 @@ public  class  AdminNewOrdersActivity  extends AppCompatActivity
                                         }
 
 
-                                        if (snapshot.child("number").getValue(String.class) != null) {
-                                            number = snapshot.child("number").getValue(String.class);
+                                        if (snapshot.child("likenumber").getValue(String.class) != null) {
+                                            number = snapshot.child("likenumber").getValue(String.class);
                                         }
 
                                         if (snapshot.child("phone").getValue(String.class) != null) {

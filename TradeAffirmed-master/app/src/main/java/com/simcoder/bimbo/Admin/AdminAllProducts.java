@@ -496,8 +496,8 @@ public  class  AdminAllProducts extends AppCompatActivity
                                                         tid = snapshot.child("tid").getValue(String.class);
                                                     }
 
-                                                    if (snapshot.child("number").getValue() != null) {
-                                                        number = snapshot.child("number").getValue(String.class);
+                                                    if (snapshot.child("likenumber").getValue() != null) {
+                                                        number = snapshot.child("likenumber").getValue(String.class);
                                                     }
 
                                                     return new Products(categoryname, date, desc, discount, time, pid, pimage, pname, price, image, name, size, tradername, traderimage, tid, number);

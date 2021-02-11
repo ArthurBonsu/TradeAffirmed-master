@@ -150,15 +150,10 @@ public  class ViewYourPersonalProduct extends AppCompatActivity
     TextView admincart_price;
     TextView admincarttime;
     ImageView admincartimageofuser;
-    TextView            admincartusername;
-
-
-    ImageView admincartimageofprouct;
-
-   DatabaseReference OrdersRef;
-
-
-  String   orderkey;
+    TextView   admincartusername;
+     ImageView admincartimageofprouct;
+     DatabaseReference OrdersRef;
+     String   orderkey;
 
 
     // HAS TO BE ORDERED BY ADMINID

@@ -147,8 +147,8 @@ String
         }
 
         Intent productlikesintent = getIntent();
-        if( productlikesintent.getExtras().getString("productlikes") != null) {
-            number = productlikesintent.getExtras().getString("productlikes");
+        if( productlikesintent.getExtras().getString("likenumber") != null) {
+            number = productlikesintent.getExtras().getString("likenumber");
         }
 
         Intent productIDidentifyintent = getIntent();
@@ -239,7 +239,7 @@ String
                                 if (adminproductimageprice != null) {
                                     adminproductimageprice.setText(productsprice);
                                 }
-                                productslikes = dataSnapshot.child(productID).child("number").getValue(String.class);
+                                productslikes = dataSnapshot.child(productID).child("likenumber").getValue(String.class);
 
 
 

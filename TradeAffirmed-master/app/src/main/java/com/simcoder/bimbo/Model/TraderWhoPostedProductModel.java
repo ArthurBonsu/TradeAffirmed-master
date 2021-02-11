@@ -29,6 +29,7 @@ public class TraderWhoPostedProductModel
 
     String pname;
     String pimage;
+    String likenumber;
 
 
     public TraderWhoPostedProductModel() {
@@ -68,7 +69,7 @@ public class TraderWhoPostedProductModel
 
 
     public TraderWhoPostedProductModel(String comment, String uid, List<Like> likes, String date, String time, String tid, String name, String number, String subject, String likeid, String pid, String commentkey, String photoid, String orderkey,
-                   String reply, String replyid, String traderimage, String tradername, String pname, String pimage, String image
+                   String reply, String replyid, String traderimage, String tradername, String pname, String pimage, String image, String likenumber
     ) {
         this.comment = comment;
         this.uid = uid;
@@ -93,7 +94,7 @@ public class TraderWhoPostedProductModel
         this.photoid = photoid;
         this.pimage = pimage;
         this.tradername = tradername;
-
+         this.likenumber = likenumber;
     }
 
 
@@ -143,6 +144,13 @@ public class TraderWhoPostedProductModel
         this.pname = pname;
     }
 
+    public String getlikenumber () {
+        return likenumber;
+    }
+
+    public void setlikenumber(String likenumber) {
+        this.likenumber = likenumber;
+    }
 
 
 

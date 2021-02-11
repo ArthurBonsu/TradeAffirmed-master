@@ -164,7 +164,7 @@ public  class ViewYourPersonalProduct1 extends AppCompatActivity
     // HAS TO BE ORDERED BY ADMINID
 // THE ADMIN CAN CHECK FOR A PARTICULAR USERS PRODUCT BOUGHT
 
-
+// PRODUCT ORDERED BY A PARTICULAR USER
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -455,6 +455,8 @@ public  class ViewYourPersonalProduct1 extends AppCompatActivity
             }
             // This will query for the product or order for a particular user so it first queries the trader and the queries the user
             // So here we just query the products of the order we have sent, just the details of the  product from orders
+
+            // We have to build the search to find the specific user information here
             traderuser = traderoruser+userID;
             @Nullable
 

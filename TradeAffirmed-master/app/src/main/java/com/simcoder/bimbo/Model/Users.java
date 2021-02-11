@@ -23,6 +23,7 @@ public class Users {
     private String baseprice;
     private String comment;
     String approved;
+    String likenumber;
 
     private List<Like> likes;
 
@@ -60,7 +61,7 @@ public class Users {
             String coverimage, String g, String one, String zero, String customerId, String customerRideId, String destination, String destinationLat, String destinationLng,
             String driverFoundID, String customer, String driver, String predictDistance, String lat, String lng, String rating, String triptime,
             String job, String quote, String role, String car, String descriptions, String field, String followersname, String customerPaid, String driverPaidOut,
-            String timestamp, String operations, String reviewBy, String residences, String service, String setinformations, String baseprice, String commentkey, String likeid, String newornot, String paymentkey
+            String timestamp, String operations, String reviewBy, String residences, String service, String setinformations, String baseprice, String commentkey, String likeid, String newornot, String paymentkey,    String likenumber
     ) {
 
 
@@ -128,7 +129,7 @@ public class Users {
         this. likeid = likeid;
         this.newornot = newornot;
         this.paymentkey = paymentkey;
-
+        this.likenumber = likenumber;
 
     }
 
@@ -411,8 +412,8 @@ public class Users {
     }
 
 
-
-
+    public String getlikenumber(){return likenumber;}
+    public void setlikenumber(String likenumber){this.likenumber = likenumber;}
 
     public void setreply(String reply) {
         this.reply = reply;

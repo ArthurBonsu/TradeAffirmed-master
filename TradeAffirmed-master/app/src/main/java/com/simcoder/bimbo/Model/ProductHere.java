@@ -42,6 +42,7 @@ public class ProductHere {
 
     String pimage;
     String tradername;
+    String likenumber;
     public ProductHere() {
     }
 
@@ -55,7 +56,7 @@ public class ProductHere {
             String coverimage, String g, String one, String zero, String customerId, String customerRideId, String destination, String destinationLat, String destinationLng,
             String driverFoundID, String customer, String driver, String predictDistance, String lat, String lng, String rating, String triptime,
             String job, String quote, String role, String car, String descriptions, String field, String followersname, String customerPaid, String driverPaidOut,
-            String timestamp, String operations, String reviewBy, String residences, String service, String setinformations, String baseprice, String commentkey, String likeid
+            String timestamp, String operations, String reviewBy, String residences, String service, String setinformations, String baseprice, String commentkey, String likeid, String likenumber
     ) {
 
 
@@ -121,6 +122,7 @@ public class ProductHere {
         this.baseprice = baseprice;
         this.commentkey = commentkey;
         this. likeid = likeid;
+        this.likenumber = likenumber;
 
 
     }
@@ -273,6 +275,12 @@ public class ProductHere {
         this.commentkey = commentkey;
     }
 
+    public String getlikenumber() {
+        return likenumber;
+    }
+    public void setlikenumber(String likenumber) {
+        this.likenumber = likenumber;
+    }
 
 
 

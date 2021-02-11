@@ -533,8 +533,8 @@ public  class  AdminUserOrderDetails extends AppCompatActivity
                                                         tid = snapshot.child("tid").getValue(String.class);
                                                     }
 
-                                                    if (snapshot.child("number").getValue() != null) {
-                                                        number = snapshot.child("number").getValue(String.class);
+                                                    if (snapshot.child("likenumber").getValue() != null) {
+                                                        number = snapshot.child("likenumber").getValue(String.class);
                                                     }
                                                     if (snapshot.child("uid").getValue() != null) {
                                                         uid = snapshot.child("uid").getValue(String.class);

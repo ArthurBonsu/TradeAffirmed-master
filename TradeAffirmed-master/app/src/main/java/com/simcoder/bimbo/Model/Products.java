@@ -43,6 +43,7 @@ public class Products {
     String categoryname;
 
     String size;
+    String likenumber;
 
 
 
@@ -81,7 +82,7 @@ public class Products {
             String job, String quote, String role, String car, String descriptions, String field,  String customerPaid, String driverPaidOut,
             String timestamp, String operations, String reviewBy, String residences, String service, String setinformations, String baseprice, String tradername, String traderimage, String subject,
             String orderkey,String reply,String replyid,String pname,String pimage,String categoryid,String reviewid, String categoryname,String photoid,
-             String size, String likeid
+             String size, String likeid, String likenumber
 
 
 
@@ -162,6 +163,7 @@ public class Products {
         this.size =size;
         this.likeid = likeid;
         this.subject = subject;
+        this.likenumber = likenumber;
 
 
 
@@ -316,6 +318,13 @@ public class Products {
     }
 
 
+
+    public String getlikenumber() {
+        return likenumber;
+    }
+    public void setlikenumber(String likenumber) {
+        this.likenumber = likenumber;
+    }
 
 
 
