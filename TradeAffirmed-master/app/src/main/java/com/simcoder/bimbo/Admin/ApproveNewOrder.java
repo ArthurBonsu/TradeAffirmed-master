@@ -42,6 +42,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.Query;
 import com.rey.material.widget.ImageView;
+import com.simcoder.bimbo.Model.AdminOrders;
 import com.simcoder.bimbo.Model.Users;
 import com.simcoder.bimbo.WorkActivities.CartActivity;
 import com.simcoder.bimbo.WorkActivities.CustomerProfile;
@@ -157,6 +158,7 @@ public  class  ApproveNewOrder  extends AppCompatActivity
     private ProgressDialog mProgress;
     String orderID;
     Button shipapprove;
+    String newornot;
 
     String  userandbought;
     String saveCurrentDate;
@@ -386,22 +388,22 @@ public  class  ApproveNewOrder  extends AppCompatActivity
                 traderoruser = user.getUid();
 
             }
-               String newornot = user + "true";
+               String newornotposted = user + "true";
             @Nullable
 
             Query queryhere =
 
-                    FirebaseDatabase.getInstance().getReference().child("Orders").orderByChild("newornot").equalTo(newornot);
+                    FirebaseDatabase.getInstance().getReference().child("Orders").orderByChild("newornot").equalTo(newornotposted);
             if (queryhere != null) {
 
-                FirebaseRecyclerOptions<Users> options =
-                        new FirebaseRecyclerOptions.Builder<Users>()
-                                .setQuery(queryhere, new SnapshotParser<Users>() {
+                FirebaseRecyclerOptions<AdminOrders> options =
+                        new FirebaseRecyclerOptions.Builder<AdminOrders>()
+                                .setQuery(queryhere, new SnapshotParser<AdminOrders>() {
 
 
                                     @Nullable
                                     @Override
-                                    public Users parseSnapshot(@Nullable DataSnapshot snapshot) {
+                                    public AdminOrders parseSnapshot(@Nullable DataSnapshot snapshot) {
 
 
                                       /*
@@ -493,22 +495,23 @@ public  class  ApproveNewOrder  extends AppCompatActivity
                                             state = snapshot.child("state").getValue(String.class);
                                         }
 
+                                        if (snapshot.child("newornot").getValue(String.class) != null) {
+                                            newornot = snapshot.child("newornot").getValue(String.class);
+                                        }
 
                                         if (snapshot.child("approve").getValue(String.class) != null) {
                                             approved = snapshot.child("approve").getValue(String.class);
                                         }
 
-                                        return new Users(orderkey, date, time, tid, thetraderimage, tradername, address, amount, city, delivered, distance, image, uid, name, mode,
+                                        return new AdminOrders(orderkey, date, time, tid, thetraderimage, tradername, address, amount, city, delivered, distance, image, uid, name, mode,
 
-                                                number, phone, quantity, state, shippingcost, approved);
-
-
+                                                number, phone, quantity, shippingcost, state,newornot, approved);
                                     }
 
                                 }).build();
 
 
-                feedadapter = new FirebaseRecyclerAdapter<Users, ViewHolder>(options) {
+                feedadapter = new FirebaseRecyclerAdapter<AdminOrders, ViewHolder>(options) {
                     @Nullable
                     @Override
                     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -527,7 +530,7 @@ public  class  ApproveNewOrder  extends AppCompatActivity
                     }
 
                     @Override
-                    protected void onBindViewHolder(@Nullable final ViewHolder holder, int position, @Nullable Users model) {
+                    protected void onBindViewHolder(@Nullable final ViewHolder holder, int position, @Nullable AdminOrders model) {
                         Calendar calendar = Calendar.getInstance();
                         SimpleDateFormat currentDate = new SimpleDateFormat("MMM dd, yyyy");
                         if (currentDate != null) {

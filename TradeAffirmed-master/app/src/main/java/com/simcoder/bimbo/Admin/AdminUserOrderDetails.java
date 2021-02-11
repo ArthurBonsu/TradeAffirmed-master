@@ -124,7 +124,25 @@ public  class  AdminUserOrderDetails extends AppCompatActivity
 
     //product_description
     //thetraderiknow
+
     String   categoryname,date, desc,discount, time, pid, pimage,pname,price,image,name,size, tradername,tid;
+    String theproductname;
+
+    String orderkey;
+    String thetraderimage;
+    String address;
+    String amount;
+    String city;
+    String delivered;
+    String distance;
+    String mode;
+
+    String phone;
+    String quantity;
+    String shippingcost;
+    String state;
+    String newornot;
+
     android.widget.ImageView product_imagehere;
     android.widget.ImageView thetraderimageforproduct;
     Getmyfollowings gettingmyfollowingshere;
@@ -132,7 +150,10 @@ public  class  AdminUserOrderDetails extends AppCompatActivity
     Getmyfollowings  getmyfollowingsagain;
     DatabaseReference OrdersReference;
     DatabaseReference UsersRef;
-    String theproductname;
+
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -518,9 +539,9 @@ public  class  AdminUserOrderDetails extends AppCompatActivity
                                                     if (snapshot.child("uid").getValue() != null) {
                                                         uid = snapshot.child("uid").getValue(String.class);
                                                     }
-                                                    return new AdminOrders(categoryname, date, desc, discount, time, pid, pimage, pname, price, image, name, size, tradername, traderimage, tid, number, uid);
+                                                    return new AdminOrders(orderkey, date, time, tid, thetraderimage, tradername, address, amount, city, delivered, distance, image, uid, name, mode,
 
-
+                                                            number, phone, quantity, shippingcost, state,newornot);
                                                 }
 
                                             }).build();
@@ -617,8 +638,6 @@ public  class  AdminUserOrderDetails extends AppCompatActivity
 
 
                                             }
-
-
 
                                             @Override
                                             public void onCancelled(DatabaseError databaseError) {

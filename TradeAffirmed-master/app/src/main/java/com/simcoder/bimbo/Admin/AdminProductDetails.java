@@ -201,7 +201,7 @@ String
             buildGoogleApiClient();
 
 
-            ProductsRefDatabase = myfirebasedatabase.getInstance().getReference().child("Products");
+            ProductsRefDatabase = myfirebasedatabase.getInstance().getReference().child("Product");
 
             ProductsRefDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override

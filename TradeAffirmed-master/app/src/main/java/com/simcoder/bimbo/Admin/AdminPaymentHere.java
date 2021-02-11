@@ -422,14 +422,14 @@ public  class  AdminPaymentHere  extends AppCompatActivity
                     FirebaseDatabase.getInstance().getReference().child("Orders").orderByChild("tid").equalTo(tid);
             if (queryhere != null) {
 
-                FirebaseRecyclerOptions<Users> options =
-                        new FirebaseRecyclerOptions.Builder<Users>()
-                                .setQuery(queryhere, new SnapshotParser<Users>() {
+                FirebaseRecyclerOptions<AdminOrders> options =
+                        new FirebaseRecyclerOptions.Builder<AdminOrders>()
+                                .setQuery(queryhere, new SnapshotParser<AdminOrders>() {
 
 
                                     @Nullable
                                     @Override
-                                    public Users parseSnapshot(@Nullable DataSnapshot snapshot) {
+                                    public AdminOrders parseSnapshot(@Nullable DataSnapshot snapshot) {
 
 
                                       /*
@@ -528,7 +528,7 @@ public  class  AdminPaymentHere  extends AppCompatActivity
                                             price = snapshot.child("price").getValue(String.class);
                                         }
 
-                                        return new Users(orderkey, date, time, tid, thetraderimage, tradername, address, amount, city, delivered, distance, image, uid, name, mode,
+                                        return new AdminOrders(orderkey, date, time, tid, thetraderimage, tradername, address, amount, city, delivered, distance, image, uid, name, mode,
 
                                                 number, phone, quantity, shippingcost, state, price);
 
@@ -538,7 +538,7 @@ public  class  AdminPaymentHere  extends AppCompatActivity
                                 }).build();
 
 
-                feedadapter = new FirebaseRecyclerAdapter<Users, AdminPaymentHere.ViewHolder>(options) {
+                feedadapter = new FirebaseRecyclerAdapter<AdminOrders, AdminPaymentHere.ViewHolder>(options) {
                     @Nullable
                     @Override
                     public AdminPaymentHere.ViewHolder onCreateViewHolder(ViewGroup parent, int viewrole) {
@@ -557,7 +557,7 @@ public  class  AdminPaymentHere  extends AppCompatActivity
                     }
 
                     @Override
-                    protected void onBindViewHolder(@NonNull ViewHolder holder, int i, @NonNull Users model) {
+                    protected void onBindViewHolder(@NonNull ViewHolder holder, int i, @NonNull AdminOrders model) {
 
                         if (model != null) {
                             holders = holder;

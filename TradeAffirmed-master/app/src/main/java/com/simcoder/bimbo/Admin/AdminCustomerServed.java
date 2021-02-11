@@ -127,6 +127,7 @@ public  class  AdminCustomerServed extends AppCompatActivity
     String hasbeeserviced;
     String orderkey;
     String useranddelivered;
+    String newornot;
 
 
     @Override
@@ -468,11 +469,15 @@ public  class  AdminCustomerServed extends AppCompatActivity
                                         if (snapshot.child("orderkey").getValue(String.class) != null) {
                                             orderkey = snapshot.child("orderkey").getValue(String.class);
                                         }
-                                            // ADMINSERVED MORETO BE ADDED
-                                        return new AdminOrders(date, time, tid, thetraderimage, tradername,uid,name,image);
 
+                                        if (snapshot.child("newornot").getValue(String.class) != null) {
+                                            newornot = snapshot.child("newornot").getValue(String.class);
+                                        }
+                                        return new AdminOrders(orderkey, date, time, tid, thetraderimage, tradername, address, amount, city, delivered, distance, image, uid, name, mode,
 
+                                                number, phone, quantity, shippingcost, state,newornot);
                                     }
+
 
                                 }).build();
 

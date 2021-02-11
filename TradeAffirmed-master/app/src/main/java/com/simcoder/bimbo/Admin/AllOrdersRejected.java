@@ -131,6 +131,7 @@ public  class  AllOrdersRejected extends AppCompatActivity
     TextView thetradername;
     TextView orderedtime;
     TextView ordereddate;
+    String newornot;
 
 /*
     addnewproducthere
@@ -498,10 +499,12 @@ public  class  AllOrdersRejected extends AppCompatActivity
                                         if (snapshot.child("state").getValue(String.class) != null) {
                                             orderkey = snapshot.child("state").getValue(String.class);
                                         }
+                                        if (snapshot.child("state").getValue(String.class) != null) {
+                                            newornot = snapshot.child("state").getValue(String.class);
+                                        }
+                                        return new AdminOrders(orderkey, date, time, tid, thetraderimage, tradername, address, amount, city, delivered, distance, image, uid, name, mode,
 
-                                        return new AdminOrders(date, time, tid, thetraderimage, tradername,uid,name,image);
-
-
+                                                number, phone, quantity, shippingcost, state,newornot);
                                     }
 
                                 }).build();
