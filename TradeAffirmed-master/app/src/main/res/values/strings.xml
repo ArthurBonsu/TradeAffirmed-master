@@ -453,6 +453,15 @@
 
 
     <string name="grid_layout">GRID LAYOUT</string>
+    <string name="tradex_provides_the_means_for_people_to_trade_each_other_whether_students_and_friends_jump_in_and_let_us_trade">Tradex provides the means for people to trade each other, whether students and friends jump in and let us trade</string>
+    <string name="todois">TODO</string>
+    <string name="follow_me">Follow Me</string>
+    <string name="todohere">TODO</string>
+    <string name="add_to_group">Add to group</string>
+    <string name="todohere">TODO</string>
+    <string name="show_all_comments" />
+    <string name="string_show_all_comments" />
+    <string name="_360" />
 
 
 </resources>
