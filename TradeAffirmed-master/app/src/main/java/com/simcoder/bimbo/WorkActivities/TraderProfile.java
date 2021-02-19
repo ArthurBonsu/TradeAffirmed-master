@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cepheuen.elegantnumberbutton.view.ElegantNumberButton;
@@ -56,13 +57,14 @@ public class TraderProfile extends AppCompatActivity  implements  View.OnClickLi
     DatabaseReference mDatabaseTraderFollowers;
 
     ImageView traderimageonscreen;
-    ImageView tradercoverprofile;
+    LinearLayout tradercoverprofile;
     TextView traderquotes;
     TextView traderprofilename;
     TextView traderprofilejob;
     TextView tradernumberoffollowers;
     TextView traderprofilephoneadress;
-
+    TextView traderemail;
+    TextView traderstate;
 
 
     String followersID;
@@ -88,6 +90,8 @@ public class TraderProfile extends AppCompatActivity  implements  View.OnClickLi
     boolean increment;
     Button message;
     Button call;
+    String email;
+
 
 
     @Override
@@ -98,14 +102,17 @@ public class TraderProfile extends AppCompatActivity  implements  View.OnClickLi
         if (getIntent() != null) {
             productID = getIntent().getStringExtra("pid");
         }
-        ImageView traderimageonscreen = (ImageView) findViewById(R.id.traderimageonscreen);
-        ImageView tradercoverprofile = (ImageView) findViewById(R.id.tradercoverprofile);
-        TextView traderquotes = (TextView) findViewById(R.id.traderquotes);
-        TextView traderprofilename = (TextView) findViewById(R.id.traderprofilename);
-        TextView traderprofilejob = (TextView) findViewById(R.id.traderprofilejob);
-        TextView tradernumberoffollowers = (TextView) findViewById(R.id.tradernumberoffollowers);
-        TextView traderprofilephoneadress = (TextView)findViewById(R.id.traderprofilephoneadress);
+         traderimageonscreen = (ImageView) findViewById(R.id.traderimageonscreen);
+        tradercoverprofile = (LinearLayout) findViewById(R.id.tradercoverprofilelayout);
+         traderquotes = (TextView) findViewById(R.id.traderquotes);
+         traderprofilename = (TextView) findViewById(R.id.traderprofilename);
+         traderprofilejob = (TextView) findViewById(R.id.traderprofilejob);
+         tradernumberoffollowers = (TextView) findViewById(R.id.tradernumberoffollowers);
+         traderprofilephoneadress = (TextView)findViewById(R.id.traderprofilephoneadress);
+         traderemail = (TextView)findViewById(R.id.traderemail);
+          traderstate = (TextView)findViewById(R.id.traderstate);
 
+// EMAIL PROFILE HAS TO BE ADDED
 
         traderfollowbutton = (Button)findViewById(R.id.traderfollowbutton);
 
@@ -198,6 +205,8 @@ public class TraderProfile extends AppCompatActivity  implements  View.OnClickLi
                         tradername = dataSnapshot.child(theProfileID).child("name").getValue(String.class);
                         traderphoneaddress = dataSnapshot.child(theProfileID).child("address").getValue(String.class);
                         traderjob = dataSnapshot.child(theProfileID).child("job").getValue(String.class);
+                        email = dataSnapshot.child(theProfileID).child("email").getValue(String.class);
+                        state = dataSnapshot.child(theProfileID).child("state").getValue(String.class);
                     }
                 }
 
@@ -320,7 +329,7 @@ public class TraderProfile extends AppCompatActivity  implements  View.OnClickLi
 
                                 if (tradercoverprofile != null) {
                                     if (coverimage != null) {
-                                        tradercoverprofile.setImageResource(Integer.parseInt(coverimage));
+                                        tradercoverprofile.setBackgroundResource(Integer.parseInt(coverimage));
                                     }
                                 }
                          if (traderquotes != null) {
@@ -358,15 +367,27 @@ public class TraderProfile extends AppCompatActivity  implements  View.OnClickLi
                                                 Picasso.get().load(traderimage).into(traderimageonscreen);
                                             }
                                         }}
-                                    if (tradercoverprofile != null){
-                         if (coverimage != null) {
-                             Picasso.get().load(coverimage).into(tradercoverprofile);
-                         }
+                        if (traderemail != null) {
+                            if (traderemail != null) {
+                                traderemail.setText(email);
+                            }
+                        }
 
-                    } }
+                        if (traderstate != null) {
+                            if (traderstate != null) {
+                                traderstate.setText(state);
+                            }
+                        }
 
 
-                }
+
+                    }
+
+
+                                       }
+
+
+
 
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
