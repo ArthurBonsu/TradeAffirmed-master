@@ -207,6 +207,8 @@ public class TraderProfile extends AppCompatActivity  implements  View.OnClickLi
                         traderjob = dataSnapshot.child(theProfileID).child("job").getValue(String.class);
                         email = dataSnapshot.child(theProfileID).child("email").getValue(String.class);
                         state = dataSnapshot.child(theProfileID).child("state").getValue(String.class);
+                        getTraderInformation();
+
                     }
                 }
 

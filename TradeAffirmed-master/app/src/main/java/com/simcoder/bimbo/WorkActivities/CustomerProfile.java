@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cepheuen.elegantnumberbutton.view.ElegantNumberButton;
@@ -56,13 +57,22 @@ public class CustomerProfile extends AppCompatActivity  implements  View.OnClick
     DatabaseReference mDatabaseCustomerFollowers;
 
     ImageView customerimageonscreen;
-    ImageView customercoverprofile;
+    LinearLayout customercoverprofile;
     TextView customerquotes;
     TextView customerprofilename;
     TextView customerprofilejob;
     TextView customernumberoffollowers;
     TextView customerprofilephoneadress;
     String followersID;
+    TextView customerlikes;
+    TextView customerfollowersnum;
+    TextView customerfollowing;
+    TextView customeremail;
+    TextView customerphone;
+    TextView customeraddress;
+    TextView customergender;
+    TextView customerstate;
+    TextView customerreview;
 
 
     private static final int RC_SIGN_IN = 1;
@@ -86,6 +96,17 @@ public class CustomerProfile extends AppCompatActivity  implements  View.OnClick
     Users usershere;
     String customerkeywehave;
 
+    String thecustomerlikes;
+    String customerfollowersnumber;
+    String customerfollowingnumber;
+    String email;
+    String phone;
+    String address;
+    String gender;
+    String customerstatehere;
+    String customerreviewhere;
+    String followersbutton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -93,13 +114,23 @@ public class CustomerProfile extends AppCompatActivity  implements  View.OnClick
         if (getIntent() != null) {
             productID = getIntent().getStringExtra("pid");
         }
+              customercoverprofile = (LinearLayout) findViewById(R.id.customercoverprofile);
         customerimageonscreen = (ImageView) findViewById(R.id.customerimageonscreen);
-        customercoverprofile = (ImageView) findViewById(R.id.customercoverprofile);
-        customerquotes = (TextView) findViewById(R.id.customerquotes);
-        customerprofilename = (TextView) findViewById(R.id.customerprofilename);
-        customerprofilejob = (TextView) findViewById(R.id.customerprofilejob);
-        customernumberoffollowers = (TextView) findViewById(R.id.customernumberoffollowers);
-        customerfollowbutton = (Button) findViewById(R.id.customerfollowbutton);
+        customerprofilename = (TextView)findViewById(R.id.customerprofilename);
+        customerquotes = (TextView)findViewById(R.id.customerquotes);
+        customerlikes = (TextView)findViewById(R.id.customerlikes);
+        customerfollowersnum = (TextView)findViewById(R.id.customerfollowersnum);
+        customerfollowing = (TextView)findViewById(R.id. customerfollowing);
+        customeremail = (TextView)findViewById(R.id.customeremail);
+        customerphone = (TextView)findViewById(R.id.customerphone);
+        customeraddress = (TextView)findViewById(R.id.customeraddress);
+        customergender = (TextView)findViewById(R.id.customergender);
+        customerstate = (TextView)findViewById(R.id.customerstate);
+        customerreview = (TextView)findViewById(R.id.customerreview);
+        customerfollowbutton =(Button)findViewById(R.id.customerfollowbutton) ;
+
+
+
 
         // FROM ADMINVIEWUSERS HERE
         {
@@ -162,14 +193,31 @@ public class CustomerProfile extends AppCompatActivity  implements  View.OnClick
 
                         if (userID != null) {
                             customerkey = dataSnapshot.child(userID).getKey();
-                            customerimage = dataSnapshot.child(userID).child("image").getValue(String.class);
+                                                       customerimage = dataSnapshot.child(userID).child("image").getValue(String.class);
                             coverimage = dataSnapshot.child(userID).child("coverimage").getValue(String.class);
                             customerquote = dataSnapshot.child(userID).child("quote").getValue(String.class);
 
                             customerfollowers = dataSnapshot.child(userID).child("followers").child("number").getValue(String.class);
                             customername = dataSnapshot.child(userID).child("name").getValue(String.class);
                             customerphoneaddress = dataSnapshot.child(userID).child("address").getValue(String.class);
+                            thecustomerlikes = dataSnapshot.child(userID).child("likenumber").getValue(String.class);
+                            customerfollowersnumber = dataSnapshot.child(userID).child("followers").child("number").getValue(String.class);
+                            customerfollowingnumber = dataSnapshot.child(userID).child("following").child("number").getValue(String.class);
+                            email = dataSnapshot.child(userID).child("email").getValue(String.class);
+                            phone  = dataSnapshot.child(userID).child("phone").getValue(String.class);
+                            address = dataSnapshot.child(userID).child("address").getValue(String.class);
+                            gender = dataSnapshot.child(userID).child("gender").getValue(String.class);
+                            customerstatehere = dataSnapshot.child("state").getValue(String.class);
+                            customerreviewhere = dataSnapshot.child("review").getValue(String.class);
+                            followersbutton = dataSnapshot.child("followbutton").getValue(String.class);
                             customerjob = dataSnapshot.child(userID).child("job").getValue(String.class);
+
+                            getCustomerInformation();
+
+
+
+
+
                         }
 
 
@@ -271,7 +319,7 @@ public class CustomerProfile extends AppCompatActivity  implements  View.OnClick
     protected void onStart() {
         super.onStart();
 
-        getCustomerInformation();
+
     }
 
 
@@ -289,25 +337,38 @@ public class CustomerProfile extends AppCompatActivity  implements  View.OnClick
 
 
                             customerimageonscreen.setImageResource(Integer.parseInt(customerimage));
-                            customercoverprofile.setImageResource(Integer.parseInt(coverimage));
-
-
+                            customercoverprofile.setBackgroundResource(Integer.parseInt(coverimage));
                             customerquotes.setText(customerquote);
+
+
                             customerprofilename.setText(customername);
                             customerprofilejob.setText(customerjob);
                             customerprofilephoneadress.setText(customerphoneaddress);
 
                             customernumberoffollowers.setText(customerfollowers);
+                                 customerlikes.setText(thecustomerlikes);
+                                 customerfollowersnum.setText(customerfollowersnumber);
+                                 customerfollowing.setText(customerfollowingnumber);
+                                 customeremail.setText(email);
+                                 customerphone.setText(phone);
+                                 customeraddress.setText(address);
+                                 customergender.setText(gender);
+                                 customerstate.setText(customerstatehere);
+                                 customerreview.setText(customerreviewhere);
+                                 customerfollowbutton.setText(followersbutton);
 
                             Picasso.get().load(customerimage).into(customerimageonscreen);
 
-                            Picasso.get().load(coverimage).into(customercoverprofile);
+                           // Picasso.get().load(coverimage).into(customercoverprofile);
 
 
                         }
 
 
-                    }
+
+
+
+                        }
                 }}
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
