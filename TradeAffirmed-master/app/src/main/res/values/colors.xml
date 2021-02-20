@@ -20,4 +20,8 @@
 
     <color name="darkRed">#cc0000</color>
     <color name="graylight">#D3D3D3</color>
+
+   <color name="textColor">#060606</color>
+
+    <color name="orange">#FA6B1B</color>
 </resources>

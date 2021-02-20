@@ -1,104 +1,542 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+  -->
+<!-- https://www.youtube.com/watch?v=nJUiP25bDqU -->
+ <!--   https://github.com/theindianappguy/Lamp_Store_App_UI/blob/master/app/src/main/res/layout/activity_main.xml-->
+    <!--
+        <ImageView
+            android:id="@+id/adminproductdetailsimage"
+            android:layout_width="match_parent"
+            android:layout_height="260dp"
+            android:scaleType="centerCrop"
+            android:contentDescription="TODO" />
 
 
-    <ImageView
-        android:id="@+id/adminproductdetailsimage"
-        android:layout_width="match_parent"
-        android:layout_height="260dp"
-        android:scaleType="centerCrop"
-        android:contentDescription="TODO" />
+        <TextView
+            android:id="@+id/adminproductimageproductname"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/adminproductdetailsimage"
+
+            android:textColor="@android:color/black"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            android:gravity="center"
+            android:layout_marginTop="10dp"
+            />
 
 
-    <TextView
-        android:id="@+id/adminproductimageproductname"
+
+        <TextView
+            android:id="@+id/adminproductimagedescription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/adminproductimageproductname"
+
+            android:textColor="@android:color/black"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:gravity="center"
+            android:layout_marginTop="10dp"
+            />
+
+        <TextView
+            android:id="@+id/adminproductimageprice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/adminproductimagedescription"
+
+            android:textColor="@android:color/black"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            android:gravity="center"
+            android:layout_marginTop="10dp"
+            />
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/adminproductdetailsimage"
-
-        android:textColor="@android:color/black"
-        android:textStyle="bold"
-        android:textSize="18sp"
-        android:gravity="center"
-        android:layout_marginTop="10dp"
-        />
+        android:orientation="horizontal"
+        android:id="@+id/likebuttonsresult"
+        android:layout_below="@+id/adminproductimageprice">
+        >
 
 
+        <ImageButton
+            android:id="@+id/adminproductimagelikebutton"
+            android:layout_width="75sp"
+            android:layout_height="50sp"
+            android:scaleType="fitCenter"
+            app:srcCompat="@drawable/likeicons"
+            android:contentDescription="likebutton" />
+        <TextView
+            android:id="@+id/adminproductimagenumberoflikes"
+            android:layout_width="50sp"
+            android:layout_height="wrap_content"
 
-    <TextView
-        android:id="@+id/adminproductimagedescription"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/adminproductimageproductname"
+            android:textColor="@android:color/black"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            android:gravity="center"
+            android:layout_marginTop="10dp"
+            android:layout_below="@+id/adminproductimagelikebutton"
+            />
 
-        android:textColor="@android:color/black"
-        android:textStyle="bold"
-        android:textSize="16sp"
-        android:gravity="center"
-        android:layout_marginTop="10dp"
-        />
 
-    <TextView
-        android:id="@+id/adminproductimageprice"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/adminproductimagedescription"
 
-        android:textColor="@android:color/black"
-        android:textStyle="bold"
-        android:textSize="18sp"
-        android:gravity="center"
-        android:layout_marginTop="10dp"
-        />
-<LinearLayout
+    </LinearLayout>
+
+
+
+        <Button
+            android:id="@+id/ViewCustomers"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:hint="@string/view_customers"
+
+            android:layout_below="@+id/likebuttonsresult"
+          />
+
+   -->
+<!--</RelativeLayout>-->
+
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:id="@+id/likebuttonsresult"
-    android:layout_below="@+id/adminproductimageprice">
-    >
+    android:layout_height="match_parent"
+    android:background="#F4F4F4"
+    android:orientation="vertical"
+    android:padding="@dimen/paddingSmall"
+ >
 
-
-    <ImageButton
-        android:id="@+id/adminproductimagelikebutton"
-        android:layout_width="75sp"
-        android:layout_height="50sp"
-        android:scaleType="fitCenter"
-        app:srcCompat="@drawable/likeicons"
-        android:contentDescription="likebutton" />
-    <TextView
-        android:id="@+id/adminproductimagenumberoflikes"
-        android:layout_width="50sp"
+    <!--Top Bar-->
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:padding="@dimen/medium">
 
-        android:textColor="@android:color/black"
-        android:textStyle="bold"
-        android:textSize="18sp"
-        android:gravity="center"
-        android:layout_marginTop="10dp"
-        android:layout_below="@+id/adminproductimagelikebutton"
-        />
+        <ImageView
+            android:layout_width="38dp"
+            android:layout_height="40dp"
+            android:layout_alignParentLeft="true"
+            android:background="@drawable/grey_circular_border"
+            android:padding="12dp"
+            android:src="@drawable/blackbeauty" />
 
 
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="LAMP"
+                android:textColor="@color/textColor"
+                android:textSize="20sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/xsmall"
+                android:text="Sandy Ventures"
+                android:textSize="15sp" />
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/grey_circular_border"
+            android:padding="@dimen/small"
+            android:src="@drawable/heart" />
+
+
+    </RelativeLayout>
+
+    <!--Body-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="280dp"
+            android:padding="5sp"
+            android:paddingLeft="5sp"
+            android:paddingTop="5sp"
+            android:paddingRight="5sp"
+            android:paddingBottom="5sp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/grilledbeefagain" />
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/medium">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/small">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="TABLE LAMP"
+                    android:textColor="@color/textColor"
+                    android:textSize="18sp" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/small">
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:padding="@dimen/xsmall"
+                        android:src="@drawable/star_clr" />
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:padding="@dimen/xsmall"
+                        android:src="@drawable/star_clr" />
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:padding="@dimen/xsmall"
+                        android:src="@drawable/star_clr" />
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:padding="@dimen/xsmall"
+                        android:src="@drawable/star_clr" />
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:padding="@dimen/xsmall"
+                        android:src="@drawable/star_grey" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="249 Review"
+                        android:textColor="@color/textColor"
+                        android:textSize="14sp" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:text="$90"
+                android:textColor="@color/textColor"
+                android:textSize="18sp" />
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/violet_circular_border"
+            android:orientation="vertical"
+            android:padding="@dimen/medium">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/small">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentLeft="true"
+                    android:text="Suggested for you"
+                    android:textColor="@color/white"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:text="View all"
+                    android:textColor="@color/white"
+                    android:textSize="16sp" />
+            </RelativeLayout>
+
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <LinearLayout
+                        android:layout_width="160dp"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/white_circular_border"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:padding="12dp">
+
+                        <ImageView
+                            android:layout_width="120dp"
+                            android:layout_height="120dp"
+                            android:src="@drawable/grillledbeefinherent" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:paddingLeft="@dimen/small"
+                            android:paddingRight="@dimen/small">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Edison Table Lamp"
+                                android:textColor="@color/textColor"
+                                android:textSize="14sp" />
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center_vertical">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="$350"
+                                    android:textColor="@color/textColor"
+                                    android:textSize="13sp" />
+
+                                <RelativeLayout
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="@dimen/xsmall"
+                                    android:layout_marginLeft="@dimen/xsmall">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginStart="@dimen/xsmall"
+                                        android:layout_marginLeft="@dimen/xsmall"
+                                        android:text="$750"
+                                        android:textColor="@color/orange"
+                                        android:textSize="13sp" />
+
+                                    <LinearLayout
+                                        android:layout_width="30dp"
+                                        android:layout_height="1dp"
+                                        android:layout_centerVertical="true"
+                                        android:background="@color/orange" />
+                                </RelativeLayout>
+
+                                <Space
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1" />
+
+                                <ImageView
+                                    android:layout_width="25dp"
+                                    android:layout_height="25dp"
+                                    android:background="@drawable/light_orange_circle"
+                                    android:padding="6.5dp"
+                                    android:src="@drawable/heart_orange_fill" />
+
+
+                            </LinearLayout>
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="160dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginLeft="20dp"
+                        android:background="@drawable/white_circular_border"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:padding="12dp">
+
+                        <ImageView
+                            android:layout_width="120dp"
+                            android:layout_height="120dp"
+                            android:src="@drawable/grilledbeefagainhere" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:paddingLeft="@dimen/small"
+                            android:paddingRight="@dimen/small">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Edison Table Lamp"
+                                android:textColor="@color/textColor"
+                                android:textSize="14sp" />
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center_vertical">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="$350"
+                                    android:textColor="@color/textColor"
+                                    android:textSize="13sp" />
+
+                                <RelativeLayout
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="@dimen/xsmall">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginStart="@dimen/xsmall"
+                                        android:text="$750"
+                                        android:textColor="@color/orange"
+                                        android:textSize="13sp" />
+
+                                    <LinearLayout
+                                        android:layout_width="30dp"
+                                        android:layout_height="1dp"
+                                        android:layout_centerVertical="true"
+                                        android:background="@color/orange" />
+                                </RelativeLayout>
+
+                                <Space
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1" />
+
+                                <ImageView
+                                    android:layout_width="25dp"
+                                    android:layout_height="25dp"
+                                    android:background="@drawable/light_orange_circle"
+                                    android:padding="6.5dp"
+                                    android:src="@drawable/heart_orange_fill" />
+
+
+                            </LinearLayout>
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="160dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="20dp"
+                        android:background="@drawable/white_circular_border"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:padding="12dp">
+
+                        <ImageView
+                            android:layout_width="120dp"
+                            android:layout_height="120dp"
+                            android:src="@drawable/lamp3" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:paddingLeft="@dimen/small"
+                            android:paddingRight="@dimen/small">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Edison Table Lamp"
+                                android:textColor="@color/textColor"
+                                android:textSize="14sp" />
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center_vertical">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="$350"
+                                    android:textColor="@color/textColor"
+                                    android:textSize="13sp" />
+
+                                <RelativeLayout
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="@dimen/xsmall">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginStart="@dimen/xsmall"
+                                        android:text="$750"
+                                        android:textColor="@color/orange"
+                                        android:textSize="13sp" />
+
+                                    <LinearLayout
+                                        android:layout_width="30dp"
+                                        android:layout_height="1dp"
+                                        android:layout_centerVertical="true"
+                                        android:background="@color/orange" />
+                                </RelativeLayout>
+
+                                <Space
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1" />
+
+                                <ImageView
+                                    android:layout_width="25dp"
+                                    android:layout_height="25dp"
+                                    android:background="@drawable/light_orange_circle"
+                                    android:padding="6.5dp"
+                                    android:src="@drawable/heart_orange_fill" />
+
+
+                            </LinearLayout>
+                        </LinearLayout>
+
+                    </LinearLayout>
+                </LinearLayout>
+            </HorizontalScrollView>
+
+        </LinearLayout>
+
+    </LinearLayout>
 
 </LinearLayout>
-
-
-
-    <Button
-        android:id="@+id/ViewCustomers"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="5dp"
-        android:hint="@string/view_customers"
-
-        android:layout_below="@+id/likebuttonsresult"
-      />
-
-
-</RelativeLayout>
