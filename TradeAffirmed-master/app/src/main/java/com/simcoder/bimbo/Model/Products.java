@@ -50,7 +50,7 @@ public class Products {
 
 
 
-    public Products() {
+    public Products(String orderkey, String date, String time, String tid, String thetraderimage, String tradername, String address, String amount, String city, String delivered, String distance, String image, String uid, String name, String mode, String number, String phone, String quantity, String shippingcost, String state, String newornot) {
     }
 
 

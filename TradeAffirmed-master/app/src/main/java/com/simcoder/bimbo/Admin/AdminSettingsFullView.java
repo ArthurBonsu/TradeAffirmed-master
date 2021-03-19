@@ -1,9 +1,17 @@
 package com.simcoder.bimbo.Admin;
 
-
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -14,20 +22,6 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import com.cepheuen.elegantnumberbutton.view.ElegantNumberButton;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.firebase.ui.database.SnapshotParser;
@@ -37,9 +31,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
@@ -51,12 +43,12 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.rey.material.widget.ImageView;
 import com.simcoder.bimbo.DriverMapActivity;
 import com.simcoder.bimbo.HistoryActivity;
 import com.simcoder.bimbo.Interface.ItemClickListner;
 import com.simcoder.bimbo.Model.AdminOrders;
-import com.simcoder.bimbo.Model.HashMaps;
-import com.simcoder.bimbo.Model.Products;
+import com.simcoder.bimbo.Model.Settings;
 import com.simcoder.bimbo.Model.Users;
 import com.simcoder.bimbo.R;
 import com.simcoder.bimbo.WorkActivities.CartActivity;
@@ -67,119 +59,53 @@ import com.squareup.picasso.Callback;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
-import java.util.Map;
-
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.paperdb.Paper;
 
-public class AdminProductDetails extends AppCompatActivity implements View.OnClickListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener ,NavigationView.OnNavigationItemSelectedListener {
+public  class  AdminSettingsFullView extends AppCompatActivity
+        implements NavigationView.OnNavigationItemSelectedListener {
+    DatabaseReference AnotherSettingsRef;
+    private DatabaseReference Settingsdetails;
+    private DatabaseReference ProductsRefwithproduct;
+    private  DatabaseReference SettingsRef;
+    private RecyclerView adminsettingsrecyclerview;
+    RecyclerView.LayoutManager layoutManager;
 
- //FIREBASE COLLECTOR FOR SUGGESTIONS MUST BE BUILT
-
-    private Button ViewBuyers;
-    private ImageView productImage;
-    private ElegantNumberButton numberButton;
-    private TextView productPrice, productDescription, productName;
-    private String productID = "", state = "Normal";
-    String role;
-    String traderID;
-    Query myproductsdetails;
-    DatabaseReference mDatabaseLikeCount;
-    DatabaseReference ProductsRefDatabase;
-String    productdetailsimage;
-String
-        pname, pimage,desc,number;
-            String productdetailsname;
-    String productdetailsdescription;
-            String productdetailsnumber;
-    String LikeRefkey;
- String photokey;
- String price;
- String tradername;
-
-
+    private String role = "";
+    String traderID = "";
     private static final int RC_SIGN_IN = 1;
     private FirebaseAuth.AuthStateListener firebaseAuthListener;
+    String ProductID;
+    FirebaseDatabase myfirebaseDatabase;
 
-   FirebaseDatabase myfirebasedatabase;
-   FirebaseDatabase likesgetdatabase;
+    public AdminSettingsFullView.AdminSettingsViewHolder holders;
+
+    public FirebaseRecyclerAdapter feedadapter;
+
     //AUTHENTICATORS
-    private RecyclerView recyclerView;
-
 
     private GoogleMap mMap;
     GoogleApiClient mGoogleApiClient;
     private static final String TAG = "Google Activity";
     private FirebaseAuth mAuth;
     private GoogleSignInClient mGoogleSignInClient;
-    DatabaseReference productsRef;
-    DatabaseReference photodatabase;
-    DatabaseReference LikeRef;
-    Boolean mProcessLike;
-    String userID;
-    boolean increment;
-    FirebaseUser user;
-    String productkey;
-    String productIDhere;
 
-
-
-    Button ViewCustomers;
-    ImageView adminproductimagelikebutton;
-    ImageView adminproductdetailsimage;
-    TextView adminproductimageproductname;
-    TextView adminproductimagedescription;
-    TextView adminproductimagenumberoflikes;
-    TextView adminproductimageprice;
-
-    String productinfokey;
-     String productidkey;
-     String name;
-     String productimage;
-     String productsdescription;
-     String productsprice;
-     String productslikes;
-       TextView admintradername;
-    TextView admincategoryid;
-    ImageView admintraderimage;
-    TextView adminnumberofreviews;
-    String  thetradernamestring;
-    String         thecategoryid;
-    String theadmintraderimage;
-     String theadminnumberofreviews;
-      TextView thetradername;
-
-    DatabaseReference ProductsRef;
-    private DatabaseReference Userdetails;
-    private DatabaseReference ProductsRefwithproduct;
-    private  DatabaseReference UsersRef;
-
-    RecyclerView.LayoutManager layoutManager;
-
-    DatabaseReference AllOrderDatabaseRef;
-    DatabaseReference FollowerDatabaseReference;
-
-    String traderkeyhere;
-
-    String ProductID;
-    FirebaseDatabase myfirebaseDatabase;
-    FirebaseDatabase FollowerDatabase;
-
-    public AdminProductViewViewHolder holders;
-
-    public FirebaseRecyclerAdapter feedadapter;
-
-    //AUTHENTICATORS
+    ImageView settingsimageview;
+    TextView        settingstext;
+    TextView settingsdescription;
 
     TextView allcustomersname;
     TextView allcustomersphonenumber;
     TextView allcustomersjob;
-    com.rey.material.widget.ImageView allcustomersimage;
+    ImageView allcustomersimage;
     String traderkey;
     String key;
     String tradename;
     String traderimage;
-   String categoryname, date,discount, time, pid,  image,  size, tid;
+    FirebaseUser user;
+
+
+    String categoryname, date, desc, discount, time, pid, pimage, pname, price, image, name, size, tradername, tid;
     String thetraderimage;
     String address;
     String amount;
@@ -189,116 +115,67 @@ String
     String uid;
     String mode;
 
+    String number;
     String phone;
     String quantity;
     String shippingcost;
+    String state;
     String thecustomersjob;
     String orderkey;
     String newornot;
-    AdminAllOrderHistory.Getmyfollowings getmyfollowingsagain;
+    Getmyfollowings getmyfollowingsagain;
     String userkey;
+    String settingskey;
     TextView  orderid;
     TextView customername;
+    TextView thetradername;
     TextView orderedtime;
     TextView ordereddate;
-    ImageView suggestionpagegrilledview;
-     TextView suggestionpagekebbabtext;
-    TextView suggestionpagekebbabcost;
-    ImageView suggestionpageheartpic;
-    TextView suggestionkebbabvaluecost;
+    String title;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.adminproductdetailslayout);
-
-         // THE MAIN APP MAIN COMPONENTS
-        ViewBuyers = (Button) findViewById(R.id.ViewBuyers);
-        adminproductimagelikebutton = (ImageView) findViewById(R.id.adminproductimagelikebutton);
-        adminproductdetailsimage = (ImageView) findViewById(R.id.adminproductdetailsimage);
-        adminproductimageproductname = (TextView) findViewById(R.id.adminproductimageproductname);
-
-        adminproductimagenumberoflikes = (TextView) findViewById(R.id.adminproductimagenumberoflikes);
-        adminproductimageprice = (TextView)findViewById(R.id.adminproductimageprice);
-        admintradername =  (TextView)findViewById(R.id.admintradername);
-        admincategoryid = (TextView)findViewById(R.id.admincategoryid);
-        admintraderimage = (ImageView)findViewById(R.id.admintraderimage);
-        adminnumberofreviews = (TextView)findViewById(R.id.adminnumberofreviews);
-
-        // THE RECYCLER VIEW COMPONENTS
-        suggestionpagegrilledview = (ImageView) findViewById(R.id.suggestionpagegrilledview);
-        suggestionpagekebbabtext =  (TextView)findViewById(R.id.suggestionpagekebbabtext);
-        suggestionpagekebbabcost = (TextView)findViewById(R.id.suggestionpagekebbabcost);
-        suggestionpageheartpic = (ImageView)findViewById(R.id.suggestionpageheartpic);
-        suggestionkebbabvaluecost = (TextView)findViewById(R.id.suggestionkebbabvaluecost);
-
-        //   productID = getIntent().getStringExtra("pid");
-
-        Intent priceintent = getIntent();
-        if( priceintent.getExtras().getString("price") != null) {
-            price  = priceintent.getExtras().getString("price");
-        }
-
-        Intent pnameintent = getIntent();
-        if( pnameintent.getExtras().getString("pname") != null) {
-            pname = pnameintent.getExtras().getString("pname");
-        }
-
-        Intent pimageintent = getIntent();
-        if( pimageintent.getExtras().getString("pimage") != null) {
-            pimage = pimageintent.getExtras().getString("pimage");
-        }
-
-        Intent descintent = getIntent();
-        if( descintent.getExtras().getString("desc") != null) {
-            desc = descintent.getExtras().getString("desc");
-        }
-
-        Intent productlikesintent = getIntent();
-        if( productlikesintent.getExtras().getString("likenumber") != null) {
-            number = productlikesintent.getExtras().getString("likenumber");
-        }
-
-        Intent productIDidentifyintent = getIntent();
-        if( productIDidentifyintent.getExtras().getString("pid") != null) {
-            productID = productIDidentifyintent.getExtras().getString("pid");
-        }
+        setContentView(
+                (R.layout.fullsettingslist));
 
         Intent roleintent = getIntent();
+
         if (roleintent.getExtras().getString("role") != null) {
             role = roleintent.getExtras().getString("role");
         }
-
-        Intent traderIDintent = getIntent();
-        if (traderIDintent.getExtras().getString("traderID") != null) {
-            traderID = traderIDintent.getExtras().getString("traderID");
+        Intent fromaddadmincategorytrader = getIntent();
+        if (fromaddadmincategorytrader.getExtras().getString("traderID") != null){
+            traderID = fromaddadmincategorytrader.getExtras().getString("traderID");
         }
-
-        Intent userintent = getIntent();
-        if( userintent.getExtras().getString("userID") != null) {
-            userID = userintent.getExtras().getString("userID");
-        }
-
-
-        recyclerView = findViewById(R.id.productdetailsinnerrecyclerview);
+        adminsettingsrecyclerview = findViewById(R.id.adminsettingsrecyclerview);
 
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setReverseLayout(true);
         layoutManager.setStackFromEnd(true);
-        if (recyclerView != null) {
-            recyclerView.setLayoutManager(layoutManager);
+        if (adminsettingsrecyclerview != null) {
+            adminsettingsrecyclerview.setLayoutManager(layoutManager);
         }
+     /*  if (recyclerView != null) {
+            recyclerView.setHasFixedSize(true);
+
+        }
+*/
 
 
 
+        settingsimageview = (ImageView) findViewById(R.id.settingsimageview);
+        settingstext = findViewById(R.id.settingstext);
 
+        settingsdescription = findViewById(R.id.settingsdescription);
 
         Paper.init(this);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.hometoolbar);
         if (toolbar != null) {
-            toolbar.setTitle("Admin Product Details");
+            toolbar.setTitle("Admin Settings Activity");
         }
 
 
@@ -320,6 +197,8 @@ String
             CircleImageView profileImageView = headerView.findViewById(R.id.user_profile_image);
 
             // USER
+
+
             mAuth = FirebaseAuth.getInstance();
 
             if (mAuth != null) {
@@ -334,253 +213,20 @@ String
                     }
                 }
 
+
                 myfirebaseDatabase = FirebaseDatabase.getInstance();
 
-                UsersRef = myfirebaseDatabase.getReference().child("Users");
+                SettingsRef = myfirebaseDatabase.getReference().child("Users");
 
 
-                userkey = UsersRef.getKey();
+                settingskey = SettingsRef.getKey();
                 // GET FROM FOLLOWING KEY
 
 
                 fetch();
-                recyclerView.setAdapter(feedadapter);
+                adminsettingsrecyclerview.setAdapter(feedadapter);
 
-                mAuth = FirebaseAuth.getInstance();
-                myfirebasedatabase = FirebaseDatabase.getInstance();
 
-                user = mAuth.getCurrentUser();
-                if (user != null) {
-                    traderID = "";
-                    traderID = user.getUid();
-                    tradername = "";
-                    tradername = user.getDisplayName();
-
-                    // GET FROM FOLLOWING KEY
-
-
-                    GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestIdToken(getString(R.string.default_web_client_id)).requestEmail().build();
-                    if (mGoogleApiClient != null) {
-                        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
-                    }
-
-                    if (mGoogleApiClient != null) {
-                        mGoogleApiClient = new GoogleApiClient.Builder(this).enableAutoManage(com.simcoder.bimbo.Admin.AdminProductDetails.this,
-                                new GoogleApiClient.OnConnectionFailedListener() {
-                                    @Override
-                                    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
-                                    }
-                                }).addApi(Auth.GOOGLE_SIGN_IN_API, gso).build();
-                    }
-                    buildGoogleApiClient();
-
-
-                    ProductsRefDatabase = myfirebasedatabase.getInstance().getReference().child("Product");
-                       Query queryhere = ProductsRefDatabase.orderByChild("productID").equalTo(productID);
-                    queryhere.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            if (dataSnapshot.exists() && dataSnapshot.getChildrenCount() > 0) {
-                                if (dataSnapshot != null) {
-                                    dataSnapshot.getValue(Users.class);
-
-                                    if (productID != null) {
-
-
-                                        // I don't know which one to use , what is mostly seen is the datasnapshot.child(productID).getkey() area
-                                        productinfokey = dataSnapshot.getKey();
-                                        productidkey = dataSnapshot.getKey();
-                                        name = dataSnapshot.child("name").getValue(String.class);
-
-                                        if (adminproductimageproductname != null) {
-                                            adminproductimageproductname.setText(name);
-                                        }
-
-                                        productimage = dataSnapshot.child("image").getValue(String.class);
-
-                                        if (adminproductdetailsimage != null) {
-                                            if (productimage != null) {
-                                                adminproductdetailsimage.setImageResource(Integer.parseInt(productimage));
-                                            }
-                                        }
-
-                                        // DESC WILL HAVE TO GO TO NEXT PAGE
-                         /*       productsdescription = dataSnapshot.child(productID).child("desc").getValue(String.class);
-                                if (adminproductimagedescription != null) {
-                                    adminproductimagedescription.setText(productsdescription);
-                                }
-*/
-                                        productsprice = dataSnapshot.child("price").getValue(String.class);
-                                        if (adminproductimageprice != null) {
-                                            adminproductimageprice.setText(productsprice);
-                                        }
-
-                                        productslikes = dataSnapshot.child("likenumber").getValue(String.class);
-
-                                        if (adminproductimagenumberoflikes != null) {
-                                            adminproductimagenumberoflikes.setText(productslikes);
-                                        }
-
-                                        thetradernamestring = dataSnapshot.child("tradername").getValue(String.class);
-                                        if (admintradername != null) {
-                                            admintradername.setText(thetradernamestring);
-                                        }
-                                        thecategoryid = dataSnapshot.child("categoryname").getValue(String.class);
-                                        if (admintradername != null) {
-                                            admintradername.setText(thecategoryid);
-                                        }
-
-                                        theadmintraderimage = dataSnapshot.child("traderimage").getValue(String.class);
-                                        if (admintradername != null) {
-                                            admintradername.setText(theadmintraderimage);
-                                        }
-
-                                        theadminnumberofreviews = dataSnapshot.child("reviewnumber").getValue(String.class);
-                                        if (admintradername != null) {
-                                            admintradername.setText(theadminnumberofreviews);
-                                        }
-
-
-                                    }
-                                }
-                            }
-                        }
-
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-
-                        }
-
-
-                    });
-
-                }
-
-                if (pimage != null) {
-                    Picasso.get().load(pimage).resize(400, 0).networkPolicy(NetworkPolicy.OFFLINE).into(adminproductdetailsimage, new Callback() {
-
-
-                        @Override
-                        public void onSuccess() {
-
-                        }
-
-                        @Override
-                        public void onError(Exception e) {
-                            Picasso.get().load(pimage).resize(100, 0).into(adminproductdetailsimage);
-                        }
-
-
-                    });
-
-                }
-
-
-                if (ViewBuyers != null) {
-                    ViewBuyers.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-
-                            Toast.makeText(getApplicationContext(), "Cannot Buy As An Administrator", Toast.LENGTH_SHORT);
-                            Intent myintent = new Intent(AdminProductDetails.this, AdminProductDetails.class);
-
-                            myintent.putExtra("productID", productID);
-
-                            myintent.putExtra("traderID", traderID);
-                            myintent.putExtra("role", role);
-
-                            startActivity(myintent);
-                        }
-                    });
-                }}}}
-
-            public interface Getmyfollowings {
-
-                void onCallback(String followingid, String followingname, String followingimage);
-
-
-            }
-
-
-            //GETFOLLOWING WILL PULL FROM DIFFERENT DATASTORE( THE USER DATASTORE)
-
-
-            public class AdminProductViewViewHolder extends RecyclerView.ViewHolder {
-                public LinearLayout root;
-
-
-                public ImageView suggestionpagegrilledview;
-                public TextView suggestionpagekebbabtext;
-
-                public TextView  suggestionpagekebbabcost;
-                public ImageView  suggestionpageheartpic;
-                public TextView suggestionkebbabvaluecost;
-
-
-                public ItemClickListner listner;
-
-                public AdminProductViewViewHolder(View itemView) {
-                    super(itemView);
-
-
-                    suggestionpagegrilledview = itemView.findViewById(R.id.suggestionpagegrilledview);
-                    suggestionpagekebbabtext = itemView.findViewById(R.id.suggestionpagekebbabtext);
-                    suggestionpagekebbabcost = itemView.findViewById(R.id.suggestionpagekebbabcost);
-                    suggestionpageheartpic = itemView.findViewById(R.id.suggestionpageheartpic);
-                    suggestionkebbabvaluecost = itemView.findViewById(R.id.suggestionkebbabvaluecost);
-
-
-                }
-
-                public void setItemClickListner(ItemClickListner listner) {
-                    this.listner = listner;
-                }
-
-                public void setsuggestionpagekebbabtext(String suggestionpagekebbabtextstring) {
-
-                    suggestionpagekebbabtext.setText(suggestionpagekebbabtextstring);
-                }
-
-                public void setsuggestionpagekebbabcost(String suggestionkebbabvaluecosttext) {
-
-                    suggestionkebbabvaluecost.setText(suggestionkebbabvaluecosttext);
-                }
-
-                public void setsuggestionkebbabvaluecost(String suggestionkebbabvaluecosttext) {
-
-                    suggestionkebbabvaluecost.setText(suggestionkebbabvaluecosttext);
-                }
-
-
-                public void setsuggestionpagegrilledview(final Context ctx, final String image) {
-                    final android.widget.ImageView suggestionpagegrilledview = (android.widget.ImageView) itemView.findViewById(R.id.suggestionpagegrilledview);
-
-                    Picasso.get().load(image).resize(400, 0).networkPolicy(NetworkPolicy.OFFLINE).into(suggestionpagegrilledview, new Callback() {
-
-
-                        @Override
-                        public void onSuccess() {
-
-                        }
-
-                        @Override
-                        public void onError(Exception e) {
-                            Picasso.get().load(image).resize(100, 0).into(suggestionpagegrilledview);
-                        }
-
-
-                    });
-                }
-
-            }
-
-            public void useValue (String yourValue){
-
-                Log.d(TAG, "countryNameCode: " + yourValue);
-
-            }
-            private void fetch () {
                 if (mAuth != null) {
                     user = mAuth.getCurrentUser();
                     if (user != null) {
@@ -588,22 +234,143 @@ String
 
                     }
 
-                     // ORDER MANY MORE PRODUCTS HERE
-                    @Nullable
 
-                    Query queryhere =
+//        setSupportActionBar(toolbar);
 
-                            FirebaseDatabase.getInstance().getReference().child("Product").orderByChild("tid").equalTo(traderID);
-                    if (queryhere != null) {
+                    GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestIdToken(getString(R.string.default_web_client_id)).requestEmail().build();
+                    if (mGoogleApiClient != null) {
 
-                        FirebaseRecyclerOptions<Products> options =
-                                new FirebaseRecyclerOptions.Builder<Products>()
-                                        .setQuery(queryhere, new SnapshotParser<Products>() {
+                        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+                    }
+
+                    if (mGoogleApiClient != null) {
+                        mGoogleApiClient = new GoogleApiClient.Builder(this).enableAutoManage(AdminAllOrderHistory.this,
+                                new GoogleApiClient.OnConnectionFailedListener() {
+                                    @Override
+                                    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+                                    }
+                                }).addApi(Auth.GOOGLE_SIGN_IN_API, gso).build();
+                    }
 
 
-                                            @Nullable
-                                            @Override
-                                            public Products parseSnapshot(@Nullable DataSnapshot snapshot) {
+                    // USER
+                    user = mAuth.getCurrentUser();
+
+
+                }
+            }
+        }
+    }
+
+
+    public interface Getmyfollowings {
+
+        void onCallback(String followingid, String followingname, String followingimage);
+
+
+    }
+
+
+
+
+
+    //GETFOLLOWING WILL PULL FROM DIFFERENT DATASTORE( THE USER DATASTORE)
+
+
+    public class AdminSettingsViewHolder extends RecyclerView.ViewHolder {
+        public LinearLayout root;
+
+
+        public android.widget.ImageView settingsimageview;
+        public TextView settingstext;
+
+        public TextView settingsdescription;
+
+        public ItemClickListner listner;
+
+        public AdminSettingsViewHolder(View itemView) {
+            super(itemView);
+            settingsimageview = itemView.findViewById(R.id.settingsimageview);
+            settingstext = itemView.findViewById(R.id.settingstext);
+            settingsdescription = itemView.findViewById(R.id.settingsdescription);
+
+
+
+        }
+
+        public void setItemClickListner(ItemClickListner listner) {
+            this.listner = listner;
+        }
+
+        public void setsettingstext(String settingstextstring) {
+
+            settingstext.setText(settingstextstring);
+        }
+
+        public void setsettingsdescription(String settingsdescriptionstring) {
+
+            settingsdescription.setText(settingsdescriptionstring);
+        }
+
+
+
+        public void setsettingsimageview(final Context ctx, final String image) {
+            final android.widget.ImageView settingsimageview = (android.widget.ImageView) itemView.findViewById(R.id.settingsimageview);
+
+            Picasso.get().load(image).resize(400, 0).networkPolicy(NetworkPolicy.OFFLINE).into(settingsimageview, new Callback() {
+
+
+                @Override
+                public void onSuccess() {
+
+                }
+
+                @Override
+                public void onError(Exception e) {
+                    Picasso.get().load(image).resize(100, 0).into(settingsimageview);
+                }
+
+
+            });
+        }
+
+
+
+
+    };
+
+
+    public void useValue (String yourValue){
+
+        Log.d(TAG, "countryNameCode: " + yourValue);
+
+    }
+
+
+    private void fetch() {
+        if (mAuth != null) {
+            user = mAuth.getCurrentUser();
+            if (user != null) {
+                traderID = user.getUid();
+
+            }
+
+            @Nullable
+
+            Query queryhere =
+
+                    FirebaseDatabase.getInstance().getReference().child("Settings");
+            if (queryhere != null) {
+
+                FirebaseRecyclerOptions<Settings> options =
+                        new FirebaseRecyclerOptions.Builder<Settings>()
+                                .setQuery(queryhere, new SnapshotParser<Settings>() {
+
+
+                                    @Nullable
+                                    @Override
+                                    public Settings parseSnapshot(@Nullable DataSnapshot snapshot) {
 
 
                                       /*
@@ -612,134 +379,62 @@ String
 */
 
 
-                                                Log.i(TAG, "Admin Product Details  " + snapshot);
+                                        Log.i(TAG, "Full Settings" + snapshot);
+
+                                         if (snapshot.child("desc").getValue(String.class) != null) {
+                                            desc = snapshot.child("desc").getValue(String.class);
+                                        }
+
+                                        if (snapshot.child("image").getValue(String.class) != null) {
+                                            image = snapshot.child("image").getValue(String.class);
+                                        }
+
+                                        if (snapshot.child("title").getValue(String.class) != null) {
+                                            title = snapshot.child("title").getValue(String.class);
+                                        }
 
 
-                                                if (snapshot.child("date").getValue(String.class) != null) {
-                                                    date = snapshot.child("date").getValue(String.class);
-                                                }
+                                             return new Settings(desc, image, title);
+                                    }
 
-                                                if (snapshot.child("time").getValue(String.class) != null) {
-                                                    time = snapshot.child("time").getValue(String.class);
-                                                }
-
-                                                if (snapshot.child("tid").getValue(String.class) != null) {
-                                                    tid = snapshot.child("tid").getValue(String.class);
-                                                }
-                                                if (snapshot.child("traderimage").getValue(String.class) != null) {
-                                                    thetraderimage = snapshot.child("traderimage").getValue(String.class);
-                                                }
+                                }).build();
 
 
-                                                if (snapshot.child("tradername").getValue(String.class) != null) {
-                                                    tradername = snapshot.child("tradername").getValue(String.class);
-                                                }
+
+                feedadapter = new FirebaseRecyclerAdapter<Settings, AdminSettingsFullView.AdminSettingsViewHolder>(options) {
+                    @Nullable
+                    @Override
+                    public AdminSettingsViewHolder onCreateViewHolder(ViewGroup parent, int viewrole) {
+
+                        @Nullable
+                        View view = LayoutInflater.from(parent.getContext())
+                                .inflate(R.layout.adminallorder, parent, false);
+
+                        return new AdminSettingsViewHolder(view);
+                    }
 
 
-                                                if (snapshot.child("address").getValue(String.class) != null) {
-                                                    address = snapshot.child("address").getValue(String.class);
-                                                }
+                    @Override
+                    public int getItemCount() {
+                        return super.getItemCount();
+                    }
 
 
-                                                if (snapshot.child("amount").getValue(String.class) != null) {
-                                                    amount = snapshot.child("amount").getValue(String.class);
-                                                }
+
+                    @Override
+                    protected void onBindViewHolder(@Nullable final AdminSettingsFullView.AdminSettingsViewHolder holder, int position, @Nullable Settings model) {
+                        if (model != null) {
+                            holders = holder;
 
 
-                                                if (snapshot.child("city").getValue(String.class) != null) {
-                                                    city = snapshot.child("city").getValue(String.class);
-                                                }
+                            holder.settingstext.setText(title);
+                            holder.settingsdescription.setText(desc);
 
 
-                                                if (snapshot.child("delivered").getValue(String.class) != null) {
-                                                    delivered = snapshot.child("delivered").getValue(String.class);
-                                                }
-
-                                                if (snapshot.child("distance").getValue(String.class) != null) {
-                                                    distance = snapshot.child("distance").getValue(String.class);
-                                                }
-
-                                                if (snapshot.child("image").getValue(String.class) != null) {
-                                                    image = snapshot.child("image").getValue(String.class);
-                                                }
-                                                if (snapshot.child("uid").getValue(String.class) != null) {
-                                                    uid = snapshot.child("uid").getValue(String.class);
-                                                }
-                                                if (snapshot.child("name").getValue(String.class) != null) {
-                                                    name = snapshot.child("name").getValue(String.class);
-                                                }
-                                                if (snapshot.child("mode").getValue(String.class) != null) {
-                                                    mode = snapshot.child("mode").getValue(String.class);
-                                                }
+                            Log.d(TAG, "The Customers here " + name + phone );
+                            holder.setsettingsimageview(getApplicationContext(), image);
 
 
-                                                if (snapshot.child("likenumber").getValue(String.class) != null) {
-                                                    number = snapshot.child("likenumber").getValue(String.class);
-                                                }
-
-                                                if (snapshot.child("phone").getValue(String.class) != null) {
-                                                    phone = snapshot.child("phone").getValue(String.class);
-                                                }
-                                                if (snapshot.child("quantity").getValue(String.class) != null) {
-                                                    quantity = snapshot.child("quantity").getValue(String.class);
-                                                }
-
-                                                if (snapshot.child("shippingcost").getValue(String.class) != null) {
-                                                    shippingcost = snapshot.child("shippingcost").getValue(String.class);
-                                                }
-
-                                                if (snapshot.child("state").getValue(String.class) != null) {
-                                                    state = snapshot.child("state").getValue(String.class);
-                                                }
-                                                if (snapshot.child("state").getValue(String.class) != null) {
-                                                    orderkey = snapshot.child("state").getValue(String.class);
-                                                }
-                                                if (snapshot.child("newornot").getValue(String.class) != null) {
-                                                    newornot = snapshot.child("newornot").getValue(String.class);
-                                                }
-                                                return new Products(orderkey, date, time, tid, thetraderimage, tradername, address, amount, city, delivered, distance, image, uid, name, mode,
-
-                                                        number, phone, quantity, shippingcost, state, newornot);
-                                            }
-
-                                        }).build();
-
-
-                        feedadapter = new FirebaseRecyclerAdapter<Products, AdminProductDetails.AdminProductViewViewHolder >(options) {
-                            @Nullable
-                            @Override
-                            public AdminProductDetails.AdminProductViewViewHolder onCreateViewHolder(ViewGroup parent, int viewrole) {
-
-                                @Nullable
-                                View view = LayoutInflater.from(parent.getContext())
-                                        .inflate(R.layout.suggestionpage, parent, false);
-
-                                return new AdminProductDetails.AdminProductViewViewHolder(view);
-                            }
-
-
-                            @Override
-                            public int getItemCount() {
-                                return super.getItemCount();
-                            }
-
-                            @Override
-                            protected void onBindViewHolder(@Nullable final AdminProductDetails.AdminProductViewViewHolder holder, int position, @Nullable Products model) {
-                                if (model != null) {
-                                    holders = holder;
-
-
-                                          // kebabcost is the current cost while value cost is the discount
-                                    holder.suggestionpagekebbabtext.setText(pname);
-                                    holder.suggestionpagekebbabcost.setText(price);
-                                    holder.suggestionkebbabvaluecost.setText(discount);
-
-
-                                    Log.d(TAG, "Suggested Pages Are Here " + name + phone);
-                                    holder.setsuggestionpagegrilledview(getApplicationContext(), image);
-
-
-                                    myfirebaseDatabase = FirebaseDatabase.getInstance();
 
 
              /*
@@ -779,90 +474,75 @@ String
  */
 
 
-                                    if (allcustomersimage != null) {
-                                        Picasso.get().load(image).placeholder(R.drawable.profile).into(allcustomersimage);
-                                    }
-
-                                    suggestionpagekebbabtext.setText(pname);
-                                    holder.suggestionpagekebbabcost.setText(price);
-                                    holder.suggestionkebbabvaluecost.setText(discount);
-
-                                    if (holder.suggestionpagekebbabtext != null) {
-                                        holder.suggestionpagekebbabtext.setOnClickListener(new View.OnClickListener() {
-                                            // Image Cost Here
-                                            @Override
-                                            public void onClick(View view) {
-                                                Intent viewactualproductinformation = new Intent(AdminProductDetails.this, AdminProductDetails.class);
-
-                                                viewactualproductinformation.putExtra("traderorcustomer", traderID);
-                                                viewactualproductinformation.putExtra("role", role);
-                                                viewactualproductinformation.putExtra("productID", productID);
-
-                                                startActivity(viewactualproductinformation);
-
-                                            }
-                                        });
-                                    }
-
-                                    if (holder.suggestionpagekebbabcost != null) {
-                                        holder.suggestionpagekebbabcost.setOnClickListener(new View.OnClickListener() {
-                                            @Override
-                                            public void onClick(View view) {
-                                                Intent viewactualproductinformation = new Intent(AdminProductDetails.this, AdminProductDetails.class);
-                                                viewactualproductinformation.putExtra("traderorcustomer", traderID);
-                                                viewactualproductinformation.putExtra("role", role);
-                                                viewactualproductinformation.putExtra("productID", productID);
-
-                                                startActivity(viewactualproductinformation);
-
-                                            }
-                                        });
-                                    }
-
-                                    if (holder.suggestionkebbabvaluecost != null) {
-                                        holder.suggestionkebbabvaluecost.setOnClickListener(new View.OnClickListener() {
-                                            @Override
-                                            public void onClick(View view) {
-                                                Intent viewactualproductinformation = new Intent(AdminProductDetails.this, AdminProductDetails.class);
-                                                viewactualproductinformation.putExtra("traderorcustomer", traderID);
-                                                viewactualproductinformation.putExtra("role", role);
-                                                viewactualproductinformation.putExtra("productID", productID);
-                                                startActivity(viewactualproductinformation);
-
-                                            }
-                                        });
-                                    }
-
-
-                                }
-
-                                if (holder.suggestionpagegrilledview != null) {
-                                    holder.suggestionpagegrilledview.setOnClickListener(new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View view) {
-                                            Intent viewactualproductinformation = new Intent(AdminProductDetails.this, AdminProductDetails.class);
-                                            viewactualproductinformation.putExtra("traderorcustomer", traderID);
-                                            viewactualproductinformation.putExtra("role", role);
-                                            viewactualproductinformation.putExtra("productID", productID);
-
-
-                                            startActivity(viewactualproductinformation);
-
-                                        }
-                                    });
-                                }
-
+                            if (allcustomersimage != null) {
+                                Picasso.get().load(image).placeholder(R.drawable.profile).into(allcustomersimage);
                             }
-                                               };
-                    }
-                    if (recyclerView != null) {
-                        recyclerView.setAdapter(feedadapter);
+
+
+                            if (holder.settingstext != null) {
+                                holder.settingstext.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        Intent getsettingsactivity = new Intent(AdminSettingsFullView.this, title.getClass());
+
+                                        startActivity(getsettingsactivity);
+
+                                    }
+                                });
+                            }
+
+                            if (holder.settingsdescription != null) {
+                                holder.settingsdescription.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        Intent descriptionactivity = new Intent(AdminSettingsFullView.this, title.getClass());
+
+                                        startActivity(descriptionactivity);
+
+                                    }
+                                });
+                            }
+
+                            if (holder.settingsimageview != null) {
+                                holder.settingsimageview.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        Intent getimagedescription= new Intent(AdminSettingsFullView.this, title.getClass());
+
+                                        startActivity(getimagedescription);
+
+                                    }
+                                });
+                            }
+
+
+                        }
                     }
 
-                }}
 
-    protected void onStart() {
+                };
+
+
+
+            }
+
+
+
+
+            if (settingsimageview != null) {
+                adminsettingsrecyclerview.setAdapter(feedadapter);
+            }
+
+        }
+
+    }
+    @Nullable
+    @Override
+    public void onStart() {
         super.onStart();
+        if (feedadapter != null) {
+            feedadapter.startListening();
+        }
 
         firebaseAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -882,56 +562,25 @@ String
             }    };
 
 
-
         if (mAuth != null) {
             mAuth.addAuthStateListener(firebaseAuthListener);
-        };
-    }
-
-
-    protected synchronized void buildGoogleApiClient() {
-        if (mGoogleApiClient != null) {
-            mGoogleApiClient = new GoogleApiClient.Builder(this)
-                    .addConnectionCallbacks(AdminProductDetails.this)
-                    .addOnConnectionFailedListener(this)
-                    .addApi(LocationServices.API)
-                    .build();
-            mGoogleApiClient.connect();
-        }
-    }
-
-
-    @Override
-    public void onClick(View v) {
-
-    }
-
-    @Override
-    public void onConnected(@Nullable Bundle bundle) {
-
-    }
-
-    @Override
-    public void onConnectionSuspended(int i) {
-        if (mGoogleApiClient != null) {
-            mGoogleApiClient.connect();
         }
 
+
+
     }
 
-    @Override
 
-    protected void onStop() {
+    @Override
+    public void onStop () {
         super.onStop();
+        if (feedadapter != null) {
+            feedadapter.stopListening();
+        }
         //     mProgress.hide();
         if (mAuth != null) {
             mAuth.removeAuthStateListener(firebaseAuthListener);
         }
-    }
-
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
     }
 
 
@@ -959,7 +608,6 @@ String
     }
 
 
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
@@ -980,7 +628,7 @@ String
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(AdminProductDetails.this, NotTraderActivity.class);
+                        Intent intent = new Intent(AdminSettingsFullView.this, NotTraderActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderID);
                             intent.putExtra("role", role);
@@ -996,7 +644,7 @@ String
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(AdminProductDetails.this, AdminAllCustomers.class);
+                        Intent intent = new Intent(AdminSettingsFullView.this, AdminAllCustomers.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderID);
                             intent.putExtra("role", role);
@@ -1018,7 +666,7 @@ String
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(AdminProductDetails.this, NotTraderActivity.class);
+                        Intent intent = new Intent(AdminSettingsFullView.this, NotTraderActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderID);
                             intent.putExtra("role", role);
@@ -1034,7 +682,7 @@ String
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(AdminProductDetails.this, ViewAllCarts.class);
+                        Intent intent = new Intent(AdminSettingsFullView.this, ViewAllCarts.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderID);
                             intent.putExtra("role", role);
@@ -1055,7 +703,7 @@ String
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(AdminProductDetails.this, NotTraderActivity.class);
+                        Intent intent = new Intent(AdminSettingsFullView.this, NotTraderActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderID);
                             intent.putExtra("role", role);
@@ -1071,7 +719,7 @@ String
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(AdminProductDetails.this, AdminAddNewProductActivityII.class);
+                        Intent intent = new Intent(AdminSettingsFullView.this, AdminAddNewProductActivityII.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderID);
                             intent.putExtra("role", role);
@@ -1090,7 +738,7 @@ String
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(AdminProductDetails.this, NotTraderActivity.class);
+                        Intent intent = new Intent(AdminSettingsFullView.this, NotTraderActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderID);
                             intent.putExtra("role", role);
@@ -1106,7 +754,7 @@ String
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(AdminProductDetails.this, AdminAllProducts.class);
+                        Intent intent = new Intent(AdminSettingsFullView.this, AdminAllProducts.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderID);
                             intent.putExtra("role", role);
@@ -1122,7 +770,7 @@ String
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(AdminProductDetails.this, NotTraderActivity.class);
+                                Intent intent = new Intent(AdminSettingsFullView.this, NotTraderActivity.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
@@ -1138,7 +786,7 @@ String
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(AdminProductDetails.this, AllProductsPurchased.class);
+                                Intent intent = new Intent(AdminSettingsFullView.this, AllProductsPurchased.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
@@ -1158,7 +806,7 @@ String
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(AdminProductDetails.this, NotTraderActivity.class);
+                                Intent intent = new Intent(AdminSettingsFullView.this, NotTraderActivity.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
@@ -1174,7 +822,7 @@ String
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(AdminProductDetails.this, ViewAllCustomers.class);
+                                Intent intent = new Intent(AdminSettingsFullView.this, ViewAllCustomers.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
@@ -1193,7 +841,7 @@ String
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(AdminProductDetails.this, NotTraderActivity.class);
+                                Intent intent = new Intent(AdminSettingsFullView.this, NotTraderActivity.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
@@ -1209,7 +857,7 @@ String
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(AdminProductDetails.this, TradersFollowing.class);
+                                Intent intent = new Intent(AdminSettingsFullView.this, TradersFollowing.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
@@ -1230,7 +878,7 @@ String
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(AdminProductDetails.this, NotTraderActivity.class);
+                                Intent intent = new Intent(AdminSettingsFullView.this, NotTraderActivity.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
@@ -1246,7 +894,7 @@ String
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(AdminProductDetails.this, AdminNewOrdersActivity.class);
+                                Intent intent = new Intent(AdminSettingsFullView.this, AdminNewOrdersActivity.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
@@ -1267,7 +915,7 @@ String
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(AdminProductDetails.this, NotTraderActivity.class);
+                                Intent intent = new Intent(AdminSettingsFullView.this, NotTraderActivity.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
@@ -1283,7 +931,7 @@ String
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(AdminProductDetails.this, AdminCustomerServed.class);
+                                Intent intent = new Intent(AdminSettingsFullView.this, AdminCustomerServed.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
@@ -1303,7 +951,7 @@ String
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(AdminProductDetails.this, NotTraderActivity.class);
+                                Intent intent = new Intent(AdminSettingsFullView.this, NotTraderActivity.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
@@ -1319,7 +967,7 @@ String
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(AdminProductDetails.this, AdminAllOrderHistory.class);
+                                Intent intent = new Intent(AdminSettingsFullView.this, AdminAllOrderHistory.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
@@ -1348,7 +996,7 @@ String
         if (id == R.id.viewmap) {
             if (!role.equals("Trader")) {
 
-                Intent intent = new Intent(AdminProductDetails.this, NotTraderActivity.class);
+                Intent intent = new Intent(AdminSettingsFullView.this, NotTraderActivity.class);
                 if (intent != null) {
                     intent.putExtra("traderorcustomer", traderID);
                     intent.putExtra("role", role);
@@ -1357,7 +1005,7 @@ String
                 }
             } else {
 
-                Intent intent = new Intent(AdminProductDetails.this, DriverMapActivity.class);
+                Intent intent = new Intent(AdminSettingsFullView.this, DriverMapActivity.class);
                 if (intent != null) {
                     intent.putExtra("traderorcustomer", traderID);
                     intent.putExtra("role", role);
@@ -1378,7 +1026,7 @@ String
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(AdminProductDetails.this, NotTraderActivity.class);
+                        Intent intent = new Intent(AdminSettingsFullView.this, NotTraderActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderID);
                             intent.putExtra("role", role);
@@ -1394,7 +1042,7 @@ String
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(AdminProductDetails.this, CartActivity.class);
+                        Intent intent = new Intent(AdminSettingsFullView.this, CartActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderID);
                             intent.putExtra("role", role);
@@ -1414,7 +1062,7 @@ String
                             String cusomerId = "";
 
                             cusomerId = user.getUid();
-                            Intent intent = new Intent(AdminProductDetails.this, NotTraderActivity.class);
+                            Intent intent = new Intent(AdminSettingsFullView.this, NotTraderActivity.class);
                             if (intent != null) {
                                 intent.putExtra("traderorcustomer", traderID);
                                 intent.putExtra("role", role);
@@ -1430,7 +1078,7 @@ String
                             String cusomerId = "";
                             cusomerId = user.getUid();
 
-                            Intent intent = new Intent(AdminProductDetails.this, InstagramHomeActivity.class);
+                            Intent intent = new Intent(AdminSettingsFullView.this, InstagramHomeActivity.class);
                             if (intent != null) {
                                 intent.putExtra("traderorcustomer", traderID);
                                 intent.putExtra("role", role);
@@ -1450,7 +1098,7 @@ String
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(AdminProductDetails.this, NotTraderActivity.class);
+                                Intent intent = new Intent(AdminSettingsFullView.this, NotTraderActivity.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
@@ -1466,7 +1114,7 @@ String
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(AdminProductDetails.this, AdminAllProducts.class);
+                                Intent intent = new Intent(AdminSettingsFullView.this, AdminAllProducts.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
@@ -1483,7 +1131,7 @@ String
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(AdminProductDetails.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(AdminSettingsFullView.this, NotTraderActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1499,7 +1147,7 @@ String
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(AdminProductDetails.this, SearchForAdminProductsActivity.class);
+                                        Intent intent = new Intent(AdminSettingsFullView.this, SearchForAdminProductsActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1515,7 +1163,7 @@ String
                             if (FirebaseAuth.getInstance() != null) {
                                 FirebaseAuth.getInstance().signOut();
                                 if (mGoogleApiClient != null) {
-                                    mGoogleSignInClient.signOut().addOnCompleteListener(AdminProductDetails.this,
+                                    mGoogleSignInClient.signOut().addOnCompleteListener(AdminSettingsFullView.this,
                                             new OnCompleteListener<Void>() {
                                                 @Override
                                                 public void onComplete(@NonNull Task<Void> task) {
@@ -1524,7 +1172,7 @@ String
                                             });
                                 }
                             }
-                            Intent intent = new Intent(AdminProductDetails.this, com.simcoder.bimbo.MainActivity.class);
+                            Intent intent = new Intent(AdminSettingsFullView.this, com.simcoder.bimbo.MainActivity.class);
                             if (intent != null) {
                                 startActivity(intent);
                                 finish();
@@ -1539,7 +1187,7 @@ String
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(AdminProductDetails.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(AdminSettingsFullView.this, NotTraderActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1555,7 +1203,7 @@ String
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(AdminProductDetails.this, com.simcoder.bimbo.WorkActivities.SettinsActivity.class);
+                                        Intent intent = new Intent(AdminSettingsFullView.this, com.simcoder.bimbo.WorkActivities.SettinsActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1573,7 +1221,7 @@ String
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(AdminProductDetails.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(AdminSettingsFullView.this, NotTraderActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1589,7 +1237,7 @@ String
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(AdminProductDetails.this, HistoryActivity.class);
+                                        Intent intent = new Intent(AdminSettingsFullView.this, HistoryActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1609,7 +1257,7 @@ String
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(AdminProductDetails.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(AdminSettingsFullView.this, NotTraderActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1625,7 +1273,7 @@ String
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(AdminProductDetails.this, TraderProfile.class);
+                                        Intent intent = new Intent(AdminSettingsFullView.this, TraderProfile.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1645,7 +1293,7 @@ String
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(AdminProductDetails.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(AdminSettingsFullView.this, NotTraderActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1661,7 +1309,7 @@ String
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(AdminProductDetails.this, AdminAllCustomers.class);
+                                        Intent intent = new Intent(AdminSettingsFullView.this, AdminAllCustomers.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1682,7 +1330,7 @@ String
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(AdminProductDetails.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(AdminSettingsFullView.this, NotTraderActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1698,7 +1346,7 @@ String
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(AdminProductDetails.this, AdminAddNewProductActivityII.class);
+                                        Intent intent = new Intent(AdminSettingsFullView.this, AdminAddNewProductActivityII.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1718,7 +1366,7 @@ String
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(AdminProductDetails.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(AdminSettingsFullView.this, NotTraderActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1734,7 +1382,7 @@ String
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(AdminProductDetails.this, AllGoodsBought.class);
+                                        Intent intent = new Intent(AdminSettingsFullView.this, AllGoodsBought.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1754,7 +1402,7 @@ String
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(AdminProductDetails.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(AdminSettingsFullView.this, NotTraderActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1770,7 +1418,7 @@ String
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(AdminProductDetails.this, AdminPaymentHere.class);
+                                        Intent intent = new Intent(AdminSettingsFullView.this, AdminPaymentHere.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1790,7 +1438,7 @@ String
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(AdminProductDetails.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(AdminSettingsFullView.this, NotTraderActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1806,7 +1454,7 @@ String
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(AdminProductDetails.this, AdminSettings.class);
+                                        Intent intent = new Intent(AdminSettingsFullView.this, AdminSettings.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1821,15 +1469,10 @@ String
                     }
                 }
 
-
-                return true;
             }
 
-            return true;
         }
-        return true;
-    }
+        return false;
+    }}
 
-}
 
-// #BuiltByGOD

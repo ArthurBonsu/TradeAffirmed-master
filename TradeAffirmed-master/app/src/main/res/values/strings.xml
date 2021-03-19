@@ -450,6 +450,8 @@
     <string name="show_all_comments" />
     <string name="string_show_all_comments" />
     <string name="_360" />
+    <string name="about">About</string>
+    <string name="todohere">TODO</string>
 
 
 </resources>

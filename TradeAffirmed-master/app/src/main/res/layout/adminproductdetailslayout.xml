@@ -95,7 +95,7 @@
 
 
         <Button
-            android:id="@+id/ViewCustomers"
+            android:id="@+id/ViewBuyers"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
@@ -118,6 +118,7 @@
     android:padding="@dimen/paddingSmall"
  >
 
+
     <!--Top Bar-->
     <RelativeLayout
         android:layout_width="match_parent"
@@ -130,7 +131,8 @@
             android:layout_alignParentLeft="true"
             android:background="@drawable/grey_circular_border"
             android:padding="12dp"
-            android:src="@drawable/blackbeauty" />
+            android:src="@drawable/blackbeauty"
+            android:id="@+id/admintraderimage"/>
 
 
         <LinearLayout
@@ -144,6 +146,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="LAMP"
+                android:id="@+id/admincategoryid"
                 android:textColor="@color/textColor"
                 android:textSize="20sp" />
 
@@ -152,17 +155,34 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/xsmall"
                 android:text="Sandy Ventures"
+                android:id="@+id/admintradername"
+
                 android:textSize="15sp" />
         </LinearLayout>
-
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="250sp">
         <ImageView
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_alignParentRight="true"
             android:background="@drawable/grey_circular_border"
             android:padding="@dimen/small"
-            android:src="@drawable/heart" />
+            android:src="@drawable/heart"
+            android:id="@+id/adminproductimagelikebutton"/>
+        <TextView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/grey_circular_border"
+            android:padding="@dimen/small"
+            android:id="@+id/adminproductimagenumberoflikes"
+            android:text="18sp"
 
+            android:textSize="18sp"
+             />
+        </LinearLayout>
 
     </RelativeLayout>
 
@@ -181,6 +201,7 @@
             android:paddingRight="5sp"
             android:paddingBottom="5sp"
             android:scaleType="centerCrop"
+            android:id="@+id/adminproductdetailsimage"
             android:src="@drawable/grilledbeefagain" />
 
         <RelativeLayout
@@ -198,8 +219,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="TABLE LAMP"
+
                     android:textColor="@color/textColor"
-                    android:textSize="18sp" />
+                    android:textSize="18sp"
+                    android:id="@+id/adminproductimageproductname"/>
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -241,22 +264,43 @@
                         android:layout_height="wrap_content"
                         android:text="249 Review"
                         android:textColor="@color/textColor"
-                        android:textSize="14sp" />
+                        android:textSize="14sp"
+                        android:id="@+id/adminnumberofreviews"/>
                 </LinearLayout>
 
             </LinearLayout>
 
+             <LinearLayout
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+                 android:orientation="horizontal"
+                 android:layout_marginLeft="200sp">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
+                android:id="@+id/adminproductimageprice"
                 android:text="$90"
+
+
                 android:textColor="@color/textColor"
                 android:textSize="18sp" />
 
+                 <Button
+                     android:layout_width="wrap_content"
+                     android:layout_height="wrap_content"
+                     android:padding="10sp"
+                     android:text="BUY"
+                     android:textColor="@color/textColor"
+                     android:textSize="18sp"
+                     android:id="@+id/ViewBuyers">
+
+                 </Button>
+                 </LinearLayout>
         </RelativeLayout>
+
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -287,12 +331,31 @@
                     android:text="View all"
                     android:textColor="@color/white"
                     android:textSize="16sp" />
+
+
             </RelativeLayout>
 
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="417dp"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:id="@+id/productdetailsinnerrecyclerview">
+
+
+
+
+            </androidx.recyclerview.widget.RecyclerView>
+
+            <!--
             <HorizontalScrollView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
+
+          <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
@@ -320,7 +383,7 @@
                             <TextView
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:text="Edison Table Lamp"
+                                android:text="Dark Fish Kebbab"
                                 android:textColor="@color/textColor"
                                 android:textSize="14sp" />
 
@@ -401,7 +464,7 @@
                             <TextView
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:text="Edison Table Lamp"
+                                android:text="Sausages Kebbab"
                                 android:textColor="@color/textColor"
                                 android:textSize="14sp" />
 
@@ -420,7 +483,8 @@
                                 <RelativeLayout
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginStart="@dimen/xsmall">
+                                    android:layout_marginStart="@dimen/xsmall"
+                                    android:layout_marginLeft="@dimen/xsmall">
 
                                     <TextView
                                         android:layout_width="wrap_content"
@@ -428,7 +492,8 @@
                                         android:layout_marginStart="@dimen/xsmall"
                                         android:text="$750"
                                         android:textColor="@color/orange"
-                                        android:textSize="13sp" />
+                                        android:textSize="13sp"
+                                        android:layout_marginLeft="@dimen/xsmall" />
 
                                     <LinearLayout
                                         android:layout_width="30dp"
@@ -462,7 +527,8 @@
                         android:background="@drawable/white_circular_border"
                         android:gravity="center"
                         android:orientation="vertical"
-                        android:padding="12dp">
+                        android:padding="12dp"
+                        android:layout_marginLeft="20dp">
 
                         <ImageView
                             android:layout_width="120dp"
@@ -498,7 +564,8 @@
                                 <RelativeLayout
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginStart="@dimen/xsmall">
+                                    android:layout_marginStart="@dimen/xsmall"
+                                    android:layout_marginLeft="@dimen/xsmall">
 
                                     <TextView
                                         android:layout_width="wrap_content"
@@ -506,7 +573,8 @@
                                         android:layout_marginStart="@dimen/xsmall"
                                         android:text="$750"
                                         android:textColor="@color/orange"
-                                        android:textSize="13sp" />
+                                        android:textSize="13sp"
+                                        android:layout_marginLeft="@dimen/xsmall" />
 
                                     <LinearLayout
                                         android:layout_width="30dp"
@@ -529,11 +597,19 @@
 
 
                             </LinearLayout>
+
                         </LinearLayout>
 
                     </LinearLayout>
                 </LinearLayout>
+
+            </androidx.recyclerview.widget.RecyclerView>
             </HorizontalScrollView>
+
+
+             -->
+
+
 
         </LinearLayout>
 
