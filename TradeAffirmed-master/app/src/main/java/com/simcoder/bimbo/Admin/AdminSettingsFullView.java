@@ -244,7 +244,7 @@ public  class  AdminSettingsFullView extends AppCompatActivity
                     }
 
                     if (mGoogleApiClient != null) {
-                        mGoogleApiClient = new GoogleApiClient.Builder(this).enableAutoManage(AdminAllOrderHistory.this,
+                        mGoogleApiClient = new GoogleApiClient.Builder(this).enableAutoManage(AdminSettingsFullView.this,
                                 new GoogleApiClient.OnConnectionFailedListener() {
                                     @Override
                                     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {

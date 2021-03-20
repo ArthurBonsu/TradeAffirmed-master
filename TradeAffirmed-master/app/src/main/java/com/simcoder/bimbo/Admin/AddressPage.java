@@ -40,7 +40,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class AdminSettings extends AppCompatActivity {
+public class AddressPage extends AppCompatActivity {
 
     private EditText mNameField, mPhoneField, mCarField;
 
@@ -71,7 +71,7 @@ public class AdminSettings extends AppCompatActivity {
 
         mNameField = findViewById(R.id.name);
         mPhoneField = findViewById(R.id.phone);
-        mEmaField = findViewById(R.id.car);
+        mEmailField = findViewById(R.id.email);
 
         mProfileImage = findViewById(R.id.profileImage);
 
@@ -126,10 +126,16 @@ public class AdminSettings extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if(dataSnapshot.exists() && dataSnapshot.getChildrenCount()>0){
                     Map<String, Object> map = (Map<String, Object>) dataSnapshot.getValue(HashMaps.class);
+
                     if(map.get("name")!=null){
                         mName = map.get("name").toString();
                         mNameField.setText(mName);
                     }
+                    if(map.get("email")!=null){
+                        mName = map.get("email").toString();
+                        mNameField.setText(mName);
+                    }
+
                     if(map.get("phone")!=null){
                         mPhone = map.get("phone").toString();
                         mPhoneField.setText(mPhone);

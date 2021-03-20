@@ -40,7 +40,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class AdminSettings extends AppCompatActivity {
+public class PersonalInformationForm extends AppCompatActivity {
 
     private EditText mNameField, mPhoneField, mCarField;
 
@@ -79,7 +79,7 @@ public class AdminSettings extends AppCompatActivity {
 
         mBack = findViewById(R.id.back);
         mConfirm = findViewById(R.id.confirm);
-
+        Spinner mySpinner = (Spinner) findViewById(R.id.spinner1);
         mAuth = FirebaseAuth.getInstance();
 
         FirebaseUser user = mAuth.getCurrentUser();
@@ -119,6 +119,36 @@ public class AdminSettings extends AppCompatActivity {
                 }
             }
         }
+
+
+
+
+        ArrayAdapter<String> myAdapter = new ArrayAdapter<String>(MainActivity.this,
+                android.R.layout.simple_list_item_1, getResources().getStringArray(R.array.names));
+        myAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mySpinner.setAdapter(myAdapter);
+
+        mySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                if (i == 1) {
+                    startActivity(new Intent(MainActivity.this, HomeActivity.class));
+                } else if (i == 2) {
+                    startActivity(new Intent(MainActivity.this, WorkActivity.class));
+                }else if (i == 3) {
+                    startActivity(new Intent(MainActivity.this, OtherActivity.class));
+                }else if (i == 4) {
+                    startActivity(new Intent(MainActivity.this, CustomActivity.class));
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+    }
+
     }
     private void getUserInfo(){
         mAdminTraderDatabase.addValueEventListener(new ValueEventListener() {

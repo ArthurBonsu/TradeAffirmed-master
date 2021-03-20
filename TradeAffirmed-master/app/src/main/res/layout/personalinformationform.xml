@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:ignore="MissingConstraints">
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:ignore="MissingConstraints"
+        android:orientation="vertical"
+        android:id="@+id/personalinformationlayout">
+    <TextView
+        android:id="@+id/Task 1"
+        android:layout_width="93dp"
+        android:layout_height="46dp"
+        android:layout_marginStart="26dp"
+        android:layout_marginLeft="26dp"
+        android:layout_marginTop="28dp"
+        android:layout_marginEnd="292dp"
+        android:layout_marginRight="292dp"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/black_border"
+        android:text="Task 1"
+        android:textColor="#129AE3"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toTopOf="@+id/editText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        />
+
+    <EditText
+        android:id="@+id/editText"
+        android:layout_width="359dp"
+        android:layout_height="47dp"
+        android:layout_marginStart="26dp"
+        android:layout_marginLeft="26dp"
+        android:layout_marginTop="18dp"
+        android:layout_marginEnd="26dp"
+        android:layout_marginRight="26dp"
+        android:layout_marginBottom="10dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="Name"
+        app:layout_constraintBottom_toTopOf="@+id/Nameinfo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/Task 1" />
+        <EditText
+            android:id="@+id/Nameinfo"
+            android:layout_width="357dp"
+            android:layout_height="51dp"
+            android:layout_marginStart="28dp"
+            android:layout_marginLeft="28dp"
+            android:layout_marginTop="21dp"
+            android:layout_marginEnd="26dp"
+            android:layout_marginRight="26dp"
+            android:layout_marginBottom="10dp"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:text="@string/email"
+            app:layout_constraintBottom_toTopOf="@+id/textView6"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/editText" />
+        <EditText
+            android:id="@+id/textView6"
+            android:layout_width="342dp"
+            android:layout_height="44dp"
+            android:layout_marginStart="28dp"
+            android:layout_marginLeft="28dp"
+            android:layout_marginTop="26dp"
+            android:layout_marginEnd="41dp"
+            android:layout_marginRight="41dp"
+            android:layout_marginBottom="10dp"
+            android:text="phone"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toTopOf="@+id/textView4"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/Nameinfo"
+            tools:text="phone" />
+
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="5dp"
+            android:layout_marginRight="5dp"
+            android:text="Gender"
+            android:textSize="24sp"
+            app:layout_constraintEnd_toStartOf="@+id/radioGroup2"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView6" />
+
+        <RadioGroup
+        android:id="@+id/Gender"
+        android:layout_width="364dp"
+        android:layout_height="90dp"
+        android:layout_marginStart="21dp"
+        android:layout_marginLeft="21dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="26dp"
+        android:layout_marginRight="26dp"
+            >
+            <RadioButton
+                android:id="@+id/male"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="One"
+                android:onClick="checkButton"
+                android:checked="true"/>
+            <RadioButton
+                android:id="@+id/female"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Two"
+                android:onClick="checkButton"/>
+    </RadioGroup>
+
+        <TextView
+            android:id="@+id/textView5"
+            android:layout_width="110dp"
+            android:layout_height="48dp"
+
+            android:text="Age"
+            android:textSize="24sp" />
+
+        <Spinner
+            android:id="@+id/spinner1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:spinnerMode="dropdown" />
+        <RadioGroup
+            android:id="@+id/Age"
+            android:layout_width="373dp"
+            android:layout_height="95dp"
+            android:layout_marginStart="21dp"
+            android:layout_marginLeft="21dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="17dp"
+            android:layout_marginRight="17dp"
+            android:layout_marginBottom="10dp"
+             >
+
+            <RadioButton
+                android:id="@+id/radio_one"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="One"
+                android:onClick="checkButton"
+                android:checked="true"/>
+            <RadioButton
+                android:id="@+id/radio_two"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Two"
+                android:onClick="checkButton"/>
+            <RadioButton
+                android:id="@+id/radio_three"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Three"
+                android:onClick="checkButton"/>
+        </RadioGroup>
+
+        <LinearLayout
+            android:id="@+id/navigationbuttonstrip"
+            android:layout_width="442dp"
+            android:layout_height="100dp"
+            android:layout_marginEnd="272dp"
+            android:layout_marginRight="272dp"
+            android:orientation="horizontal"
+            tools:ignore="MissingConstraints">
+
+            <ImageButton
+                android:id="@+id/homebutton"
+                android:layout_width="80sp"
+                android:layout_height="100sp"
+                app:srcCompat="@drawable/home_icon"
+                tools:layout_editor_absoluteX="27dp"
+                tools:layout_editor_absoluteY="638dp" />
+            <ImageButton
+                android:id="@+id/suggestionbutton"
+                android:layout_width="80sp"
+                android:layout_height="100sp"
+                app:srcCompat="@drawable/home_icon"
+                tools:layout_editor_absoluteX="27dp"
+                tools:layout_editor_absoluteY="638dp" />
+            <ImageButton
+                android:id="@+id/locationbutton"
+                android:layout_width="80sp"
+                android:layout_height="100sp"
+                app:srcCompat="@drawable/home_icon"
+                tools:layout_editor_absoluteX="27dp"
+                tools:layout_editor_absoluteY="638dp" />
+            <ImageButton
+            android:id="@+id/triptracker"
+            android:layout_width="80sp"
+            android:layout_height="100sp"
+            app:srcCompat="@drawable/home_icon"
+            tools:layout_editor_absoluteX="27dp"
+            tools:layout_editor_absoluteY="638dp" />
+            <ImageButton
+                android:id="@+id/profileinformation"
+                android:layout_width="80sp"
+                android:layout_height="100sp"
+                app:srcCompat="@drawable/home_icon"
+                tools:layout_editor_absoluteX="27dp"
+                tools:layout_editor_absoluteY="638dp" />
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+    </LinearLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
