@@ -17,7 +17,7 @@
         android:orientation="vertical"
         android:id="@+id/personalinformationlayout">
     <TextView
-        android:id="@+id/Task 1"
+        android:id="@+id/Task1"
         android:layout_width="93dp"
         android:layout_height="46dp"
         android:layout_marginStart="26dp"
@@ -38,7 +38,7 @@
         />
 
     <EditText
-        android:id="@+id/editText"
+        android:id="@+id/Nameinfo"
         android:layout_width="359dp"
         android:layout_height="47dp"
         android:layout_marginStart="26dp"
@@ -53,9 +53,9 @@
         app:layout_constraintBottom_toTopOf="@+id/Nameinfo"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/Task 1" />
+        app:layout_constraintTop_toBottomOf="@+id/Task1" />
         <EditText
-            android:id="@+id/Nameinfo"
+            android:id="@+id/Emailinfo"
             android:layout_width="357dp"
             android:layout_height="51dp"
             android:layout_marginStart="28dp"
@@ -71,8 +71,10 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/editText" />
+
+
         <EditText
-            android:id="@+id/textView6"
+            android:id="@+id/Phoneinfo"
             android:layout_width="342dp"
             android:layout_height="44dp"
             android:layout_marginStart="28dp"
@@ -114,14 +116,14 @@
         android:layout_marginRight="26dp"
             >
             <RadioButton
-                android:id="@+id/male"
+                android:id="@+id/maleradiobutton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="One"
                 android:onClick="checkButton"
                 android:checked="true"/>
             <RadioButton
-                android:id="@+id/female"
+                android:id="@+id/femaleradiobutton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Two"
@@ -137,44 +139,41 @@
             android:textSize="24sp" />
 
         <Spinner
-            android:id="@+id/spinner1"
+            android:id="@+id/agespinner"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="50sp"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
             android:spinnerMode="dropdown" />
-        <RadioGroup
-            android:id="@+id/Age"
-            android:layout_width="373dp"
-            android:layout_height="95dp"
-            android:layout_marginStart="21dp"
-            android:layout_marginLeft="21dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="17dp"
-            android:layout_marginRight="17dp"
-            android:layout_marginBottom="10dp"
-             >
 
-            <RadioButton
-                android:id="@+id/radio_one"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="One"
-                android:onClick="checkButton"
-                android:checked="true"/>
-            <RadioButton
-                android:id="@+id/radio_two"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Two"
-                android:onClick="checkButton"/>
-            <RadioButton
-                android:id="@+id/radio_three"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Three"
-                android:onClick="checkButton"/>
-        </RadioGroup>
+        <LinearLayout
+            android:id="@+id/nextandsavebuttonstrip"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:layout_marginEnd="272dp"
+            android:layout_marginRight="272dp"
+            android:orientation="horizontal"
+
+            tools:ignore="MissingConstraints">
+
+            <Button
+                android:id="@+id/savethisinformationbutton"
+                android:layout_width="100sp"
+                android:layout_height="50sp"
+                android:text="Save Info"
+               />
+
+            <ImageButton
+                android:id="@+id/nextinformationbutton"
+                android:layout_width="38dp"
+                android:layout_height="54dp"
+                android:background="@color/tw__transparent"
+                android:scaleType="fitCenter"
+                app:srcCompat="@drawable/righticonimage"
+                tools:layout_editor_absoluteX="27dp"
+                tools:layout_editor_absoluteY="638dp" />
+        </LinearLayout>
+
 
         <LinearLayout
             android:id="@+id/navigationbuttonstrip"
@@ -191,6 +190,7 @@
                 android:layout_height="100sp"
                 app:srcCompat="@drawable/home_icon"
                 tools:layout_editor_absoluteX="27dp"
+                android:scaleType="fitCenter"
                 tools:layout_editor_absoluteY="638dp" />
             <ImageButton
                 android:id="@+id/suggestionbutton"
@@ -198,28 +198,32 @@
                 android:layout_height="100sp"
                 app:srcCompat="@drawable/home_icon"
                 tools:layout_editor_absoluteX="27dp"
-                tools:layout_editor_absoluteY="638dp" />
+                tools:layout_editor_absoluteY="638dp"
+                android:scaleType="fitCenter"/>
             <ImageButton
                 android:id="@+id/locationbutton"
                 android:layout_width="80sp"
                 android:layout_height="100sp"
                 app:srcCompat="@drawable/home_icon"
                 tools:layout_editor_absoluteX="27dp"
-                tools:layout_editor_absoluteY="638dp" />
+                tools:layout_editor_absoluteY="638dp"
+                android:scaleType="fitCenter"/>
             <ImageButton
             android:id="@+id/triptracker"
             android:layout_width="80sp"
             android:layout_height="100sp"
             app:srcCompat="@drawable/home_icon"
             tools:layout_editor_absoluteX="27dp"
-            tools:layout_editor_absoluteY="638dp" />
+            tools:layout_editor_absoluteY="638dp"
+                android:scaleType="fitCenter"/>
             <ImageButton
                 android:id="@+id/profileinformation"
                 android:layout_width="80sp"
                 android:layout_height="100sp"
                 app:srcCompat="@drawable/home_icon"
                 tools:layout_editor_absoluteX="27dp"
-                tools:layout_editor_absoluteY="638dp" />
+                tools:layout_editor_absoluteY="638dp"
+                android:scaleType="fitCenter"/>
         </LinearLayout>
 
 

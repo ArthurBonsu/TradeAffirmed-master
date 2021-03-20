@@ -451,8 +451,8 @@
     <string name="todohere">TODO</string>
     <string name="SpinnerExample">TODO</string>
 
-    <string-array name="SpinnerExample">
-        <item>Age </item>
+    <string-array name="agespinner">
+        <item>Your age </item>
         <item>1 </item>
         <item>2 </item>
         <item>3 </item>
