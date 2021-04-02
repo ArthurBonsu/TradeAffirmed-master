@@ -12,14 +12,24 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Complete Personal Information"
+            android:text="Complete Residential Information"
             android:textSize="21dp"
             android:layout_centerHorizontal="true"
-            android:padding="3sp"
+            android:layout_marginBottom="40sp"
 
             />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Mailing Address"
+            android:textSize="21dp"
+            android:layout_centerHorizontal="true"
+            android:padding="5sp"
+            android:layout_marginBottom="20sp"></TextView>
+
         <EditText
-            android:id="@+id/NameofPerson"
+            android:id="@+id/MailingAddress"
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:text="Name Of Person"
@@ -27,14 +37,22 @@
             android:layout_marginTop="20dp"
             android:layout_marginStart="20dp"
             android:layout_marginEnd="20dp"
-            android:padding="25sp"
-            android:layout_marginBottom="25sp"
-            android:hint=""
+            android:padding="5sp"
+            android:layout_marginBottom="20sp"
+            android:hint="Name of Person"
 
             />
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="GPS CODE"
+            android:textSize="21dp"
+            android:layout_centerHorizontal="true"
+            android:padding="5sp"
+            android:layout_marginBottom="20sp"></TextView>
         <EditText
-            android:id="@+id/PhoneNumberOfPerson"
+            android:id="@+id/GpsCode"
             android:layout_width="match_parent"
             android:layout_height="40sp"
             android:ems="10"
@@ -43,42 +61,33 @@
             android:padding="25sp"
             android:text="Name of Person"
             android:layout_below="@+id/NameofPerson"
-            android:layout_marginBottom="25sp"/>
-
-        <EditText
-            android:id="@+id/PersonEmail"
+            android:layout_marginBottom="20sp"/>
+        <TextView
             android:layout_width="match_parent"
-            android:layout_height="40dp"
+            android:layout_height="wrap_content"
+            android:text="Street Address"
+            android:textSize="21dp"
+            android:layout_centerHorizontal="true"
+            android:padding="5sp"
+            android:layout_marginBottom="20sp"></TextView>
+        <EditText
+            android:id="@+id/StreetAddress"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
             android:layout_marginStart="20dp"
             android:layout_marginEnd="20dp"
             android:padding="25sp"
             android:text="Email of Person"
             android:textSize="16dp"
             android:layout_below="@+id/PhoneNumberOfPerson"
-            android:layout_marginBottom="25sp"/>
-         <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Gender"
-             android:textSize="24sp"
-             android:layout_marginBottom="35sp">
-
-        </TextView>
-
-        <Spinner
-            android:layout_width="match_parent"
-            android:layout_height="40sp"
-
-            android:id="@+id/genderspinner"
-            android:layout_below="@+id/PersonEmail"
-            tools:ignore="DuplicateIds" />
+            android:layout_marginBottom="20sp"/>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Age"
+            android:text="Country"
             android:textSize="24sp"
-            android:layout_marginBottom="35sp">
+            android:layout_marginBottom="20sp">
 
         </TextView>
 
@@ -86,42 +95,24 @@
             android:layout_width="match_parent"
             android:layout_height="40sp"
 
-            android:id="@+id/agespinner"
-            android:layout_below="@+id/PersonEmail"/>
-
-
-        <EditText
-            android:id="@+id/NationalIDofEmergencyPerson"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"
-            android:padding="25sp"
-            android:text="Emergency Person Email"
-            android:textSize="16dp"
-            android:layout_below="@+id/typeofidspinner"/>
-
-
-        <Spinner
-            android:layout_width="match_parent"
-            android:layout_height="40sp"
-            android:id="@+id/countryspinner"
-            android:padding="30sp"
-            android:layout_marginBottom="15sp"/>
+            android:id="@+id/CountrySpinner"
+            android:layout_below="@+id/PersonEmail"
+            tools:ignore="DuplicateIds" />
 
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/backgroundinformationbuttons"
+            android:id="@+id/saveandnextbuttons"
             android:layout_below ="@+id/countryspinner"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:layout_marginBottom="40sp">
             <Button
                 android:id="@+id/saveinformationhere"
                 android:layout_width="150dp"
                 android:layout_height="40dp"
                 android:text="SAVE"
-                android:textSize="16dp"
+                android:textSize="24dp"
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="20dp"
                 android:background="@color/tw__transparent"
@@ -141,7 +132,7 @@
                 android:background="@color/tw__transparent"
                 android:src="@drawable/righticonimage"
                 android:text=""
-                android:textSize="16dp" />
+                android:textSize="24dp" />
 
 
 
@@ -153,7 +144,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/navigationalbuttonshere"
-            android:layout_below="@+id/movetonext"
+            android:layout_below="@+id/saveandnextbuttons"
             android:orientation="horizontal">
 
             <ImageButton
@@ -194,7 +185,6 @@
 
 
         </LinearLayout>
-
     </LinearLayout>
 
 </RelativeLayout>

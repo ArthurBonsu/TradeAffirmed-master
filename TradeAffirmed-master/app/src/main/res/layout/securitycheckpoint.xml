@@ -1,0 +1,311 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <!-- SETTING OVERALL LAYOUT-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Complete Security Check Information"
+            android:textSize="21dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="30sp"
+
+
+            />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Upload National ID"
+            android:textSize="21dp"
+            android:layout_centerHorizontal="true"
+            android:padding="5sp"
+            android:layout_marginBottom="5sp"></TextView>
+
+        <!-- FOR  FILLING INFO-->
+        <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <EditText
+            android:id="@+id/NationalID"
+            android:layout_width="200sp"
+            android:layout_height="40dp"
+            android:text="National ID"
+            android:textSize="16dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:padding="5sp"
+            android:layout_marginBottom="5sp"
+            android:hint="Editing The National ID"
+
+            />
+        <Button
+            android:id="@+id/ChoseIDFile"
+            android:layout_width="200sp"
+            android:layout_height="40dp"
+            android:text="PICK ID"
+            android:textSize="16dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:padding="5sp"
+            android:layout_marginBottom="10sp"
+            android:hint="Choosing File"
+
+            />
+
+    </LinearLayout>
+
+
+            <ImageView
+                android:id="@+id/ImageViewOfID"
+                android:layout_width="200sp"
+                android:layout_height="50sp"
+                android:text="National ID"
+                android:textSize="16dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:padding="5sp"
+                android:layout_marginBottom="10sp"
+                android:hint="Name of Person"
+
+                />
+
+            <!-- REARRANGING UPLOAD AND DELETE-->
+
+        <!-- SETTING BUTTONS FOR SHOOTING LAYOUT-->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <Button
+                android:id="@+id/UploadNationalID"
+                android:layout_width="200sp"
+                android:layout_height="40dp"
+                android:text="UPLOAD"
+                android:textSize="16dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:padding="5sp"
+                android:layout_marginBottom="10sp"
+                android:hint="Name of Person"
+
+
+                />
+            <Button
+
+                android:layout_width="200sp"
+                android:layout_height="40dp"
+                android:text="DELETE"
+                android:textSize="16dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:padding="5sp"
+                android:layout_marginBottom="10sp"
+                android:hint="Name of Person"
+
+                />
+
+        </LinearLayout>
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Upload GPS CODE"
+            android:textSize="21dp"
+            android:layout_centerHorizontal="true"
+            android:padding="5sp"
+            android:layout_marginBottom="10sp"></TextView>
+
+        <!-- FOR  UPLOAD GPS MAP IMAGE-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <EditText
+                android:id="@+id/GpsCodeMapID"
+                android:layout_width="200sp"
+                android:layout_height="40dp"
+                android:text="GPS CODE"
+                android:textSize="16dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:padding="5sp"
+                android:layout_marginBottom="10sp"
+                android:hint="Editing The GPS CODE"
+
+                />
+            <Button
+                android:id="@+id/PickMap"
+                android:layout_width="200sp"
+                android:layout_height="40dp"
+                android:text="PICK MAP"
+                android:textSize="16dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:padding="5sp"
+                android:layout_marginBottom="10sp"
+                android:hint="Choosing Map Image"
+
+                />
+
+        </LinearLayout>
+
+
+        <ImageView
+            android:id="@+id/ImageViewOfGPSCodeMap"
+            android:layout_width="200sp"
+            android:layout_height="50sp"
+            android:text="National ID"
+            android:textSize="16dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:padding="5sp"
+            android:layout_marginBottom="10sp"
+            android:hint="Name of Person"
+
+            />
+
+        <!-- REARRANGING UPLOAD AND DELETE-->
+
+        <!-- SETTING GPS MAP UPLOAD BUTTONS FOR SHOOTING LAYOUT-->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:id="@+id/gpsmapfunctionbuttons">
+            <Button
+                android:id="@+id/UploadGPSMapView"
+                android:layout_width="200sp"
+                android:layout_height="40dp"
+                android:text="UPLOAD"
+                android:textSize="16dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:padding="5sp"
+                android:layout_marginBottom="20sp"
+                android:hint="Name of Person"
+
+                />
+            <Button
+
+                android:layout_width="200sp"
+                android:layout_height="40dp"
+                android:text="DELETE"
+                android:id="@+id/deleteselectedGPSCodeMapmap"
+                android:textSize="16dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:padding="5sp"
+                android:layout_marginBottom="20sp"
+                android:hint="Delete GPS Code"
+
+                />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/saveandnextbuttons"
+            android:layout_below ="@+id/gpsmapfunctionbuttons"
+            android:orientation="horizontal">
+            <Button
+                android:id="@+id/saveinformationhere"
+                android:layout_width="150dp"
+                android:layout_height="40dp"
+                android:text="SAVE"
+                android:textSize="16dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:background="@color/tw__transparent"
+
+                android:layout_toRightOf="@+id/tv_email"
+                android:layout_below="@+id/tv_last_name"/>
+
+            <ImageButton
+                android:id="@+id/movetonext"
+                android:layout_width="150dp"
+                android:layout_height="40dp"
+                android:layout_below="@+id/tv_last_name"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_toRightOf="@+id/tv_email"
+                android:scaleType="fitCenter"
+                android:background="@color/tw__transparent"
+                android:src="@drawable/righticonimage"
+                android:text=""
+                android:textSize="16dp"
+                android:layout_marginBottom="10sp"/>
+
+
+
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/navigationalbuttonshere"
+            android:layout_below="@+id/saveandnextbuttons"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:layout_width="80sp"
+                android:layout_height="80sp"
+                android:src="@drawable/home_icon"
+                android:id="@+id/homebutton"
+                android:scaleType="fitCenter"></ImageButton>
+
+            <ImageButton
+                android:layout_width="80sp"
+                android:layout_height="80sp"
+                android:src="@drawable/home_icon"
+                android:scaleType="fitCenter"
+                android:id="@+id/suggestionsbutton"></ImageButton>
+
+
+            <ImageButton
+                android:layout_width="80sp"
+                android:layout_height="80sp"
+                android:src="@drawable/home_icon"
+                android:scaleType="fitCenter"
+                android:id="@+id/services"></ImageButton>
+
+            <ImageButton
+                android:layout_width="80sp"
+                android:layout_height="80sp"
+                android:src="@drawable/home_icon"
+                android:scaleType="fitCenter"
+                android:id="@+id/expectedshipping"
+                ></ImageButton>
+            <ImageButton
+                android:layout_width="80sp"
+                android:layout_height="80sp"
+                android:src="@drawable/home_icon"
+                android:scaleType="fitCenter"
+                android:id="@+id/adminprofile"></ImageButton>
+
+
+        </LinearLayout>
+    </LinearLayout>
+
+</RelativeLayout>

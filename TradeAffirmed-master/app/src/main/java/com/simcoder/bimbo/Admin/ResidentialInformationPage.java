@@ -40,9 +40,9 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class AddressPage extends AppCompatActivity {
+public class ResidentialInformationPage extends AppCompatActivity {
 
-    private EditText mNameField, mPhoneField, mCarField;
+    private EditText mNameField, mPhoneField, mCarField,mEmailField ;
 
     private Button mBack, mConfirm;
 
@@ -66,7 +66,7 @@ public class AddressPage extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_driver_settings);
+        setContentView(R.layout.residentialinformationpage);
 
 
         mNameField = findViewById(R.id.name);

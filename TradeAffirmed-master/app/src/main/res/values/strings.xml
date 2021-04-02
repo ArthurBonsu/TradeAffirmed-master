@@ -450,6 +450,12 @@
     <string name="about">About</string>
     <string name="todohere">TODO</string>
     <string name="SpinnerExample">TODO</string>
+    <string name="complete_residential_information">Complete Residential Information</string>
+    <string name="textview">TextView</string>
+    <string name="name">Name</string>
+    <string name="name">Name</string>
+    <string name="name">Name</string>
+    <string name="button">Button</string>
 
     <string-array name="agespinner">
         <item>Your age </item>

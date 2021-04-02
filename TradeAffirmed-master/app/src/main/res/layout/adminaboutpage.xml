@@ -17,11 +17,32 @@
         tools:ignore="MissingConstraints" />
 
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/CEO"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="CEO"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="41dp"
+        tools:layout_editor_absoluteY="298dp" />
+
+    <TextView
+        android:id="@+id/textView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/tradex_provides_the_means_for_people_to_trade_each_other_whether_students_and_friends_jump_in_and_let_us_trade"
-        tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="347dp"
-        tools:ignore="MissingConstraints" />
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="412dp" />
+
+    <TextView
+        android:id="@+id/BONSU ADJEI"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=" BONSU ADJEI-ARTHUR"
+        android:textColor="@color/black"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="41dp"
+        tools:layout_editor_absoluteY="340dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>
