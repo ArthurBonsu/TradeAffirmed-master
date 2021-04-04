@@ -406,45 +406,15 @@ public class SecurityCheck extends AppCompatActivity implements GoogleApiClient.
 
         });
 
-        // UPLOAD ID CARD
-            UploadNationalID.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent galleryIntent = new Intent(Intent.ACTION_GET_CONTENT);
-                    galleryIntent.setType("image/*");
-                    startActivityForResult(galleryIntent, GALLERY_REQUEST2);
-
-                }
-            });
 
             //DELETE ID CARD
             deletenationalidpicture.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
+                  //  deleting();
                 }
             });
-            // PICK UP MAP LOCATION IN ALBUMS
-            PickMap.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
 
-                }
-            });
-             // UPLOAD GPS INFORMATION
-            UploadGPSMapView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                }
-            });
-              // DELETE SELECTED GPS INFORMATION
-            deleteselectedGPSCodeMapmap.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                }
-            });
 
             if (saveinformationhere != null) {
                 saveinformationhere.setOnClickListener(new View.OnClickListener() {
@@ -538,7 +508,7 @@ public class SecurityCheck extends AppCompatActivity implements GoogleApiClient.
                                     public void onComplete(DatabaseError databaseError, DatabaseReference
                                             databaseReference) {
                                         Toast.makeText(getApplicationContext(), "Security Informaation Added", Toast.LENGTH_SHORT).show();
-                                        Intent addadminproductactivity = new Intent(SecurityCheck.this, SecurityCheck2.class);
+                                        Intent addadminproductactivity = new Intent(SecurityCheck.this, SecurityCheck.class);
 
                                         startActivity(addadminproductactivity);
 

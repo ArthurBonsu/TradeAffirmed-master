@@ -43,6 +43,8 @@ public class Users {
     String pimage;
     String newornot;
     String paymentkey;
+    String idcode;
+    String idimage;
 
 
 
@@ -167,7 +169,11 @@ public class Users {
         this.tradername = tradername;
 
     }
+     public  Users(String idcode, String idimage){
+        this.idcode = idcode;
+        this.idimage = idimage;
 
+     }
     public Users(String date, String time, String tid, String traderimage, String tradername, String address, String amount, String city, String delivered, String distance, String image, String uid, String name, String mode, String number, String phone, String quantity, String shippingcost, String state) {
 
         this.desc = desc;
