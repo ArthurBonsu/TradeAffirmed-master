@@ -39,8 +39,8 @@
             android:layout_marginStart="20dp"
             android:layout_marginEnd="20dp"
             android:padding="25sp"
-            android:layout_marginBottom="25sp"
-            android:hint=""
+            android:layout_marginBottom="10sp"
+
 
             />
 
@@ -49,9 +49,10 @@
             android:layout_height="wrap_content"
             android:text="Emergency Phone Contact"
             android:textSize="21dp"
+            android:id="@+id/EmergencyContact"
             android:layout_centerHorizontal="true"
             android:padding="15sp"
-            android:layout_marginBottom="30sp"
+            android:layout_marginBottom="10sp"
 
             />
 
@@ -73,7 +74,7 @@
             android:textSize="21dp"
             android:layout_centerHorizontal="true"
             android:padding="15sp"
-            android:layout_marginBottom="30sp"
+            android:layout_marginBottom="10sp"
 
             />
 
@@ -94,7 +95,16 @@
             android:id="@+id/typeofidspinner"
             android:layout_below="@+id/EmergencyPersonEmail"/>
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Country Information"
+            android:textSize="21dp"
+            android:layout_centerHorizontal="true"
+            android:padding="15sp"
+            android:layout_marginBottom="10sp"
 
+            />
         <EditText
             android:id="@+id/NationalIDofEmergencyPerson"
             android:layout_width="match_parent"
@@ -112,7 +122,7 @@
                 android:layout_height="40sp"
                 android:id="@+id/countryspinner"
                  android:padding="30sp"
-                  android:layout_marginBottom="25sp"/>
+                  android:layout_marginBottom="10sp"/>
 
 
 <LinearLayout
@@ -147,6 +157,56 @@
         android:src="@drawable/righticonimage"
         android:text=""
         android:textSize="16dp" />
+
+
 </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/navigationalbuttonshere"
+            android:layout_below="@+id/saveandnextbuttons"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:layout_width="80sp"
+                android:layout_height="80sp"
+                android:src="@drawable/home_icon"
+                android:id="@+id/homebutton"
+                android:scaleType="fitCenter"></ImageButton>
+
+            <ImageButton
+                android:layout_width="80sp"
+                android:layout_height="80sp"
+                android:src="@drawable/home_icon"
+                android:scaleType="fitCenter"
+                android:id="@+id/suggestionsbutton"></ImageButton>
+
+
+            <ImageButton
+                android:layout_width="80sp"
+                android:layout_height="80sp"
+                android:src="@drawable/home_icon"
+                android:scaleType="fitCenter"
+                android:id="@+id/services"></ImageButton>
+
+            <ImageButton
+                android:layout_width="80sp"
+                android:layout_height="80sp"
+                android:src="@drawable/home_icon"
+                android:scaleType="fitCenter"
+                android:id="@+id/expectedshipping"
+                ></ImageButton>
+            <ImageButton
+                android:layout_width="80sp"
+                android:layout_height="80sp"
+                android:src="@drawable/home_icon"
+                android:scaleType="fitCenter"
+                android:id="@+id/adminprofile"></ImageButton>
+
+
+        </LinearLayout>
     </LinearLayout>
+
+
+
     </RelativeLayout>

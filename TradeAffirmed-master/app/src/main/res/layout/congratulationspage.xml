@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+
+        <TextView
+            android:id="@+id/congratulationspage"
+            android:layout_width="410dp"
+            android:layout_height="40sp"
+            android:text="CONGRATULATIONS PAGE"
+            android:textSize="24sp"
+            android:textAlignment="center"
+            android:gravity="center_horizontal"
+            android:layout_marginBottom="45sp">
+
+
+        </TextView>
+
+        <TextView
+            android:id="@+id/thankyou"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="40sp"
+            android:text="Thank You For Filling In Details.We appreciate
+            you to taking time to complte it.We will verify your details and
+            get back to you working in 2 working days."
+            android:textColor="@color/place_autocomplete_prediction_primary_text"
+            android:textSize="25sp"
+            tools:ignore="DuplicateIds" />
+
+
+        <TextView
+            android:id="@+id/meanwhile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/thankyou"
+            android:paddingBottom="40sp"
+            android:text="Meanwhile you can still access basic functions such as making orders
+            in the meantime.You can return back to see our amazing collections in the meantime."
+            android:textColor="@color/places_autocomplete_prediction_primary_text"
+            android:textSize="25sp">
+
+        </TextView>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"></TextView>
+    </LinearLayout>
+
+</RelativeLayout>
