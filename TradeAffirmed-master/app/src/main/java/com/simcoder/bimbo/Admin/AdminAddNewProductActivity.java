@@ -96,18 +96,18 @@ public class AdminAddNewProductActivity extends AppCompatActivity implements Nav
         ProductsRef = FirebaseDatabase.getInstance().getReference().child("Product");
 
 
-            ;
+        ;
 
 
         user = FirebaseAuth.getInstance().getCurrentUser();
-           if (user != null) {
-               traderID = "";
+        if (user != null) {
+            traderID = "";
             traderID = user.getUid();
-           }
-                       if (ProductsRef.push() != null) {
-                           productRandomKey = ProductsRef.push().getKey();
+        }
+        if (ProductsRef.push() != null) {
+            productRandomKey = ProductsRef.push().getKey();
 
-                       }
+        }
 
 
         AddNewProductButton = (Button) findViewById(R.id.add_new_product);

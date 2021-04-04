@@ -134,7 +134,11 @@ public class AdminAddNewProductActivityII extends AppCompatActivity implements G
     String myphotoimage;
     String traderid;
     String pimage;
-
+    String tid;
+    String pname;
+   String  desc;
+    String pid;
+    String traderimage;
 
     public AdminAddNewProductActivityII() {
         super();
@@ -301,27 +305,33 @@ public class AdminAddNewProductActivityII extends AppCompatActivity implements G
 
  // Post Info
     private void startPosting() {
-      titleval = InputProductName.getText().toString();
-      descval = InputProductDescription.getText().toString();
+
+        // GET THE INFORMATION FROM THE TEXT BOX
+      pname = InputProductName.getText().toString();
+      desc = InputProductDescription.getText().toString();
        price = InputProductPrice.getText().toString();
         user = mAuth.getCurrentUser();
+
+         // GET DATES FOR PRODUCTS
         Calendar calendar = Calendar.getInstance();
         SimpleDateFormat currentDate = new SimpleDateFormat("MMM dd, yyyy");
 
         if (currentDate != null) {
-            saveCurrentDate = currentDate.format(calendar.getTime()).toString();
+            date = currentDate.format(calendar.getTime()).toString();
 
             SimpleDateFormat currentTime = new SimpleDateFormat("HH:mm:ss a");
             if (currentTime != null) {
-                saveCurrentTime = currentTime.format(calendar.getTime());
+                time = currentTime.format(calendar.getTime());
 
             }
 
 
-            if (!TextUtils.isEmpty(titleval) && !TextUtils.isEmpty(descval) && !TextUtils.isEmpty(price) && mImageUri != null) {
+            if (!TextUtils.isEmpty(pname) && !TextUtils.isEmpty(desc) && !TextUtils.isEmpty(price) && mImageUri != null) {
                 mProgress.setMessage("Adding your new Product To the List");
 
                 mProgress.show();
+
+             // CHECK STORAGE FOR IMAGE AND PASS IMAGES GOTTEN THERE
                 StorageReference filepath = mStorage.child(mImageUri.getLastPathSegment());
 
                 filepath.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -332,15 +342,16 @@ public class AdminAddNewProductActivityII extends AppCompatActivity implements G
 
                         final Uri downloadUrl = taskSnapshot.getUploadSessionUri();
 
-                                          traderid = user.getUid();
+                                          tid = user.getUid();
                                           tradername = user.getDisplayName();
                                           pimage = downloadUrl.toString();
 
                                    Uri myphoto = user.getPhotoUrl();
-                                           mytraderimage = myphoto.toString();
-                                       productkey =     ProductsRef.push().getKey();
+                                           traderimage = myphoto.toString();
+                                       pid =     ProductsRef.push().getKey();
 
-                        Products producttobesent = new Products ( titleval,pimage,descval, price, productkey, saveCurrentDate, saveCurrentTime, traderid, tradername, mytraderimage);
+                               // PICK UP THE SPECIAL PRODUCT INFO AND LOADING THEM INTO THE DATABASE
+                        Products producttobesent = new Products ( pname,pimage,desc, price, pid, date, time, tid, tradername, traderimage);
 
                         ProductsRef.child(productkey).setValue(producttobesent, new
                                 DatabaseReference.CompletionListener() {
