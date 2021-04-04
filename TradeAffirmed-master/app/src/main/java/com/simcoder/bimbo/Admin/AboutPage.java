@@ -18,3 +18,22 @@ public class AboutPage extends AppCompatActivity {
        setContentView(R.layout.adminaboutpage);
     }
 }
+
+
+//NEW INFOS TO ADD
+/*
+idimage,
+        fullname
+        gender
+        age
+        country
+
+ */
+/*
+address userInfo
+          gpscode
+          country
+          idimage
+          idcode
+
+ */

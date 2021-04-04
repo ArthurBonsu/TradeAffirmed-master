@@ -60,6 +60,7 @@ import com.simcoder.bimbo.DriverMapActivity;
 import com.simcoder.bimbo.HistoryActivity;
 import com.simcoder.bimbo.Model.HashMaps;
 import com.simcoder.bimbo.Model.Products;
+import com.simcoder.bimbo.Model.Users;
 import com.simcoder.bimbo.R;
 import com.simcoder.bimbo.WorkActivities.CartActivity;
 import com.simcoder.bimbo.WorkActivities.HomeActivity;
@@ -214,7 +215,7 @@ public class SecurityCheck extends AppCompatActivity implements GoogleApiClient.
     String userid;
     String productkey;
     String mytraderimage;
-
+    String idcode;
     //AUTHENTICATORS
 
     private GoogleMap mMap;
@@ -227,7 +228,7 @@ public class SecurityCheck extends AppCompatActivity implements GoogleApiClient.
     ImageButton setimagebutton;
     ImageButton AddimageButon;
 
-    FirebaseDatabase productsfirebasedatabase;
+    FirebaseDatabase  myuserfirebasedatabase;
     String titleval;
     String descval;
     String  price;
@@ -240,7 +241,7 @@ public class SecurityCheck extends AppCompatActivity implements GoogleApiClient.
     String  desc;
     String pid;
     String traderimage;
-
+    String idimage;
 
     public SecurityCheck() {
         super();
@@ -284,7 +285,7 @@ public class SecurityCheck extends AppCompatActivity implements GoogleApiClient.
         thenationalidstring = NationalID.getText().toString();
         thegpscodeinformationstring= GpsCodeMapID.getText().toString();
 
-        msubmitButton = (Button) findViewById(R.id.add_new_product);
+
 
         mAuth = FirebaseAuth.getInstance();
         mCurrentUser = mAuth.getCurrentUser();
@@ -339,18 +340,18 @@ public class SecurityCheck extends AppCompatActivity implements GoogleApiClient.
 
 
                 // GET FROM FOLLOWING KEY
+                   // HAVE TO BUILD THE STORAGE
+                mStorage = FirebaseStorage.getInstance().getReference().child("user_images");
+               myuserfirebasedatabase = FirebaseDatabase.getInstance();
+                mAdminTraderDatabase = myuserfirebasedatabase.getReference().child("Users").child("Drivers").child(traderID);
 
-                mStorage = FirebaseStorage.getInstance().getReference().child("product_images");
-                productsfirebasedatabase = FirebaseDatabase.getInstance();
-                ProductsRef = productsfirebasedatabase.getReference().child("Product");
-
-                ProductsRef.keepSynced(true);
-
+                mAdminTraderDatabase.keepSynced(true);
+/*
                 if (ProductsRef.push() != null) {
                     productRandomKey = ProductsRef.push().getKey();
 
                 }
-
+*/
                 //I have to  check to ensure that gallery intent is not placed here for the other classes
                 mProgress = new ProgressDialog(this);
 
@@ -388,7 +389,7 @@ public class SecurityCheck extends AppCompatActivity implements GoogleApiClient.
 
 
 
-        mAdminTraderDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child("Drivers").child(traderID);
+
             getUserInfo();
             // SET THE AGE ADAPTER
 
@@ -409,6 +410,9 @@ public class SecurityCheck extends AppCompatActivity implements GoogleApiClient.
             UploadNationalID.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    Intent galleryIntent = new Intent(Intent.ACTION_GET_CONTENT);
+                    galleryIntent.setType("image/*");
+                    startActivityForResult(galleryIntent, GALLERY_REQUEST2);
 
                 }
             });
@@ -476,9 +480,10 @@ public class SecurityCheck extends AppCompatActivity implements GoogleApiClient.
     private void startPosting() {
 
         // GET THE INFORMATION FROM THE TEXT BOX
-        pname = InputProductName.getText().toString();
-        desc = InputProductDescription.getText().toString();
-        price = InputProductPrice.getText().toString();
+
+        thenationalidstring = NationalID.getText().toString();
+        thegpscodeinformationstring= GpsCodeMapID.getText().toString();
+
         user = mAuth.getCurrentUser();
 
         // GET DATES FOR PRODUCTS
@@ -495,8 +500,8 @@ public class SecurityCheck extends AppCompatActivity implements GoogleApiClient.
             }
 
 
-            if (!TextUtils.isEmpty(pname) && !TextUtils.isEmpty(desc) && !TextUtils.isEmpty(price) && mImageUri != null) {
-                mProgress.setMessage("Adding your new Product To the List");
+            if (!TextUtils.isEmpty(thenationalidstring)  && mImageUri != null) {
+                mProgress.setMessage("Adding your security check information");
 
                 mProgress.show();
 
@@ -506,29 +511,34 @@ public class SecurityCheck extends AppCompatActivity implements GoogleApiClient.
                 filepath.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-
+                            idcode = thenationalidstring;
 
 
                         final Uri downloadUrl = taskSnapshot.getUploadSessionUri();
 
-                        tid = user.getUid();
+                        traderID = user.getUid();
                         tradername = user.getDisplayName();
-                        pimage = downloadUrl.toString();
+                        idimage = downloadUrl.toString();
 
                         Uri myphoto = user.getPhotoUrl();
                         traderimage = myphoto.toString();
                         pid =     ProductsRef.push().getKey();
 
-                        // PICK UP THE SPECIAL PRODUCT INFO AND LOADING THEM INTO THE DATABASE
-                        Products producttobesent = new Products ( pname,pimage,desc, price, pid, date, time, tid, tradername, traderimage);
 
-                        ProductsRef.child(productkey).setValue(producttobesent, new
+                        mAdminTraderDatabase = myuserfirebasedatabase.getReference().child("Users").child("Drivers").child(traderID);
+
+                        mAdminTraderDatabase.keepSynced(true);
+
+                        // PICK UP THE SPECIAL PRODUCT INFO AND LOADING THEM INTO THE DATABASE
+                        Users userstobesent = new Users (idcode,idimage);
+
+                        mAdminTraderDatabase.child(traderID).setValue(userstobesent, new
                                 DatabaseReference.CompletionListener() {
                                     @Override
                                     public void onComplete(DatabaseError databaseError, DatabaseReference
                                             databaseReference) {
                                         Toast.makeText(getApplicationContext(), "Security Informaation Added", Toast.LENGTH_SHORT).show();
-                                        Intent addadminproductactivity = new Intent(SecurityCheck.this, HomeActivity.class);
+                                        Intent addadminproductactivity = new Intent(SecurityCheck.this, SecurityCheck2.class);
 
                                         startActivity(addadminproductactivity);
 
@@ -554,6 +564,7 @@ public class SecurityCheck extends AppCompatActivity implements GoogleApiClient.
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        // PICK NATIONAL ID INFORMATION
         if (requestCode == GALLERY_REQUEST && resultCode == RESULT_OK) {
 
             Uri imageUri = data.getData();
@@ -572,7 +583,6 @@ public class SecurityCheck extends AppCompatActivity implements GoogleApiClient.
                 InputProductImage.setImageURI(mImageUri);
 
 
-
             } else if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
 
                 Exception error = result.getError();
@@ -581,7 +591,7 @@ public class SecurityCheck extends AppCompatActivity implements GoogleApiClient.
         }
 
 
-    }
+        }
 
 
 
