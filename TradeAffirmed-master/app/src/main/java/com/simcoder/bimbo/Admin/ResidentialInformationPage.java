@@ -6,17 +6,23 @@ import com.google.firebase.auth.FirebaseUser;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.media.Image;
 import android.net.Uri;
 import android.provider.MediaStore;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -42,7 +48,7 @@ import java.util.Map;
 
 public class ResidentialInformationPage extends AppCompatActivity {
 
-    private EditText mNameField, mPhoneField, mCarField,mEmailField ;
+    private EditText   Nameinfo, Emailinfo, Phoneinfo;
 
     private Button mBack, mConfirm;
 
@@ -54,211 +60,225 @@ public class ResidentialInformationPage extends AppCompatActivity {
     private String userID;
     private String mName;
     private String mPhone;
+    String  mEmail;
     private String mCar;
-    private String mService;
+    String mService;
     private String mProfileImageUrl;
+    Spinner mySpinner;
+
+    String NameinfoString;
+    String EmailinfoString;
+    String PhoneinfoString;
+
+
 
     private Uri resultUri;
-
+    String text;
     private RadioGroup mRadioGroup;
+    RadioButton FemaleRadioButton;
+    RadioButton MaleRadioButton;
+    String role;
+    String traderID;
+    RadioButton radioButtonforgender;
+    String radiotext;
+
+    String thenameinfostring;
+    String theemailinfostring;
+    String thephoneinfostring;
+    String agetext;
+    String countrytext;
+
+    EditText NameofPerson;
+    EditText  PhoneNumberOfPerson;
+    EditText PersonEmail;
+    RadioGroup genderspinnerradiogroup;
+    RadioButton MaleRadiobutton;
+
+    RadioButton FemaleMaleRadiobutton;
+    Spinner agespinner;
+    EditText NationalIDofEmergencyPerson;
+    Spinner countryspinner;
+    Button saveinformationhere;
+    ImageButton movetonext;
+    ImageButton homebutton;
+    ImageButton suggestionsbutton;
+    ImageButton       services;
+    ImageButton  expectedshipping;
+    ImageButton       adminprofile;
+
+
+
+    EditText MailingAddress;
+    EditText        GpsCode;
+    Spinner CountrySpinner;
+    EditText  StreetAddress;
+      ImageButton      home_icon;
+
+   String  themailingaddressstring;
+   String  thegpscodestring;
+   String thestreetaddressstring;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.residentialinformationpage);
+        Intent roleintent = getIntent();
+        if (roleintent.getExtras().getString("role") != null) {
+            role = roleintent.getExtras().getString("role");
+        }
+
+        Intent traderIDintent = getIntent();
+        if (traderIDintent.getExtras().getString("traderID") != null) {
+            traderID = traderIDintent.getExtras().getString("traderID");
+        }
+
+        MailingAddress = findViewById(R.id.MailingAddress);
+        GpsCode = findViewById(R.id.GpsCode);
+        StreetAddress = findViewById(R.id.StreetAddress);
+
+        themailingaddressstring = MailingAddress.getText().toString();
+        thegpscodestring = GpsCode.getText().toString();
+        thestreetaddressstring = StreetAddress.getText().toString();
 
 
-        mNameField = findViewById(R.id.name);
-        mPhoneField = findViewById(R.id.phone);
-        mEmailField = findViewById(R.id.email);
+        countryspinner = (Spinner) findViewById(R.id.countryspinner);
+        saveinformationhere = (Button) findViewById(R.id.saveinformationhere);
+        movetonext = (ImageButton) findViewById(R.id.movetonext);
+        homebutton = (ImageButton) findViewById(R.id.homebutton);
+        suggestionsbutton = (ImageButton) findViewById(R.id.suggestionsbutton);
+        services = (ImageButton) findViewById(R.id.services);
+        expectedshipping = (ImageButton) findViewById(R.id.expectedshipping);
+        adminprofile = (ImageButton) findViewById(R.id.adminprofile);
 
-        mProfileImage = findViewById(R.id.profileImage);
-
-        mRadioGroup = findViewById(R.id.radioGroup);
-
-        mBack = findViewById(R.id.back);
-        mConfirm = findViewById(R.id.confirm);
 
         mAuth = FirebaseAuth.getInstance();
 
         FirebaseUser user = mAuth.getCurrentUser();
         if (user != null) {
-            userID = "";
-            userID = user.getUid();
+            traderID = "";
+            traderID = user.getUid();
 
 
-            mAdminTraderDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child("Drivers").child(userID);
-
+            mAdminTraderDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child("Drivers").child(traderID);
             getUserInfo();
-            if (mProfileImage != null) {
-                mProfileImage.setOnClickListener(new View.OnClickListener() {
+            // SET THE AGE ADAPTER
+
+
+            // SET THE COUNTRY ADAPTER
+            ArrayAdapter<String> myAdapter = new ArrayAdapter<String>(ResidentialInformationPage.this,
+                    android.R.layout.simple_list_item_1, getResources().getStringArray(R.array.countryspinner));
+            myAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            countryspinner.setAdapter(myAdapter);
+
+            countryspinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+
+                @Override
+                public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                    countrytext = countryspinner.getSelectedItem().toString();
+                    getUserInfo();
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> adapterView) {
+
+                }
+            });
+
+
+            if (saveinformationhere != null) {
+                saveinformationhere.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent intent = new Intent(Intent.ACTION_PICK);
-                        intent.setType("image/*");
-                        startActivityForResult(intent, 1);
+
+
+                        saveUserInformation();
                     }
                 });
-                if (mConfirm != null) {
-                    mConfirm.setOnClickListener(new View.OnClickListener() {
+                if (movetonext != null) {
+                    movetonext.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            saveUserInformation();
+                            Intent intent = new Intent(ResidentialInformationPage.this, BackgroundCheck.class);
+                            if (intent != null) {
+                                intent.putExtra("role", role);
+                                intent.putExtra("traderID", traderID);
+                                startActivity(intent);
+                                finish();
+                            }
                         }
                     });
-                    if (mBack != null) {
-                        mBack.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                finish();
-                                return;
-                            }
-                        });
-                    }
                 }
+
+
             }
+
         }
+
     }
-    private void getUserInfo(){
+              //POPULATE THE EDIT BOX IF THERE ALREADY EXIST SUCH A TRANSACTION
+    public void getUserInfo(){
         mAdminTraderDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if(dataSnapshot.exists() && dataSnapshot.getChildrenCount()>0){
+                if(dataSnapshot.exists() && dataSnapshot.getChildrenCount()>0) {
                     Map<String, Object> map = (Map<String, Object>) dataSnapshot.getValue(HashMaps.class);
+                    if (map.get("address") != null) {
+                       String  themailingaddress = map.get("address").toString();
 
-                    if(map.get("name")!=null){
-                        mName = map.get("name").toString();
-                        mNameField.setText(mName);
+                        MailingAddress.setText(themailingaddress);
+
+
                     }
-                    if(map.get("email")!=null){
-                        mName = map.get("email").toString();
-                        mNameField.setText(mName);
+                    if (map.get("gpscode") != null) {
+                     String    thegpscode = map.get("gpscode").toString();
+                        GpsCode.setText(mPhone);
                     }
 
-                    if(map.get("phone")!=null){
-                        mPhone = map.get("phone").toString();
-                        mPhoneField.setText(mPhone);
+                    if (map.get("street") != null) {
+                      String   thestreetaddress = map.get("street").toString();
+                        StreetAddress.setText(thestreetaddress);
                     }
-                    // WE CAN GET THE TRADE AREA OF TRADE HERE AND PASSPORT NUMBER OR NATIONAL ID
-                    //THIS PART REPRESENTS THE KIND OF TRADING SERVICE WE PROVIDE
 
-                    if(map.get("service")!=null){
-                        // THIS MUST BE CHANGED TO ALL THE DIFFERENT SERVICES WE HAVE , MOBILE, IMMOBILE, HYBRID
-                        mService = map.get("service").toString();
-                        switch (mService){
-                            case"UberX":
-                                mRadioGroup.check(R.id.UberX);
-                                break;
-                            case"UberBlack":
-                                mRadioGroup.check(R.id.UberBlack);
-                                break;
-                            case"UberXl":
-                                mRadioGroup.check(R.id.UberXl);
-                                break;
-                        }
-                    }
-                    if(map.get("profileImageUrl")!=null){
-                        mProfileImageUrl = map.get("profileImageUrl").toString();
-                        Glide.with(getApplication()).load(mProfileImageUrl).into(mProfileImage);
-                    }
-                }
-            }
+                }}
+
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
             }
         });
+
+
     }
+
 
 
     //AFTER FIRST TIME OF CREATING INFO HE CAN HAVE NO ABILITY TO ALTER UNLESS PROVIDED BY ADMINISTRATOR
     // PERSONAL INFORMATION COULD BE CROSS-CHECKED FOR SECURITY
     // IT IS THE PAYMENT THAT MAKES IT DECENTRALIZED
 
-    private void saveUserInformation() {
-        mName = mNameField.getText().toString();
-        mPhone = mPhoneField.getText().toString();
-        mCar = mCarField.getText().toString();
-        if (mName != null && mPhone != null && mCar != null) {
+    public void saveUserInformation() {
 
-            int selectId = mRadioGroup.getCheckedRadioButtonId();
+        themailingaddressstring = MailingAddress.getText().toString();
+        thegpscodestring = GpsCode.getText().toString();
+        thestreetaddressstring = StreetAddress.getText().toString();
 
-            final RadioButton radioButton = findViewById(selectId);
-            if (radioButton != null) {
-                if (radioButton.getText() == null) {
-                    return;
-                }
+        if (themailingaddressstring != null && thegpscodestring != null && thestreetaddressstring != null) {
 
-                mService = radioButton.getText().toString();
-                if (mService != null) {
                     Map userInfo = new HashMap();
-                    userInfo.put("name", mName);
-                    userInfo.put("phone", mPhone);
-                    userInfo.put("car", mCar);
-                    userInfo.put("service", mService);
+                    userInfo.put("address", themailingaddressstring);
+                    userInfo.put("street", thestreetaddressstring);
+                    userInfo.put("gpscode", thegpscodestring);
+                    userInfo.put("country",countrytext);
                     mAdminTraderDatabase.updateChildren(userInfo);
 
-                    if (resultUri != null) {
-                        FirebaseUser user = mAuth.getCurrentUser();
-                        if (user != null) {
-                            userID = "";
-                            userID = user.getUid();
-                            StorageReference filePath = FirebaseStorage.getInstance().getReference().child("profile_images").child(userID);
-                            Bitmap bitmap = null;
-                            try {
-                                bitmap = MediaStore.Images.Media.getBitmap(getApplication().getContentResolver(), resultUri);
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-
-                            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                            bitmap.compress(Bitmap.CompressFormat.JPEG, 20, baos);
-                            byte[] data = baos.toByteArray();
-                            UploadTask uploadTask = filePath.putBytes(data);
-
-                            uploadTask.addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    finish();
-                                    return;
-                                }
-                            });
-                            uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                                @Override
-                                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                    Task<Uri> downloadUrl = taskSnapshot.getStorage().getDownloadUrl();
-
-                                    Map newImage = new HashMap();
-                                    newImage.put("profileImageUrl", downloadUrl.toString());
-                                    mAdminTraderDatabase.updateChildren(newImage);
-
-                                    finish();
-                                    return;
-                                }
-                            });
-                        } else {
-                            finish();
-                        }
-
-                    }
-                } else {
-
-                    Toast.makeText(getApplicationContext(), "Please provide details", Toast.LENGTH_LONG).show();
                 }
 
-            }
-        }
     }
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == 1 && resultCode == Activity.RESULT_OK){
-            final Uri imageUri = data.getData();
-            resultUri = imageUri;
-            mProfileImage.setImageURI(resultUri);
-        }
-    }
-
 
 }
+
+
+
+

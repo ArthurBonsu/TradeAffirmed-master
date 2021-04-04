@@ -85,7 +85,7 @@ public class PersonalInformationForm extends AppCompatActivity {
     String theemailinfostring;
     String thephoneinfostring;
     String agetext;
-
+    String countrytext;
 
     EditText NameofPerson;
     EditText  PhoneNumberOfPerson;
@@ -106,6 +106,7 @@ public class PersonalInformationForm extends AppCompatActivity {
      ImageButton       adminprofile;
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -124,9 +125,9 @@ public class PersonalInformationForm extends AppCompatActivity {
           PhoneNumberOfPerson = findViewById(R.id.PhoneNumberOfPerson);
          PersonEmail = findViewById(R.id.PersonEmail);
 
-        NameofPersonString = NameofPerson.getText().toString();
-        PersonEmailString  = PersonEmail.getText().toString();
-        PhoneNumberOfPersonString = PhoneNumberOfPerson.getText().toString();
+        thenameinfostring = NameofPerson.getText().toString();
+        theemailinfostring  = PersonEmail.getText().toString();
+        thephoneinfostring = PhoneNumberOfPerson.getText().toString();
 
         mProfileImage = findViewById(R.id.profileImage);
 
@@ -148,8 +149,7 @@ public class PersonalInformationForm extends AppCompatActivity {
 
 
 
-        mBack = findViewById(R.id.back);
-        mConfirm = findViewById(R.id.confirm);
+
         mAuth = FirebaseAuth.getInstance();
 
         FirebaseUser user = mAuth.getCurrentUser();
@@ -207,8 +207,8 @@ public class PersonalInformationForm extends AppCompatActivity {
 
 
 
-            if (mConfirm != null) {
-                mConfirm.setOnClickListener(new View.OnClickListener() {
+            if (saveinformationhere != null) {
+                saveinformationhere.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
 
@@ -216,18 +216,25 @@ public class PersonalInformationForm extends AppCompatActivity {
                                 saveUserInformation();
                     }
                 });
-                if (mBack != null) {
-                    mBack.setOnClickListener(new View.OnClickListener() {
+                if (movetonext != null) {
+                    movetonext.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            finish();
-                            return;
+                            Intent intent = new Intent(PersonalInformationForm.this, ResidentialInformationPage.class);
+                            if (intent != null) {
+                                intent.putExtra("role", role);
+                                intent.putExtra("traderID", traderID);
+                                startActivity(intent);
+                                finish();
+                            }
                         }
                     });
                 }
 
 
-            }}
+            }
+
+    }
 
 
 
@@ -237,18 +244,23 @@ public class PersonalInformationForm extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if(dataSnapshot.exists() && dataSnapshot.getChildrenCount()>0) {
                     Map<String, Object> map = (Map<String, Object>) dataSnapshot.getValue(HashMaps.class);
-                    if (map.get("name") != null) {
-                        mName = map.get("name").toString();
-
-                        Nameinfo.setText(mName);
 
 
+                    if (map.get("fullname") != null) {
+                        mName = map.get("fullname").toString();
+
+                        NameofPerson.setText(mName);
+
+
+                    }
+                    if (map.get("email") != null) {
+                        mEmail  = map.get("email").toString();
+                        PersonEmail.setText(mEmail);
                     }
                     if (map.get("phone") != null) {
-                        mEmail = map.get("phone").toString();
-                        Emailinfo.setText(mPhone);
+                        mPhone  = map.get("phone").toString();
+                        PhoneNumberOfPerson.setText(mEmail);
                     }
-
 
                 }}
 
@@ -268,9 +280,9 @@ public class PersonalInformationForm extends AppCompatActivity {
     public void saveUserInformation() {
 
 
-         thenameinfostring = Nameinfo.getText().toString();
-         theemailinfostring = Emailinfo.getText().toString();
-         thephoneinfostring = Phoneinfo.getText().toString();
+         thenameinfostring = NameofPerson.getText().toString();
+         theemailinfostring = PersonEmail.getText().toString();
+         thephoneinfostring = PhoneNumberOfPerson.getText().toString();
 
         if (thenameinfostring != null && theemailinfostring != null && thephoneinfostring != null) {
 
@@ -289,13 +301,15 @@ public class PersonalInformationForm extends AppCompatActivity {
                     return;
                 }
 
-
+             //WE WILL USE FULL NAME TO STORE VALUE TO PREVENT USERNAME
                 if (radiotext != null) {
                     Map userInfo = new HashMap();
-                    userInfo.put("name", thenameinfostring);
+                    userInfo.put("fullname", thenameinfostring);
                     userInfo.put("phone", thephoneinfostring);
                     userInfo.put("email", theemailinfostring);
                     userInfo.put("gender", radiotext);
+                    userInfo.put("age", agetext);
+                    userInfo.put("country",countrytext);
                     mAdminTraderDatabase.updateChildren(userInfo);
 
                 }}}}

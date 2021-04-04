@@ -803,7 +803,7 @@
         <item>Uzbekistan</item>
         <item>Vanuatu</item>
         <item>Venezuela (Bolivarian Republic of)</item>
-        <item>Viet Nam</item>
+        <item>VietNam</item>
         <item>Virgin Islands (British)</item>
         <item>Virgin Islands (U.S.)</item>
         <item>Norway</item>
@@ -814,5 +814,15 @@
         <item>Zimbabwe</item>
         <item>Åland Islands</item>
                     TODO</string-array>
+
+    <string-array name="typeofidspinner">
+    <item>Your age </item>
+    <item>Passport</item>
+    <item>National ID Card </item>
+    <item>Driver Lincense </item>
+    <item>NHIS Card </item>
+    <item>Veteran ID Card </item>
+
+        TODO</string-array>
 
 </resources>

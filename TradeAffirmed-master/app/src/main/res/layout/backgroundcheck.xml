@@ -88,33 +88,35 @@
             android:text="Emergency Person Email"
             android:textSize="16dp"
             android:layout_below="@+id/EmergencyPersonPhoneNumber"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Type of ID"
+            android:textSize="21dp"
+            android:layout_centerHorizontal="true"
+            android:id="@+id/typeofidtextview"
+            android:padding="15sp"
+            android:layout_marginBottom="10sp"
+            android:layout_below="@+id/EmergencyPersonEmail"
 
+            />
         <Spinner
             android:layout_width="match_parent"
             android:layout_height="40sp"
-            android:id="@+id/typeofidspinner"
-            android:layout_below="@+id/EmergencyPersonEmail"/>
+            android:id="@+id/NationalIDofEmergencyPerson"
+            android:layout_below="@+id/typeofidtextview"/>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Country Information"
+            android:text="Country"
             android:textSize="21dp"
             android:layout_centerHorizontal="true"
             android:padding="15sp"
             android:layout_marginBottom="10sp"
 
             />
-        <EditText
-            android:id="@+id/NationalIDofEmergencyPerson"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"
-            android:padding="25sp"
-            android:text="Emergency Person Email"
-            android:textSize="16dp"
-            android:layout_below="@+id/typeofidspinner"/>
+
 
 
         <Spinner
