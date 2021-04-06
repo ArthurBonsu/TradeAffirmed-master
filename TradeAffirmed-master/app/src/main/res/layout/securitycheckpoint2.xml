@@ -4,6 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
+
+
     <!-- SETTING OVERALL LAYOUT-->
     <LinearLayout
         android:layout_width="match_parent"
@@ -22,65 +25,66 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Upload National ID"
+            android:text="Upload GPS Code"
             android:textSize="21dp"
             android:layout_centerHorizontal="true"
             android:padding="5sp"
             android:layout_marginBottom="5sp"></TextView>
 
+
         <!-- FOR  FILLING INFO-->
         <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-        <EditText
-            android:id="@+id/NationalID"
             android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:text="National ID"
-            android:textSize="16dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"
-            android:padding="5sp"
-            android:layout_marginBottom="5sp"
-            android:hint="Editing The National ID"
-
-            />
-        <Button
-            android:id="@+id/ChoseIDFile"
-            android:layout_width="200sp"
-            android:layout_height="40dp"
-            android:text="PICK ID"
-            android:textSize="16dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"
-            android:padding="5sp"
-            android:layout_marginBottom="10sp"
-            android:hint="Choosing File"
-
-            />
-
-    </LinearLayout>
-
-
-            <ImageView
-                android:id="@+id/ImageViewOfID"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <EditText
+                android:id="@+id/GpsCodeMapID"
                 android:layout_width="match_parent"
-                android:layout_height="270sp"
-                android:text="National ID"
+                android:layout_height="40dp"
+                android:text="GPS Code"
+                android:textSize="16dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:padding="5sp"
+                android:layout_marginBottom="5sp"
+                android:hint="Editing The National ID"
+
+                />
+            <Button
+                android:id="@+id/PickMap"
+                android:layout_width="200sp"
+                android:layout_height="40dp"
+                android:text="PICK ID"
                 android:textSize="16dp"
                 android:layout_marginTop="20dp"
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="20dp"
                 android:padding="5sp"
                 android:layout_marginBottom="10sp"
-                android:hint="Image View Of ID"
+                android:hint="Choosing File"
 
                 />
 
-            <!-- REARRANGING UPLOAD AND DELETE-->
+        </LinearLayout>
+
+
+        <ImageView
+            android:id="@+id/ImageViewOfGPSCodeMap"
+            android:layout_width="match_parent"
+            android:layout_height="270sp"
+            android:text="National ID"
+            android:textSize="16dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:padding="5sp"
+            android:layout_marginBottom="10sp"
+            android:hint="Image View Of ID"
+
+            />
+
+        <!-- REARRANGING UPLOAD AND DELETE-->
 
         <!-- SETTING BUTTONS FOR SHOOTING LAYOUT-->
 
@@ -99,7 +103,7 @@
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="20dp"
                 android:padding="5sp"
-                android:id="@+id/deletenationalidpicture"
+                android:id="@+id/deleteselectedGPSCodeMapmap"
                 android:layout_marginBottom="10sp"
                 android:hint="Delete The National ID"
 

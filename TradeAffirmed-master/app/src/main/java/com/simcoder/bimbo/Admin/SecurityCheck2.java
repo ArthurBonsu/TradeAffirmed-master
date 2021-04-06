@@ -167,12 +167,12 @@ public class SecurityCheck2 extends AppCompatActivity implements GoogleApiClient
     EditText NationalID = findViewById(R.id.NationalID);
     Button        ChoseIDFile = findViewById(R.id.ChoseIDFile);
     ImageView ImageViewOfID = findViewById(R.id.ImageViewOfID);
-    Button        UploadNationalID = findViewById(R.id.UploadNationalID);
+
     Button deletenationalidpicture = findViewById(R.id.deletenationalidpicture);
     EditText       GpsCodeMapID= findViewById(R.id.GpsCodeMapID);
     Button PickMap = findViewById(R.id.PickMap);
     ImageView       ImageViewOfGPSCodeMap = findViewById(R.id.ImageViewOfGPSCodeMap);
-    Button UploadGPSMapView = findViewById(R.id.UploadGPSMapView);
+
     Button       deleteselectedGPSCodeMapmap = findViewById(R.id.deleteselectedGPSCodeMapmap);
 
     private ImageButton mEventImage;
@@ -243,14 +243,17 @@ public class SecurityCheck2 extends AppCompatActivity implements GoogleApiClient
     String traderimage;
     String idimage;
 
-    public SecurityCheck() {
+    String gpscode;
+    String gpsimage;
+
+    public SecurityCheck2() {
         super();
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.securitycheckpoint);
+        setContentView(R.layout.securitycheckpoint2);
         Intent roleintent = getIntent();
         if (roleintent.getExtras().getString("role") != null) {
             role = roleintent.getExtras().getString("role");
@@ -263,15 +266,14 @@ public class SecurityCheck2 extends AppCompatActivity implements GoogleApiClient
 
 
 
-        NationalID = findViewById(R.id.NationalID);
-        ChoseIDFile = findViewById(R.id.ChoseIDFile);
+
         ImageViewOfID = findViewById(R.id.ImageViewOfID);
-        UploadNationalID = findViewById(R.id.UploadNationalID);
+
         deletenationalidpicture = findViewById(R.id.deletenationalidpicture);
         GpsCodeMapID= findViewById(R.id.GpsCodeMapID);
         PickMap = findViewById(R.id.PickMap);
         ImageViewOfGPSCodeMap = findViewById(R.id.ImageViewOfGPSCodeMap);
-        UploadGPSMapView = findViewById(R.id.UploadGPSMapView);
+
         deleteselectedGPSCodeMapmap = findViewById(R.id.deleteselectedGPSCodeMapmap);
         saveinformationhere = findViewById(R.id.saveinformationhere);
         movetonext = findViewById(R.id.movetonext);
@@ -282,7 +284,7 @@ public class SecurityCheck2 extends AppCompatActivity implements GoogleApiClient
         adminprofile = findViewById(R.id.adminprofile);
 
 
-        thenationalidstring = NationalID.getText().toString();
+
         thegpscodeinformationstring= GpsCodeMapID.getText().toString();
 
 
@@ -394,52 +396,33 @@ public class SecurityCheck2 extends AppCompatActivity implements GoogleApiClient
         // SET THE AGE ADAPTER
 
         // CHOSE ID CARD
-        ChoseIDFile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent galleryIntent = new Intent(Intent.ACTION_GET_CONTENT);
-                galleryIntent.setType("image/*");
-                startActivityForResult(galleryIntent, GALLERY_REQUEST);
 
-            }
-
-
-        });
 
         // UPLOAD ID CARD
-        UploadNationalID.setOnClickListener(new View.OnClickListener() {
+        GpsCodeMapID.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startPosting();
             }
+
         });
 
         //DELETE ID CARD
+
         deletenationalidpicture.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                deleting();
+                deletePosting();
             }
+
         });
         // PICK UP MAP LOCATION IN ALBUMS
         PickMap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-            }
-        });
-        // UPLOAD GPS INFORMATION
-        UploadGPSMapView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
-        // DELETE SELECTED GPS INFORMATION
-        deleteselectedGPSCodeMapmap.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
+                Intent galleryIntent = new Intent(Intent.ACTION_GET_CONTENT);
+                galleryIntent.setType("image/*");
+                startActivityForResult(galleryIntent, GALLERY_REQUEST);
             }
         });
 
@@ -474,11 +457,11 @@ public class SecurityCheck2 extends AppCompatActivity implements GoogleApiClient
 
 
     // Post Info
-    private void startPosting() {
+    public void startPosting() {
 
         // GET THE INFORMATION FROM THE TEXT BOX
 
-        thenationalidstring = NationalID.getText().toString();
+
         thegpscodeinformationstring= GpsCodeMapID.getText().toString();
 
         user = mAuth.getCurrentUser();
@@ -497,7 +480,7 @@ public class SecurityCheck2 extends AppCompatActivity implements GoogleApiClient
             }
 
 
-            if (!TextUtils.isEmpty(thenationalidstring)  && mImageUri != null) {
+            if (!TextUtils.isEmpty(thegpscodeinformationstring)  && mImageUri != null) {
                 mProgress.setMessage("Adding your security check information");
 
                 mProgress.show();
@@ -508,14 +491,15 @@ public class SecurityCheck2 extends AppCompatActivity implements GoogleApiClient
                 filepath.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        idcode = thenationalidstring;
+                        gpscode = thegpscodeinformationstring;
+
 
 
                         final Uri downloadUrl = taskSnapshot.getUploadSessionUri();
 
                         traderID = user.getUid();
                         tradername = user.getDisplayName();
-                        idimage = downloadUrl.toString();
+                        gpsimage = downloadUrl.toString();
 
                         Uri myphoto = user.getPhotoUrl();
                         traderimage = myphoto.toString();
@@ -529,7 +513,89 @@ public class SecurityCheck2 extends AppCompatActivity implements GoogleApiClient
                         // PICK UP THE SPECIAL PRODUCT INFO AND LOADING THEM INTO THE DATABASE
                         Users userstobesent = new Users (idcode,idimage);
 
-                        mAdminTraderDatabase.child(traderID).setValue(userstobesent, new
+                        mAdminTraderDatabase.setValue(userstobesent, new
+                                DatabaseReference.CompletionListener() {
+                                    @Override
+                                    public void onComplete(DatabaseError databaseError, DatabaseReference
+                                            databaseReference) {
+                                        Toast.makeText(getApplicationContext(), "Security Informaation Added", Toast.LENGTH_SHORT).show();
+                                        Intent addadminproductactivity = new Intent(SecurityCheck2.this, SecurityCheck2.class);
+
+                                        startActivity(addadminproductactivity);
+
+                                    }
+                                });
+
+
+                    }
+
+                });
+
+
+                mProgress.dismiss();
+
+            }
+
+
+        }}
+
+
+
+    // Post Info
+    public void deletePosting() {
+
+        // GET THE INFORMATION FROM THE TEXT BOX
+
+
+        thegpscodeinformationstring= GpsCodeMapID.getText().toString();
+
+        user = mAuth.getCurrentUser();
+
+        // GET DATES FOR PRODUCTS
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat currentDate = new SimpleDateFormat("MMM dd, yyyy");
+
+        if (currentDate != null) {
+            date = currentDate.format(calendar.getTime()).toString();
+
+            SimpleDateFormat currentTime = new SimpleDateFormat("HH:mm:ss a");
+            if (currentTime != null) {
+                time = currentTime.format(calendar.getTime());
+
+            }
+
+
+            if (!TextUtils.isEmpty(thegpscodeinformationstring)  && mImageUri != null) {
+                mProgress.setMessage("Adding your security check information");
+
+                mProgress.show();
+
+                // CHECK STORAGE FOR IMAGE AND PASS IMAGES GOTTEN THERE
+                StorageReference filepath = mStorage.child(mImageUri.getLastPathSegment());
+
+                filepath.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        idcode = "";
+                        final Uri downloadUrl = taskSnapshot.getUploadSessionUri();
+
+                        traderID = user.getUid();
+                        tradername = user.getDisplayName();
+                        idimage ="";
+
+                        Uri myphoto = user.getPhotoUrl();
+                        traderimage = myphoto.toString();
+                        pid =     ProductsRef.push().getKey();
+
+
+                        mAdminTraderDatabase = myuserfirebasedatabase.getReference().child("Users").child("Drivers").child(traderID);
+
+                        mAdminTraderDatabase.keepSynced(true);
+
+                        // PICK UP THE SPECIAL PRODUCT INFO AND LOADING THEM INTO THE DATABASE
+                        Users userstobesent = new Users (idcode,idimage);
+
+                        mAdminTraderDatabase.setValue(userstobesent, new
                                 DatabaseReference.CompletionListener() {
                                     @Override
                                     public void onComplete(DatabaseError databaseError, DatabaseReference
