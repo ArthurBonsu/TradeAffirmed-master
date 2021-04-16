@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<androidx.cardview.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -7,6 +7,11 @@
     android:layout_height="match_parent"
     >
 
+ <RelativeLayout
+     android:layout_width="wrap_content"
+     android:layout_height="wrap_content">
+
+   <!-- https://www.geeksforgeeks.org/recyclerview-using-gridlayoutmanager-in-android-with-example/-->
     <ImageView
         android:id="@+id/product_image_details"
         android:layout_width="match_parent"
@@ -16,7 +21,7 @@
 
     <ImageView
         android:id="@+id/traderimagehere"
-        android:layout_width="match_parent"
+        android:layout_width="100sp"
         android:layout_height="90dp"
         android:scaleType="centerCrop"
         android:contentDescription="@string/thepoductimage"
@@ -136,6 +141,8 @@
         android:textColor="@color/common_google_signin_btn_text_dark_default"
         android:textSize="18sp" />
 
+
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -181,4 +188,5 @@
 
 
     </LinearLayout>
-</RelativeLayout>
+ </RelativeLayout>
+</androidx.cardview.widget.CardView>
