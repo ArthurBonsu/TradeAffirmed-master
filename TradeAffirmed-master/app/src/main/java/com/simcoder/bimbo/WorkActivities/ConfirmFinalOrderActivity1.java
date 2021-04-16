@@ -149,8 +149,18 @@ public  class  ConfirmFinalOrderActivity1 extends AppCompatActivity
         setContentView(
                 (R.layout.confirmreceitfromcart));
 
-
         recyclerView = findViewById(R.id.stickyheaderrecyler);
+
+        Intent roleintent = getIntent();
+        if (roleintent.getExtras().getString("role") != null) {
+            role = roleintent.getExtras().getString("role");
+        }
+
+        Intent traderIDintent = getIntent();
+        if (traderIDintent.getExtras().getString("userID") != null) {
+            userID = traderIDintent.getExtras().getString("userID");
+        }
+
         final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         if (recyclerView != null) {
             recyclerView.setLayoutManager(layoutManager);

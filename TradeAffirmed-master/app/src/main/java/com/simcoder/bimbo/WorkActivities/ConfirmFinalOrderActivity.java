@@ -184,6 +184,18 @@ public class ConfirmFinalOrderActivity extends AppCompatActivity implements Navi
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activityconfirmorder);
+
+        Intent roleintent = getIntent();
+        if (roleintent.getExtras().getString("role") != null) {
+            role = roleintent.getExtras().getString("role");
+        }
+
+        Intent traderIDintent = getIntent();
+        if (traderIDintent.getExtras().getString("userID") != null) {
+            userID = traderIDintent.getExtras().getString("userID");
+        }
+
+
         theseareshipmenttitle = findViewById(R.id.theseareshipmenttitle);
         nameofuser = findViewById(R.id.nameofuser);
         totalamountposted = findViewById(R.id.totalamountposted);

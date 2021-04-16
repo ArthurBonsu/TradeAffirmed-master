@@ -1,4 +1,4 @@
-package com.simcoder.bimbo.Admin;
+package com.simcoder.bimbo.WorkActivities;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -56,6 +56,22 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.simcoder.bimbo.Admin.AdminAddNewProductActivityII;
+import com.simcoder.bimbo.Admin.AdminAllCustomers;
+import com.simcoder.bimbo.Admin.AdminAllOrderHistory;
+import com.simcoder.bimbo.Admin.AdminAllProducts;
+import com.simcoder.bimbo.Admin.AdminCustomerServed;
+import com.simcoder.bimbo.Admin.AdminNewOrdersActivity;
+import com.simcoder.bimbo.Admin.AdminPaymentHere;
+import com.simcoder.bimbo.Admin.AdminSettings;
+import com.simcoder.bimbo.Admin.AllGoodsBought;
+import com.simcoder.bimbo.Admin.AllProductsPurchased;
+import com.simcoder.bimbo.Admin.NotTraderActivity;
+import com.simcoder.bimbo.Admin.SearchForAdminProductsActivity;
+import com.simcoder.bimbo.Admin.TradersFollowing;
+import com.simcoder.bimbo.Admin.ViewAllCarts;
+import com.simcoder.bimbo.Admin.ViewAllCustomers;
+import com.simcoder.bimbo.CustomerMapActivity;
 import com.simcoder.bimbo.DriverMapActivity;
 import com.simcoder.bimbo.HistoryActivity;
 import com.simcoder.bimbo.Model.HashMaps;
@@ -81,7 +97,7 @@ import java.util.Map;
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.paperdb.Paper;
 
-public class VerificationPendingPage extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, NavigationView.OnNavigationItemSelectedListener {
+public class ClientMainPage extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, NavigationView.OnNavigationItemSelectedListener {
     private static final int GALLERY_REQUEST2 = 2;
     private EditText   Nameinfo, Emailinfo, Phoneinfo;
 
@@ -247,41 +263,47 @@ public class VerificationPendingPage extends AppCompatActivity implements Google
     String gpsimage;
     Button movetohome;
 
-    public VerificationPendingPage() {
+    Button zoneshop;
+    Button zonemap;
+    Button zonetalkhub;
+    public ClientMainPage() {
         super();
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.verificationpage);
+        setContentView(R.layout.clientmainpage);
         Intent roleintent = getIntent();
         if (roleintent.getExtras().getString("role") != null) {
             role = roleintent.getExtras().getString("role");
         }
 
         Intent traderIDintent = getIntent();
-        if (traderIDintent.getExtras().getString("traderID") != null) {
-            traderID = traderIDintent.getExtras().getString("traderID");
+        if (traderIDintent.getExtras().getString("userID") != null) {
+            userID = traderIDintent.getExtras().getString("userID");
         }
 
 
 
-        movetohome = findViewById(R.id.movetohome);
+
+        zoneshop= findViewById(R.id.zoneshop);
+        zonemap = findViewById(R.id.zonemap);
+        zonetalkhub = findViewById(R.id.zonetalkhub);
         mAuth = FirebaseAuth.getInstance();
         mCurrentUser = mAuth.getCurrentUser();
 
 
         user = mAuth.getCurrentUser();
         if (user != null) {
-            traderID = "";
-            traderID = user.getUid();
+            userID = "";
+            userID = user.getUid();
         }
         Paper.init(this);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.hometoolbar);
         if (toolbar != null) {
-            toolbar.setTitle("Verification Page");
+            toolbar.setTitle("Admin Main Page");
         }
 
 
@@ -344,7 +366,7 @@ public class VerificationPendingPage extends AppCompatActivity implements Google
                 }
 
                 if (mGoogleApiClient != null) {
-                    mGoogleApiClient = new GoogleApiClient.Builder(this).enableAutoManage(VerificationPendingPage.this,
+                    mGoogleApiClient = new GoogleApiClient.Builder(this).enableAutoManage(ClientMainPage.this,
                             new GoogleApiClient.OnConnectionFailedListener() {
                                 @Override
                                 public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
@@ -361,8 +383,8 @@ public class VerificationPendingPage extends AppCompatActivity implements Google
     protected synchronized void buildGoogleApiClient() {
         if (mGoogleApiClient != null) {
             mGoogleApiClient = new GoogleApiClient.Builder(this)
-                    .addConnectionCallbacks(VerificationPendingPage.this)
-                    .addOnConnectionFailedListener(VerificationPendingPage.this)
+                    .addConnectionCallbacks(ClientMainPage.this)
+                    .addOnConnectionFailedListener(ClientMainPage.this)
                     .addApi(LocationServices.API)
                     .build();
             mGoogleApiClient.connect();
@@ -376,33 +398,55 @@ public class VerificationPendingPage extends AppCompatActivity implements Google
         // CHOSE ID CARD
         // UPLOAD ID CARD
 
-            if (movetohome != null) {
-                movetohome.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent intent = new Intent(VerificationPendingPage.this, AdminHomeActivity.class);
-                        if (intent != null) {
-                            intent.putExtra("role", role);
-                            intent.putExtra("traderID", traderID);
-                            startActivity(intent);
-                            finish();
-                        }
+        if (zoneshop != null) {
+            zoneshop.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(ClientMainPage.this, HomeActivity.class);
+                    if (intent != null) {
+                        intent.putExtra("role", role);
+                        intent.putExtra("traderID", traderID);
+                        startActivity(intent);
+                        finish();
                     }
-                });
-            }
-
-
+                }
+            });
         }
 
 
+        if (zonemap != null) {
+            zonemap.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(ClientMainPage.this, CustomerMapActivity.class);
+                    if (intent != null) {
+                        intent.putExtra("role", role);
+                        intent.putExtra("traderID", traderID);
+                        startActivity(intent);
+                        finish();
+                    }
+                }
+            });
+        }
 
 
+        if (zonetalkhub != null) {
+            zonetalkhub.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(ClientMainPage.this, InstagramHomeActivity.class);
+                    if (intent != null) {
+                        intent.putExtra("role", role);
+                        intent.putExtra("traderID", traderID);
+                        startActivity(intent);
+                        finish();
+                    }
+                }
+            });
+        }
 
 
-
-
-
-
+    }
 
     // You get the information here and send it to the top
     // OnActivity result is lacking behind, I have to get the URi from it
@@ -569,7 +613,7 @@ public class VerificationPendingPage extends AppCompatActivity implements Google
 //        }
 
 
-
+// CLIENTS OWN NAVIGATIONAL BAR AHEAD
 
         if (id == R.id.viewallcustomershere) {
             if (!role.equals("Trader")) {
@@ -579,7 +623,7 @@ public class VerificationPendingPage extends AppCompatActivity implements Google
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(VerificationPendingPage.this, NotTraderActivity.class);
+                        Intent intent = new Intent(ClientMainPage.this, NotTraderActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderID);
                             intent.putExtra("role", role);
@@ -595,7 +639,7 @@ public class VerificationPendingPage extends AppCompatActivity implements Google
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(VerificationPendingPage.this, AdminAllCustomers.class);
+                        Intent intent = new Intent(ClientMainPage.this, AdminAllCustomers.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderID);
                             intent.putExtra("role", role);
@@ -617,7 +661,7 @@ public class VerificationPendingPage extends AppCompatActivity implements Google
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(VerificationPendingPage.this, NotTraderActivity.class);
+                        Intent intent = new Intent(ClientMainPage.this, NotTraderActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderID);
                             intent.putExtra("role", role);
@@ -633,7 +677,7 @@ public class VerificationPendingPage extends AppCompatActivity implements Google
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(VerificationPendingPage.this, ViewAllCarts.class);
+                        Intent intent = new Intent(ClientMainPage.this, ViewAllCarts.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderID);
                             intent.putExtra("role", role);
@@ -654,7 +698,7 @@ public class VerificationPendingPage extends AppCompatActivity implements Google
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(VerificationPendingPage.this, NotTraderActivity.class);
+                        Intent intent = new Intent(ClientMainPage.this, NotTraderActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderID);
                             intent.putExtra("role", role);
@@ -670,7 +714,7 @@ public class VerificationPendingPage extends AppCompatActivity implements Google
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(VerificationPendingPage.this, AdminAddNewProductActivityII.class);
+                        Intent intent = new Intent(ClientMainPage.this, AdminAddNewProductActivityII.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderID);
                             intent.putExtra("role", role);
@@ -689,7 +733,7 @@ public class VerificationPendingPage extends AppCompatActivity implements Google
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(VerificationPendingPage.this, NotTraderActivity.class);
+                        Intent intent = new Intent(ClientMainPage.this, NotTraderActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderID);
                             intent.putExtra("role", role);
@@ -705,7 +749,7 @@ public class VerificationPendingPage extends AppCompatActivity implements Google
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(VerificationPendingPage.this, AdminAllProducts.class);
+                        Intent intent = new Intent(ClientMainPage.this, AdminAllProducts.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderID);
                             intent.putExtra("role", role);
@@ -721,7 +765,7 @@ public class VerificationPendingPage extends AppCompatActivity implements Google
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(VerificationPendingPage.this, NotTraderActivity.class);
+                                Intent intent = new Intent(ClientMainPage.this, NotTraderActivity.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
@@ -737,7 +781,7 @@ public class VerificationPendingPage extends AppCompatActivity implements Google
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(VerificationPendingPage.this, AllProductsPurchased.class);
+                                Intent intent = new Intent(ClientMainPage.this, AllProductsPurchased.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
@@ -757,7 +801,7 @@ public class VerificationPendingPage extends AppCompatActivity implements Google
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(VerificationPendingPage.this, NotTraderActivity.class);
+                                Intent intent = new Intent(ClientMainPage.this, NotTraderActivity.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
@@ -773,7 +817,7 @@ public class VerificationPendingPage extends AppCompatActivity implements Google
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(VerificationPendingPage.this, ViewAllCustomers.class);
+                                Intent intent = new Intent(ClientMainPage.this, ViewAllCustomers.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
@@ -792,7 +836,7 @@ public class VerificationPendingPage extends AppCompatActivity implements Google
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(VerificationPendingPage.this, NotTraderActivity.class);
+                                Intent intent = new Intent(ClientMainPage.this, NotTraderActivity.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
@@ -808,7 +852,7 @@ public class VerificationPendingPage extends AppCompatActivity implements Google
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(VerificationPendingPage.this, TradersFollowing.class);
+                                Intent intent = new Intent(ClientMainPage.this, TradersFollowing.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
@@ -829,7 +873,7 @@ public class VerificationPendingPage extends AppCompatActivity implements Google
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(VerificationPendingPage.this, NotTraderActivity.class);
+                                Intent intent = new Intent(ClientMainPage.this, NotTraderActivity.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
@@ -845,7 +889,7 @@ public class VerificationPendingPage extends AppCompatActivity implements Google
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(VerificationPendingPage.this, AdminNewOrdersActivity.class);
+                                Intent intent = new Intent(ClientMainPage.this, AdminNewOrdersActivity.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
@@ -866,7 +910,7 @@ public class VerificationPendingPage extends AppCompatActivity implements Google
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(VerificationPendingPage.this, NotTraderActivity.class);
+                                Intent intent = new Intent(ClientMainPage.this, NotTraderActivity.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
@@ -882,7 +926,7 @@ public class VerificationPendingPage extends AppCompatActivity implements Google
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(VerificationPendingPage.this, AdminCustomerServed.class);
+                                Intent intent = new Intent(ClientMainPage.this, AdminCustomerServed.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
@@ -902,7 +946,7 @@ public class VerificationPendingPage extends AppCompatActivity implements Google
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(VerificationPendingPage.this, NotTraderActivity.class);
+                                Intent intent = new Intent(ClientMainPage.this, NotTraderActivity.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
@@ -918,7 +962,7 @@ public class VerificationPendingPage extends AppCompatActivity implements Google
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(VerificationPendingPage.this, AdminAllOrderHistory.class);
+                                Intent intent = new Intent(ClientMainPage.this, AdminAllOrderHistory.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
@@ -947,7 +991,7 @@ public class VerificationPendingPage extends AppCompatActivity implements Google
         if (id == R.id.viewmap) {
             if (!role.equals("Trader")) {
 
-                Intent intent = new Intent(VerificationPendingPage.this, NotTraderActivity.class);
+                Intent intent = new Intent(ClientMainPage.this, NotTraderActivity.class);
                 if (intent != null) {
                     intent.putExtra("traderorcustomer", traderID);
                     intent.putExtra("role", role);
@@ -956,7 +1000,7 @@ public class VerificationPendingPage extends AppCompatActivity implements Google
                 }
             } else {
 
-                Intent intent = new Intent(VerificationPendingPage.this, DriverMapActivity.class);
+                Intent intent = new Intent(ClientMainPage.this, DriverMapActivity.class);
                 if (intent != null) {
                     intent.putExtra("traderorcustomer", traderID);
                     intent.putExtra("role", role);
@@ -977,7 +1021,7 @@ public class VerificationPendingPage extends AppCompatActivity implements Google
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(VerificationPendingPage.this, NotTraderActivity.class);
+                        Intent intent = new Intent(ClientMainPage.this, NotTraderActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderID);
                             intent.putExtra("role", role);
@@ -993,7 +1037,7 @@ public class VerificationPendingPage extends AppCompatActivity implements Google
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(VerificationPendingPage.this, CartActivity.class);
+                        Intent intent = new Intent(ClientMainPage.this, CartActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderID);
                             intent.putExtra("role", role);
@@ -1013,7 +1057,7 @@ public class VerificationPendingPage extends AppCompatActivity implements Google
                             String cusomerId = "";
 
                             cusomerId = user.getUid();
-                            Intent intent = new Intent(VerificationPendingPage.this, NotTraderActivity.class);
+                            Intent intent = new Intent(ClientMainPage.this, NotTraderActivity.class);
                             if (intent != null) {
                                 intent.putExtra("traderorcustomer", traderID);
                                 intent.putExtra("role", role);
@@ -1029,7 +1073,7 @@ public class VerificationPendingPage extends AppCompatActivity implements Google
                             String cusomerId = "";
                             cusomerId = user.getUid();
 
-                            Intent intent = new Intent(VerificationPendingPage.this, InstagramHomeActivity.class);
+                            Intent intent = new Intent(ClientMainPage.this, InstagramHomeActivity.class);
                             if (intent != null) {
                                 intent.putExtra("traderorcustomer", traderID);
                                 intent.putExtra("role", role);
@@ -1049,7 +1093,7 @@ public class VerificationPendingPage extends AppCompatActivity implements Google
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(VerificationPendingPage.this, NotTraderActivity.class);
+                                Intent intent = new Intent(ClientMainPage.this, NotTraderActivity.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
@@ -1065,7 +1109,7 @@ public class VerificationPendingPage extends AppCompatActivity implements Google
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(VerificationPendingPage.this, AdminAllProducts.class);
+                                Intent intent = new Intent(ClientMainPage.this, AdminAllProducts.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
@@ -1082,7 +1126,7 @@ public class VerificationPendingPage extends AppCompatActivity implements Google
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(VerificationPendingPage.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(ClientMainPage.this, NotTraderActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1098,7 +1142,7 @@ public class VerificationPendingPage extends AppCompatActivity implements Google
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(VerificationPendingPage.this, SearchForAdminProductsActivity.class);
+                                        Intent intent = new Intent(ClientMainPage.this, SearchForAdminProductsActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1114,7 +1158,7 @@ public class VerificationPendingPage extends AppCompatActivity implements Google
                             if (FirebaseAuth.getInstance() != null) {
                                 FirebaseAuth.getInstance().signOut();
                                 if (mGoogleApiClient != null) {
-                                    mGoogleSignInClient.signOut().addOnCompleteListener(VerificationPendingPage.this,
+                                    mGoogleSignInClient.signOut().addOnCompleteListener(ClientMainPage.this,
                                             new OnCompleteListener<Void>() {
                                                 @Override
                                                 public void onComplete(@NonNull Task<Void> task) {
@@ -1123,7 +1167,7 @@ public class VerificationPendingPage extends AppCompatActivity implements Google
                                             });
                                 }
                             }
-                            Intent intent = new Intent(VerificationPendingPage.this, com.simcoder.bimbo.MainActivity.class);
+                            Intent intent = new Intent(ClientMainPage.this, com.simcoder.bimbo.MainActivity.class);
                             if (intent != null) {
                                 startActivity(intent);
                                 finish();
@@ -1138,7 +1182,7 @@ public class VerificationPendingPage extends AppCompatActivity implements Google
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(VerificationPendingPage.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(ClientMainPage.this, NotTraderActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1154,7 +1198,7 @@ public class VerificationPendingPage extends AppCompatActivity implements Google
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(VerificationPendingPage.this, com.simcoder.bimbo.WorkActivities.SettinsActivity.class);
+                                        Intent intent = new Intent(ClientMainPage.this, com.simcoder.bimbo.WorkActivities.SettinsActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1172,7 +1216,7 @@ public class VerificationPendingPage extends AppCompatActivity implements Google
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(VerificationPendingPage.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(ClientMainPage.this, NotTraderActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1188,7 +1232,7 @@ public class VerificationPendingPage extends AppCompatActivity implements Google
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(VerificationPendingPage.this, HistoryActivity.class);
+                                        Intent intent = new Intent(ClientMainPage.this, HistoryActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1208,7 +1252,7 @@ public class VerificationPendingPage extends AppCompatActivity implements Google
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(VerificationPendingPage.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(ClientMainPage.this, NotTraderActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1224,7 +1268,7 @@ public class VerificationPendingPage extends AppCompatActivity implements Google
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(VerificationPendingPage.this, TraderProfile.class);
+                                        Intent intent = new Intent(ClientMainPage.this, TraderProfile.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1244,7 +1288,7 @@ public class VerificationPendingPage extends AppCompatActivity implements Google
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(VerificationPendingPage.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(ClientMainPage.this, NotTraderActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1260,7 +1304,7 @@ public class VerificationPendingPage extends AppCompatActivity implements Google
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(VerificationPendingPage.this, AdminAllCustomers.class);
+                                        Intent intent = new Intent(ClientMainPage.this, AdminAllCustomers.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1281,7 +1325,7 @@ public class VerificationPendingPage extends AppCompatActivity implements Google
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(VerificationPendingPage.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(ClientMainPage.this, NotTraderActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1297,7 +1341,7 @@ public class VerificationPendingPage extends AppCompatActivity implements Google
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(VerificationPendingPage.this, AdminAddNewProductActivityII.class);
+                                        Intent intent = new Intent(ClientMainPage.this, AdminAddNewProductActivityII.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1317,7 +1361,7 @@ public class VerificationPendingPage extends AppCompatActivity implements Google
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(VerificationPendingPage.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(ClientMainPage.this, NotTraderActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1333,7 +1377,7 @@ public class VerificationPendingPage extends AppCompatActivity implements Google
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(VerificationPendingPage.this, AllGoodsBought.class);
+                                        Intent intent = new Intent(ClientMainPage.this, AllGoodsBought.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1353,7 +1397,7 @@ public class VerificationPendingPage extends AppCompatActivity implements Google
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(VerificationPendingPage.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(ClientMainPage.this, NotTraderActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1369,7 +1413,7 @@ public class VerificationPendingPage extends AppCompatActivity implements Google
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(VerificationPendingPage.this, AdminPaymentHere.class);
+                                        Intent intent = new Intent(ClientMainPage.this, AdminPaymentHere.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1389,7 +1433,7 @@ public class VerificationPendingPage extends AppCompatActivity implements Google
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(VerificationPendingPage.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(ClientMainPage.this, NotTraderActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1405,7 +1449,7 @@ public class VerificationPendingPage extends AppCompatActivity implements Google
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(VerificationPendingPage.this, AdminSettings.class);
+                                        Intent intent = new Intent(ClientMainPage.this, AdminSettings.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);

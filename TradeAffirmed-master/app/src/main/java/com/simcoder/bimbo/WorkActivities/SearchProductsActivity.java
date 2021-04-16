@@ -56,12 +56,22 @@ public class SearchProductsActivity extends AppCompatActivity
     private FirebaseAuth mAuth;
     private GoogleSignInClient mGoogleSignInClient;
            ImageView theproductimageview;
-
+    Intent roleintent;
+    String userID;
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_products);
+
+        if (roleintent.getExtras().getString("role") != null) {
+            role = roleintent.getExtras().getString("role");
+        }
+
+        Intent traderIDintent = getIntent();
+        if (traderIDintent.getExtras().getString("userID") != null) {
+            userID = traderIDintent.getExtras().getString("userID");
+        }
 
         theproductimageview = (ImageView)findViewById(R.id.product_imagehere);
         inputText = findViewById(R.id.search_product_name);

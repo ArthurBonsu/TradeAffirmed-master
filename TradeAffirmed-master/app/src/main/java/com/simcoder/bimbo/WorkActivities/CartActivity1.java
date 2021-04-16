@@ -149,6 +149,15 @@ public  class  CartActivity1 extends AppCompatActivity
         setContentView(
                 (R.layout.activitynewcart));
 
+        Intent roleintent = getIntent();
+        if (roleintent.getExtras().getString("role") != null) {
+            role = roleintent.getExtras().getString("role");
+        }
+
+        Intent traderIDintent = getIntent();
+        if (traderIDintent.getExtras().getString("userID") != null) {
+            userID = traderIDintent.getExtras().getString("userID");
+        }
 
         recyclerView = findViewById(R.id.stickyheaderrecyler);
         final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
@@ -160,44 +169,7 @@ public  class  CartActivity1 extends AppCompatActivity
 
         }
 
-        /*
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                LinearLayoutManager layoutManager=LinearLayoutManager.class.cast(recyclerView.getLayoutManager());
-                int totalItemCount = layoutManager.getItemCount();
-                int lastVisible = layoutManager.findLastVisibleItemPosition();
 
-                boolean endHasBeenReached = lastVisible + 5 >= totalItemCount;
-                if (!(totalItemCount > 0) && endHasBeenReached) {
-                    //you have reached to the bottom of your recycler view
-
-                    txtTotalAmount.setVisibility(View.GONE);
-                    cartthenextactivityhere.setVisibility(View.GONE);
-
-                }
-                else {
-
-                    txtTotalAmount.setVisibility(View.VISIBLE);
-                    cartthenextactivityhere.setVisibility(View.VISIBLE);
-
-                    cartthenextactivityhere.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view)
-                        {
-                            txtTotalAmount.setText("Total Price = $" + String.valueOf(overTotalPrice));
-
-                            Intent intent = new Intent(CartActivity.this, ConfirmFinalOrderActivity.class);
-                            intent.putExtra("Total Price", String.valueOf(overTotalPrice));
-                            startActivity(intent);
-                            finish();
-                        }
-                    });
-                }
-            }
-        });
-
-*/
 
 
         Paper.init(this);

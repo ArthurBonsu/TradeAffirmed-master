@@ -135,13 +135,22 @@ public class ProductDetailsActivity1 extends AppCompatActivity   implements Navi
     DatabaseReference cartListRef;
     ProductDetailsViewHolders1 holders;
        int currentprice;
-
+       Intent roleintent;
+       String role;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product_details);
 
+        if (roleintent.getExtras().getString("role") != null) {
+            role = roleintent.getExtras().getString("role");
+        }
+
+        Intent traderIDintent = getIntent();
+        if (traderIDintent.getExtras().getString("userID") != null) {
+            userID = traderIDintent.getExtras().getString("userID");
+        }
 
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();

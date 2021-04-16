@@ -116,7 +116,9 @@ public  class  HomeActivity extends AppCompatActivity
     String userid;
     TextView thefollowerid;
     TextView  product_discount;
-
+    String role;
+    String userID;
+     Intent roleintent;
     FloatingActionButton fab;
   public  static   String thefolloweridgrabber;
   public static  String thefollowerstepper;
@@ -145,27 +147,15 @@ public  class  HomeActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(
                 (R.layout.activity_home));
-
-
-        if (getIntent().getExtras().get("rolefromcustomermapactivitytohomeactivity") != null) {
-            type = getIntent().getExtras().get("rolefromcustomermapactivitytohomeactivity").toString();
+        if (roleintent.getExtras().getString("role") != null) {
+            role = roleintent.getExtras().getString("role");
         }
 
-        traderoruser = getIntent().getStringExtra("fromcustomermapactivitytohomeactivity");
-
-
-        if (getIntent().getExtras().get("roledrivermapactivitytohomeactivity") != null) {
-            type = getIntent().getExtras().get("roledrivermapactivitytohomeactivity").toString();
+        Intent traderIDintent = getIntent();
+        if (traderIDintent.getExtras().getString("userID") != null) {
+            userID = traderIDintent.getExtras().getString("userID");
         }
-        traderoruser = getIntent().getStringExtra("fromdrivermapactivitytohomeactivity");
 
-
-        //KEY PASSESS FOR TRADER
-
-
-        if (getIntent().getExtras().get("rolefromadmincategory") != null) {
-            type = getIntent().getExtras().get("rolefromadmincategory").toString();
-        }
 
         if (traderoruser != null) {
             traderoruser = getIntent().getStringExtra("fromadmincategoryactivity");

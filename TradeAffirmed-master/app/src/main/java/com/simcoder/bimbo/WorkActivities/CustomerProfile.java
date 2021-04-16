@@ -1,6 +1,7 @@
 package com.simcoder.bimbo.WorkActivities;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -111,6 +112,18 @@ public class CustomerProfile extends AppCompatActivity  implements  View.OnClick
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.customerprofile);
+
+        Intent roleintent = getIntent();
+        if (roleintent.getExtras().getString("role") != null) {
+            role = roleintent.getExtras().getString("role");
+        }
+
+        Intent traderIDintent = getIntent();
+        if (traderIDintent.getExtras().getString("userID") != null) {
+            userID = traderIDintent.getExtras().getString("userID");
+        }
+
+
         if (getIntent() != null) {
             productID = getIntent().getStringExtra("pid");
         }

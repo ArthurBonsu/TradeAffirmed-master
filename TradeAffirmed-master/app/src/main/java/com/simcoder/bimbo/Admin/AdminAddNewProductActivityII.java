@@ -184,7 +184,7 @@ public class AdminAddNewProductActivityII extends AppCompatActivity implements G
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.hometoolbar);
         if (toolbar != null) {
-            toolbar.setTitle("All Customers");
+            toolbar.setTitle("Admin Add New Productivity");
         }
 
 

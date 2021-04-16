@@ -6,10 +6,42 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="8dp">
+    <androidx.drawerlayout.widget.DrawerLayout
+        android:id="@+id/drawer_layout"
+        android:layout_width="250dp"
+        android:layout_height="700dp"
 
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:visibility="visible"
+        tools:openDrawer="start">
+
+        <!--主页内容-->
+
+
+        <com.google.android.material.navigation.NavigationView
+            android:id="@+id/nav_view"
+            tools="start"
+            android:layout_width="250dp"
+            android:layout_height="700dp"
+            android:layout_gravity="start"
+            android:fitsSystemWindows="true"
+            android:visibility="visible"
+            app:headerLayout="@layout/nav_header_home"
+            app:menu="@menu/activity_home_drawer">
+
+
+
+        </com.google.android.material.navigation.NavigationView>
+    </androidx.drawerlayout.widget.DrawerLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:id="@+id/cartactivityappbar"
         android:theme="@style/AppTheme.AppBarOverlay">
 
         <androidx.appcompat.widget.Toolbar
@@ -23,14 +55,7 @@
 
 
     <!--侧边栏样式-->
-
-
-
-
-
-
-
-
+ <!-- THERE IS NO INCLUDE HERE, THIS IS BETTER -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/stickyheaderrecyler"
         android:layout_width="match_parent"
@@ -41,11 +66,24 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
-        android:layout_marginBottom="5dp">
+        android:layout_marginBottom="5dp"
+        android:layout_below ="@+id/cartactivityappbar">
 
 
     </androidx.recyclerview.widget.RecyclerView>
 
+
+           <TextView
+            android:id="@+id/totalamountbanner"
+            android:layout_width="384dp"
+            android:layout_height="42dp"
+            android:layout_marginTop="400sp"
+            android:text="@string/total_amount"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:visibility="gone"
+            tools:visibility="gone"
+            android:layout_below="@+id/stickyheaderrecyler" />
     <TextView
         android:id="@+id/total_price1"
         android:layout_width="384dp"
@@ -55,7 +93,8 @@
         android:textSize="14sp"
         android:textStyle="bold"
         android:visibility="gone"
-        tools:visibility="gone" />
+        tools:visibility="gone"
+        android:layout_below="@+id/stickyheaderrecyler" />
 
     <Button
         android:id="@+id/confirmtherderbutton"
@@ -69,36 +108,10 @@
         android:background="@color/colorPrimary"
         android:text="@string/nextclicktogotoconfirm"
         android:visibility="gone"
-        tools:visibility="gone" />
+        tools:visibility="gone"
+        android:layout_below="@+id/confirmtherderbutton" />
 
+    </LinearLayout>
 
-<androidx.drawerlayout.widget.DrawerLayout
-android:id="@+id/drawer_layout"
-android:layout_width="250dp"
-android:layout_height="700dp"
-
-android:layout_marginEnd="8dp"
-android:layout_marginRight="8dp"
-android:visibility="visible"
-tools:openDrawer="start">
-
-<!--主页内容-->
-
-
-<com.google.android.material.navigation.NavigationView
-    android:id="@+id/nav_view"
-    tools="start"
-    android:layout_width="250dp"
-    android:layout_height="700dp"
-    android:layout_gravity="start"
-    android:fitsSystemWindows="true"
-    android:visibility="visible"
-    app:headerLayout="@layout/nav_header_home"
-    app:menu="@menu/activity_home_drawer">
-
-
-
-</com.google.android.material.navigation.NavigationView>
-</androidx.drawerlayout.widget.DrawerLayout>
 
 </FrameLayout>

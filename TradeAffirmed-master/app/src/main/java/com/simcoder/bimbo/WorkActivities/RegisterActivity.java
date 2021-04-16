@@ -65,7 +65,8 @@ public class RegisterActivity extends AppCompatActivity
     private SignInButton GoogleBtn;
     String role;
     String usertraderskey;
-
+    Intent roleintent;
+    String userID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -73,6 +74,14 @@ public class RegisterActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
+        if (roleintent.getExtras().getString("role") != null) {
+            role = roleintent.getExtras().getString("role");
+        }
+
+        Intent traderIDintent = getIntent();
+        if (traderIDintent.getExtras().getString("userID") != null) {
+            userID = traderIDintent.getExtras().getString("userID");
+        }
 
         CreateAccountButton = (Button) findViewById(R.id.register_btn);
         InputName = (EditText) findViewById(R.id.register_username_input);

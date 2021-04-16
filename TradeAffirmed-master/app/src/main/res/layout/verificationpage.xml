@@ -21,7 +21,7 @@
 
          <TextView
              android:layout_width="match_parent"
-             android:layout_height="wrap_content"
+             android:layout_height="200sp"
              android:text="Thank You for Filling In Your Details. We appreciate you taking time to complete it.
        We will verify your details and get back to  you in 2 working days.
        Meanwhile you can still make your orders  in the mean time. "
@@ -29,10 +29,18 @@
              android:layout_centerHorizontal="true"
              android:padding="3sp"
              android:id="@+id/verificationtextnotification"
-             android:layout_marginBottom="5sp"
+             android:layout_marginBottom="100sp"
 
              />
 
+ <Button
+     android:layout_width="wrap_content"
+     android:layout_height="wrap_content"
+     android:layout_marginRight="@dimen/tw__btn_bar_margin_right"
+     android:text="NEXT"
+     android:id="@+id/movetohome">
 
+
+ </Button>
      </LinearLayout>
 </RelativeLayout>

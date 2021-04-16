@@ -100,10 +100,9 @@ public class ProductDetailsActivity extends AppCompatActivity   implements Navig
     String userID;
    DatabaseReference  cartintoproductListRef;
     DatabaseReference cartforuser;
-
-
-
-        String  traderimage;
+    Intent roleintent;
+    String role;
+    String  traderimage;
 
 
 
@@ -111,6 +110,15 @@ public class ProductDetailsActivity extends AppCompatActivity   implements Navig
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+
+        if (roleintent.getExtras().getString("role") != null) {
+            role = roleintent.getExtras().getString("role");
+        }
+
+        Intent traderIDintent = getIntent();
+        if (traderIDintent.getExtras().getString("userID") != null) {
+            userID = traderIDintent.getExtras().getString("userID");
+        }
 
         theproductimageview = (ImageView) findViewById(R.id.product_image_details);
         Intent intent = getIntent();

@@ -71,7 +71,8 @@ public class LoginActivity extends AppCompatActivity
     private SignInButton GoogleBtn;
 
     private ProgressDialog mProgress;
-
+    Intent roleintent;
+    String userID;
 
 
     @Override
@@ -79,6 +80,15 @@ public class LoginActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+
+        if (roleintent.getExtras().getString("role") != null) {
+            role = roleintent.getExtras().getString("role");
+        }
+
+        Intent traderIDintent = getIntent();
+        if (traderIDintent.getExtras().getString("userID") != null) {
+            userID = traderIDintent.getExtras().getString("userID");
+        }
 
         LoginButton = (Button) findViewById(R.id.login_btn);
         InputPassword = (EditText) findViewById(R.id.login_password_input);

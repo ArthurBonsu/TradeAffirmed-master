@@ -68,11 +68,22 @@ public class SettinsActivity extends AppCompatActivity
     private static final String TAG = "Google Activity";
     private FirebaseAuth mAuth;
     private GoogleSignInClient mGoogleSignInClient;
+    Intent roleintent;
+    String userID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settins);
+
+        if (roleintent.getExtras().getString("role") != null) {
+            role = roleintent.getExtras().getString("role");
+        }
+
+        Intent traderIDintent = getIntent();
+        if (traderIDintent.getExtras().getString("userID") != null) {
+            userID = traderIDintent.getExtras().getString("userID");
+        }
 
         storageProfilePrictureRef = FirebaseStorage.getInstance().getReference().child("profile_images");
 

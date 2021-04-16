@@ -32,14 +32,8 @@ public class MainActivity extends AppCompatActivity
     private FirebaseAuth.AuthStateListener firebaseAuthListener;
     String role;
 
-    { if (getIntent().getExtras().get("traderoruserkey") != null) {
-        traderoruser = getIntent().getExtras().get("traderoruserkey").toString();
-    } }
-
-    { if (getIntent().getExtras().get("role") != null) {
-        role = getIntent().getExtras().get("role").toString();
-    } }
-
+    Intent roleintent;
+    String userID;
     //AUTHENTICATORS
 
     private GoogleMap mMap;
@@ -53,6 +47,14 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        if (roleintent.getExtras().getString("role") != null) {
+            role = roleintent.getExtras().getString("role");
+        }
+
+        Intent traderIDintent = getIntent();
+        if (traderIDintent.getExtras().getString("userID") != null) {
+            userID = traderIDintent.getExtras().getString("userID");
+        }
 
         joinNowButton = (Button) findViewById(R.id.main_join_now_btn);
         loginButton = (Button) findViewById(R.id.main_login_btn);

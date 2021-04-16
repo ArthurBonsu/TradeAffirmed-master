@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
-        app:srcCompat="@drawable/nav_cart" />
+        app:srcCompat="@android:drawable/checkbox_on_background" />
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
@@ -27,6 +27,7 @@
             app:popupTheme="@style/AppTheme.PopupOverlay" />
 
     </com.google.android.material.appbar.AppBarLayout>
+ <!-- BUTTON FOR THE CARTBUTTON WE SEE HERE-->
 
     <include layout="@layout/content_home" />
 

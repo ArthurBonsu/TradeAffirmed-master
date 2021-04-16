@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20sp"
+        tools:ignore="MissingConstraints"
+        android:orientation="vertical">
+
+
+ <TextView
+     android:layout_width="match_parent"
+     android:layout_height="match_parent"
+     android:text="Enter into the trade zone. Participate in the Real-Time Market"
+     android:textSize="21sp"
+     android:textAlignment="center"
+     android:textColor="@color/black"
+     android:gravity="center_horizontal"
+     android:layout_marginBottom="70sp">
+
+
+ </TextView>
+
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="SHOP"
+            android:id="@+id/zoneshop"
+            android:layout_marginBottom="30sp">
+
+
+        </Button>
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="MAP"
+            android:textSize="14sp"
+            android:id="@+id/zonemap"
+            android:layout_marginBottom="30sp">
+
+
+        </Button>
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="TALKHUB"
+            android:id="@+id/zonetalkhub"
+            android:layout_marginBottom="30sp">
+
+
+        </Button>
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="Enter into world of social media marketing and trade"
+            android:textSize="21sp"
+            android:textAlignment="center"
+            android:layout_marginTop="40sp"
+            android:textColor="@color/black"
+            android:gravity="center_horizontal"
+            android:layout_marginBottom="70sp">
+
+
+        </TextView>
+
+    </LinearLayout>
+
+</RelativeLayout>

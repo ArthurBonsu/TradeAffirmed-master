@@ -302,7 +302,7 @@ public class SecurityCheck2 extends AppCompatActivity implements GoogleApiClient
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.hometoolbar);
         if (toolbar != null) {
-            toolbar.setTitle("All Customers");
+            toolbar.setTitle("GPS Code Upload");
         }
 
 
@@ -481,7 +481,7 @@ public class SecurityCheck2 extends AppCompatActivity implements GoogleApiClient
 
 
             if (!TextUtils.isEmpty(thegpscodeinformationstring)  && mImageUri != null) {
-                mProgress.setMessage("Adding your security check information");
+                mProgress.setMessage("Adding your GPS Check information");
 
                 mProgress.show();
 
@@ -518,7 +518,7 @@ public class SecurityCheck2 extends AppCompatActivity implements GoogleApiClient
                                     @Override
                                     public void onComplete(DatabaseError databaseError, DatabaseReference
                                             databaseReference) {
-                                        Toast.makeText(getApplicationContext(), "Security Informaation Added", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(getApplicationContext(), "Security Information Added", Toast.LENGTH_SHORT).show();
                                         Intent addadminproductactivity = new Intent(SecurityCheck2.this, SecurityCheck2.class);
 
                                         startActivity(addadminproductactivity);
@@ -600,7 +600,7 @@ public class SecurityCheck2 extends AppCompatActivity implements GoogleApiClient
                                     @Override
                                     public void onComplete(DatabaseError databaseError, DatabaseReference
                                             databaseReference) {
-                                        Toast.makeText(getApplicationContext(), "Security Informaation Added", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(getApplicationContext(), "Security Informaation Deleted", Toast.LENGTH_SHORT).show();
                                         Intent addadminproductactivity = new Intent(SecurityCheck2.this, SecurityCheck2.class);
 
                                         startActivity(addadminproductactivity);
