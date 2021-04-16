@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import androidx.annotation.NonNull;
 
+import com.denzcoskun.imageslider.interfaces.ItemClickListener;
+import com.denzcoskun.imageslider.models.SlideModel;
 import com.firebase.ui.database.SnapshotParser;
 import com.google.android.gms.analytics.ecommerce.Product;
 import com.google.android.material.navigation.NavigationView;
@@ -24,6 +26,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ViewFlipper;
 
 import com.cepheuen.elegantnumberbutton.view.ElegantNumberButton;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
@@ -57,9 +60,13 @@ import com.squareup.picasso.Picasso;
 
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 
+import com.denzcoskun.imageslider.ImageSlider;
+import com.denzcoskun.imageslider.constants.ScaleTypes;
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.paperdb.Paper;
 import com.simcoder.bimbo.ViewHolder.ProductDetailsViewHolders;
@@ -137,7 +144,7 @@ public class ProductDetailsActivity1 extends AppCompatActivity   implements Navi
        int currentprice;
        Intent roleintent;
        String role;
-
+    ImageSlider mainslider;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -158,15 +165,16 @@ public class ProductDetailsActivity1 extends AppCompatActivity   implements Navi
         // TYPE IS THE SAME AS ROLE
 
 
-        {  if (getIntent().getStringExtra("pid") != null) {
-            productID = getIntent().getStringExtra("pid");
-        }
+        {
+            if (getIntent().getStringExtra("pid") != null) {
+                productID = getIntent().getStringExtra("pid");
+            }
         }
         traderoruser = getIntent().getStringExtra("fromcustomermapactivitytohomeactivity");
 
 
         {
-            if (getIntent().getStringExtra("fromthehomeactivitytraderkey")!= null) {
+            if (getIntent().getStringExtra("fromthehomeactivitytraderkey") != null) {
                 traderkeyhere = getIntent().getStringExtra("fromthehomeactivitytraderkey");
             }
         }
@@ -178,21 +186,21 @@ public class ProductDetailsActivity1 extends AppCompatActivity   implements Navi
         //KEY PASSESS FOR TRADER
 
         {
-            if ( getIntent().getStringExtra("fromthehomeactivityname") != null) {
-                theproductname =  getIntent().getStringExtra("fromthehomeactivityname");
+            if (getIntent().getStringExtra("fromthehomeactivityname") != null) {
+                theproductname = getIntent().getStringExtra("fromthehomeactivityname");
             }
         }
         if (getIntent().getStringExtra("fromthehomeactivityprice") != null) {
-            theprice =  getIntent().getStringExtra("fromthehomeactivityprice");
+            theprice = getIntent().getStringExtra("fromthehomeactivityprice");
         }
 
-        if ( getIntent().getStringExtra("fromthehomeactivitydesc") != null) {
-            thedescription =   getIntent().getStringExtra("fromthehomeactivitydesc");
+        if (getIntent().getStringExtra("fromthehomeactivitydesc") != null) {
+            thedescription = getIntent().getStringExtra("fromthehomeactivitydesc");
         }
 
-        if ( getIntent().getStringExtra("fromthehomeactivityname") != null) {
+        if (getIntent().getStringExtra("fromthehomeactivityname") != null) {
 
-            thetraderwehave =  getIntent().getStringExtra("fromthehomeactivityname");
+            thetraderwehave = getIntent().getStringExtra("fromthehomeactivityname");
         }
 
         if (getIntent().getStringExtra("fromthehomeactivityimage") != null) {
@@ -204,118 +212,148 @@ public class ProductDetailsActivity1 extends AppCompatActivity   implements Navi
         Intent intents = new Intent(ProductDetailsActivity1.this, ConfirmFinalOrderActivity.class);
 
 
-
         if (getIntent() != null) {
             orderkey = getIntent().getStringExtra("orderkey");
 
             product_image_details = (ImageView) findViewById(R.id.product_image_details);
-        pd_add_to_cart_button = (Button) findViewById(R.id.pd_add_to_cart_button);
-        number_btn = (ElegantNumberButton) findViewById(R.id.number_btn);
+            pd_add_to_cart_button = (Button) findViewById(R.id.pd_add_to_cart_button);
+            number_btn = (ElegantNumberButton) findViewById(R.id.number_btn);
 
-        product_name_details = (TextView) findViewById(R.id.product_name_details);
-        product_description_details = (TextView) findViewById(R.id.product_description_details);
-        product_price_details = (TextView) findViewById(R.id.product_price_details);
-        tradername = (TextView)findViewById(R.id.product_tradername);
-        quantityselectedandshown = (TextView)findViewById(R.id.quantityselectedandshown);
-        likesgiven = (TextView)findViewById(R.id.likesgiven);
-        productdiscount = (TextView)findViewById(R.id.productdiscount);
+            product_name_details = (TextView) findViewById(R.id.product_name_details);
+            product_description_details = (TextView) findViewById(R.id.product_description_details);
+            product_price_details = (TextView) findViewById(R.id.product_price_details);
+            tradername = (TextView) findViewById(R.id.product_tradername);
+            quantityselectedandshown = (TextView) findViewById(R.id.quantityselectedandshown);
+            likesgiven = (TextView) findViewById(R.id.likesgiven);
+            productdiscount = (TextView) findViewById(R.id.productdiscount);
             traderimagehere = (ImageView) findViewById(R.id.traderimagehere);
-        fetch();
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestIdToken(getString(R.string.default_web_client_id)).requestEmail().build();
-        if (mGoogleApiClient != null) {
-            mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
-        }
-
-        if (mGoogleApiClient != null) {
-            mGoogleApiClient = new GoogleApiClient.Builder(this).enableAutoManage(ProductDetailsActivity1.this,
-                    new GoogleApiClient.OnConnectionFailedListener() {
-                        @Override
-                        public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
-                        }
-                    }).addApi(Auth.GOOGLE_SIGN_IN_API, gso).build();
-        }
-
-
-        firebaseAuthListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-
-                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                if (user != null) {
-                    traderoruser = "";
-                    traderoruser = user.getUid();
-                }
-
-                // I HAVE TO TRY TO GET THE SETUP INFORMATION , IF THEY ARE ALREADY PROVIDED WE TAKE TO THE NEXT STAGE
-                // WHICH IS CUSTOMER TO BE ADDED.
-                // PULLING DATABASE REFERENCE IS NULL, WE CHANGE BACK TO THE SETUP PAGE ELSE WE GO STRAIGHT TO MAP PAGE
+            fetch();
+            GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestIdToken(getString(R.string.default_web_client_id)).requestEmail().build();
+            if (mGoogleApiClient != null) {
+                mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
             }
-        };
 
-        Paper.init(this);
+            if (mGoogleApiClient != null) {
+                mGoogleApiClient = new GoogleApiClient.Builder(this).enableAutoManage(ProductDetailsActivity1.this,
+                        new GoogleApiClient.OnConnectionFailedListener() {
+                            @Override
+                            public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.hometoolbar);
-        if (toolbar != null) {
-            toolbar.setTitle("Product Details");
-        }
+                            }
+                        }).addApi(Auth.GOOGLE_SIGN_IN_API, gso).build();
+            }
+
+
+            firebaseAuthListener = new FirebaseAuth.AuthStateListener() {
+                @Override
+                public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+
+                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                    if (user != null) {
+                        traderoruser = "";
+                        traderoruser = user.getUid();
+                    }
+
+                    // I HAVE TO TRY TO GET THE SETUP INFORMATION , IF THEY ARE ALREADY PROVIDED WE TAKE TO THE NEXT STAGE
+                    // WHICH IS CUSTOMER TO BE ADDED.
+                    // PULLING DATABASE REFERENCE IS NULL, WE CHANGE BACK TO THE SETUP PAGE ELSE WE GO STRAIGHT TO MAP PAGE
+                }
+            };
+
+            Paper.init(this);
+
+            Toolbar toolbar = (Toolbar) findViewById(R.id.hometoolbar);
+            if (toolbar != null) {
+                toolbar.setTitle("Product Details");
+            }
 //        setSupportActionBar(toolbar);
 
 
+            DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+            if (drawer != null) {
+                ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                        this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+                drawer.addDrawerListener(toggle);
+                if (toggle != null) {
+                    toggle.syncState();
+                }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer != null) {
-            ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                    this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-            drawer.addDrawerListener(toggle);
-            if (toggle != null) {
-                toggle.syncState();
-            }
+                NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+                if (navigationView != null) {
+                    navigationView.setNavigationItemSelectedListener(this);
+                }
+                View headerView = navigationView.getHeaderView(0);
+                TextView userNameTextView = headerView.findViewById(R.id.user_profile_name);
+                CircleImageView profileImageView = headerView.findViewById(R.id.user_profile_image);
 
-            NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-            if (navigationView != null) {
-                navigationView.setNavigationItemSelectedListener(this);
-            }
-            View headerView = navigationView.getHeaderView(0);
-            TextView userNameTextView = headerView.findViewById(R.id.user_profile_name);
-            CircleImageView profileImageView = headerView.findViewById(R.id.user_profile_image);
-
-            // USER
-            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-
+                // USER
+                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
 
-            {
-                if (user.getDisplayName() != null) {
+                {
                     if (user.getDisplayName() != null) {
-                        userNameTextView.setText(user.getDisplayName());
+                        if (user.getDisplayName() != null) {
+                            userNameTextView.setText(user.getDisplayName());
 
-                        Picasso.get().load(user.getPhotoUrl()).placeholder(R.drawable.profile).into(profileImageView);
+                            Picasso.get().load(user.getPhotoUrl()).placeholder(R.drawable.profile).into(profileImageView);
+                        }
                     }
                 }
-            }
 
 
-            productdetailsRecycler = findViewById(R.id.recycler_menu);
-            if (productdetailsRecycler != null) {
-                productdetailsRecycler.setHasFixedSize(true);
+                productdetailsRecycler = findViewById(R.id.recycler_menu);
+                if (productdetailsRecycler != null) {
+                    productdetailsRecycler.setHasFixedSize(true);
 
+                }
+                layoutManager = new LinearLayoutManager(this);
+                if (productdetailsRecycler != null) {
+                    productdetailsRecycler.setLayoutManager(layoutManager);
+                }
             }
-            layoutManager = new LinearLayoutManager(this);
-            if (productdetailsRecycler != null) {
-                productdetailsRecycler.setLayoutManager(layoutManager);
-            }
-        }
-        //   DatabaseReference productRef = FirebaseDatabase.getInstance().getReference().child("Product");
+            //   DatabaseReference productRef = FirebaseDatabase.getInstance().getReference().child("Product");
 
             Log.d("TAG", productID);
-
-              // Elegant Users Inforamation Here
-
+            // Elegant Users Inforamation Here
             intents.putExtra("cartkey", cartkey);
 
+            mainslider = (ImageSlider) findViewById(R.id.serviceadslider);
+            final List<SlideModel> remoteimages = new ArrayList<>();
 
-    }}
+            FirebaseDatabase.getInstance().getReference().child("Slider")
+                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            for (DataSnapshot data : dataSnapshot.getChildren())
+                                remoteimages.add(new SlideModel(data.child("url").getValue().toString(), data.child("title").getValue().toString(), ScaleTypes.FIT));
+
+                            mainslider.setImageList(remoteimages, ScaleTypes.FIT);
+
+                            mainslider.setItemClickListener(new ItemClickListener() {
+                                @Override
+                                public void onItemSelected(int i) {
+                                    Toast.makeText(getApplicationContext(), remoteimages.get(i).getTitle().toString(), Toast.LENGTH_SHORT).show();
+                                }
+                            });
+
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+        }
+    }
+
+
+
+
+
+
+
+
+
 
 
     @Override

@@ -136,4 +136,49 @@
         android:textColor="@color/common_google_signin_btn_text_dark_default"
         android:textSize="18sp" />
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/navigationalbuttonshere"
+        android:layout_below="@+id/pd_add_to_cart_button"
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:layout_width="80sp"
+            android:layout_height="80sp"
+            android:src="@drawable/home_icon"
+            android:id="@+id/homebutton"
+            android:scaleType="fitCenter"></ImageButton>
+
+        <ImageButton
+            android:layout_width="80sp"
+            android:layout_height="80sp"
+            android:src="@drawable/home_icon"
+            android:scaleType="fitCenter"
+            android:id="@+id/suggestionsbutton"></ImageButton>
+
+
+        <ImageButton
+            android:layout_width="80sp"
+            android:layout_height="80sp"
+            android:src="@drawable/home_icon"
+            android:scaleType="fitCenter"
+            android:id="@+id/services"></ImageButton>
+
+        <ImageButton
+            android:layout_width="80sp"
+            android:layout_height="80sp"
+            android:src="@drawable/home_icon"
+            android:scaleType="fitCenter"
+            android:id="@+id/expectedshipping"
+            ></ImageButton>
+        <ImageButton
+            android:layout_width="80sp"
+            android:layout_height="80sp"
+            android:src="@drawable/home_icon"
+            android:scaleType="fitCenter"
+            android:id="@+id/adminprofile"></ImageButton>
+
+
+    </LinearLayout>
 </RelativeLayout>
