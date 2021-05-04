@@ -149,6 +149,14 @@ public  class  HomeActivity extends AppCompatActivity
     Query  QueryFollowershere;
 
 
+    String followerid;
+    String followername;
+    String followerimage;
+
+    followeridList.add(followerid);
+        followeridnameList.add(followeridname);
+        followeridimageList.add(followeridimage);
+
     public interface Getmyfollowings {
 
         void onCallback(String followingid, String followingname, String followingimage);
@@ -421,7 +429,7 @@ public  class  HomeActivity extends AppCompatActivity
 
 */
 
-
+}}
     public void getFollowers() {
 
 
