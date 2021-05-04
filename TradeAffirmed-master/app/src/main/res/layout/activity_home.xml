@@ -14,7 +14,7 @@
     android:orientation="vertical"
     android:layout_marginTop="60sp">
 
-
+<!--https://github.com/denzcoskun/ImageSlideshow-->
  <!--https://www.youtube.com/watch?v=KkhFsZIp70I-->
     <LinearLayout
         android:id="@+id/servicelayoutposition"

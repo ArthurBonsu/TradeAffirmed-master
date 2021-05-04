@@ -154,9 +154,9 @@ public class ProductDetailsActivity1 extends AppCompatActivity   implements Navi
             role = roleintent.getExtras().getString("role");
         }
 
-        Intent traderIDintent = getIntent();
-        if (traderIDintent.getExtras().getString("userID") != null) {
-            userID = traderIDintent.getExtras().getString("userID");
+        Intent userIDintent = getIntent();
+        if (userIDintent.getExtras().getString("userID") != null) {
+            userID = userIDintent.getExtras().getString("userID");
         }
 
         Intent intent = getIntent();
@@ -170,45 +170,43 @@ public class ProductDetailsActivity1 extends AppCompatActivity   implements Navi
                 productID = getIntent().getStringExtra("pid");
             }
         }
-        traderoruser = getIntent().getStringExtra("fromcustomermapactivitytohomeactivity");
+
 
 
         {
-            if (getIntent().getStringExtra("fromthehomeactivitytraderkey") != null) {
-                traderkeyhere = getIntent().getStringExtra("fromthehomeactivitytraderkey");
+            if (getIntent().getStringExtra("traderID") != null) {
+                traderkeyhere = getIntent().getStringExtra("traderID");
             }
         }
 
-
-        traderoruser = getIntent().getStringExtra("fromdrivermapactivitytohomeactivity");
 
 
         //KEY PASSESS FOR TRADER
 
         {
-            if (getIntent().getStringExtra("fromthehomeactivityname") != null) {
-                theproductname = getIntent().getStringExtra("fromthehomeactivityname");
+            if (getIntent().getStringExtra("pname") != null) {
+                theproductname = getIntent().getStringExtra("pname");
             }
         }
-        if (getIntent().getStringExtra("fromthehomeactivityprice") != null) {
-            theprice = getIntent().getStringExtra("fromthehomeactivityprice");
+        if (getIntent().getStringExtra("price") != null) {
+            theprice = getIntent().getStringExtra("price");
         }
 
-        if (getIntent().getStringExtra("fromthehomeactivitydesc") != null) {
-            thedescription = getIntent().getStringExtra("fromthehomeactivitydesc");
+        if (getIntent().getStringExtra("desc") != null) {
+            thedescription = getIntent().getStringExtra("desc");
         }
 
-        if (getIntent().getStringExtra("fromthehomeactivityname") != null) {
+        if (getIntent().getStringExtra("tradername") != null) {
 
-            thetraderwehave = getIntent().getStringExtra("fromthehomeactivityname");
+            thetraderwehave = getIntent().getStringExtra("tradername");
         }
 
-        if (getIntent().getStringExtra("fromthehomeactivityimage") != null) {
-            imagehere = getIntent().getStringExtra("fromthehomeactivityimage");
+        if (getIntent().getStringExtra("image") != null) {
+            imagehere = getIntent().getStringExtra("image");
         }
 
 
-        thetraderkey = getIntent().getStringExtra("fromthehomeactivitytoproductdetails");
+        thetraderkey = getIntent().getStringExtra("traderID");
         Intent intents = new Intent(ProductDetailsActivity1.this, ConfirmFinalOrderActivity.class);
 
 
@@ -317,6 +315,7 @@ public class ProductDetailsActivity1 extends AppCompatActivity   implements Navi
             // Elegant Users Inforamation Here
             intents.putExtra("cartkey", cartkey);
 
+            // THESE ARE THE IMAGE SLIDERS THAT WE HAVE HERE WHICH WE PULL FROM FIREBASE
             mainslider = (ImageSlider) findViewById(R.id.serviceadslider);
             final List<SlideModel> remoteimages = new ArrayList<>();
 
@@ -556,7 +555,7 @@ public class ProductDetailsActivity1 extends AppCompatActivity   implements Navi
         cartMap.put("discount", discount);
         cartMap.put("name", name);
         cartMap.put("image", image);
-        cartMap.put("tradernamehere", tradernamehere);
+        cartMap.put("tradername", tradernamehere);
         cartMap.put("traderimage", traderimage);
         cartMap.put("date", saveCurrentDate);
         cartMap.put("time", saveCurrentTime);
@@ -567,9 +566,6 @@ public class ProductDetailsActivity1 extends AppCompatActivity   implements Navi
         if (quantityselected != 0) {
             cartMap.put("quantity",quantityselected);
         }
-
-
-
 
         if (cartkey != null) {
             cartListRef = FirebaseDatabase.getInstance().getReference().child("Cart");
@@ -592,9 +588,9 @@ public class ProductDetailsActivity1 extends AppCompatActivity   implements Navi
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
                                 if (task.isSuccessful()) {
-                                    Toast.makeText(ProductDetailsActivity1.this, "Added to Cart List.", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(ProductDetailsActivity1.this, "Added to Cart  List.", Toast.LENGTH_SHORT).show();
 
-                                    Intent intent = new Intent(ProductDetailsActivity1.this, HomeActivity.class);
+                                    Intent intent = new Intent(ProductDetailsActivity1.this, CartActivity1.class);
                                     startActivity(intent);
                                 }
                             }
@@ -613,7 +609,7 @@ public class ProductDetailsActivity1 extends AppCompatActivity   implements Navi
                                         if (task.isSuccessful()) {
                                             Toast.makeText(ProductDetailsActivity1.this, "Added to Cart List.", Toast.LENGTH_SHORT).show();
 
-                                            Intent intent = new Intent(ProductDetailsActivity1.this, HomeActivity.class);
+                                            Intent intent = new Intent(ProductDetailsActivity1.this, CartActivity1.class);
                                             startActivity(intent);
                                         }
                                     }
@@ -782,7 +778,7 @@ public class ProductDetailsActivity1 extends AppCompatActivity   implements Navi
 
                                 Intent intent = new Intent(ProductDetailsActivity1.this, TraderProfile.class);
                                 intent.putExtra("pid", pid);
-                                intent.putExtra("fromhomeactivitytotraderprofile", traderkey);
+                                intent.putExtra("traderID", traderkey);
 
                                 startActivity(intent);
                             }

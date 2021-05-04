@@ -58,9 +58,15 @@ import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.simcoder.bimbo.R;
+import com.simcoder.bimbo.historyRecyclerView.HistoryObject;
+import com.simcoder.bimbo.historyRecyclerView.HistoryViewHolders;
+import com.simcoder.bimbo.instagram.Models.User;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.paperdb.Paper;
@@ -115,13 +121,19 @@ public  class  HomeActivity extends AppCompatActivity
     String followingimage;
     String userid;
     TextView thefollowerid;
-    TextView  product_discount;
+    TextView product_discount;
     String role;
     String userID;
-     Intent roleintent;
+    Intent roleintent;
     FloatingActionButton fab;
-  public  static   String thefolloweridgrabber;
-  public static  String thefollowerstepper;
+    public static String thefolloweridgrabber;
+    public static String thefollowerstepper;
+    ArrayList idList = new ArrayList<>();
+    public HomeActivityViewHolder.HomeActivityAdapter homeActivityAdapter;
+    public List<User> mUsers;
+    String uid;
+    int i =0;
+    String thefollowingidindex;
     //product_name
     // product_imagehere
     //  product_price
@@ -132,15 +144,20 @@ public  class  HomeActivity extends AppCompatActivity
     android.widget.ImageView product_imagehere;
     android.widget.ImageView thetraderimageforproduct;
 
+
     public interface Getmyfollowings {
 
         void onCallback(String followingid, String followingname, String followingimage);
-       String onfollowining(String following);
+
+        String onfollowining(String following);
 
     }
 
     Getmyfollowings getmyfollowingsagain;
 
+    ArrayList<String>  secondfollowingidList = new ArrayList<>();
+    ArrayList<String>  secondfollowingidnameList = new ArrayList<>();
+    ArrayList<String>  secondfollowingidimageList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -158,7 +175,7 @@ public  class  HomeActivity extends AppCompatActivity
 
 
         if (traderoruser != null) {
-            traderoruser = getIntent().getStringExtra("fromadmincategoryactivity");
+            traderoruser = getIntent().getStringExtra("traderID");
         }
 
         fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -171,7 +188,7 @@ public  class  HomeActivity extends AppCompatActivity
                         public void onClick(View view) {
 
                             Intent intent = new Intent(HomeActivity.this, ProductDetailsActivity.class);
-                             intent.putExtra("pid" ,pid);
+                            intent.putExtra("pid", pid);
                             startActivity(intent);
                         }
 
@@ -198,7 +215,7 @@ public  class  HomeActivity extends AppCompatActivity
             product_imagehere = (ImageView) findViewById(R.id.product_imagehere);
             thetraderimageforproduct = (ImageView) findViewById(R.id.thetraderimageforproduct);
             thefollowerid = (TextView) findViewById(R.id.thefollowerid);
-            product_discount = (TextView)findViewById(R.id.product_discount);
+            product_discount = (TextView) findViewById(R.id.product_discount);
             Paper.init(this);
 
             Toolbar toolbar = (Toolbar) findViewById(R.id.hometoolbar);
@@ -251,8 +268,7 @@ public  class  HomeActivity extends AppCompatActivity
             // GET FROM FOLLOWING KEY
 
 
-
-            fetch();
+            //  fetch();
             recyclerView.setAdapter(adapter);
 
             ProductsRef.addValueEventListener(new ValueEventListener() {
@@ -277,16 +293,18 @@ public  class  HomeActivity extends AppCompatActivity
                 user = mAuth.getCurrentUser();
                 if (user != null) {
                     userid = user.getUid();
-                    FollowerDatabase = FirebaseDatabase.getInstance();
 
+
+                    // THE SAME THING THE FOLLOWING
+                    /*
+                    FollowerDatabase = FirebaseDatabase.getInstance();
                     FollowerDatabaseReference = FollowerDatabase.getReference().child("Following");
                     FollowerDatabaseReference.keepSynced(true);
                     QueryFollowingsshere = FollowerDatabaseReference.orderByChild("uid").equalTo(userid);
-
                     QueryFollowingsshere.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-                                // Name of trader being followed
+                            // Name of trader being followed
                             for (DataSnapshot ds : dataSnapshot.getChildren()) {
                                 if (ds.child("tid").getValue() != null) {
                                     followingid = ds.child("tid").getValue(String.class);
@@ -310,7 +328,7 @@ public  class  HomeActivity extends AppCompatActivity
                                     if (followingid != null && followingname != null && followingimage != null) {
 
                                         getmyfollowingsagain.onCallback(followingid, followingname, followingimage);
-                                         getmyfollowingsagain.onfollowining(followingid);
+                                        getmyfollowingsagain.onfollowining(followingid);
 
                                     }
                                 }
@@ -329,51 +347,422 @@ public  class  HomeActivity extends AppCompatActivity
                         Log.d("Followerinfo", thefolloweridgrabber);
 
 
+                        Log.i("Mygrabback", thefolloweridgrabber);
+                        if (thefollowerstepper != null) {
+                            Log.d("Followerdownstepper", thefollowerstepper);
+                        }
+                    }
+                    */
 
-                    Log.i("Mygrabback", thefolloweridgrabber);
-                    if (thefollowerstepper != null){
-                        Log.d("Followerdownstepper", thefollowerstepper);
-                    }}
 //        setSupportActionBar(toolbar);
 
-                            GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestIdToken(getString(R.string.default_web_client_id)).requestEmail().build();
-                            if (mGoogleApiClient != null) {
+                    GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestIdToken(getString(R.string.default_web_client_id)).requestEmail().build();
+                    if (mGoogleApiClient != null) {
 
-                                mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
-                            }
+                        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+                    }
 
-                            if (mGoogleApiClient != null) {
-                                mGoogleApiClient = new GoogleApiClient.Builder(this).enableAutoManage(HomeActivity.this,
-                                        new GoogleApiClient.OnConnectionFailedListener() {
-                                            @Override
-                                            public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+                    if (mGoogleApiClient != null) {
+                        mGoogleApiClient = new GoogleApiClient.Builder(this).enableAutoManage(HomeActivity.this,
+                                new GoogleApiClient.OnConnectionFailedListener() {
+                                    @Override
+                                    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
-                                            }
-                                        }).addApi(Auth.GOOGLE_SIGN_IN_API, gso).build();
-                            }
-
-
-                            // USER
-                            user = mAuth.getCurrentUser();
+                                    }
+                                }).addApi(Auth.GOOGLE_SIGN_IN_API, gso).build();
+                    }
 
 
-                            if (user != null) {
-                                traderoruser = "";
-                                traderoruser = user.getUid();
+                    // USER
+                    user = mAuth.getCurrentUser();
 
 
-                            }
-                        }
+                    if (user != null) {
+                        traderoruser = "";
+                        traderoruser = user.getUid();
+
+
                     }
                 }
             }
+        }
+
+        getFollowers();
+        getFollowings();
+        getLikes();
+        showProducts();
+    }
+
+/*
+    public void getFollowings() {
+
+        FirebaseDatabase.getInstance().getReference().child("Following").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                followingidList.clear();
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    followingidList.add((snapshot.getKey()));
+                }
+
+                showUsers();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+    }
+
+*/
+    public void getFollowers() {
+
+
+        FollowerDatabase = FirebaseDatabase.getInstance();
+        FollowerDatabaseReference = FollowerDatabase.getReference().child("Followers");
+        FollowerDatabaseReference.keepSynced(true);
+        QueryFollowershere = FollowerDatabaseReference.orderByChild("uid").equalTo(userid);
+        QueryFollowershere.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                // Name of trader being followed
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                    if (ds.child("tid").getValue() != null) {
+                        followerid = ds.child("tid").getValue(String.class);
+                    }
+
+                    if (ds.child("tradername").getValue() != null) {
+                        followername = ds.child("tradername").getValue(String.class);
+                    }
+                    if (ds.child("traderimage").getValue() != null) {
+                        followerimage = ds.child("traderimage").getValue(String.class);
+                    }
+
+                       followeridList.add(followerid);
+                       followeridnameList.add(followeridname);
+                       followeridimageList.add(followeridimage);
+/*
+                    Log.d("Followers Well", followeridList + followeridnameList + followeridimageList);
+                    thefolloweridgrabber = followingid;
+
+                    Log.d("Followersgrabber", thefolloweridgrabber);
+
+                    thefollowerstepper = thefolloweridgrabber;
+                    Log.d("Followerstepper", thefollowerstepper);
+
+                    if (getmyfollowingsagain != null) {
+                        if (followingid != null && followingname != null && followingimage != null) {
+
+                            getmyfollowingsagain.onCallback(followingid, followingname, followingimage);
+                            getmyfollowingsagain.onfollowining(followingid);
+
+                        }
+  */
+
+                    }
+                }
 
 
 
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
 
 
+        });
+    }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    // we get the followers
+    // FOR THIS PAGE WE JUST WANT TO GET THE FOLLOWING LIST
+    public void getFollowings() {
+
+
+        TheFollowingsDatabase = FirebaseDatabase.getInstance();
+        TheFollowingsDatabaseReference = TheFollowingsDatabase.getReference().child("Following");
+        TheFollowingsDatabaseReference.keepSynced(true);
+        TheFollowingsQueryFollowingshere = TheFollowingsDatabaseReference.orderByChild("uid").equalTo(userid);
+        TheFollowingsQueryFollowingshere.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                // Name of trader being followed
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                    if (ds.child("tid").getValue() != null) {
+                        thefollowingsid = ds.child("tid").getValue(String.class);
+                    }
+
+                    if (ds.child("tradername").getValue() != null) {
+                        thefollowingsname = ds.child("tradername").getValue(String.class);
+                    }
+                    if (ds.child("traderimage").getValue() != null) {
+                        thefollowingsimage = ds.child("traderimage").getValue(String.class);
+                    }
+
+                    thefollowingidList.add(thefollowingsid);
+                    thefollowingidnameList.add(thefollowingsname);
+                    thefollowingidimageList.add(thefollowingsimage);
+            /*
+                    Log.d("Following People", thefollowingsid + thefollowingsname + thefollowingsimage);
+                    thefolloweridgrabber = thefollowingsid;
+
+                    Log.d("Followinigrabber", thefolloweridgrabber);
+
+                    thefollowerstepper = thefolloweridgrabber;
+                    Log.d("Followingstepper", thefollowerstepper);
+
+                    if (getmyfollowingsagain != null) {
+                        if (thefollowingsid != null && thefollowingsname != null && thefollowingsimage != null) {
+
+                            getmyfollowingsagain.onCallback(thefollowingsid, thefollowingsname, thefollowingsimage);
+                            getmyfollowingsagain.onfollowining(thefollowingsid);
+
+                        }
+
+                    }
+*/                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+
+
+        });
+    }
+
+
+    // NUMBER OF LIKES OF FOLLOWER
+    // we get the people that have liked us
+    public void getLikes() {
+
+
+        TheLikesDatabase = FirebaseDatabase.getInstance();
+        TheLikesDatabaseReference = TheLikesDatabase.getReference().child("Likes");
+        TheLikesDatabaseReference.keepSynced(true);
+        TheLikesQuery= TheLikesDatabaseReference.orderByChild("uid").equalTo(userid);
+        TheLikesQuery.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                // Name of trader being followed
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                    if (ds.child("tid").getValue() != null) {
+                        thelikeid = ds.child("tid").getValue(String.class);
+                    }
+
+                    if (ds.child("tid").getValue() != null) {
+                        thelikerid = ds.child("tid").getValue(String.class);
+                    }
+
+                    if (ds.child("tradername").getValue() != null) {
+                        thelikername = ds.child("tradername").getValue(String.class);
+                    }
+                    if (ds.child("traderimage").getValue() != null) {
+                        thelikerimage = ds.child("traderimage").getValue(String.class);
+                    }
+
+                    thefollowingidList.add(thefollowingsid);
+                    thefollowingidnameList.add(thefollowingsname);
+                    thefollowingidimageList.add(thefollowingsimage);
+
+                    /*
+                    Log.d("Following People", thefollowingsid + thefollowingsname + thefollowingsimage);
+                    thefolloweridgrabber = thefollowingsid;
+
+                    Log.d("Followinigrabber", thefolloweridgrabber);
+
+                    thefollowerstepper = thefolloweridgrabber;
+                    Log.d("Followingstepper", thefollowerstepper);
+
+                    if (getmyfollowingsagain != null) {
+                        if (thefollowingsid != null && thefollowingsname != null && thefollowingsimage != null) {
+
+                            getmyfollowingsagain.onCallback(thefollowingsid, thefollowingsname, thefollowingsimage);
+                            getmyfollowingsagain.onfollowining(thefollowingsid);
+
+                        }
+
+                    }
+                    */
+                }
+
+            }
+ //get the trader// traderkey
+            // orderfoodpostofproduct
+            // reschedule, or randomize
+            //the likes of each food
+
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+
+
+        });
+
+    }
+
+
+/*
+
+    public void getLikes() {
+
+        FirebaseDatabase.getInstance().getReference().child("Likes").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                likesidList.clear();
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    likesidList.add((snapshot.getKey()));
+                }
+
+                showUsers();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+*/
+/*
+
+    public void showUsers() {
+
+        FirebaseDatabase.getInstance().getReference().child("Users").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                mUsers.clear();
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    User user = snapshot.getValue(User.class);
+
+                    for  (i=0; i< followingidList i++) {
+                        if (user.getuid().equals(uid)) {
+                            mUsers.add(user);
+                        }
+                    }
+                }
+                Log.d("list f", mUsers.toString());
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+    }
+
+*/
+
+ // We have to query the posts here, we will use the
+    public void showProducts() {
+
+        for (int i = 0; i < secondfollowingidList.size(); i++) {
+
+                  thefollowingidindex = secondfollowingidList.get(i);
+            ProductDatabase = FirebaseDatabase.getInstance();
+            ProductDatabaseReference = FollowerDatabase.getReference().child("Product");
+            ProductDatabaseReference.keepSynced(true);
+            ProductShowReference = ProductDatabaseReference.orderByChild("tid").equalTo( thefollowingidindex);
+            ProductShowReference.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    // Name of trader being followed
+                    for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                        if (ds.child("tid").getValue() != null) {
+                            pid = ds.child("tid").getValue(String.class);
+                        }
+
+                        if (ds.child("tradername").getValue() != null) {
+                            pname= ds.child("tradername").getValue(String.class);
+                        }
+                        if (ds.child("traderimage").getValue() != null) {
+                             pimage= ds.child("traderimage").getValue(String.class);
+                        }
+
+                        if (ds.child("traderimage").getValue() != null) {
+                            price= ds.child("traderimage").getValue(String.class);
+                        }
+                        if (ds.child("traderimage").getValue() != null) {
+                            tid= ds.child("traderimage").getValue(String.class);
+                        }
+                        if (ds.child("traderimage").getValue() != null) {
+                            tradername= ds.child("traderimage").getValue(String.class);
+                        }
+
+                        if (ds.child("traderimage").getValue() != null) {
+                            traderimage= ds.child("traderimage").getValue(String.class);
+                        }
+
+                        if (ds.child("traderimage").getValue() != null) {
+                            likenumber= ds.child("traderimage").getValue(String.class);
+                        }
+
+
+                 /*
+                    Log.d("Followers Well", followeridList + followeridnameList + followeridimageList);
+                    thefolloweridgrabber = followingid;
+
+                    Log.d("Followersgrabber", thefolloweridgrabber);
+
+                    thefollowerstepper = thefolloweridgrabber;
+                    Log.d("Followerstepper", thefollowerstepper);
+
+                    if (getmyfollowingsagain != null) {
+                        if (followingid != null && followingname != null && followingimage != null) {
+
+                            getmyfollowingsagain.onCallback(followingid, followingname, followingimage);
+                            getmyfollowingsagain.onfollowining(followingid);
+
+                        }
+  */
+
+                    }
+                }
+
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+
+
+            });
+        }
+        /*
+        FirebaseDatabase.getInstance().getReference().child("Products").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                mUsers.clear();
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    User user = snapshot.getValue(User.class);
+                     int i = 0;
+                    for  (i=0; i< followingidList.length(); i++) {
+                        if (user.getuid().equals(uid)) {
+                            mUsers.add(user);
+                        }
+                    }
+                }
+                Log.d("list f", mUsers.toString());
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+*/
+
+    }
+
+    public class HomeActivityViewHolder extends RecyclerView.ViewHolder {
         public LinearLayout root;
 
         //product_name
@@ -385,7 +774,7 @@ public  class  HomeActivity extends AppCompatActivity
 
         public TextView product_name;
         public TextView product_price;
-        public  TextView product_discount;
+        public TextView product_discount;
         public TextView product_description;
         public TextView thetraderiknow;
 
@@ -393,7 +782,7 @@ public  class  HomeActivity extends AppCompatActivity
         public android.widget.ImageView thetraderimageforproduct;
         public ItemClickListner listner;
 
-        public ViewHolder(View itemView) {
+        public HomeActivityViewHolder(View itemView) {
             super(itemView);
 
             //product_name
@@ -441,6 +830,7 @@ public  class  HomeActivity extends AppCompatActivity
 
             product_description.setText(currentdescription);
         }
+
         public void setproduct_discount(String product_discount1) {
 
             product_discount.setText(product_discount1);
@@ -467,8 +857,8 @@ public  class  HomeActivity extends AppCompatActivity
         }
 
 
-
-            public void setImage(final Context ctx, final String image) {
+        /*
+        public void setImage(final Context ctx, final String image) {
             product_imagehere = (android.widget.ImageView) itemView.findViewById(R.id.product_imagehere);
             if (image != null) {
                 if (product_imagehere != null) {
@@ -490,7 +880,79 @@ public  class  HomeActivity extends AppCompatActivity
 
                     });
 
-                }}}};
+                }
+            }
+        }
+
+
+        public void getFollowers() {
+
+                    FirebaseDatabase.getInstance()
+
+                    .getReference().child("Followers").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                    idList.clear();
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        idList.add((snapshot.getKey()));
+                    }
+
+                    showUsers();
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+
+        }
+
+
+        public void getFollowings() {
+
+            FirebaseDatabase.getInstance().getReference().child("Follow").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    idList.clear();
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        idList.add((snapshot.getKey()));
+                    }
+
+                    showUsers();
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+
+        }
+
+        public void getLikes() {
+
+            FirebaseDatabase.getInstance().getReference().child("Likes").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    idList.clear();
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        idList.add((snapshot.getKey()));
+                    }
+
+                    showUsers();
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+
+        }
+
+*/
 
 
     public void fetch() {
@@ -499,21 +961,27 @@ public  class  HomeActivity extends AppCompatActivity
         if (mAuth != null) {
             user = mAuth.getCurrentUser();
             if (user != null) {
-                traderoruser = user.getUid();
+
                 ProductsRef = FirebaseDatabase.getInstance().getReference().child("Product");
                 ProductsRef.keepSynced(true);
                 productkey = ProductsRef.getKey();
+
 
 
                 if (mAuth != null) {
                     user = mAuth.getCurrentUser();
                     if (user != null) {
                         userid = user.getUid();
+
+                        for (int i = 0; i < secondfollowingidList.size(); i++) {
+
+                            thefollowingidindex = secondfollowingidList.get(i);
+
                         FollowerDatabase = FirebaseDatabase.getInstance();
 
-                        FollowerDatabaseReference = FollowerDatabase.getReference().child("Following");
+                        FollowerDatabaseReference = FollowerDatabase.getReference().child("Products");
                         FollowerDatabaseReference.keepSynced(true);
-                        QueryFollowingsshere = FollowerDatabaseReference.orderByChild("uid").equalTo(userid);
+                        QueryFollowingsshere = FollowerDatabaseReference.orderByChild("tid").equalTo(userid);
 
                         QueryFollowingsshere.addValueEventListener(new ValueEventListener() {
                             @Override
@@ -555,6 +1023,8 @@ public  class  HomeActivity extends AppCompatActivity
 
                             }
                         });
+
+
                     }}
                     String getfollowingid  = getmyfollowingsagain.onfollowining(followingid);
                 if (traderoruser != null) {
@@ -761,7 +1231,18 @@ public  class  HomeActivity extends AppCompatActivity
 
     }
 
-    @Override
+
+
+    }
+
+
+
+
+
+
+
+
+        @Override
     protected void onStart() {
         super.onStart();
 

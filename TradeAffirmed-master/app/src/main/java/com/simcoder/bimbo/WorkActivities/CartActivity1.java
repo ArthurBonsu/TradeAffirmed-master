@@ -753,24 +753,22 @@ public  class  CartActivity1 extends AppCompatActivity
                             holder.carttheproductname.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
-                                    if (role.equals("Trader")) {
+                                    if (role.equals("Customer")) {
                                         Intent intent = new Intent(CartActivity1.this, ProductDetailsActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("pid", key);
-                                            intent.putExtra("fromthehomeactivitytraderkey", traderkey);
-                                            intent.putExtra("fromthehomeactivityname", name);
-                                            intent.putExtra("fromthehomeactivityprice", price);
-                                            intent.putExtra("fromthehomeactivitydesc", desc);
-                                            intent.putExtra("fromthehomeactivityname", thetraderhere);
-                                            intent.putExtra("fromthehomeactivityimage", pimage);
+                                            intent.putExtra("traderID", traderkey);
+                                            intent.putExtra("name", name);
+                                            intent.putExtra("price", price);
+                                            intent.putExtra("desc", desc);
+                                            intent.putExtra("tradername", thetraderhere);
+                                            intent.putExtra("pimage", pimage);
 
                                         }
                                         startActivity(intent);
                                     } else {
-                                        Intent intent = new Intent(CartActivity1.this, ProductDetailsActivity.class);
-                                        if (intent != null) {
-                                            intent.putExtra("fromthehomeactivitytoproductdetails", traderkey);
-                                        }
+                                        Intent intent = new Intent(CartActivity1.this, CartActivity1.class);
+                                        //NO MOVEMENT ONLY CLIENTS CAN SEE THIS PAGE
                                         startActivity(intent);
                                     }
                                 }
@@ -802,16 +800,16 @@ public  class  CartActivity1 extends AppCompatActivity
                             holder.carttradernamehere.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
-                                    if (role.equals("Trader")) {
+                                    if (role.equals("Customer")) {
                                         Intent intent = new Intent(CartActivity1.this, TraderProfile.class);
                                         intent.putExtra("pid", key);
-                                        intent.putExtra("fromhomeactivitytotraderprofile", traderkey);
+                                        intent.putExtra("traderID", traderkey);
 
                                         startActivity(intent);
                                     } else {
                                         Intent intent = new Intent(CartActivity1.this, TraderProfile.class);
                                         intent.putExtra("pid", key);
-                                        intent.putExtra("fromhomeactivitytotraderprofile", traderkey);
+                                        intent.putExtra("traderID", traderkey);
 
                                         startActivity(intent);
                                     }
@@ -824,16 +822,16 @@ public  class  CartActivity1 extends AppCompatActivity
                             holder.thetraderpicturebeingloaded.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
-                                    if (role.equals("Trader")) {
+                                    if (role.equals("Customer")) {
                                         Intent intent = new Intent(CartActivity1.this, TraderProfile.class);
                                         intent.putExtra("pid", key);
-                                        intent.putExtra("fromhomeactivitytotraderprofile", traderkey);
+                                        intent.putExtra("traderID", traderkey);
 
                                         startActivity(intent);
                                     } else {
                                         Intent intent = new Intent(CartActivity1.this, TraderProfile.class);
                                         intent.putExtra("pid", key);
-                                        intent.putExtra("fromhomeactivitytotraderprofile", traderkey);
+                                        intent.putExtra("traderID", traderkey);
 
                                         startActivity(intent);
                                     }
@@ -917,7 +915,7 @@ public  class  CartActivity1 extends AppCompatActivity
         return true;
     }
 
-
+     // ADMIN THINGS THE ADMIN THINGS
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();

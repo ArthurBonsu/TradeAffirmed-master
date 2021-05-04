@@ -266,6 +266,7 @@ public class ClientMainPage extends AppCompatActivity implements GoogleApiClient
     Button zoneshop;
     Button zonemap;
     Button zonetalkhub;
+
     public ClientMainPage() {
         super();
     }
@@ -303,7 +304,7 @@ public class ClientMainPage extends AppCompatActivity implements GoogleApiClient
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.hometoolbar);
         if (toolbar != null) {
-            toolbar.setTitle("Admin Main Page");
+            toolbar.setTitle("Client Main Page");
         }
 
 
@@ -342,19 +343,7 @@ public class ClientMainPage extends AppCompatActivity implements GoogleApiClient
                 }
 
 
-                // GET FROM FOLLOWING KEY
-                // HAVE TO BUILD THE STORAGE
-                mStorage = FirebaseStorage.getInstance().getReference().child("user_images");
-                myuserfirebasedatabase = FirebaseDatabase.getInstance();
-                mAdminTraderDatabase = myuserfirebasedatabase.getReference().child("Users").child("Drivers").child(traderID);
 
-                mAdminTraderDatabase.keepSynced(true);
-/*
-                if (ProductsRef.push() != null) {
-                    productRandomKey = ProductsRef.push().getKey();
-
-                }
-*/
                 //I have to  check to ensure that gallery intent is not placed here for the other classes
                 mProgress = new ProgressDialog(this);
 
@@ -393,11 +382,6 @@ public class ClientMainPage extends AppCompatActivity implements GoogleApiClient
 
 
 
-        getUserInfo();
-        // SET THE AGE ADAPTER
-        // CHOSE ID CARD
-        // UPLOAD ID CARD
-
         if (zoneshop != null) {
             zoneshop.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -405,7 +389,7 @@ public class ClientMainPage extends AppCompatActivity implements GoogleApiClient
                     Intent intent = new Intent(ClientMainPage.this, HomeActivity.class);
                     if (intent != null) {
                         intent.putExtra("role", role);
-                        intent.putExtra("traderID", traderID);
+                        intent.putExtra("userID", userID);
                         startActivity(intent);
                         finish();
                     }
@@ -421,7 +405,7 @@ public class ClientMainPage extends AppCompatActivity implements GoogleApiClient
                     Intent intent = new Intent(ClientMainPage.this, CustomerMapActivity.class);
                     if (intent != null) {
                         intent.putExtra("role", role);
-                        intent.putExtra("traderID", traderID);
+                        intent.putExtra("userID", userID);
                         startActivity(intent);
                         finish();
                     }
@@ -437,7 +421,7 @@ public class ClientMainPage extends AppCompatActivity implements GoogleApiClient
                     Intent intent = new Intent(ClientMainPage.this, InstagramHomeActivity.class);
                     if (intent != null) {
                         intent.putExtra("role", role);
-                        intent.putExtra("traderID", traderID);
+                        intent.putExtra("userID", userID);
                         startActivity(intent);
                         finish();
                     }
@@ -484,50 +468,6 @@ public class ClientMainPage extends AppCompatActivity implements GoogleApiClient
 
 
 
-
-    //POPULATE THE EDIT BOX IF THERE ALREADY EXIST SUCH A TRANSACTION
-    public void getUserInfo() {
-        mAdminTraderDatabase.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists() && dataSnapshot.getChildrenCount() > 0) {
-                    Map<String, Object> map = (Map<String, Object>) dataSnapshot.getValue(HashMaps.class);
-                    if (map.get("address") != null) {
-                        String themailingaddress = map.get("address").toString();
-
-                        MailingAddress.setText(themailingaddress);
-
-
-                    }
-                    if (map.get("gpscode") != null) {
-                        String thegpscode = map.get("gpscode").toString();
-                        GpsCode.setText(mPhone);
-                    }
-
-                    if (map.get("street") != null) {
-                        String thestreetaddress = map.get("street").toString();
-                        StreetAddress.setText(thestreetaddress);
-                    }
-
-                }
-            }
-
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-            }
-        });
-
-
-    }
-
-
-
-
-
-
-
-
     @Override
     public void onConnected(@Nullable Bundle bundle) {
 
@@ -555,8 +495,8 @@ public class ClientMainPage extends AppCompatActivity implements GoogleApiClient
 
                 FirebaseUser user = mAuth.getCurrentUser();
                 if (user != null) {
-                    traderID = "";
-                    traderID = user.getUid();
+                    userID = "";
+                    userID = user.getUid();
                 }
 
                 // I HAVE TO TRY TO GET THE SETUP INFORMATION , IF THEY ARE ALREADY PROVIDED WE TAKE TO THE NEXT STAGE
