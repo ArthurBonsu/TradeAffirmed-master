@@ -144,18 +144,64 @@ public  class  HomeActivity extends AppCompatActivity
     android.widget.ImageView product_imagehere;
     android.widget.ImageView thetraderimageforproduct;
 
-    FirebaseDatabase  FollowerDatabase;
-    DatabaseReference FollowerDatabaseReference;
-    Query  QueryFollowershere;
+
+    Query QueryFollowershere;
 
 
     String followerid;
+    String followeridname;
     String followername;
     String followerimage;
+    String followeridimage;
 
-    followeridList.add(followerid);
-        followeridnameList.add(followeridname);
-        followeridimageList.add(followeridimage);
+    ArrayList<String> followeridList;
+    ArrayList<String> followeridnameList;
+    ArrayList<String> followeridimageList;
+
+    FirebaseDatabase TheFollowingsDatabase;
+    DatabaseReference TheFollowingsDatabaseReference;
+    Query TheFollowingsQueryFollowingshere;
+
+
+    String thefollowingsid;
+    String thefollowingsname;
+    String thefollowingsimage;
+
+
+    ArrayList<String> thefollowingidList;
+    ArrayList<String> thefollowingidnameList;
+    ArrayList<String> thefollowingidimageList;
+
+
+
+
+    FirebaseDatabase TheLikesDatabase;
+    DatabaseReference TheLikesDatabaseReference;
+    Query TheLikesQuery;
+
+
+
+        String thelikeid;
+        String thelikerid;
+        String thelikername;
+         String thelikerimage;
+
+
+         ArrayList<String> thelikeidList;
+        ArrayList<String> thelikeridnameList;
+        ArrayList<String> thelikernameList;
+        ArrayList<String> thelikeridimageList;
+
+
+
+    String thefollowingidindex;
+
+
+    ProductDatabase = FirebaseDatabase.getInstance();
+    ProductDatabaseReference = FollowerDatabase.getReference().child("Product");
+            ProductDatabaseReference.keepSynced(true);
+    ProductShowReference = ProductDatabaseReference.orderByChild("tid").equalTo(thefollowingidindex);
+            ProductShowReference.addValueEventListener(new ValueEventListener() {
 
     public interface Getmyfollowings {
 
@@ -170,6 +216,8 @@ public  class  HomeActivity extends AppCompatActivity
     ArrayList<String> secondfollowingidList = new ArrayList<>();
     ArrayList<String> secondfollowingidnameList = new ArrayList<>();
     ArrayList<String> secondfollowingidimageList = new ArrayList<>();
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -278,7 +326,6 @@ public  class  HomeActivity extends AppCompatActivity
 
             productkey = ProductsRef.getKey();
             // GET FROM FOLLOWING KEY
-
 
 
             recyclerView.setAdapter(adapter);
@@ -396,16 +443,290 @@ public  class  HomeActivity extends AppCompatActivity
 
                     }
                 }
+
+
+
+                getFollowers();
+                getFollowings();
+                getLikes();
+                showProducts();
             }
+
+        }
+    }
+
+    public void fetch () {
+
+        FirebaseUser user;
+        if (mAuth != null) {
+            user = mAuth.getCurrentUser();
+            if (user != null) {
+                userid = user.getUid();
+                ProductsRef = FirebaseDatabase.getInstance().getReference().child("Product");
+                ProductsRef.keepSynced(true);
+                productkey = ProductsRef.getKey();
+
+
+
+
+
+
+                        /*
+                        QueryFollowingsshere.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                                    if (ds.child("tid").getValue() != null) {
+                                        followingid = ds.child("tid").getValue(String.class);
+                                    }
+
+                                    if (ds.child("tradername").getValue() != null) {
+                                        followingname = ds.child("tradername").getValue(String.class);
+                                    }
+                                    if (ds.child("traderimage").getValue() != null) {
+                                        followingimage = ds.child("traderimage").getValue(String.class);
+                                    }
+                                    Log.d("Followers Well", followingid + followingname + followingimage);
+                                    thefolloweridgrabber = followingid;
+
+                                    Log.d("Followersgrabber", thefolloweridgrabber);
+
+                                    thefollowerstepper = thefolloweridgrabber;
+                                    Log.d("Followerstepper", thefollowerstepper);
+
+                                    if (getmyfollowingsagain != null) {
+                                        if (followingid != null && followingname != null && followingimage != null) {
+
+                                            getmyfollowingsagain.onCallback(followingid, followingname, followingimage);
+                                             getmyfollowingsagain.onfollowining(followingid);
+
+                                        }
+                                    }
+                                }
+
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
+
+
+                    }}
+                    String getfollowingid  = getmyfollowingsagain.onfollowining(followingid);
+                if (traderoruser != null) {
+                    // No. has to give the whole population details of the product
+*/
+
+                for (int i = 0; i < secondfollowingidList.size(); i++) {
+
+                    thefollowingidindex = followeridList.get(i);
+
+                    if (ProductsRef != null) {
+                        Query ProductsQuery = ProductsRef.orderByChild("tid").equalTo(thefollowingidindex);
+
+
+                        if (ProductsQuery != null) {
+
+                            FirebaseRecyclerOptions<Products> options =
+                                    new FirebaseRecyclerOptions.Builder<Products>()
+                                            .setQuery(ProductsQuery, new SnapshotParser<Products>() {
+
+
+                                                @NonNull
+                                                @Override
+                                                public Products parseSnapshot(@NonNull DataSnapshot snapshot) {
+
+
+                                                    if (snapshot.child("categoryname").getValue() != null) {
+                                                        categoryname = snapshot.child("categoryname").getValue(String.class);
+                                                    }
+                                                    if (snapshot.child("date").getValue() != null) {
+                                                        date = snapshot.child("date").getValue(String.class);
+                                                    }
+
+                                                    if (snapshot.child("desc").getValue() != null) {
+                                                        desc = snapshot.child("desc").getValue(String.class);
+                                                    }
+                                                    if (snapshot.child("discount").getValue() != null) {
+                                                        discount = snapshot.child("discount").getValue(String.class);
+                                                    }
+
+                                                    if (snapshot.child("time").getValue() != null) {
+                                                        time = snapshot.child("time").getValue(String.class);
+                                                    }
+
+
+                                                    if (snapshot.child("pimage").getValue() != null) {
+                                                        pimage = snapshot.child("pimage").getValue(String.class);
+                                                    }
+                                                    if (snapshot.child("pname").getValue() != null) {
+                                                        pname = snapshot.child("pname").getValue(String.class);
+                                                    }
+                                                    if (snapshot.child("pid").getValue() != null) {
+                                                        pid = snapshot.child("pid").getValue(String.class);
+                                                    }
+
+                                                    if (snapshot.child("price").getValue() != null) {
+                                                        price = snapshot.child("price").getValue(String.class);
+                                                    }
+
+                                                    if (snapshot.child("image").getValue() != null) {
+                                                        image = snapshot.child("image").getValue(String.class);
+                                                    }
+                                                    if (snapshot.child("name").getValue() != null) {
+                                                        name = snapshot.child("name").getValue(String.class);
+                                                    }
+
+                                                    if (snapshot.child("size").getValue() != null) {
+                                                        size = snapshot.child("size").getValue(String.class);
+                                                    }
+
+                                                    if (snapshot.child("pname").getValue() != null) {
+                                                        pname = snapshot.child("pname").getValue(String.class);
+                                                    }
+
+                                                    if (snapshot.child("pimage").getValue() != null) {
+                                                        pimage = snapshot.child("pimage").getValue(String.class);
+                                                    }
+
+                                                    if (snapshot.child("pid").getValue() != null) {
+                                                        pid = snapshot.child("pid").getValue(String.class);
+                                                    }
+
+                                                    if (snapshot.child("tradername").getValue() != null) {
+                                                        tradername = snapshot.child("tradername").getValue(String.class);
+                                                    }
+
+                                                    if (snapshot.child("traderimage").getValue() != null) {
+                                                        traderimage = snapshot.child("traderimage").getValue(String.class);
+                                                    }
+
+                                                    if (snapshot.child("tid").getValue() != null) {
+                                                        tid = snapshot.child("tid").getValue(String.class);
+                                                    }
+
+                                                    return new Products(categoryname, date, desc, discount, time, pid, pimage, pname, price, image, name, size, tradername, traderimage, tid);
+
+
+                                                }
+
+                                            }).build();
+
+
+                            adapter = new FirebaseRecyclerAdapter<Products, HomeActivityViewHolder>(options) {
+                                @Override
+                                public HomeActivityViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+                                    View view = LayoutInflater.from(parent.getContext())
+                                            .inflate(R.layout.product_items_layout, parent, false);
+
+                                    return new HomeActivityViewHolder(view);
+                                }
+
+                                @Override
+                                public int getItemCount() {
+                                    return super.getItemCount();
+                                }
+
+                                @Override
+                                protected void onBindViewHolder(HomeActivityViewHolder holder, final int position, final Products model) {
+
+
+                                    holder.product_name.setText(pname);
+
+                                    holder.thetraderiknow.setText(tradername);
+
+                                    holder.product_description.setText(desc);
+                                    holder.product_price.setText("Price = " + "$" + price);
+                                    holder.product_discount.setText(discount);
+
+
+                                    //   thetraderimageforproduct
+                                    if (thetraderimageforproduct != null) {
+                                        Picasso.get().load(traderimage).placeholder(R.drawable.profile).into(thetraderimageforproduct);
+                                    }
+                                    if (product_imagehere != null) {
+                                        Picasso.get().load(pimage).placeholder(R.drawable.profile).into(product_imagehere);
+                                    }
+
+                                    holder.setTraderImage(getApplication(), traderimage);
+                                    holder.setImage(getApplicationContext(), pimage);
+
+
+                                    holder.product_imagehere.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+                                            if (type.equals("Trader")) {
+                                                Intent intent = new Intent(HomeActivity.this, ProductDetailsActivity.class);
+                                                if (intent != null) {
+                                                    intent.putExtra("pid", key);
+                                                    intent.putExtra("fromthehomeactivitytraderkey", traderkey);
+                                                    intent.putExtra("fromthehomeactivityname", model.getname());
+                                                    intent.putExtra("fromthehomeactivityprice", model.getprice());
+                                                    intent.putExtra("fromthehomeactivitydesc", model.getdesc());
+                                                    intent.putExtra("fromthehomeactivityname", thetraderhere);
+                                                    intent.putExtra("fromthehomeactivityimage", model.getimage());
+
+                                                }
+                                                startActivity(intent);
+                                            } else {
+                                                Intent intent = new Intent(HomeActivity.this, ProductDetailsActivity.class);
+                                                if (intent != null) {
+                                                    intent.putExtra("fromthehomeactivitytoproductdetails", traderkey);
+                                                }
+                                                startActivity(intent);
+                                            }
+                                        }
+                                    });
+
+
+                                    holder.thetraderimageforproduct.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+                                            if (type.equals("Trader")) {
+                                                Intent intent = new Intent(HomeActivity.this, TraderProfile.class);
+                                                intent.putExtra("pid", key);
+                                                intent.putExtra("fromhomeactivitytotraderprofile", traderkey);
+
+                                                startActivity(intent);
+                                            } else {
+                                                Intent intent = new Intent(HomeActivity.this, TraderProfile.class);
+                                                intent.putExtra("pid", key);
+                                                intent.putExtra("fromhomeactivitytotraderprofile", traderkey);
+
+                                                startActivity(intent);
+                                            }
+
+                                        }
+
+                                    });
+
+
+                                }
+
+
+                            };
+
+                        }
+
+                    }
+
+                }
+
+
+            }
+
         }
 
-        getFollowers();
-        getFollowings();
-        getLikes();
-        showProducts();
-    }}
+    }
 
-/*
+
+
+
+
+    /*
     public void getFollowings() {
 
         FirebaseDatabase.getInstance().getReference().child("Following").addValueEventListener(new ValueEventListener() {
@@ -428,8 +749,6 @@ public  class  HomeActivity extends AppCompatActivity
     }
 
 */
-
-}}
     public void getFollowers() {
 
 
@@ -442,20 +761,20 @@ public  class  HomeActivity extends AppCompatActivity
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // Name of trader being followed
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                    if (ds.child("tid").getValue() != null) {
+                    if (ds.child("uid").getValue() != null) {
                         followerid = ds.child("tid").getValue(String.class);
                     }
 
-                    if (ds.child("tradername").getValue() != null) {
-                        followername = ds.child("tradername").getValue(String.class);
+                    if (ds.child("name").getValue() != null) {
+                        followername = ds.child("name").getValue(String.class);
                     }
-                    if (ds.child("traderimage").getValue() != null) {
-                        followerimage = ds.child("traderimage").getValue(String.class);
+                    if (ds.child("image").getValue() != null) {
+                        followerimage = ds.child("image").getValue(String.class);
                     }
 
-                       followeridList.add(followerid);
-                       followeridnameList.add(followeridname);
-                       followeridimageList.add(followeridimage);
+                    followeridList.add(followerid);
+                    followeridnameList.add(followeridname);
+                    followeridimageList.add(followerimage);
 /*
                     Log.d("Followers Well", followeridList + followeridnameList + followeridimageList);
                     thefolloweridgrabber = followingid;
@@ -474,9 +793,8 @@ public  class  HomeActivity extends AppCompatActivity
                         }
   */
 
-                    }
                 }
-
+            }
 
 
             @Override
@@ -580,9 +898,10 @@ public  class  HomeActivity extends AppCompatActivity
                         thelikerimage = ds.child("traderimage").getValue(String.class);
                     }
 
-                    thefollowingidList.add(thefollowingsid);
-                    thefollowingidnameList.add(thefollowingsname);
-                    thefollowingidimageList.add(thefollowingsimage);
+                    thelikeidList.add(thefollowingsid);
+                    thelikeridnameList.add(thefollowingsname);
+                    thelikernameList.add(thefollowingsimage);
+                    thelikeridimageList.add(thefollowingsimage);
 
                     /*
                     Log.d("Following People", thefollowingsid + thefollowingsname + thefollowingsimage);
@@ -678,17 +997,17 @@ public  class  HomeActivity extends AppCompatActivity
 */
 
 
-}
+
 
     public void showProducts() {
 
         for (int i = 0; i < secondfollowingidList.size(); i++) {
 
-                  thefollowingidindex = secondfollowingidList.get(i);
+            thefollowingidindex = secondfollowingidList.get(i);
             ProductDatabase = FirebaseDatabase.getInstance();
             ProductDatabaseReference = FollowerDatabase.getReference().child("Product");
             ProductDatabaseReference.keepSynced(true);
-            ProductShowReference = ProductDatabaseReference.orderByChild("tid").equalTo( thefollowingidindex);
+            ProductShowReference = ProductDatabaseReference.orderByChild("tid").equalTo(thefollowingidindex);
             ProductShowReference.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -699,30 +1018,29 @@ public  class  HomeActivity extends AppCompatActivity
                         }
 
                         if (ds.child("tradername").getValue() != null) {
-                            pname= ds.child("tradername").getValue(String.class);
+                            pname = ds.child("tradername").getValue(String.class);
                         }
                         if (ds.child("traderimage").getValue() != null) {
-                             pimage= ds.child("traderimage").getValue(String.class);
+                            pimage = ds.child("traderimage").getValue(String.class);
                         }
 
                         if (ds.child("traderimage").getValue() != null) {
-                            price= ds.child("traderimage").getValue(String.class);
+                            price = ds.child("traderimage").getValue(String.class);
                         }
                         if (ds.child("traderimage").getValue() != null) {
-                            tid= ds.child("traderimage").getValue(String.class);
+                            tid = ds.child("traderimage").getValue(String.class);
                         }
                         if (ds.child("traderimage").getValue() != null) {
-                            tradername= ds.child("traderimage").getValue(String.class);
+                            tradername = ds.child("traderimage").getValue(String.class);
                         }
 
                         if (ds.child("traderimage").getValue() != null) {
-                            traderimage= ds.child("traderimage").getValue(String.class);
+                            traderimage = ds.child("traderimage").getValue(String.class);
                         }
 
                         if (ds.child("traderimage").getValue() != null) {
-                            likenumber= ds.child("traderimage").getValue(String.class);
+                            likenumber = ds.child("traderimage").getValue(String.class);
                         }
-
 
 
                     }
@@ -885,287 +1203,7 @@ public  class  HomeActivity extends AppCompatActivity
 
                 }
 
-
-
-
-    public void fetch() {
-
-        FirebaseUser user;
-        if (mAuth != null) {
-            user = mAuth.getCurrentUser();
-            if (user != null) {
-                userid = user.getUid();
-                ProductsRef = FirebaseDatabase.getInstance().getReference().child("Product");
-                ProductsRef.keepSynced(true);
-                productkey = ProductsRef.getKey();
-
-
-
-
-
-
-                        /*
-                        QueryFollowingsshere.addValueEventListener(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-
-                                for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                                    if (ds.child("tid").getValue() != null) {
-                                        followingid = ds.child("tid").getValue(String.class);
-                                    }
-
-                                    if (ds.child("tradername").getValue() != null) {
-                                        followingname = ds.child("tradername").getValue(String.class);
-                                    }
-                                    if (ds.child("traderimage").getValue() != null) {
-                                        followingimage = ds.child("traderimage").getValue(String.class);
-                                    }
-                                    Log.d("Followers Well", followingid + followingname + followingimage);
-                                    thefolloweridgrabber = followingid;
-
-                                    Log.d("Followersgrabber", thefolloweridgrabber);
-
-                                    thefollowerstepper = thefolloweridgrabber;
-                                    Log.d("Followerstepper", thefollowerstepper);
-
-                                    if (getmyfollowingsagain != null) {
-                                        if (followingid != null && followingname != null && followingimage != null) {
-
-                                            getmyfollowingsagain.onCallback(followingid, followingname, followingimage);
-                                             getmyfollowingsagain.onfollowining(followingid);
-
-                                        }
-                                    }
-                                }
-
-                            }
-
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
-
-                            }
-                        });
-
-
-                    }}
-                    String getfollowingid  = getmyfollowingsagain.onfollowining(followingid);
-                if (traderoruser != null) {
-                    // No. has to give the whole population details of the product
-*/
-
-                        for (int i = 0; i < secondfollowingidList.size(); i++) {
-
-                            thefollowingidindex = secondfollowingidList.get(i);
-
-                            if (ProductsRef != null) {
-                                Query ProductsQuery = ProductsRef.orderByChild("tid").equalTo(thefollowingidindex);
-
-
-                                if (ProductsQuery != null) {
-
-                                    FirebaseRecyclerOptions<Products> options =
-                                            new FirebaseRecyclerOptions.Builder<Products>()
-                                                    .setQuery(ProductsQuery, new SnapshotParser<Products>() {
-
-
-                                                        @NonNull
-                                                        @Override
-                                                        public Products parseSnapshot(@NonNull DataSnapshot snapshot) {
-
-
-                                                            if (snapshot.child("categoryname").getValue() != null) {
-                                                                categoryname = snapshot.child("categoryname").getValue(String.class);
-                                                            }
-                                                            if (snapshot.child("date").getValue() != null) {
-                                                                date = snapshot.child("date").getValue(String.class);
-                                                            }
-
-                                                            if (snapshot.child("desc").getValue() != null) {
-                                                                desc = snapshot.child("desc").getValue(String.class);
-                                                            }
-                                                            if (snapshot.child("discount").getValue() != null) {
-                                                                discount = snapshot.child("discount").getValue(String.class);
-                                                            }
-
-                                                            if (snapshot.child("time").getValue() != null) {
-                                                                time = snapshot.child("time").getValue(String.class);
-                                                            }
-
-
-                                                            if (snapshot.child("pimage").getValue() != null) {
-                                                                pimage = snapshot.child("pimage").getValue(String.class);
-                                                            }
-                                                            if (snapshot.child("pname").getValue() != null) {
-                                                                pname = snapshot.child("pname").getValue(String.class);
-                                                            }
-                                                            if (snapshot.child("pid").getValue() != null) {
-                                                                pid = snapshot.child("pid").getValue(String.class);
-                                                            }
-
-                                                            if (snapshot.child("price").getValue() != null) {
-                                                                price = snapshot.child("price").getValue(String.class);
-                                                            }
-
-                                                            if (snapshot.child("image").getValue() != null) {
-                                                                image = snapshot.child("image").getValue(String.class);
-                                                            }
-                                                            if (snapshot.child("name").getValue() != null) {
-                                                                name = snapshot.child("name").getValue(String.class);
-                                                            }
-
-                                                            if (snapshot.child("size").getValue() != null) {
-                                                                size = snapshot.child("size").getValue(String.class);
-                                                            }
-
-                                                            if (snapshot.child("pname").getValue() != null) {
-                                                                pname = snapshot.child("pname").getValue(String.class);
-                                                            }
-
-                                                            if (snapshot.child("pimage").getValue() != null) {
-                                                                pimage = snapshot.child("pimage").getValue(String.class);
-                                                            }
-
-                                                            if (snapshot.child("pid").getValue() != null) {
-                                                                pid = snapshot.child("pid").getValue(String.class);
-                                                            }
-
-                                                            if (snapshot.child("tradername").getValue() != null) {
-                                                                tradername = snapshot.child("tradername").getValue(String.class);
-                                                            }
-
-                                                            if (snapshot.child("traderimage").getValue() != null) {
-                                                                traderimage = snapshot.child("traderimage").getValue(String.class);
-                                                            }
-
-                                                            if (snapshot.child("tid").getValue() != null) {
-                                                                tid = snapshot.child("tid").getValue(String.class);
-                                                            }
-
-                                                            return new Products(categoryname, date, desc, discount, time, pid, pimage, pname, price, image, name, size, tradername, traderimage, tid);
-
-
-                                                        }
-
-                                                    }).build();
-
-
-                                    adapter = new FirebaseRecyclerAdapter<Products, HomeActivityViewHolder>(options) {
-                                        @Override
-                                        public HomeActivityViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-                                            View view = LayoutInflater.from(parent.getContext())
-                                                    .inflate(R.layout.product_items_layout, parent, false);
-
-                                            return new HomeActivityViewHolder(view);
-                                        }
-
-                                        @Override
-                                        public int getItemCount() {
-                                            return super.getItemCount();
-                                        }
-
-                                        @Override
-                                        protected void onBindViewHolder(HomeActivityViewHolder holder, final int position, final Products model) {
-
-
-                                            holder.product_name.setText(pname);
-
-                                            holder.thetraderiknow.setText(tradername);
-
-                                            holder.product_description.setText(desc);
-                                            holder.product_price.setText("Price = " + "$" + price);
-                                            holder.product_discount.setText(discount);
-
-
-                                            //   thetraderimageforproduct
-                                            if (thetraderimageforproduct != null) {
-                                                Picasso.get().load(traderimage).placeholder(R.drawable.profile).into(thetraderimageforproduct);
-                                            }
-                                            if (product_imagehere != null) {
-                                                Picasso.get().load(pimage).placeholder(R.drawable.profile).into(product_imagehere);
-                                            }
-
-                                            holder.setTraderImage(getApplication(), traderimage);
-                                            holder.setImage(getApplicationContext(), pimage);
-
-
-                                            holder.product_imagehere.setOnClickListener(new View.OnClickListener() {
-                                                @Override
-                                                public void onClick(View view) {
-                                                    if (type.equals("Trader")) {
-                                                        Intent intent = new Intent(HomeActivity.this, ProductDetailsActivity.class);
-                                                        if (intent != null) {
-                                                            intent.putExtra("pid", key);
-                                                            intent.putExtra("fromthehomeactivitytraderkey", traderkey);
-                                                            intent.putExtra("fromthehomeactivityname", model.getname());
-                                                            intent.putExtra("fromthehomeactivityprice", model.getprice());
-                                                            intent.putExtra("fromthehomeactivitydesc", model.getdesc());
-                                                            intent.putExtra("fromthehomeactivityname", thetraderhere);
-                                                            intent.putExtra("fromthehomeactivityimage", model.getimage());
-
-                                                        }
-                                                        startActivity(intent);
-                                                    } else {
-                                                        Intent intent = new Intent(HomeActivity.this, ProductDetailsActivity.class);
-                                                        if (intent != null) {
-                                                            intent.putExtra("fromthehomeactivitytoproductdetails", traderkey);
-                                                        }
-                                                        startActivity(intent);
-                                                    }
-                                                }
-                                            });
-
-
-                                            holder.thetraderimageforproduct.setOnClickListener(new View.OnClickListener() {
-                                                @Override
-                                                public void onClick(View view) {
-                                                    if (type.equals("Trader")) {
-                                                        Intent intent = new Intent(HomeActivity.this, TraderProfile.class);
-                                                        intent.putExtra("pid", key);
-                                                        intent.putExtra("fromhomeactivitytotraderprofile", traderkey);
-
-                                                        startActivity(intent);
-                                                    } else {
-                                                        Intent intent = new Intent(HomeActivity.this, TraderProfile.class);
-                                                        intent.putExtra("pid", key);
-                                                        intent.putExtra("fromhomeactivitytotraderprofile", traderkey);
-
-                                                        startActivity(intent);
-                                                    }
-
-                                                }
-
-                                            });
-
-
-                                        }
-
-
-                                    };
-
-                                }
-
-                            }
-
-                        }
-
-
-                    }
-
-                }
-
-            }
-
-
-
-
-
-
-
-
-
-
-
-
+            }}
 
 
 
