@@ -10,6 +10,8 @@ import com.denzcoskun.imageslider.constants.ScaleTypes;
 import com.denzcoskun.imageslider.interfaces.ItemClickListener;
 import com.denzcoskun.imageslider.models.SlideModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
@@ -164,7 +166,7 @@ public  class  HomeActivity extends AppCompatActivity
     ImageButton  expectedshipping;
     ImageButton       clientprofile;
     String categoryname, date, desc, discount, time, pid, pimage, pname, price, image, name, size, tradername, tid;
-    android.widget.ImageView product_imagehere;
+   \
     android.widget.ImageView thetraderimageforproduct;
 
 
@@ -228,6 +230,16 @@ public  class  HomeActivity extends AppCompatActivity
     ArrayList<String> secondfollowingidimageList = new ArrayList<>();
 
 
+   android.widget.ImageView thetraderimagehere;
+    android.widget.ImageView product_imagehere;
+    TextView product_name;
+    TextView product_price;
+    TextView discounts;
+    TextView thetradernamegiven;
+    TextView categoryhere;
+    TextView likenumberhere;
+    TextView descriptionhere;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -272,6 +284,7 @@ public  class  HomeActivity extends AppCompatActivity
             LinearLayoutManager layoutManager = new LinearLayoutManager(this);
             if (recyclerView != null) {
                 recyclerView.setLayoutManager(layoutManager);
+                recyclerView.setLayoutManager(new GridLayoutManager(this, 3));
             }
      /*  if (recyclerView != null) {
             recyclerView.setHasFixedSize(true);
@@ -280,12 +293,17 @@ public  class  HomeActivity extends AppCompatActivity
 */
 
 
-            thetraderview = findViewById(R.id.thetraderiknow);
 
-            product_imagehere = (ImageView) findViewById(R.id.product_imagehere);
-            thetraderimageforproduct = (ImageView) findViewById(R.id.thetraderimageforproduct);
-            thefollowerid = (TextView) findViewById(R.id.thefollowerid);
-            product_discount = (TextView) findViewById(R.id.product_discount);
+            thetraderimagehere = (android.widget.ImageView)findViewById(R.id.thetraderimagehere);
+            product_imagehere = (android.widget.ImageView)findViewById(R.id.product_imagehere);
+            product_name =(TextView) findViewById(R.id.product_name);
+            product_price = (TextView) findViewById(R.id.product_price);
+            discounts =(TextView) findViewById(R.id.discount);
+            thetradernamegiven =(TextView) findViewById(R.id.thetradername);
+            categoryhere = (TextView) findViewById(R.id.category);
+            likenumberhere = (TextView) findViewById(R.id.likenumber);
+            descriptionhere = (TextView) findViewById(R.id.description);
+
 
 
             movetonext = findViewById(R.id.movetonext);
@@ -293,6 +311,9 @@ public  class  HomeActivity extends AppCompatActivity
             suggestionsbutton = findViewById(R.id.suggestionsbutton);
             services = findViewById(R.id.services);
             expectedshipping = findViewById(R.id.expectedshipping);
+
+
+
             Paper.init(this);
 
             Toolbar toolbar = (Toolbar) findViewById(R.id.hometoolbar);
@@ -924,13 +945,16 @@ public  class  HomeActivity extends AppCompatActivity
         //product_description
         //thetraderiknow
 
-        public TextView product_name;
-        public TextView product_price;
-        public TextView product_discount;
-        public TextView product_description;
-        public TextView thetraderiknow;
+       public android.widget.ImageView   thetraderimagehere;
+       public android.widget.ImageView product_imagehere;
+       public TextView product_name;
+       public TextView product_price;
+       public TextView discounts;
+       public  TextView descriptionhere;
+       public TextView thetradernamegiven;
+       public TextView categoryhere;
+        public TextView likenumberhere;
 
-        public android.widget.ImageView product_imagehere;
         public android.widget.ImageView thetraderimageforproduct;
         public ItemClickListner listner;
 
@@ -945,15 +969,17 @@ public  class  HomeActivity extends AppCompatActivity
             //thetraderiknow
 
 
-            product_name = itemView.findViewById(R.id.product_name);
-            product_price = itemView.findViewById(R.id.product_price);
-            product_description = itemView.findViewById(R.id.product_description);
-            thetraderiknow = itemView.findViewById(R.id.thetraderiknow);
-            product_discount = itemView.findViewById(R.id.product_discount);
 
-            //cartimage referst to the trader of the product
-            product_imagehere = itemView.findViewById(R.id.product_imagehere);
-            thetraderimageforproduct = itemView.findViewById(R.id.thetraderimageforproduct);
+            thetraderimagehere = itemView.findViewById(R.id.thetraderimagehere);
+             product_imagehere= itemView.findViewById(R.id.product_imagehere);;
+             product_name= itemView.findViewById(R.id.product_name);
+             product_price= itemView.findViewById(R.id.product_price);
+             discounts= itemView.findViewById(R.id.discount);
+              descriptionhere =itemView.findViewById(R.id.description);
+             thetradernamegiven= itemView.findViewById(R.id.thetradername);
+             categoryhere= itemView.findViewById(R.id.category);
+            likenumberhere= itemView.findViewById(R.id.likenumber);
+
 
 
         }
@@ -974,24 +1000,39 @@ public  class  HomeActivity extends AppCompatActivity
 
         public void settradername(String tradername) {
 
-            thetraderiknow.setText(tradername);
+            thetradernamegiven.setText(tradername);
         }
 
 
-        public void setcartdescriptionhere(String currentdescription) {
+        public void setdescription(String currentdescription) {
 
-            product_description.setText(currentdescription);
+            descriptionhere.setText(currentdescription);
         }
 
         public void setproduct_discount(String product_discount1) {
 
             product_discount.setText(product_discount1);
         }
+        public void setcategoryhere(String category) {
 
+            categoryhere.setText(category);
+        }
+
+        public void setLikenumber(String likenumber) {
+
+            likenumberhere.setText(likenumber);
+        }
+
+        public void setdicounts(String discount) {
+
+            discounts.setText(discount);
+        }
+
+        //like, discount, category
         public void setTraderImage(final Context ctx, final String image) {
-            final android.widget.ImageView thetraderimageforproduct = (android.widget.ImageView) itemView.findViewById(R.id.thetraderimageforproduct);
+            final android.widget.ImageView thetraderimagehere = (android.widget.ImageView) itemView.findViewById(R.id.thetraderimagehere);
 
-            Picasso.get().load(image).resize(400, 0).networkPolicy(NetworkPolicy.OFFLINE).into(thetraderimageforproduct, new Callback() {
+            Picasso.get().load(image).resize(400, 0).networkPolicy(NetworkPolicy.OFFLINE).into(thetraderimagehere, new Callback() {
 
 
                 @Override
@@ -1001,7 +1042,7 @@ public  class  HomeActivity extends AppCompatActivity
 
                 @Override
                 public void onError(Exception e) {
-                    Picasso.get().load(image).resize(100, 0).into(thetraderimageforproduct);
+                    Picasso.get().load(image).resize(100, 0).into(thetraderimagehere);
                 }
 
 
@@ -1193,8 +1234,11 @@ public  class  HomeActivity extends AppCompatActivity
                                                     if (snapshot.child("tid").getValue() != null) {
                                                         tid = snapshot.child("tid").getValue(String.class);
                                                     }
+                                                    if (snapshot.child("number").getValue() != null) {
+                                                        number = snapshot.child("number").getValue(String.class);
+                                                    }
 
-                                                    return new Products(categoryname, date, desc, discount, time, pid, pimage, pname, price, image, name, size, tradername, traderimage, tid);
+                                                    return new Products(categoryname, date, desc, discount, time, pid, pimage, pname, price, image, name, size, tradername, traderimage, tid, number);
 
 
                                                 }
@@ -1220,18 +1264,20 @@ public  class  HomeActivity extends AppCompatActivity
                                 protected void onBindViewHolder(HomeActivityViewHolder holder, final int position, final Products model) {
 
 
-                                    holder.product_name.setText(pname);
 
-                                    holder.thetraderiknow.setText(tradername);
 
-                                    holder.product_description.setText(desc);
-                                    holder.product_price.setText("Price = " + "$" + price);
-                                    holder.product_discount.setText(discount);
+                                    holder.product_price.setText("GHS" + price);
+                                    holder.discounts.setText(discount);
+                                    holder.descriptionhere.setText(desc);
+                                    holder.thetradernamegiven.setText(tradername);
 
+                                    holder.categoryhere.setText(categoryname);
+
+                                    holder.likenumberhere.setText(number);
 
                                     //   thetraderimageforproduct
-                                    if (thetraderimageforproduct != null) {
-                                        Picasso.get().load(traderimage).placeholder(R.drawable.profile).into(thetraderimageforproduct);
+                                    if (thetraderimagehere != null) {
+                                        Picasso.get().load(traderimage).placeholder(R.drawable.profile).into(thetraderimagehere);
                                     }
                                     if (product_imagehere != null) {
                                         Picasso.get().load(pimage).placeholder(R.drawable.profile).into(product_imagehere);
@@ -1247,20 +1293,17 @@ public  class  HomeActivity extends AppCompatActivity
                                             if (type.equals("Trader")) {
                                                 Intent intent = new Intent(HomeActivity.this, ProductDetailsActivity.class);
                                                 if (intent != null) {
-                                                    intent.putExtra("pid", key);
-                                                    intent.putExtra("fromthehomeactivitytraderkey", traderkey);
-                                                    intent.putExtra("fromthehomeactivityname", model.getname());
-                                                    intent.putExtra("fromthehomeactivityprice", model.getprice());
-                                                    intent.putExtra("fromthehomeactivitydesc", model.getdesc());
-                                                    intent.putExtra("fromthehomeactivityname", thetraderhere);
-                                                    intent.putExtra("fromthehomeactivityimage", model.getimage());
-
+                                                    intent.putExtra("pid", pid);
+                                                    intent.putExtra("userID", userID);
+                                                    intent.putExtra("role", role);
                                                 }
                                                 startActivity(intent);
                                             } else {
                                                 Intent intent = new Intent(HomeActivity.this, ProductDetailsActivity.class);
                                                 if (intent != null) {
-                                                    intent.putExtra("fromthehomeactivitytoproductdetails", traderkey);
+                                                    intent.putExtra("pid", pid);
+                                                    intent.putExtra("userID", userID);
+                                                    intent.putExtra("role", role);
                                                 }
                                                 startActivity(intent);
                                             }
@@ -1273,14 +1316,16 @@ public  class  HomeActivity extends AppCompatActivity
                                         public void onClick(View view) {
                                             if (type.equals("Trader")) {
                                                 Intent intent = new Intent(HomeActivity.this, TraderProfile.class);
-                                                intent.putExtra("pid", key);
-                                                intent.putExtra("fromhomeactivitytotraderprofile", traderkey);
+                                                intent.putExtra("pid", pid);
+                                                intent.putExtra("userID", userID);
+                                                intent.putExtra("role", role);
 
                                                 startActivity(intent);
                                             } else {
                                                 Intent intent = new Intent(HomeActivity.this, TraderProfile.class);
-                                                intent.putExtra("pid", key);
-                                                intent.putExtra("fromhomeactivitytotraderprofile", traderkey);
+                                                intent.putExtra("pid", pid);
+                                                intent.putExtra("userID", userID);
+                                                intent.putExtra("role", role);
 
                                                 startActivity(intent);
                                             }
