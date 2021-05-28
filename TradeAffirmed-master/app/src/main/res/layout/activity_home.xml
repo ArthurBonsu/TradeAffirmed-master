@@ -8,21 +8,28 @@
      >
  <!-- THIS CONTAINS A RECYCLER VIEW AND FLOATING BUTTON-->
     <!--侧边栏样式-->
-<LinearLayout
+    <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:layout_marginTop="60sp">
+    android:layout_marginTop="60sp"
+    android:id="@+id/themainproductview">
 
 <!--https://github.com/denzcoskun/ImageSlideshow-->
  <!--https://www.youtube.com/watch?v=KkhFsZIp70I-->
-    <LinearLayout
+
+
+        <HorizontalScrollView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+        <LinearLayout
         android:id="@+id/servicelayoutposition"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_marginTop="5sp"
         >
+
         <ImageButton
             android:layout_width="70sp"
             android:layout_height="70sp"
@@ -74,56 +81,48 @@
 
 
     </LinearLayout>
-    <LinearLayout
-        android:id="@+id/servicelayoutposition2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginTop="5sp">
-
-        <ImageButton
-            android:layout_width="70sp"
-            android:layout_height="70sp"
-            android:src="@drawable/searchbutton"
-            android:id="@+id/shoppingmallservices">
-
-        </ImageButton>
-     <!-- FORWARD FOR THE MORE SERVICES -->
-        <ImageButton
-            android:layout_width="70sp"
-            android:layout_height="70sp"
-            android:src="@drawable/searchbutton"
-            android:id="@+id/shoppingmallservices">
-
-        </ImageButton>
-    </LinearLayout>
+    </HorizontalScrollView>
+    <!-- SERVICE HORIZONTAL SCROLL -->
 
     <!-- https://github.com/denzcoskun/ImageSlideshow -->
-    <LinearLayout
+
+
+        <LinearLayout
         android:id="@+id/bannerlayoutforservice"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_marginTop="5sp">
+        android:layout_marginTop="5sp"
+           android:layout_below ="@+id/servicelayoutposition">
 
         <com.denzcoskun.imageslider.ImageSlider
-            android:id="@+id/image_slider"
-            android:layout_width="match_parent"
-            android:layout_height="150sp"
-            android:layout_marginBottom="5sp"
+            android:id="@+id/serviceadslider"
+            android:layout_width="wrap_content"
+            android:layout_height="150dp"
+            android:layout_marginBottom="431dp"
             app:iss_auto_cycle="true"
             app:iss_delay="0"
             app:iss_period="1000"
-             />
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
     </LinearLayout>
+
+    <!--PRODUCT PAGE LAYOUT -->
+
     <LinearLayout
         android:id="@+id/clientdproductdisplaylayout"
+        android:layout_below ="@+id/bannerlayoutforservice"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_marginTop="10sp">
-
+        android:layout_marginTop="10sp"
+        >
+        <ScrollView
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content">
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/clienthomeactivityrecyclerview"
             android:layout_width="match_parent"
@@ -132,10 +131,63 @@
 
 
         </androidx.recyclerview.widget.RecyclerView>
+        </ScrollView>
+    </LinearLayout>
+
+
+
+
+
+</LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/navigationalbuttonshere"
+        android:layout_below="@+id/themainproductview"
+        android:orientation="horizontal">
+
+
+        <ImageButton
+            android:layout_width="80sp"
+            android:layout_height="80sp"
+            android:src="@drawable/home_icon"
+            android:id="@+id/homebutton"
+            android:scaleType="fitCenter"></ImageButton>
+
+        <ImageButton
+            android:layout_width="80sp"
+            android:layout_height="80sp"
+            android:src="@drawable/home_icon"
+            android:scaleType="fitCenter"
+            android:id="@+id/suggestionsbutton"></ImageButton>
+
+
+        <ImageButton
+            android:layout_width="80sp"
+            android:layout_height="80sp"
+            android:src="@drawable/home_icon"
+            android:scaleType="fitCenter"
+            android:id="@+id/services"></ImageButton>
+
+        <ImageButton
+            android:layout_width="80sp"
+            android:layout_height="80sp"
+            android:src="@drawable/home_icon"
+            android:scaleType="fitCenter"
+            android:id="@+id/expectedshipping"
+            ></ImageButton>
+        <ImageButton
+            android:layout_width="80sp"
+            android:layout_height="80sp"
+            android:src="@drawable/home_icon"
+            android:scaleType="fitCenter"
+            android:id="@+id/clientprofile"></ImageButton>
+
 
     </LinearLayout>
 
-</LinearLayout>
+
    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="250dp"
         android:layout_height="700dp">
@@ -170,18 +222,7 @@
                 app:menu="@menu/activity_home_drawer" >
 
 
-                <com.denzcoskun.imageslider.ImageSlider
-                    android:id="@+id/serviceadslider"
-                    android:layout_width="wrap_content"
-                    android:layout_height="300dp"
-                    android:layout_marginBottom="431dp"
-                    app:iss_auto_cycle="true"
-                    app:iss_delay="0"
-                    app:iss_period="1000"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+
             </com.google.android.material.navigation.NavigationView>
 
 
@@ -235,5 +276,7 @@
 
 
     </com.rey.material.widget.FloatingActionButton>
+
+
 </FrameLayout>
 

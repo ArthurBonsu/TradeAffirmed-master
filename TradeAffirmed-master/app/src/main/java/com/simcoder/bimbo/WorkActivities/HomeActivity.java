@@ -4,6 +4,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
+
+import com.denzcoskun.imageslider.ImageSlider;
+import com.denzcoskun.imageslider.constants.ScaleTypes;
+import com.denzcoskun.imageslider.interfaces.ItemClickListener;
+import com.denzcoskun.imageslider.models.SlideModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -19,8 +24,11 @@ import androidx.appcompat.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.ui.database.SnapshotParser;
 import com.google.android.gms.auth.api.Auth;
@@ -52,6 +60,7 @@ import com.simcoder.bimbo.Admin.ViewYourPersonalProduct;
 import com.simcoder.bimbo.DriverMapActivity;
 import com.simcoder.bimbo.HistoryActivity;
 import com.simcoder.bimbo.Interface.ItemClickListner;
+import com.simcoder.bimbo.MainActivity;
 import com.simcoder.bimbo.Model.Products;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
@@ -74,9 +83,9 @@ import io.paperdb.Paper;
 
 public  class  HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-    DatabaseReference ProductsRef;
+
     private DatabaseReference Userdetails;
-    private DatabaseReference ProductsRefwithproduct;
+
     private RecyclerView recyclerView;
     RecyclerView.LayoutManager layoutManager;
     DatabaseReference TraderDetails;
@@ -90,7 +99,11 @@ public  class  HomeActivity extends AppCompatActivity
     String ProductID;
     FirebaseDatabase myfirebaseDatabase;
     FirebaseDatabase FollowerDatabase;
+    FirebaseDatabase ProductsFirebaseDatabase;
 
+    DatabaseReference ProductDatabase;
+    DatabaseReference ProductsRef;
+    FirebaseDatabase myproductfirebaseDatabaseRef;
 
     public FirebaseRecyclerAdapter adapter;
     String thetraderkey;
@@ -116,6 +129,7 @@ public  class  HomeActivity extends AppCompatActivity
     String traderimage;
     FirebaseUser user;
     Query QueryFollowingsshere;
+    Query ProductsQuery;
     String followingid;
     String followingname;
     String followingimage;
@@ -140,6 +154,15 @@ public  class  HomeActivity extends AppCompatActivity
 
     //product_description
     //thetraderiknow
+
+
+    // Footers
+    ImageButton movetonext;
+    ImageButton homebutton;
+    ImageButton suggestionsbutton;
+    ImageButton       services;
+    ImageButton  expectedshipping;
+    ImageButton       clientprofile;
     String categoryname, date, desc, discount, time, pid, pimage, pname, price, image, name, size, tradername, tid;
     android.widget.ImageView product_imagehere;
     android.widget.ImageView thetraderimageforproduct;
@@ -153,7 +176,7 @@ public  class  HomeActivity extends AppCompatActivity
     String followername;
     String followerimage;
     String followeridimage;
-
+    String number;
     ArrayList<String> followeridList;
     ArrayList<String> followeridnameList;
     ArrayList<String> followeridimageList;
@@ -173,35 +196,22 @@ public  class  HomeActivity extends AppCompatActivity
     ArrayList<String> thefollowingidimageList;
 
 
-
-
     FirebaseDatabase TheLikesDatabase;
     DatabaseReference TheLikesDatabaseReference;
     Query TheLikesQuery;
 
 
-
-        String thelikeid;
-        String thelikerid;
-        String thelikername;
-         String thelikerimage;
-
-
-         ArrayList<String> thelikeidList;
-        ArrayList<String> thelikeridnameList;
-        ArrayList<String> thelikernameList;
-        ArrayList<String> thelikeridimageList;
+    String thelikeid;
+    String thelikerid;
+    String thelikername;
+    String thelikerimage;
 
 
-
-    String thefollowingidindex;
-
-
-    ProductDatabase = FirebaseDatabase.getInstance();
-    ProductDatabaseReference = FollowerDatabase.getReference().child("Product");
-            ProductDatabaseReference.keepSynced(true);
-    ProductShowReference = ProductDatabaseReference.orderByChild("tid").equalTo(thefollowingidindex);
-            ProductShowReference.addValueEventListener(new ValueEventListener() {
+    ArrayList<String> thelikeidList;
+    ArrayList<String> thelikeridnameList;
+    ArrayList<String> thelikernameList;
+    ArrayList<String> thelikeridimageList;
+    ImageSlider mainslider;
 
     public interface Getmyfollowings {
 
@@ -276,6 +286,13 @@ public  class  HomeActivity extends AppCompatActivity
             thetraderimageforproduct = (ImageView) findViewById(R.id.thetraderimageforproduct);
             thefollowerid = (TextView) findViewById(R.id.thefollowerid);
             product_discount = (TextView) findViewById(R.id.product_discount);
+
+
+            movetonext = findViewById(R.id.movetonext);
+            homebutton = findViewById(R.id.homebutton);
+            suggestionsbutton = findViewById(R.id.suggestionsbutton);
+            services = findViewById(R.id.services);
+            expectedshipping = findViewById(R.id.expectedshipping);
             Paper.init(this);
 
             Toolbar toolbar = (Toolbar) findViewById(R.id.hometoolbar);
@@ -444,15 +461,582 @@ public  class  HomeActivity extends AppCompatActivity
                     }
                 }
 
-
-
-                getFollowers();
-                getFollowings();
-                getLikes();
-                showProducts();
             }
 
+            getFollowers();
+            getFollowings();
+            getLikes();
+            showProducts();
         }
+
+        // IMAGE SLIDER
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+        mainslider=(ImageSlider)findViewById(R.id.serviceadslider);
+        final List<SlideModel> remoteimages=new ArrayList<>();
+
+        FirebaseDatabase.getInstance().getReference().child("Slider")
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot)
+                    {
+                        for(DataSnapshot data:dataSnapshot.getChildren())
+                            remoteimages.add(new SlideModel(data.child("url").getValue().toString(),data.child("title").getValue().toString(), ScaleTypes.FIT));
+
+                        mainslider.setImageList(remoteimages,ScaleTypes.FIT);
+                        mainslider.setScrollBarFadeDuration(1);
+
+
+                        mainslider.setItemClickListener(new ItemClickListener() {
+                            @Override
+                            public void onItemSelected(int i) {
+                                Toast.makeText(getApplicationContext(),remoteimages.get(i).getTitle().toString(),Toast.LENGTH_SHORT).show();
+                            }
+                        });
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+
+
+
+
+        clientprofile = findViewById(R.id.movetonext);
+        expectedshipping  = findViewById(R.id.expectedshipping);
+        suggestionsbutton = findViewById(R.id.suggestionsbutton);
+        services = findViewById(R.id.services);
+
+        homebutton = findViewById(R.id.homebutton);
+
+        clientprofile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(HomeActivity.this, CustomerProfile.class);
+                startActivity(intent);
+                finish();
+
+                return;
+        };
+
+        });
+
+            expectedshipping.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(HomeActivity.this, Shipping.class);
+                startActivity(intent);
+                finish();
+
+                return;
+            };
+
+        });
+
+            homebutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(HomeActivity.this, HomeActivity.class);
+                startActivity(intent);
+                finish();
+
+                return;
+            };
+
+        });
+
+            suggestionsbutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(HomeActivity.this, Suggestions.class);
+                startActivity(intent);
+                finish();
+
+                return;
+            };
+
+        });
+ // We have to replace the list of services there as well, so people can visit the services
+            services.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(HomeActivity.this, Services.class);
+                startActivity(intent);
+                finish();
+
+                return;
+            };
+
+        });
+
+
+
+
+        }
+
+
+    /*
+    public void getFollowings() {
+
+        FirebaseDatabase.getInstance().getReference().child("Following").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                followingidList.clear();
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    followingidList.add((snapshot.getKey()));
+                }
+
+                showUsers();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+    }
+
+*/
+    public void getFollowers() {
+
+
+        FollowerDatabase = FirebaseDatabase.getInstance();
+        FollowerDatabaseReference = FollowerDatabase.getReference().child("Followers");
+        FollowerDatabaseReference.keepSynced(true);
+        QueryFollowershere = FollowerDatabaseReference.orderByChild("uid").equalTo(userid);
+        QueryFollowershere.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                // Name of trader being followed
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                    if (ds.child("uid").getValue() != null) {
+                        followerid = ds.child("tid").getValue(String.class);
+                    }
+
+                    if (ds.child("name").getValue() != null) {
+                        followername = ds.child("name").getValue(String.class);
+                    }
+                    if (ds.child("image").getValue() != null) {
+                        followerimage = ds.child("image").getValue(String.class);
+                    }
+
+                    followeridList.add(followerid);
+                    followeridnameList.add(followeridname);
+                    followeridimageList.add(followerimage);
+/*
+                    Log.d("Followers Well", followeridList + followeridnameList + followeridimageList);
+                    thefolloweridgrabber = followingid;
+
+                    Log.d("Followersgrabber", thefolloweridgrabber);
+
+                    thefollowerstepper = thefolloweridgrabber;
+                    Log.d("Followerstepper", thefollowerstepper);
+
+                    if (getmyfollowingsagain != null) {
+                        if (followingid != null && followingname != null && followingimage != null) {
+
+                            getmyfollowingsagain.onCallback(followingid, followingname, followingimage);
+                            getmyfollowingsagain.onfollowining(followingid);
+
+                        }
+  */
+
+                }
+            }
+
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+
+
+        });
+    }
+
+    // we get the followers
+    // FOR THIS PAGE WE JUST WANT TO GET THE FOLLOWING LIST
+    public void getFollowings() {
+
+
+        TheFollowingsDatabase = FirebaseDatabase.getInstance();
+        TheFollowingsDatabaseReference = TheFollowingsDatabase.getReference().child("Following");
+        TheFollowingsDatabaseReference.keepSynced(true);
+        TheFollowingsQueryFollowingshere = TheFollowingsDatabaseReference.orderByChild("uid").equalTo(userid);
+        TheFollowingsQueryFollowingshere.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                // Name of trader being followed
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                    if (ds.child("tid").getValue() != null) {
+                        thefollowingsid = ds.child("tid").getValue(String.class);
+                    }
+
+                    if (ds.child("tradername").getValue() != null) {
+                        thefollowingsname = ds.child("tradername").getValue(String.class);
+                    }
+                    if (ds.child("traderimage").getValue() != null) {
+                        thefollowingsimage = ds.child("traderimage").getValue(String.class);
+                    }
+
+                    thefollowingidList.add(thefollowingsid);
+                    thefollowingidnameList.add(thefollowingsname);
+                    thefollowingidimageList.add(thefollowingsimage);
+
+                    fetch();
+
+                    /*
+                    Log.d("Following People", thefollowingsid + thefollowingsname + thefollowingsimage);
+                    thefolloweridgrabber = thefollowingsid;
+
+                    Log.d("Followinigrabber", thefolloweridgrabber);
+
+                    thefollowerstepper = thefolloweridgrabber;
+                    Log.d("Followingstepper", thefollowerstepper);
+
+                    if (getmyfollowingsagain != null) {
+                        if (thefollowingsid != null && thefollowingsname != null && thefollowingsimage != null) {
+
+                            getmyfollowingsagain.onCallback(thefollowingsid, thefollowingsname, thefollowingsimage);
+                            getmyfollowingsagain.onfollowining(thefollowingsid);
+
+                        }
+
+                    }
+*/                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+
+
+        });
+    }
+
+
+    // NUMBER OF LIKES OF FOLLOWER
+    // we get the people that have liked us
+    public void getLikes() {
+
+
+        TheLikesDatabase = FirebaseDatabase.getInstance();
+        TheLikesDatabaseReference = TheLikesDatabase.getReference().child("Likes");
+        TheLikesDatabaseReference.keepSynced(true);
+        TheLikesQuery= TheLikesDatabaseReference.orderByChild("uid").equalTo(userid);
+        TheLikesQuery.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                // Name of trader being followed
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                    if (ds.child("tid").getValue() != null) {
+                        thelikeid = ds.child("tid").getValue(String.class);
+                    }
+
+                    if (ds.child("tid").getValue() != null) {
+                        thelikerid = ds.child("tid").getValue(String.class);
+                    }
+
+                    if (ds.child("tradername").getValue() != null) {
+                        thelikername = ds.child("tradername").getValue(String.class);
+                    }
+                    if (ds.child("traderimage").getValue() != null) {
+                        thelikerimage = ds.child("traderimage").getValue(String.class);
+                    }
+
+                    thelikeidList.add(thefollowingsid);
+                    thelikeridnameList.add(thefollowingsname);
+                    thelikernameList.add(thefollowingsimage);
+                    thelikeridimageList.add(thefollowingsimage);
+
+                    /*
+                    Log.d("Following People", thefollowingsid + thefollowingsname + thefollowingsimage);
+                    thefolloweridgrabber = thefollowingsid;
+
+                    Log.d("Followinigrabber", thefolloweridgrabber);
+
+                    thefollowerstepper = thefolloweridgrabber;
+                    Log.d("Followingstepper", thefollowerstepper);
+
+                    if (getmyfollowingsagain != null) {
+                        if (thefollowingsid != null && thefollowingsname != null && thefollowingsimage != null) {
+
+                            getmyfollowingsagain.onCallback(thefollowingsid, thefollowingsname, thefollowingsimage);
+                            getmyfollowingsagain.onfollowining(thefollowingsid);
+
+                        }
+
+                    }
+                    */
+                }
+
+            }
+            //get the trader// traderkey
+            // orderfoodpostofproduct
+            // reschedule, or randomize
+            //the likes of each food
+
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+
+
+        });
+
+    }
+
+
+/*
+
+    public void getLikes() {
+
+        FirebaseDatabase.getInstance().getReference().child("Likes").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                likesidList.clear();
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    likesidList.add((snapshot.getKey()));
+                }
+
+                showUsers();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+*/
+
+/*
+    public void showUsers() {
+
+        FirebaseDatabase.getInstance().getReference().child("Users").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                mUsers.
+                clear();
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    User user = snapshot.getValue(User.class);
+
+                    for  (i=0; i< followingidList i++) {
+                        if (user.getuid().equals(uid)) {
+                            mUsers.add(user);
+                        }
+                    }
+                }
+                Log.d("list f", mUsers.toString());
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+    }
+
+*/
+
+
+
+
+    public void showProducts() {
+
+        for (int i = 0; i < thefollowingidList.size(); i++) {
+
+            thefollowingidindex = thefollowingidList.get(i);
+            ProductsFirebaseDatabase = FirebaseDatabase.getInstance();
+            ProductsRef = ProductsFirebaseDatabase.getReference().child("Products");
+            ProductsRef.keepSynced(true);
+            ProductsQuery = ProductsRef.orderByChild("tid").equalTo(thefollowingidindex);
+            ProductsQuery.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    // Name of trader being followed
+                    for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                        if (ds.child("pid").getValue() != null) {
+                            pid = ds.child("pid").getValue(String.class);
+                        }
+
+                        if (ds.child("tradername").getValue() != null) {
+                            pname = ds.child("tradername").getValue(String.class);
+                        }
+                        if (ds.child("traderimage").getValue() != null) {
+                            pimage = ds.child("traderimage").getValue(String.class);
+                        }
+
+                        if (ds.child("traderimage").getValue() != null) {
+                            price = ds.child("traderimage").getValue(String.class);
+                        }
+                        if (ds.child("traderimage").getValue() != null) {
+                            tid = ds.child("traderimage").getValue(String.class);
+                        }
+                        if (ds.child("traderimage").getValue() != null) {
+                            tradername = ds.child("traderimage").getValue(String.class);
+                        }
+
+                        if (ds.child("traderimage").getValue() != null) {
+                            traderimage = ds.child("traderimage").getValue(String.class);
+                        }
+
+                        if (ds.child("number").getValue() != null) {
+                            number = ds.child("number").getValue(String.class);
+                        }
+
+
+                    }
+
+
+
+                }
+
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+
+
+            });
+        }
+        //MERGING THIS WITH MULTIPLE TREEES
+    }
+
+    public class HomeActivityViewHolder extends RecyclerView.ViewHolder {
+        public LinearLayout root;
+
+        //product_name
+        // product_imagehere
+        //  product_price
+
+        //product_description
+        //thetraderiknow
+
+        public TextView product_name;
+        public TextView product_price;
+        public TextView product_discount;
+        public TextView product_description;
+        public TextView thetraderiknow;
+
+        public android.widget.ImageView product_imagehere;
+        public android.widget.ImageView thetraderimageforproduct;
+        public ItemClickListner listner;
+
+        public HomeActivityViewHolder(View itemView) {
+            super(itemView);
+
+            //product_name
+            // product_imagehere
+            //  product_price
+
+            //product_description
+            //thetraderiknow
+
+
+            product_name = itemView.findViewById(R.id.product_name);
+            product_price = itemView.findViewById(R.id.product_price);
+            product_description = itemView.findViewById(R.id.product_description);
+            thetraderiknow = itemView.findViewById(R.id.thetraderiknow);
+            product_discount = itemView.findViewById(R.id.product_discount);
+
+            //cartimage referst to the trader of the product
+            product_imagehere = itemView.findViewById(R.id.product_imagehere);
+            thetraderimageforproduct = itemView.findViewById(R.id.thetraderimageforproduct);
+
+
+        }
+
+        public void setItemClickListner(ItemClickListner listner) {
+            this.listner = listner;
+        }
+
+        public void setcurrentproductname(String currentproductname) {
+
+            product_name.setText(currentproductname);
+        }
+
+        public void setproductprice(String price) {
+
+            product_price.setText(price);
+        }
+
+        public void settradername(String tradername) {
+
+            thetraderiknow.setText(tradername);
+        }
+
+
+        public void setcartdescriptionhere(String currentdescription) {
+
+            product_description.setText(currentdescription);
+        }
+
+        public void setproduct_discount(String product_discount1) {
+
+            product_discount.setText(product_discount1);
+        }
+
+        public void setTraderImage(final Context ctx, final String image) {
+            final android.widget.ImageView thetraderimageforproduct = (android.widget.ImageView) itemView.findViewById(R.id.thetraderimageforproduct);
+
+            Picasso.get().load(image).resize(400, 0).networkPolicy(NetworkPolicy.OFFLINE).into(thetraderimageforproduct, new Callback() {
+
+
+                @Override
+                public void onSuccess() {
+
+                }
+
+                @Override
+                public void onError(Exception e) {
+                    Picasso.get().load(image).resize(100, 0).into(thetraderimageforproduct);
+                }
+
+
+            });
+        }
+
+
+        public void setImage(final Context ctx, final String image) {
+            product_imagehere = (android.widget.ImageView) itemView.findViewById(R.id.product_imagehere);
+            if (image != null) {
+                if (product_imagehere != null) {
+
+                    //
+                    Picasso.get().load(image).resize(400, 0).networkPolicy(NetworkPolicy.OFFLINE).into(product_imagehere, new Callback() {
+
+
+                        @Override
+                        public void onSuccess() {
+
+                        }
+
+                        @Override
+                        public void onError(Exception e) {
+                            Picasso.get().load(image).resize(100, 0).into(product_imagehere);
+                        }
+
+
+                    });
+
+                }
+
+            }
+        }
+
+
     }
 
     public void fetch () {
@@ -462,9 +1046,7 @@ public  class  HomeActivity extends AppCompatActivity
             user = mAuth.getCurrentUser();
             if (user != null) {
                 userid = user.getUid();
-                ProductsRef = FirebaseDatabase.getInstance().getReference().child("Product");
-                ProductsRef.keepSynced(true);
-                productkey = ProductsRef.getKey();
+
 
 
 
@@ -520,12 +1102,16 @@ public  class  HomeActivity extends AppCompatActivity
                     // No. has to give the whole population details of the product
 */
 
-                for (int i = 0; i < secondfollowingidList.size(); i++) {
+                for (int i = 0; i < thefollowingidList.size(); i++) {
 
-                    thefollowingidindex = followeridList.get(i);
+                    thefollowingidindex = thefollowingidList.get(i);
+                    ProductsFirebaseDatabase = FirebaseDatabase.getInstance();
+                    ProductsRef = ProductsFirebaseDatabase.getReference().child("Product");
+                    ProductsRef.keepSynced(true);
 
                     if (ProductsRef != null) {
-                        Query ProductsQuery = ProductsRef.orderByChild("tid").equalTo(thefollowingidindex);
+                        ProductsQuery = ProductsRef.orderByChild("tid").equalTo(thefollowingidindex);
+
 
 
                         if (ProductsQuery != null) {
@@ -722,340 +1308,6 @@ public  class  HomeActivity extends AppCompatActivity
 
     }
 
-
-
-
-
-    /*
-    public void getFollowings() {
-
-        FirebaseDatabase.getInstance().getReference().child("Following").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                followingidList.clear();
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    followingidList.add((snapshot.getKey()));
-                }
-
-                showUsers();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-
-    }
-
-*/
-    public void getFollowers() {
-
-
-        FollowerDatabase = FirebaseDatabase.getInstance();
-        FollowerDatabaseReference = FollowerDatabase.getReference().child("Followers");
-        FollowerDatabaseReference.keepSynced(true);
-        QueryFollowershere = FollowerDatabaseReference.orderByChild("uid").equalTo(userid);
-        QueryFollowershere.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                // Name of trader being followed
-                for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                    if (ds.child("uid").getValue() != null) {
-                        followerid = ds.child("tid").getValue(String.class);
-                    }
-
-                    if (ds.child("name").getValue() != null) {
-                        followername = ds.child("name").getValue(String.class);
-                    }
-                    if (ds.child("image").getValue() != null) {
-                        followerimage = ds.child("image").getValue(String.class);
-                    }
-
-                    followeridList.add(followerid);
-                    followeridnameList.add(followeridname);
-                    followeridimageList.add(followerimage);
-/*
-                    Log.d("Followers Well", followeridList + followeridnameList + followeridimageList);
-                    thefolloweridgrabber = followingid;
-
-                    Log.d("Followersgrabber", thefolloweridgrabber);
-
-                    thefollowerstepper = thefolloweridgrabber;
-                    Log.d("Followerstepper", thefollowerstepper);
-
-                    if (getmyfollowingsagain != null) {
-                        if (followingid != null && followingname != null && followingimage != null) {
-
-                            getmyfollowingsagain.onCallback(followingid, followingname, followingimage);
-                            getmyfollowingsagain.onfollowining(followingid);
-
-                        }
-  */
-
-                }
-            }
-
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-
-
-        });
-    }
-
-    // we get the followers
-    // FOR THIS PAGE WE JUST WANT TO GET THE FOLLOWING LIST
-    public void getFollowings() {
-
-
-        TheFollowingsDatabase = FirebaseDatabase.getInstance();
-        TheFollowingsDatabaseReference = TheFollowingsDatabase.getReference().child("Following");
-        TheFollowingsDatabaseReference.keepSynced(true);
-        TheFollowingsQueryFollowingshere = TheFollowingsDatabaseReference.orderByChild("uid").equalTo(userid);
-        TheFollowingsQueryFollowingshere.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                // Name of trader being followed
-                for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                    if (ds.child("tid").getValue() != null) {
-                        thefollowingsid = ds.child("tid").getValue(String.class);
-                    }
-
-                    if (ds.child("tradername").getValue() != null) {
-                        thefollowingsname = ds.child("tradername").getValue(String.class);
-                    }
-                    if (ds.child("traderimage").getValue() != null) {
-                        thefollowingsimage = ds.child("traderimage").getValue(String.class);
-                    }
-
-                    thefollowingidList.add(thefollowingsid);
-                    thefollowingidnameList.add(thefollowingsname);
-                    thefollowingidimageList.add(thefollowingsimage);
-
-                              fetch();
-
-                    /*
-                    Log.d("Following People", thefollowingsid + thefollowingsname + thefollowingsimage);
-                    thefolloweridgrabber = thefollowingsid;
-
-                    Log.d("Followinigrabber", thefolloweridgrabber);
-
-                    thefollowerstepper = thefolloweridgrabber;
-                    Log.d("Followingstepper", thefollowerstepper);
-
-                    if (getmyfollowingsagain != null) {
-                        if (thefollowingsid != null && thefollowingsname != null && thefollowingsimage != null) {
-
-                            getmyfollowingsagain.onCallback(thefollowingsid, thefollowingsname, thefollowingsimage);
-                            getmyfollowingsagain.onfollowining(thefollowingsid);
-
-                        }
-
-                    }
-*/                }
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-
-
-        });
-    }
-
-
-    // NUMBER OF LIKES OF FOLLOWER
-    // we get the people that have liked us
-    public void getLikes() {
-
-
-        TheLikesDatabase = FirebaseDatabase.getInstance();
-        TheLikesDatabaseReference = TheLikesDatabase.getReference().child("Likes");
-        TheLikesDatabaseReference.keepSynced(true);
-        TheLikesQuery= TheLikesDatabaseReference.orderByChild("uid").equalTo(userid);
-        TheLikesQuery.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                // Name of trader being followed
-                for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                    if (ds.child("tid").getValue() != null) {
-                        thelikeid = ds.child("tid").getValue(String.class);
-                    }
-
-                    if (ds.child("tid").getValue() != null) {
-                        thelikerid = ds.child("tid").getValue(String.class);
-                    }
-
-                    if (ds.child("tradername").getValue() != null) {
-                        thelikername = ds.child("tradername").getValue(String.class);
-                    }
-                    if (ds.child("traderimage").getValue() != null) {
-                        thelikerimage = ds.child("traderimage").getValue(String.class);
-                    }
-
-                    thelikeidList.add(thefollowingsid);
-                    thelikeridnameList.add(thefollowingsname);
-                    thelikernameList.add(thefollowingsimage);
-                    thelikeridimageList.add(thefollowingsimage);
-
-                    /*
-                    Log.d("Following People", thefollowingsid + thefollowingsname + thefollowingsimage);
-                    thefolloweridgrabber = thefollowingsid;
-
-                    Log.d("Followinigrabber", thefolloweridgrabber);
-
-                    thefollowerstepper = thefolloweridgrabber;
-                    Log.d("Followingstepper", thefollowerstepper);
-
-                    if (getmyfollowingsagain != null) {
-                        if (thefollowingsid != null && thefollowingsname != null && thefollowingsimage != null) {
-
-                            getmyfollowingsagain.onCallback(thefollowingsid, thefollowingsname, thefollowingsimage);
-                            getmyfollowingsagain.onfollowining(thefollowingsid);
-
-                        }
-
-                    }
-                    */
-                }
-
-            }
- //get the trader// traderkey
-            // orderfoodpostofproduct
-            // reschedule, or randomize
-            //the likes of each food
-
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-
-
-        });
-
-    }
-
-
-/*
-
-    public void getLikes() {
-
-        FirebaseDatabase.getInstance().getReference().child("Likes").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                likesidList.clear();
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    likesidList.add((snapshot.getKey()));
-                }
-
-                showUsers();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-    }
-
-*/
-/*
-
-    public void showUsers() {
-
-        FirebaseDatabase.getInstance().getReference().child("Users").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                mUsers.clear();
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    User user = snapshot.getValue(User.class);
-
-                    for  (i=0; i< followingidList i++) {
-                        if (user.getuid().equals(uid)) {
-                            mUsers.add(user);
-                        }
-                    }
-                }
-                Log.d("list f", mUsers.toString());
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-
-    }
-
-*/
-
-
-
-
-    public void showProducts() {
-
-        for (int i = 0; i < secondfollowingidList.size(); i++) {
-
-            thefollowingidindex = secondfollowingidList.get(i);
-            ProductDatabase = FirebaseDatabase.getInstance();
-            ProductDatabaseReference = FollowerDatabase.getReference().child("Product");
-            ProductDatabaseReference.keepSynced(true);
-            ProductShowReference = ProductDatabaseReference.orderByChild("tid").equalTo(thefollowingidindex);
-            ProductShowReference.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    // Name of trader being followed
-                    for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                        if (ds.child("tid").getValue() != null) {
-                            pid = ds.child("tid").getValue(String.class);
-                        }
-
-                        if (ds.child("tradername").getValue() != null) {
-                            pname = ds.child("tradername").getValue(String.class);
-                        }
-                        if (ds.child("traderimage").getValue() != null) {
-                            pimage = ds.child("traderimage").getValue(String.class);
-                        }
-
-                        if (ds.child("traderimage").getValue() != null) {
-                            price = ds.child("traderimage").getValue(String.class);
-                        }
-                        if (ds.child("traderimage").getValue() != null) {
-                            tid = ds.child("traderimage").getValue(String.class);
-                        }
-                        if (ds.child("traderimage").getValue() != null) {
-                            tradername = ds.child("traderimage").getValue(String.class);
-                        }
-
-                        if (ds.child("traderimage").getValue() != null) {
-                            traderimage = ds.child("traderimage").getValue(String.class);
-                        }
-
-                        if (ds.child("traderimage").getValue() != null) {
-                            likenumber = ds.child("traderimage").getValue(String.class);
-                        }
-
-
-                    }
-                }
-
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-
-                }
-
-
-            });
-        }
-
         /*
         FirebaseDatabase.getInstance().getReference().child("Products").addValueEventListener(new ValueEventListener() {
             @Override
@@ -1080,130 +1332,6 @@ public  class  HomeActivity extends AppCompatActivity
             }
         });
 */
-
-    }
-
-    public class HomeActivityViewHolder extends RecyclerView.ViewHolder {
-        public LinearLayout root;
-
-        //product_name
-        // product_imagehere
-        //  product_price
-
-        //product_description
-        //thetraderiknow
-
-        public TextView product_name;
-        public TextView product_price;
-        public TextView product_discount;
-        public TextView product_description;
-        public TextView thetraderiknow;
-
-        public android.widget.ImageView product_imagehere;
-        public android.widget.ImageView thetraderimageforproduct;
-        public ItemClickListner listner;
-
-        public HomeActivityViewHolder(View itemView) {
-            super(itemView);
-
-            //product_name
-            // product_imagehere
-            //  product_price
-
-            //product_description
-            //thetraderiknow
-
-
-            product_name = itemView.findViewById(R.id.product_name);
-            product_price = itemView.findViewById(R.id.product_price);
-            product_description = itemView.findViewById(R.id.product_description);
-            thetraderiknow = itemView.findViewById(R.id.thetraderiknow);
-            product_discount = itemView.findViewById(R.id.product_discount);
-
-            //cartimage referst to the trader of the product
-            product_imagehere = itemView.findViewById(R.id.product_imagehere);
-            thetraderimageforproduct = itemView.findViewById(R.id.thetraderimageforproduct);
-
-
-        }
-
-        public void setItemClickListner(ItemClickListner listner) {
-            this.listner = listner;
-        }
-
-        public void setcurrentproductname(String currentproductname) {
-
-            product_name.setText(currentproductname);
-        }
-
-        public void setproductprice(String price) {
-
-            product_price.setText(price);
-        }
-
-        public void settradername(String tradername) {
-
-            thetraderiknow.setText(tradername);
-        }
-
-
-        public void setcartdescriptionhere(String currentdescription) {
-
-            product_description.setText(currentdescription);
-        }
-
-        public void setproduct_discount(String product_discount1) {
-
-            product_discount.setText(product_discount1);
-        }
-
-        public void setTraderImage(final Context ctx, final String image) {
-            final android.widget.ImageView thetraderimageforproduct = (android.widget.ImageView) itemView.findViewById(R.id.thetraderimageforproduct);
-
-            Picasso.get().load(image).resize(400, 0).networkPolicy(NetworkPolicy.OFFLINE).into(thetraderimageforproduct, new Callback() {
-
-
-                @Override
-                public void onSuccess() {
-
-                }
-
-                @Override
-                public void onError(Exception e) {
-                    Picasso.get().load(image).resize(100, 0).into(thetraderimageforproduct);
-                }
-
-
-            });
-        }
-
-
-
-        public void setImage(final Context ctx, final String image) {
-            product_imagehere = (android.widget.ImageView) itemView.findViewById(R.id.product_imagehere);
-            if (image != null) {
-                if (product_imagehere != null) {
-
-                    //
-                    Picasso.get().load(image).resize(400, 0).networkPolicy(NetworkPolicy.OFFLINE).into(product_imagehere, new Callback() {
-
-
-                        @Override
-                        public void onSuccess() {
-
-                        }
-
-                        @Override
-                        public void onError(Exception e) {
-                            Picasso.get().load(image).resize(100, 0).into(product_imagehere);
-                        }
-
-
-                    });
-
-                }
-
-            }}
 
 
 
