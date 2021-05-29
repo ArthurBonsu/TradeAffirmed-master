@@ -166,7 +166,7 @@ public  class  HomeActivity extends AppCompatActivity
     ImageButton  expectedshipping;
     ImageButton       clientprofile;
     String categoryname, date, desc, discount, time, pid, pimage, pname, price, image, name, size, tradername, tid;
-   \
+
     android.widget.ImageView thetraderimageforproduct;
 
 
