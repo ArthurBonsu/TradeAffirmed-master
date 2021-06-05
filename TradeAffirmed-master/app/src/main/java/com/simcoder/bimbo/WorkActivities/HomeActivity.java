@@ -2,6 +2,7 @@ package com.simcoder.bimbo.WorkActivities;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 
@@ -262,7 +263,12 @@ public  class  HomeActivity extends AppCompatActivity
 
         fab = (FloatingActionButton) findViewById(R.id.fab);
 
+        SharedPreferences preferences = getSharedPreferences("checkbox", MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("remember", "false");
+         editor.apply();
 
+         finish();
         if (fab != null) {
             fab.setOnClickListener(
                     new View.OnClickListener() {

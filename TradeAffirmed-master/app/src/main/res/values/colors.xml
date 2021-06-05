@@ -24,4 +24,8 @@
    <color name="textColor">#060606</color>
 
     <color name="orange">#FA6B1B</color>
+    <color name="colorTextPrimary">#212121</color>
+    <color name="colorTextSecondary">#757575</color>
+    <color name="colorDivider">#BDBDBD</color>
+    <color name="colorWhite">#FFFFFF</color>
 </resources>

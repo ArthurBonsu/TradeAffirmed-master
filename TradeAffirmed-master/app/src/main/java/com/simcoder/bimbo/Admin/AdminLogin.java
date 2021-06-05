@@ -1,22 +1,18 @@
-package com.simcoder.bimbo.WorkActivities;
+package com.simcoder.bimbo.Admin;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.facebook.share.Share;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -35,7 +31,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.simcoder.bimbo.Admin.AdminCategoryActivity;
-import com.simcoder.bimbo.Admin.AdminLogin;
 import com.simcoder.bimbo.Model.Users;
 import com.simcoder.bimbo.Prevalent.Prevalent;
 import com.google.firebase.database.DataSnapshot;
@@ -48,12 +43,12 @@ import com.simcoder.bimbo.R;
 
 import io.paperdb.Paper;
 
-public class LoginActivity extends AppCompatActivity
+public class AdminLogin extends AppCompatActivity
 {
     private EditText InputPhoneNumber, InputPassword, Emailaccess;
     private Button LoginButton;
     private ProgressDialog loadingBar;
-    private TextView AdminLink, NotAdminLink, ForgetPasswordLink;
+    private TextView IamTrader, NotAdminLink, ForgetPasswordLink;
 
     private String parentDbName = "";
 
@@ -78,9 +73,8 @@ public class LoginActivity extends AppCompatActivity
     private ProgressDialog mProgress;
     Intent roleintent;
     String userID;
+
     Button SignupButton;
-    TextView IamTrader;
-    Button TryVerificationCode;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,31 +90,20 @@ public class LoginActivity extends AppCompatActivity
             userID = traderIDintent.getExtras().getString("userID");
         }
 
-         Emailaccess = (EditText) findViewById(R.id.login_email_input);
-         InputPassword = (EditText) findViewById(R.id.login_password_input);
+        Emailaccess = (EditText) findViewById(R.id.login_email_input);
+        InputPassword = (EditText) findViewById(R.id.login_password_input);
 
         LoginButton = (Button) findViewById(R.id.login_btn);
-         SignupButton = (Button)findViewById(R.id.signup);
+        SignupButton = (Button)findViewById(R.id.signup);
         // InputPhoneNumber = (EditText) findViewById(R.id.login_phone_number_input);
 
         IamTrader = (TextView) findViewById(R.id.iamtrader);
 
-         loadingBar = new ProgressDialog(this);
-
-          SharedPreferences preferences = getSharedPreferences("checkbox", MODE_PRIVATE);
-          String checkbox = preferences.getString("remember", "");
-          if (checkbox.equals("true")){
-           Intent intentpreferences = new Intent(LoginActivity.this, HomeActivity.class);
-           startActivity(intentpreferences);
-          }else if(checkbox.equals("false") ){
-              Toast.makeText(this, "Please Sign In", Toast.LENGTH_SHORT).show();
-          }
-
-
+        loadingBar = new ProgressDialog(this);
 
         GoogleBtn = findViewById(R.id.eccommercegooglelogin);
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestIdToken(getString(R.string.default_web_client_id)).requestEmail().build();
-        mGoogleSignInClient = GoogleSignIn.getClient(LoginActivity.this, gso);
+        mGoogleSignInClient = GoogleSignIn.getClient(AdminLogin.this, gso);
 
         // I HAVE TO BUILD A GOOGLE BUTTON ON TOP OF THE USERNAME
         GoogleBtn.setOnClickListener(new View.OnClickListener() {
@@ -152,31 +135,17 @@ public class LoginActivity extends AppCompatActivity
         Paper.init(this);
 
         // REMEMBER ME
-   //     https://www.youtube.com/watch?v=8pTcATGRDGM
-        chkBoxRememberMe.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        chkBoxRememberMe.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (buttonView.isChecked()){
-                    SharedPreferences preferences = getSharedPreferences("checkbox", MODE_PRIVATE);
-                    SharedPreferences.Editor editor = preferences.edit();
-                    editor.putString("remember", "true");
-                    editor.apply();
-                    Toast.makeText(LoginActivity.this, "Unchecked", Toast.LENGTH_SHORT).show();
-                }
-                else if(!buttonView.isChecked()){
-                    SharedPreferences preferences = getSharedPreferences("checkbox", MODE_PRIVATE);
-                    SharedPreferences.Editor editor = preferences.edit();
-                    editor.putString("remember", "false");
-                    editor.apply();
-                    Toast.makeText(LoginActivity.this, "Uncheckedd", Toast.LENGTH_SHORT).show();
-                }
+            public void onClick(View v) {
+
             }
         });
-                // FORGET PASSWORD PROBLEMS
+        // FORGET PASSWORD PROBLEMS
         ForgetPasswordLink.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(LoginActivity.this, ResetPasswordActivity.class);
+                Intent intent = new Intent(AdminLogin.this, ResetPasswordActivity.class);
                 intent.putExtra("check", "login");
                 startActivity(intent);
             }
@@ -188,26 +157,22 @@ public class LoginActivity extends AppCompatActivity
             }
         });
 
-      TryVerificationCode.setOnClickListener(new View.OnClickListener() {
+        TryVerificationCode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                 }
+            }
         });
 
-        SignupButton.setOnClickListener(new View.OnClickListener() {
+        SignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
-                intent.putExtra("role", role);
-                intent.putExtra("userID", userID);
-                startActivity(intent);
+
             }
         });
         IamTrader.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(LoginActivity.this, AdminLogin.class);
-                startActivity(intent);
+
             }
         });
 
@@ -254,7 +219,7 @@ public class LoginActivity extends AppCompatActivity
 
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
         mAuth.signInWithCredential(credential)
-                .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
+                .addOnCompleteListener(AdminLogin.this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
@@ -275,102 +240,102 @@ public class LoginActivity extends AppCompatActivity
                                 RootRef.addListenerForSingleValueEvent(new ValueEventListener() {
 
 
-                                    @Override
-                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                        if (dataSnapshot.child(parentDbName).child(traderoruser).exists()) {
-                                            //    Users usersData = dataSnapshot.child(parentDbName).child(phone).getValue(Users.class);
+                                                                           @Override
+                                                                           public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                                                               if (dataSnapshot.child(parentDbName).child(traderoruser).exists()) {
+                                                                                   //    Users usersData = dataSnapshot.child(parentDbName).child(phone).getValue(Users.class);
 
-                                            // GETTING THE TYPE OF TRADER
-                                            role = dataSnapshot.child(parentDbName).child(traderoruser).child("role").getValue().toString();
+                                                                                   // GETTING THE TYPE OF TRADER
+                                                                                   role = dataSnapshot.child(parentDbName).child(traderoruser).child("role").getValue().toString();
 
-                                            //  if (usersData.getPhone().equals(phone))
-                                            {
-                                                //    if (usersData.getPassword().equals(password))
+                                                                                   //  if (usersData.getPhone().equals(phone))
+                                                                                   {
+                                                                                       //    if (usersData.getPassword().equals(password))
 
-                                                {
-                                                    if (parentDbName.equals("Drivers") && role.equals("Trader")) {
-                                                        firebaseAuthListener = new FirebaseAuth.AuthStateListener() {
-                                                            @Override
-                                                            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                                                                                       {
+                                                                                           if (parentDbName.equals("Drivers") && role.equals("Trader")) {
+                                                                                               firebaseAuthListener = new FirebaseAuth.AuthStateListener() {
+                                                                                                   @Override
+                                                                                                   public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
 
-                                                                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-
-
-                                                                if (user != null) {
-                                                                    traderoruser = "";
-                                                                    traderoruser = user.getUid();
-
-                                                                    if (FirebaseDatabase.getInstance().getReference().child("Users").child(parentDbName).child(traderoruser) != null && role.equals("Trader")) {
-                                                                         Toast.makeText(LoginActivity.this, "logged in Successfully...", Toast.LENGTH_SHORT).show();
-                                                                        loadingBar.dismiss();
-                                                                        Intent intent = new Intent(LoginActivity.this, AdminCategoryActivity.class);
-                                                                        startActivity(intent);
-                                                                        finish();
-
-                                                                    }
-                                                                } else {
-
-                                                                    loadingBar.dismiss();
-                                                                    Toast.makeText(LoginActivity.this, "Trader " + acct.getDisplayName() + "does does not exist", Toast.LENGTH_SHORT).show();
-
-                                                                }
-
-                                                                // I HAVE TO TRY TO GET THE SETUP INFORMATION , IF THEY ARE ALREADY PROVIDED WE TAKE TO THE NEXT STAGE
-                                                                // WHICH IS CUSTOMER TO BE ADDED.
-                                                                // PULLING DATABASE REFERENCE IS NULL, WE CHANGE BACK TO THE SETUP PAGE ELSE WE GO STRAIGHT TO MAP PAGE
-
-                                                            }
-
-                                                            ;
-                                                        };
-
-                                                        // Intent intent = new Intent(LoginActivity.this, AdminCategoryActivity.class);
-                                                        //   startActivity(intent);
-                                                    } else if (parentDbName.equals("Customers") && role.equals("Customers") ) {
+                                                                                                       FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
 
-                                                        firebaseAuthListener = new FirebaseAuth.AuthStateListener() {
-                                                            @Override
-                                                            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                                                                                                       if (user != null) {
+                                                                                                           traderoruser = "";
+                                                                                                           traderoruser = user.getUid();
 
-                                                                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                                                                if (user != null) {
-                                                                    traderoruser = "";
-                                                                    traderoruser = user.getUid();
+                                                                                                           if (FirebaseDatabase.getInstance().getReference().child("Users").child(parentDbName).child(traderoruser) != null && role.equals("Trader")) {
+                                                                                                               Toast.makeText(AdminLogin.this, "logged in Successfully...", Toast.LENGTH_SHORT).show();
+                                                                                                               loadingBar.dismiss();
+                                                                                                               Intent intent = new Intent(AdminLogin.this, AdminCategoryActivity.class);
+                                                                                                               startActivity(intent);
+                                                                                                               finish();
 
-                                                                    if (FirebaseDatabase.getInstance().getReference().child("Users").child(parentDbName).child(traderoruser) != null && role.equals("Customer")); {
+                                                                                                           }
+                                                                                                       } else {
 
-                                                                        Toast.makeText(LoginActivity.this, "logged in Successfully...", Toast.LENGTH_SHORT).show();
-                                                                        loadingBar.dismiss();
-                                                                        Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
-                                                                        startActivity(intent);
-                                                                        finish();
+                                                                                                           loadingBar.dismiss();
+                                                                                                           Toast.makeText(AdminLogin.this, "Trader " + acct.getDisplayName() + "does does not exist", Toast.LENGTH_SHORT).show();
 
-                                                                         }} else {
-                                                                                    loadingBar.dismiss();
-                                                                                    Toast.makeText(LoginActivity.this, "User with" + acct.getDisplayName() + "does does not exist", Toast.LENGTH_SHORT).show();
-                                                                                    // WE HAVE TO UPDATE THE CURRENT UI AND GO TO THE NEXT ACTIVITY WHICH IS MAP
+                                                                                                       }
 
-                                                                                }
-                                                                            }
+                                                                                                       // I HAVE TO TRY TO GET THE SETUP INFORMATION , IF THEY ARE ALREADY PROVIDED WE TAKE TO THE NEXT STAGE
+                                                                                                       // WHICH IS CUSTOMER TO BE ADDED.
+                                                                                                       // PULLING DATABASE REFERENCE IS NULL, WE CHANGE BACK TO THE SETUP PAGE ELSE WE GO STRAIGHT TO MAP PAGE
 
-                                                            };
-                                                        };
+                                                                                                   }
 
+                                                                                                   ;
+                                                                                               };
 
-
+                                                                                               // Intent intent = new Intent(LoginActivity.this, AdminCategoryActivity.class);
+                                                                                               //   startActivity(intent);
+                                                                                           } else if (parentDbName.equals("Customers") && role.equals("Customers") ) {
 
 
-                                                        // I HAVE TO TRY TO GET THE SETUP INFORMATION , IF THEY ARE ALREADY PROVIDED WE TAKE TO THE NEXT STAGE
-                                                        // WHICH IS CUSTOMER TO BE ADDED.
-                                                        // PULLING DATABASE REFERENCE IS NULL, WE CHANGE BACK TO THE SETUP PAGE ELSE WE GO STRAIGHT TO MAP PAGE
-                                                        ;
+                                                                                               firebaseAuthListener = new FirebaseAuth.AuthStateListener() {
+                                                                                                   @Override
+                                                                                                   public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+
+                                                                                                       FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                                                                                                       if (user != null) {
+                                                                                                           traderoruser = "";
+                                                                                                           traderoruser = user.getUid();
+
+                                                                                                           if (FirebaseDatabase.getInstance().getReference().child("Users").child(parentDbName).child(traderoruser) != null && role.equals("Customer")); {
+
+                                                                                                               Toast.makeText(AdminLogin.this, "logged in Successfully...", Toast.LENGTH_SHORT).show();
+                                                                                                               loadingBar.dismiss();
+                                                                                                               Intent intent = new Intent(AdminLogin.this, HomeActivity.class);
+                                                                                                               startActivity(intent);
+                                                                                                               finish();
+
+                                                                                                           }} else {
+                                                                                                           loadingBar.dismiss();
+                                                                                                           Toast.makeText(AdminLogin.this, "User with" + acct.getDisplayName() + "does does not exist", Toast.LENGTH_SHORT).show();
+                                                                                                           // WE HAVE TO UPDATE THE CURRENT UI AND GO TO THE NEXT ACTIVITY WHICH IS MAP
+
+                                                                                                       }
+                                                                                                   }
+
+                                                                                               };
+                                                                                           };
 
 
 
 
 
-                                                        ;}}}}
+                                                                                           // I HAVE TO TRY TO GET THE SETUP INFORMATION , IF THEY ARE ALREADY PROVIDED WE TAKE TO THE NEXT STAGE
+                                                                                           // WHICH IS CUSTOMER TO BE ADDED.
+                                                                                           // PULLING DATABASE REFERENCE IS NULL, WE CHANGE BACK TO THE SETUP PAGE ELSE WE GO STRAIGHT TO MAP PAGE
+                                                                                           ;
+
+
+
+
+
+                                                                                           ;}}}}
 
                                                                            @Override
                                                                            public void onCancelled(DatabaseError databaseError) {
@@ -385,7 +350,7 @@ public class LoginActivity extends AppCompatActivity
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
-                            Toast.makeText(LoginActivity.this, "sign in error", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(AdminLogin.this, "sign in error", Toast.LENGTH_SHORT).show();
                         }
 
                         // ...
@@ -398,16 +363,14 @@ public class LoginActivity extends AppCompatActivity
     {
         String phone = InputPhoneNumber.getText().toString();
         String password = InputPassword.getText().toString();
-       String email =Emailaccess.getText().toString();
+        String email =Emailaccess.getText().toString();
         // WE HAVE TO BUILD AN EMAIL BUTTON
 
-        /*
+
         if (TextUtils.isEmpty(phone))
         {
             Toast.makeText(this, "Please write your phone number...", Toast.LENGTH_SHORT).show();
         }
-        */
-
         if (TextUtils.isEmpty(email))
         {
             Toast.makeText(this, "Please write your your email...", Toast.LENGTH_SHORT).show();
@@ -480,7 +443,7 @@ public class LoginActivity extends AppCompatActivity
                                                 traderoruser = user.getUid();
                                                 if (parentDbName != null) {
 
-                                                           if (FirebaseDatabase.getInstance().getReference().child("Users").child(parentDbName).child(traderoruser) != null && role.equals("Trader")) {
+                                                    if (FirebaseDatabase.getInstance().getReference().child("Users").child(parentDbName).child(traderoruser) != null && role.equals("Trader")) {
 
                                                         mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
                                                             @Override
@@ -490,15 +453,15 @@ public class LoginActivity extends AppCompatActivity
                                                                     Log.d(TAG, "signInWithEmail:success");
                                                                     String user_id = mAuth.getCurrentUser().getUid();
 
-                                                                    Toast.makeText(LoginActivity.this, "Welcome Trader, you are logged in Successfully...", Toast.LENGTH_SHORT).show();
+                                                                    Toast.makeText(AdminLogin.this, "Welcome Trader, you are logged in Successfully...", Toast.LENGTH_SHORT).show();
                                                                     loadingBar.dismiss();
 
-                                                                    Intent intent = new Intent(LoginActivity.this, AdminCategoryActivity.class);
+                                                                    Intent intent = new Intent(AdminLogin.this, AdminCategoryActivity.class);
                                                                     startActivity(intent);
                                                                     finish();
                                                                     return;
                                                                 } else {
-                                                                    Toast.makeText(LoginActivity.this, "Trader with" + user.getDisplayName() + "does does not exist", Toast.LENGTH_SHORT).show();
+                                                                    Toast.makeText(AdminLogin.this, "Trader with" + user.getDisplayName() + "does does not exist", Toast.LENGTH_SHORT).show();
                                                                     // WE HAVE TO UPDATE THE CURRENT UI AND GO TO THE NEXT ACTIVITY WHICH IS MAP
 
                                                                 }
@@ -519,7 +482,7 @@ public class LoginActivity extends AppCompatActivity
                                     // Intent intent = new Intent(LoginActivity.this, AdminCategoryActivity.class);
                                     //   startActivity(intent);
                                 } else if (parentDbName.equals("Customers") && role.equals("Customer")) {
-                                    Toast.makeText(LoginActivity.this, "logged in Successfully...", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(AdminLogin.this, "logged in Successfully...", Toast.LENGTH_SHORT).show();
                                     loadingBar.dismiss();
 
                                     firebaseAuthListener = new FirebaseAuth.AuthStateListener() {
@@ -533,7 +496,7 @@ public class LoginActivity extends AppCompatActivity
 
                                                 if (FirebaseDatabase.getInstance().getReference().child("Users").child(parentDbName).child(traderoruser) != null && role.equals("Customer")) {
 
-                                                    mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
+                                                    mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(AdminLogin.this, new OnCompleteListener<AuthResult>() {
                                                         @Override
                                                         public void onComplete(@NonNull Task<AuthResult> task) {
 
@@ -541,10 +504,10 @@ public class LoginActivity extends AppCompatActivity
                                                                 Log.d(TAG, "signInWithEmail:success");
                                                                 String user_id = mAuth.getCurrentUser().getUid();
 
-                                                                Toast.makeText(LoginActivity.this, "Welcome Trader, you are logged in Successfully...", Toast.LENGTH_SHORT).show();
+                                                                Toast.makeText(AdminLogin.this, "Welcome Trader, you are logged in Successfully...", Toast.LENGTH_SHORT).show();
                                                                 loadingBar.dismiss();
 
-                                                                Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
+                                                                Intent intent = new Intent(AdminLogin.this, HomeActivity.class);
                                                                 startActivity(intent);
                                                                 finish();
 
@@ -552,7 +515,7 @@ public class LoginActivity extends AppCompatActivity
                                                                 return;
                                                             } else {
                                                                 loadingBar.dismiss();
-                                                                Toast.makeText(LoginActivity.this, "User with" + user.getDisplayName() + "does does not exist", Toast.LENGTH_SHORT).show();
+                                                                Toast.makeText(AdminLogin.this, "User with" + user.getDisplayName() + "does does not exist", Toast.LENGTH_SHORT).show();
                                                                 // WE HAVE TO UPDATE THE CURRENT UI AND GO TO THE NEXT ACTIVITY WHICH IS MAP
 
                                                             }
@@ -574,7 +537,7 @@ public class LoginActivity extends AppCompatActivity
                                     // I HAVE TO TRY TO GET THE SETUP INFORMATION , IF THEY ARE ALREADY PROVIDED WE TAKE TO THE NEXT STAGE
                                     // WHICH IS CUSTOMER TO BE ADDED.
                                     // PULLING DATABASE REFERENCE IS NULL, WE CHANGE BACK TO THE SETUP PAGE ELSE WE GO STRAIGHT TO MAP PAGE
-                            ;
+                                    ;
 
 
 

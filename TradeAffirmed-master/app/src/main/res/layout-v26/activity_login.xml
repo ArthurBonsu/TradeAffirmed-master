@@ -126,7 +126,7 @@
         android:layout_marginTop="5dp"></com.google.android.gms.common.SignInButton>
 
     <TextView
-        android:id="@+id/admin_panel_link"
+        android:id="@+id/iamtrader"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/eccommercegooglelogin"

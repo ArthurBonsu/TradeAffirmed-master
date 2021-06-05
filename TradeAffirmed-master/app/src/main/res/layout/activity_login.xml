@@ -13,7 +13,6 @@
         android:layout_height="170dp"
         android:layout_centerHorizontal="true"
         android:layout_marginRight="300sp"
-
         android:textAlignment="center"
         android:contentDescription="loginlogoofapp"
         android:src="@drawable/applogo"
@@ -163,7 +162,7 @@
         android:layout_marginTop="5dp"></com.google.android.gms.common.SignInButton>
       </LinearLayout>
     <TextView
-        android:id="@+id/admin_panel_link"
+        android:id="@+id/iamtrader"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/eccommercegooglelogin"
@@ -194,4 +193,3 @@
         android:textStyle="bold"
         android:visibility="invisible" />
   </LinearLayout>
-</LinearLayout>
