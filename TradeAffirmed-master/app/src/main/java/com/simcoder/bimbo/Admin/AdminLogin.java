@@ -40,6 +40,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.rey.material.widget.CheckBox;
 import com.simcoder.bimbo.R;
+import com.simcoder.bimbo.WorkActivities.LoginActivity;
+import com.simcoder.bimbo.WorkActivities.ResetPasswordActivity;
 
 import io.paperdb.Paper;
 
@@ -50,16 +52,16 @@ public class AdminLogin extends AppCompatActivity
     private ProgressDialog loadingBar;
     private TextView IamTrader, NotAdminLink, ForgetPasswordLink;
 
-    private String parentDbName = "";
+    private String parentDbName = "Drivers";
 
 
     private CheckBox chkBoxRememberMe;
 
-    String traderoruser= "";
+    String traderID= "";
     private static final int RC_SIGN_IN = 1;
     private FirebaseAuth.AuthStateListener firebaseAuthListener;
     String role;
-
+     FirebaseUser user;
 
     //AUTHENTICATORS
 
@@ -75,19 +77,22 @@ public class AdminLogin extends AppCompatActivity
     String userID;
 
     Button SignupButton;
+    Button TryVerificationCode;
+    Button signup;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        setContentView(R.layout.activity_admin_login);
 
 
+        Intent roleintent = getIntent();
         if (roleintent.getExtras().getString("role") != null) {
             role = roleintent.getExtras().getString("role");
         }
 
         Intent traderIDintent = getIntent();
-        if (traderIDintent.getExtras().getString("userID") != null) {
-            userID = traderIDintent.getExtras().getString("userID");
+        if (traderIDintent.getExtras().getString("traderID") != null) {
+            traderID = traderIDintent.getExtras().getString("traderID");
         }
 
         Emailaccess = (EditText) findViewById(R.id.login_email_input);
@@ -98,8 +103,24 @@ public class AdminLogin extends AppCompatActivity
         // InputPhoneNumber = (EditText) findViewById(R.id.login_phone_number_input);
 
         IamTrader = (TextView) findViewById(R.id.iamtrader);
-
+        TryVerificationCode = findViewById(R.id.mobileverification);
         loadingBar = new ProgressDialog(this);
+        firebaseAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+
+                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                if (user != null) {
+                    traderID = "";
+                    traderID = user.getUid();
+                }
+
+                // I HAVE TO TRY TO GET THE SETUP INFORMATION , IF THEY ARE ALREADY PROVIDED WE TAKE TO THE NEXT STAGE
+                // WHICH IS CUSTOMER TO BE ADDED.
+                // PULLING DATABASE REFERENCE IS NULL, WE CHANGE BACK TO THE SETUP PAGE ELSE WE GO STRAIGHT TO MAP PAGE
+            }
+        };
+
 
         GoogleBtn = findViewById(R.id.eccommercegooglelogin);
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestIdToken(getString(R.string.default_web_client_id)).requestEmail().build();
@@ -121,7 +142,7 @@ public class AdminLogin extends AppCompatActivity
         }
 
         if (mGoogleApiClient != null) {
-            mGoogleApiClient = new GoogleApiClient.Builder(this).enableAutoManage(LoginActivity.this,
+            mGoogleApiClient = new GoogleApiClient.Builder(this).enableAutoManage(AdminLogin.this,
                     new GoogleApiClient.OnConnectionFailedListener() {
                         @Override
                         public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
@@ -163,9 +184,13 @@ public class AdminLogin extends AppCompatActivity
             }
         });
 
-        SignUp.setOnClickListener(new View.OnClickListener() {
+        SignupButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Intent adminregisterintent = new Intent(AdminLogin.this, AdminRegister.class);
+                adminregisterintent.putExtra("role", role);
+                adminregisterintent.putExtra("traderID", traderID);
+                startActivity(adminregisterintent);
 
             }
         });
@@ -229,8 +254,8 @@ public class AdminLogin extends AppCompatActivity
                             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
                             if (user != null) {
-                                traderoruser = "";
-                                traderoruser = user.getUid();
+                                traderID = "";
+                                traderID = user.getUid();
 
                                 final DatabaseReference RootRef;
 
@@ -242,56 +267,59 @@ public class AdminLogin extends AppCompatActivity
 
                                                                            @Override
                                                                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                                                               if (dataSnapshot.child(parentDbName).child(traderoruser).exists()) {
+                                                                               if (dataSnapshot.child(parentDbName).child(traderID).exists()) {
                                                                                    //    Users usersData = dataSnapshot.child(parentDbName).child(phone).getValue(Users.class);
 
                                                                                    // GETTING THE TYPE OF TRADER
-                                                                                   role = dataSnapshot.child(parentDbName).child(traderoruser).child("role").getValue().toString();
+                                                                                   role = dataSnapshot.child(parentDbName).child(traderID).child("role").getValue().toString();
 
                                                                                    //  if (usersData.getPhone().equals(phone))
                                                                                    {
                                                                                        //    if (usersData.getPassword().equals(password))
 
                                                                                        {
-                                                                                           if (parentDbName.equals("Drivers") && role.equals("Trader")) {
-                                                                                               firebaseAuthListener = new FirebaseAuth.AuthStateListener() {
-                                                                                                   @Override
-                                                                                                   public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                                                                                           //    if (parentDbName.equals("Drivers") && role.equals("Trader")) {
+                                                                                           firebaseAuthListener = new FirebaseAuth.AuthStateListener() {
+                                                                                               @Override
+                                                                                               public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
 
-                                                                                                       FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                                                                                                   FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
 
-                                                                                                       if (user != null) {
-                                                                                                           traderoruser = "";
-                                                                                                           traderoruser = user.getUid();
+                                                                                                   if (user != null) {
+                                                                                                       traderID = "";
+                                                                                                       traderID = user.getUid();
 
-                                                                                                           if (FirebaseDatabase.getInstance().getReference().child("Users").child(parentDbName).child(traderoruser) != null && role.equals("Trader")) {
-                                                                                                               Toast.makeText(AdminLogin.this, "logged in Successfully...", Toast.LENGTH_SHORT).show();
-                                                                                                               loadingBar.dismiss();
-                                                                                                               Intent intent = new Intent(AdminLogin.this, AdminCategoryActivity.class);
-                                                                                                               startActivity(intent);
-                                                                                                               finish();
-
-                                                                                                           }
-                                                                                                       } else {
-
+                                                                                                       if (FirebaseDatabase.getInstance().getReference().child("Users").child(parentDbName).child(traderID) != null && role.equals("Trader")) {
+                                                                                                           Toast.makeText(AdminLogin.this, "logged in Successfully...", Toast.LENGTH_SHORT).show();
                                                                                                            loadingBar.dismiss();
-                                                                                                           Toast.makeText(AdminLogin.this, "Trader " + acct.getDisplayName() + "does does not exist", Toast.LENGTH_SHORT).show();
+                                                                                                           Intent intent = new Intent(AdminLogin.this, AdminCategoryActivity.class);
+                                                                                                           startActivity(intent);
+                                                                                                           finish();
 
                                                                                                        }
+                                                                                                   } else {
 
-                                                                                                       // I HAVE TO TRY TO GET THE SETUP INFORMATION , IF THEY ARE ALREADY PROVIDED WE TAKE TO THE NEXT STAGE
-                                                                                                       // WHICH IS CUSTOMER TO BE ADDED.
-                                                                                                       // PULLING DATABASE REFERENCE IS NULL, WE CHANGE BACK TO THE SETUP PAGE ELSE WE GO STRAIGHT TO MAP PAGE
+                                                                                                       loadingBar.dismiss();
+                                                                                                       Toast.makeText(AdminLogin.this, "Trader " + acct.getDisplayName() + "does does not exist", Toast.LENGTH_SHORT).show();
 
                                                                                                    }
 
-                                                                                                   ;
-                                                                                               };
+                                                                                                   // I HAVE TO TRY TO GET THE SETUP INFORMATION , IF THEY ARE ALREADY PROVIDED WE TAKE TO THE NEXT STAGE
+                                                                                                   // WHICH IS CUSTOMER TO BE ADDED.
+                                                                                                   // PULLING DATABASE REFERENCE IS NULL, WE CHANGE BACK TO THE SETUP PAGE ELSE WE GO STRAIGHT TO MAP PAGE
 
-                                                                                               // Intent intent = new Intent(LoginActivity.this, AdminCategoryActivity.class);
-                                                                                               //   startActivity(intent);
-                                                                                           } else if (parentDbName.equals("Customers") && role.equals("Customers") ) {
+                                                                                               }
+
+                                                                                               ;
+                                                                                           };
+
+                                                                                           // Intent intent = new Intent(LoginActivity.this, AdminCategoryActivity.class);
+                                                                                           //   startActivity(intent);
+                                                                                       }
+
+
+                                                                                           /*else if (parentDbName.equals("Customers") && role.equals("Customers") ) {
 
 
                                                                                                firebaseAuthListener = new FirebaseAuth.AuthStateListener() {
@@ -341,22 +369,34 @@ public class AdminLogin extends AppCompatActivity
                                                                            public void onCancelled(DatabaseError databaseError) {
 
                                                                            }
+                                                                           */
+
+                                                                                   }
+
+                                                                               }
+
+
+                                                                           }
+
+                                                                           @Override
+                                                                           public void onCancelled(@NonNull DatabaseError error) {
+
+                                                                           }
                                                                        }
                                 );
+                            } else {
+                                // If sign in fails, display a message to the user.
+                                Log.w(TAG, "signInWithCredential:failure", task.getException());
+                                Toast.makeText(AdminLogin.this, "sign in error", Toast.LENGTH_SHORT).show();
                             }
+                        }}}
 
-
-
-                        } else {
-                            // If sign in fails, display a message to the user.
-                            Log.w(TAG, "signInWithCredential:failure", task.getException());
-                            Toast.makeText(AdminLogin.this, "sign in error", Toast.LENGTH_SHORT).show();
-                        }
-
-                        // ...
-                    }
-                });
+                );
     }
+                        // ...
+
+
+
 // HERE  WE CAN DO THE GOOGLE IMPLEMENTATION HERE
 
     private void LoginUser()
@@ -405,8 +445,8 @@ public class AdminLogin extends AppCompatActivity
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
         if (user != null) {
-            traderoruser = "";
-            traderoruser = user.getUid();
+            traderID = "";
+            traderID = user.getUid();
 
             final DatabaseReference RootRef;
 
@@ -418,12 +458,12 @@ public class AdminLogin extends AppCompatActivity
 
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    if (dataSnapshot.child(parentDbName).child(traderoruser).exists()) {
+                    if (dataSnapshot.child(parentDbName).child(traderID).exists()) {
                         dataSnapshot.getValue(Users.class);
                         //    Users usersData = dataSnapshot.child(parentDbName).child(phone).getValue(Users.class);
 
                         // GETTING THE TYPE OF TRADER
-                        role = dataSnapshot.child(parentDbName).child(traderoruser).child("role").getValue(String.class);
+                        role = dataSnapshot.child(parentDbName).child(traderID).child("role").getValue(String.class);
 
                         //  if (usersData.getPhone().equals(phone))
                         {
@@ -439,13 +479,13 @@ public class AdminLogin extends AppCompatActivity
 
 
                                             if (user != null) {
-                                                traderoruser = "";
-                                                traderoruser = user.getUid();
+                                                traderID = "";
+                                                traderID = user.getUid();
                                                 if (parentDbName != null) {
 
-                                                    if (FirebaseDatabase.getInstance().getReference().child("Users").child(parentDbName).child(traderoruser) != null && role.equals("Trader")) {
+                                                    if (FirebaseDatabase.getInstance().getReference().child("Users").child(parentDbName).child(traderID) != null && role.equals("Trader")) {
 
-                                                        mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
+                                                        mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(AdminLogin.this, new OnCompleteListener<AuthResult>() {
                                                             @Override
                                                             public void onComplete(@NonNull Task<AuthResult> task) {
 
@@ -481,7 +521,9 @@ public class AdminLogin extends AppCompatActivity
                                     };
                                     // Intent intent = new Intent(LoginActivity.this, AdminCategoryActivity.class);
                                     //   startActivity(intent);
-                                } else if (parentDbName.equals("Customers") && role.equals("Customer")) {
+                                }
+                                /*
+                                else if (parentDbName.equals("Customers") && role.equals("Customer")) {
                                     Toast.makeText(AdminLogin.this, "logged in Successfully...", Toast.LENGTH_SHORT).show();
                                     loadingBar.dismiss();
 
@@ -531,10 +573,10 @@ public class AdminLogin extends AppCompatActivity
                                     };
 
 
+ */
 
 
-
-                                    // I HAVE TO TRY TO GET THE SETUP INFORMATION , IF THEY ARE ALREADY PROVIDED WE TAKE TO THE NEXT STAGE
+                                // I HAVE TO TRY TO GET THE SETUP INFORMATION , IF THEY ARE ALREADY PROVIDED WE TAKE TO THE NEXT STAGE
                                     // WHICH IS CUSTOMER TO BE ADDED.
                                     // PULLING DATABASE REFERENCE IS NULL, WE CHANGE BACK TO THE SETUP PAGE ELSE WE GO STRAIGHT TO MAP PAGE
                                     ;
@@ -543,7 +585,12 @@ public class AdminLogin extends AppCompatActivity
 
 
 
-                                    ;}}}}}
+                                    ;}
+
+                            }
+                        }
+                  }
+
 
                 @Override
                 public void onCancelled(DatabaseError databaseError) {

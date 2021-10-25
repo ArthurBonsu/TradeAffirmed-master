@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:overScrollMode="never"
+    android:scrollbars="none"
+    >
+<!-- VIDEO TUTORIAL : https://www.youtube.com/channel/UCmL5TAblHHgh1xhabmPjYgw -->
+    <!-- VIDEO TUTORIAL : CHANNEL NAME: Chirag Kachhadiya https://www.youtube.com/watch?v=GW9tzXTtrL8  -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        >
+
+        <ImageView
+            android:layout_width="130dp"
+            android:layout_height="130dp"
+            android:marginTop ="80dp"
+            android:id="@+id/mobilelogo"
+            android:contentDescription="@string/app_name"
+            android:src="@mipmap/tradexlogo" />
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:marginTop ="30dp"
+            android:text="TRADEX VERIFICATION"
+            android:textColor="@color/colorTextPrimary"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:contentDescription="@string/app_name"
+            android:src="@mipmap/tradexlogo" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:marginTop ="50dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginStart="50dp"
+            android:layout_marginEnd="50dp"/>
+
+
+           <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:marginTop ="50dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginStart="50dp"
+            android:layout_marginEnd="50dp"
+            android:gravity="center"
+            android:text="We will send you a One Time Password on this mobile number"
+            android:textColor="@color/colorTextSecondary"/>
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            android:layout_marginStart="30dp"
+            android:layout_marginEnd="30dp"
+            android:gravity="center"
+            android:text="enter mobile number"
+            android:textColor = "@color/colorTextSecondary"
+            android:textSize="14sp" />
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:layout_marginLeft="60dp"
+            android:layout_marginEnd="60dp"
+            android:layout_marginStart = "60dp"
+            android:gravity="center"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:gravity="center"
+            android:text="+233-"
+            android:textColor="@color/colorTextPrimary"
+            android:textSie = "16dp"
+            android:textStyle="bold" />
+        
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:background="@null"
+            android:hint = "1234567890"
+            android:imeOptions="actionDone"
+            android:id="@+id/inputMobile"
+            android:importantForAutofill="no"
+            android:inputType="number"
+            android:textColor="@color/colorTextPrimary"
+            android:textSize="16sp"
+            android:textStyle = "bold" />
+
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height= "2dp"
+            android:layout_marginStart="70dp"
+            android:layout_marginTop = "8dp"
+            android:layout_marginEnd="70dp"
+            android:background="@color/colorDivider" />
+
+       <FrameLayout
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content">
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/getverificationcode"
+            android:text="GET CODE"
+            android:textColor="@color/colorWhite"
+            android:textSize="16sp"
+            android:textStyle="bold">
+
+
+        </Button>
+
+        
+        <ProgressBar
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:id="@+id/progressBar"
+            android:layout_gravity="center"
+            android:visibility="gone" />
+
+       </FrameLayout>
+    </LinearLayout>
+
+
+</ScrollView>

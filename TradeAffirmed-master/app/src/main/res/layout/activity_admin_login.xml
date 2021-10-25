@@ -7,17 +7,37 @@
     android:background="@drawable/thebackgrounddesign"
     android:orientation="vertical">
 
+
+    <TextView
+        android:id="@+id/admintextview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/login_applogo"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginStart="25dp"
+        android:layout_marginLeft="100sp"
+        android:text="LOGIN AS ADMIN"
+        android:textColor="@color/colorWhite"
+        android:textSize="34sp"
+        android:textStyle="bold"
+
+        android:visibility="invisible"
+        tools:text="LOGIN AS ADMIN" />
+
     <ImageView
         android:id="@+id/login_applogo"
         android:layout_width="150dp"
         android:layout_height="170dp"
         android:layout_centerHorizontal="true"
         android:layout_marginRight="300sp"
-        android:textAlignment="center"
         android:contentDescription="loginlogoofapp"
+        android:gravity="center_horizontal"
+        android:scaleType="center"
+        android:layout_marginLeft="100sp"
         android:src="@drawable/applogo"
-        android:visibility="invisible"
-        android:gravity="center_horizontal" />
+        android:textAlignment="center"
+        android:visibility="invisible" />
 
 
     <EditText

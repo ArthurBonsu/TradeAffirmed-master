@@ -38,7 +38,7 @@ public class SendVerificationCodeActivity extends AppCompatActivity {
         EditText inputCode1, inputCode2, inputCode3, inputCode4, inputCode5, inputCode6;
         final ProgressBar progressBar = findViewById(R.id.progressBar);
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.verificodesend);
+        setContentView(R.layout.adminverificodesend);
 
 
         if (roleintent.getExtras().getString("role") != null) {
@@ -68,7 +68,8 @@ public class SendVerificationCodeActivity extends AppCompatActivity {
                  PhoneAuthProvider.getInstance().verifyPhoneNumber("+233" + inputMobile.getText().toString(), 60, TimeUnit.SECONDS,SendVerificationCodeActivity.this, new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
                      @Override
                      public void onVerificationCompleted(@NonNull PhoneAuthCredential phoneAuthCredential) {
-
+                    progressBar.setVisibility(View.GONE);
+                         getcode.setVisibility(View.VISIBLE);
                      }
 
                      @Override
@@ -80,7 +81,7 @@ public class SendVerificationCodeActivity extends AppCompatActivity {
 
                      @Override
                      public void onCodeSent(@NonNull String verificationId, @NonNull PhoneAuthProvider.ForceResendingToken forceResendingToken) {
-                         super.onCodeSent(s, forceResendingToken);
+                         super.onCodeSent(verificationId, forceResendingToken);
                           progressBar.setVisibility(View.GONE);
                           getcode.setVisibility(View.VISIBLE);
                           Intent codeintent = new Intent(getApplicationContext(), VerifyVerificationCodeActivity.class);
@@ -93,12 +94,12 @@ public class SendVerificationCodeActivity extends AppCompatActivity {
              }
 
          });
-
+/*
          verifyintent = new Intent(getApplicationContext(), VerifyVerificationCodeActivity.class);
          verifyintent.putExtra("mobile", inputMobile.getText().toString()  );
          verifyintent.putExtra("verificationId", verificationId);
          startActivity(verifyintent);
-
+*/
 
 
     }

@@ -455,6 +455,7 @@
 
 
     <string name="button">Button</string>
+    <string name="profile" />
 
     <string-array name="agespinner">
         <item>Your age </item>
