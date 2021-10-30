@@ -53,7 +53,7 @@ public class AdminLogin extends AppCompatActivity
     private TextView IamTrader, NotAdminLink, ForgetPasswordLink;
 
     private String parentDbName = "Drivers";
-
+` `
 
     private CheckBox chkBoxRememberMe;
 
@@ -79,6 +79,7 @@ public class AdminLogin extends AppCompatActivity
     Button SignupButton;
     Button TryVerificationCode;
     Button signup;
+    boolean checkbox=false ;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -159,7 +160,10 @@ public class AdminLogin extends AppCompatActivity
         chkBoxRememberMe.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+             if (chkBoxRememberMe.isChecked() ){
 
+
+             }
             }
         });
         // FORGET PASSWORD PROBLEMS
@@ -181,6 +185,7 @@ public class AdminLogin extends AppCompatActivity
         TryVerificationCode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
             }
         });
 
@@ -231,6 +236,9 @@ public class AdminLogin extends AppCompatActivity
                 // Google Sign In was successful, authenticate with Firebase
                 GoogleSignInAccount account = task.getResult(ApiException.class);
                 firebaseAuthWithGoogle(account);
+                // We then move to the next activity after authentication is complete
+                Intent firebasetoadminmainpageactivity = new Intent(getApplicationContext(), AdminMainPage.class);
+                startActivity(firebasetoadminmainpageactivity);
             } catch (ApiException e) {
                 // Google Sign In failed, update UI appropriately
                 Log.w(TAG, "Google sign in failed", e);
@@ -271,13 +279,7 @@ public class AdminLogin extends AppCompatActivity
                                                                                    //    Users usersData = dataSnapshot.child(parentDbName).child(phone).getValue(Users.class);
 
                                                                                    // GETTING THE TYPE OF TRADER
-                                                                                   role = dataSnapshot.child(parentDbName).child(traderID).child("role").getValue().toString();
 
-                                                                                   //  if (usersData.getPhone().equals(phone))
-                                                                                   {
-                                                                                       //    if (usersData.getPassword().equals(password))
-
-                                                                                       {
                                                                                            //    if (parentDbName.equals("Drivers") && role.equals("Trader")) {
                                                                                            firebaseAuthListener = new FirebaseAuth.AuthStateListener() {
                                                                                                @Override
@@ -373,10 +375,7 @@ public class AdminLogin extends AppCompatActivity
 
                                                                                    }
 
-                                                                               }
-
-
-                                                                           }
+                                                                               z
 
                                                                            @Override
                                                                            public void onCancelled(@NonNull DatabaseError error) {
@@ -406,11 +405,12 @@ public class AdminLogin extends AppCompatActivity
         String email =Emailaccess.getText().toString();
         // WE HAVE TO BUILD AN EMAIL BUTTON
 
-
+/*
         if (TextUtils.isEmpty(phone))
         {
             Toast.makeText(this, "Please write your phone number...", Toast.LENGTH_SHORT).show();
         }
+        */
         if (TextUtils.isEmpty(email))
         {
             Toast.makeText(this, "Please write your your email...", Toast.LENGTH_SHORT).show();
@@ -438,9 +438,15 @@ public class AdminLogin extends AppCompatActivity
 
     private void AllowAccessToAccount(final String phone, final String password, final String email) {
         if (chkBoxRememberMe.isChecked()) {
+            /*
             Paper.book().write(Prevalent.UserPhoneKey, phone);
             Paper.book().write(Prevalent.UserPasswordKey, password);
+        */
+          SessionManager sessionManager = new SessionManager(AdminLogin.this, SessionManager.SESSION_REMEMBERME);
+
+
         }
+
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
@@ -470,7 +476,7 @@ public class AdminLogin extends AppCompatActivity
                             //    if (usersData.getPassword().equals(password))
 
                             {
-                                if (parentDbName.equals("Drivers") && role.equals("Trader")) {
+
                                     firebaseAuthListener = new FirebaseAuth.AuthStateListener() {
                                         @Override
                                         public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -491,12 +497,13 @@ public class AdminLogin extends AppCompatActivity
 
                                                                 if (task.isSuccessful()) {
                                                                     Log.d(TAG, "signInWithEmail:success");
-                                                                    String user_id = mAuth.getCurrentUser().getUid();
-
+                                                                    String traderID = mAuth.getCurrentUser().getUid();
+                                                                     SessionManager sessionManager = new SessionManager(AdminLogin.this, SessionManager.SESSION_REMEMBERME);
+                                                                     sessionManager.createLogInSession(email, password);
                                                                     Toast.makeText(AdminLogin.this, "Welcome Trader, you are logged in Successfully...", Toast.LENGTH_SHORT).show();
                                                                     loadingBar.dismiss();
 
-                                                                    Intent intent = new Intent(AdminLogin.this, AdminCategoryActivity.class);
+                                                                    Intent intent = new Intent(AdminLogin.this, AdminMainPage.class);
                                                                     startActivity(intent);
                                                                     finish();
                                                                     return;
@@ -589,7 +596,7 @@ public class AdminLogin extends AppCompatActivity
 
                             }
                         }
-                  }
+
 
 
                 @Override
@@ -600,8 +607,8 @@ public class AdminLogin extends AppCompatActivity
 
 
         }
+}
 
-    }
 
 
     @Override
