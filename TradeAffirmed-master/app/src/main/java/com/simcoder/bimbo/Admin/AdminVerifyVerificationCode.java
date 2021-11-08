@@ -103,7 +103,10 @@ public class AdminVerifyVerificationCode extends AppCompatActivity {
                             buttonVerify.setVisibility(View.VISIBLE);
                             if(task.isSuccessful()){
                                 Intent intent = new Intent(getApplicationContext(), AdminMainPage.class);
+
                                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                 intent.putExtra("traderID",traderID );
+                                intent.putExtra("role",role );
                                 startActivity(intent);
                             }else{
                                 Toast.makeText(AdminVerifyVerificationCode.this, "The verification ode entered was invalid", Toast.LENGTH_SHORT);
@@ -123,7 +126,8 @@ public class AdminVerifyVerificationCode extends AppCompatActivity {
                 PhoneAuthProvider.getInstance().verifyPhoneNumber("+233" + getIntent().getStringExtra("mobile"), 60, TimeUnit.SECONDS,AdminVerifyVerificationCode.this, new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
                     @Override
                     public void onVerificationCompleted(@NonNull PhoneAuthCredential phoneAuthCredential) {
-
+                             progressBar.setVisibility(View.GONE);
+                             buttonVerify.setVisibility(View.VISIBLE);
                     }
 
                     @Override

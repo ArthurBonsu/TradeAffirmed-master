@@ -36,6 +36,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.simcoder.bimbo.Admin.AdminCategoryActivity;
 import com.simcoder.bimbo.Admin.AdminLogin;
+import com.simcoder.bimbo.Admin.SessionManager;
 import com.simcoder.bimbo.Model.Users;
 import com.simcoder.bimbo.Prevalent.Prevalent;
 import com.google.firebase.database.DataSnapshot;
@@ -45,6 +46,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.rey.material.widget.CheckBox;
 import com.simcoder.bimbo.R;
+
+import java.util.HashMap;
 
 import io.paperdb.Paper;
 
@@ -150,6 +153,14 @@ public class LoginActivity extends AppCompatActivity
 
         chkBoxRememberMe = (CheckBox) findViewById(R.id.remember_me_chkb);
         Paper.init(this);
+        SessionManager sessionManager = new SessionManager(LoginActivity.this, SessionManager.SESSION_REMEMBERME);
+        if (sessionManager.checkRememberMe()) {
+
+            HashMap<String, String > rememberMeDetails = sessionManager.getRememberMeDetailsFromSession();
+            Emailaccess.setText(rememberMeDetails.get(SessionManager.KEY_SESSIONEMAIL));
+            InputPassword.setText(rememberMeDetails.get(SessionManager.KEY_SESSIONPASSWORD));
+
+        }
 
         // REMEMBER ME
    //     https://www.youtube.com/watch?v=8pTcATGRDGM
@@ -157,18 +168,18 @@ public class LoginActivity extends AppCompatActivity
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (buttonView.isChecked()){
-                    SharedPreferences preferences = getSharedPreferences("checkbox", MODE_PRIVATE);
-                    SharedPreferences.Editor editor = preferences.edit();
-                    editor.putString("remember", "true");
-                    editor.apply();
-                    Toast.makeText(LoginActivity.this, "Unchecked", Toast.LENGTH_SHORT).show();
+                    SessionManager sessionManager = new SessionManager(LoginActivity.this, SessionManager.SESSION_REMEMBERME);
+
+                    sessionManager.createRememberMeSession(Emailaccess.getText().toString(), InputPassword.getText().toString());
+
+
+
                 }
                 else if(!buttonView.isChecked()){
-                    SharedPreferences preferences = getSharedPreferences("checkbox", MODE_PRIVATE);
-                    SharedPreferences.Editor editor = preferences.edit();
-                    editor.putString("remember", "false");
-                    editor.apply();
-                    Toast.makeText(LoginActivity.this, "Uncheckedd", Toast.LENGTH_SHORT).show();
+                    SessionManager sessionManager = new SessionManager(LoginActivity.this, SessionManager.SESSION_REMEMBERME);
+
+                    sessionManager.createRememberMeSession(Emailaccess.getText().toString(), InputPassword.getText().toString());
+
                 }
             }
         });
@@ -191,6 +202,7 @@ public class LoginActivity extends AppCompatActivity
       TryVerificationCode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                  }
         });
 
@@ -491,6 +503,10 @@ public class LoginActivity extends AppCompatActivity
                                                                     String user_id = mAuth.getCurrentUser().getUid();
 
                                                                     Toast.makeText(LoginActivity.this, "Welcome Trader, you are logged in Successfully...", Toast.LENGTH_SHORT).show();
+
+
+
+
                                                                     loadingBar.dismiss();
 
                                                                     Intent intent = new Intent(LoginActivity.this, AdminCategoryActivity.class);

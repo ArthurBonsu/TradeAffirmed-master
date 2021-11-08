@@ -1,5 +1,5 @@
 package com.simcoder.bimbo.Admin;
-
+// We approve the new registration once documents have been accepteed
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;

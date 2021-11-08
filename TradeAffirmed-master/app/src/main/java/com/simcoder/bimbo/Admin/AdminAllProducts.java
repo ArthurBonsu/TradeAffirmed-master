@@ -120,6 +120,9 @@ public  class  AdminAllProducts extends AppCompatActivity
 
     //product_description
     //thetraderiknow
+
+
+
     String   categoryname,date, desc,discount, time, pid, pimage,pname,price,image,name,size, tradername,tid;
     android.widget.ImageView product_imagehere;
     android.widget.ImageView thetraderimageforproduct;

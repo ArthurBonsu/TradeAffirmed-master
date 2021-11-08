@@ -86,7 +86,7 @@ public class AdminSendVerificationCodeActivity extends AppCompatActivity {
                         super.onCodeSent(verificationId, forceResendingToken);
                         progressBar.setVisibility(View.GONE);
                         getcode.setVisibility(View.VISIBLE);
-                        Intent codeintent = new Intent(getApplicationContext(), AdminSendVerificationCodeActivity.class);
+                        Intent codeintent = new Intent(getApplicationContext(), AdminVerifyVerificationCode.class);
                         codeintent.putExtra("mobile", inputMobile.getText().toString());
                         codeintent.putExtra("verificationId", verificationId);
                         startActivity( codeintent);
