@@ -31,9 +31,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.database.Query;
-import com.simcoder.bimbo.Admin.AdminCategoryActivity;
 import com.simcoder.bimbo.Model.Users;
-import com.simcoder.bimbo.Prevalent.Prevalent;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -41,8 +39,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.rey.material.widget.CheckBox;
 import com.simcoder.bimbo.R;
-import com.simcoder.bimbo.WorkActivities.LoginActivity;
-import com.simcoder.bimbo.WorkActivities.ResetPasswordActivity;
 
 import java.util.HashMap;
 
@@ -90,6 +86,7 @@ public class AdminLogin extends AppCompatActivity
     //DatabaseReference ProductsRef;
     FirebaseDatabase myfirebaseDatabase;
 
+
     DatabaseReference UserRef;
     String  userkey;
     String parentDb  = "Drivers";
@@ -120,6 +117,7 @@ public class AdminLogin extends AppCompatActivity
         IamTrader = (TextView) findViewById(R.id.iamtrader);
         TryVerificationCode = findViewById(R.id.mobileverification);
         loadingBar = new ProgressDialog(this);
+        ForgetPasswordLink = findViewById(R.id.forget_password_link);
         firebaseAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -166,7 +164,9 @@ public class AdminLogin extends AppCompatActivity
                     }).addApi(Auth.GOOGLE_SIGN_IN_API, gso).build();
         }
 
-
+       EditText   find_phone_number = findViewById(R.id.find_phone_number);
+        EditText question_1 = findViewById(R.id.question_1);
+       EditText  question_2 = findViewById(R.id.question_2);
 
         chkBoxRememberMe = (CheckBox) findViewById(R.id.remember_me_chkb);
         Paper.init(this);
@@ -188,9 +188,12 @@ public class AdminLogin extends AppCompatActivity
         ForgetPasswordLink.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(AdminLogin.this, ResetPasswordActivity.class);
-                intent.putExtra("check", "login");
-                startActivity(intent);
+                Intent adminforgotpasswordintent = new Intent(AdminLogin.this, AdminResetPasswordEmail.class);
+                adminforgotpasswordintent.putExtra("check", "login");
+
+                adminforgotpasswordintent.putExtra("role", role);
+                adminforgotpasswordintent.putExtra("traderID", traderID);
+                startActivity(adminforgotpasswordintent);
             }
         });
         LoginButton.setOnClickListener(new View.OnClickListener() {

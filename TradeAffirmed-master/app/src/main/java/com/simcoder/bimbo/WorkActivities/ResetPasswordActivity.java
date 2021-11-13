@@ -46,9 +46,9 @@ public class ResetPasswordActivity extends AppCompatActivity
             role = roleintent.getExtras().getString("role");
         }
 
-        Intent traderIDintent = getIntent();
-        if (traderIDintent.getExtras().getString("userID") != null) {
-            userID = traderIDintent.getExtras().getString("userID");
+        Intent userIDintent = getIntent();
+        if (userIDintent.getExtras().getString("userID") != null) {
+            userID = userIDintent.getExtras().getString("userID");
         }
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestIdToken(getString(R.string.default_web_client_id)).requestEmail().build();
@@ -72,8 +72,8 @@ public class ResetPasswordActivity extends AppCompatActivity
 
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                 if (user != null) {
-                    traderoruser = "";
-                    traderoruser = user.getUid();
+                    userID = "";
+                    userID = user.getUid();
                 }
 
                 // I HAVE TO TRY TO GET THE SETUP INFORMATION , IF THEY ARE ALREADY PROVIDED WE TAKE TO THE NEXT STAGE
@@ -85,10 +85,6 @@ public class ResetPasswordActivity extends AppCompatActivity
             check = getIntent().getStringExtra("check");
         }
 
-        { if (getIntent().getExtras().get("rolefromcustomermapactivitytohomeresetpasswordactivity") != null) {
-            role = getIntent().getExtras().get("rolefromcustomermapactivitytohomeresetpasswordactivity").toString();
-        } }
-        traderoruser = getIntent().getStringExtra("fromcustomermapactivitytoresetpasswordactivity");
     }
 
 
