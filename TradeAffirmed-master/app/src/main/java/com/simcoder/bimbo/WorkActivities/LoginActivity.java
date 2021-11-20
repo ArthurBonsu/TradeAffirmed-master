@@ -38,6 +38,7 @@ import com.simcoder.bimbo.Admin.AdminCategoryActivity;
 import com.simcoder.bimbo.Admin.AdminLogin;
 import com.simcoder.bimbo.Admin.AdminMainPage;
 import com.simcoder.bimbo.Admin.AdminRegister;
+import com.simcoder.bimbo.Admin.AdminResetPasswordEmail;
 import com.simcoder.bimbo.Admin.SessionManager;
 import com.simcoder.bimbo.Model.Users;
 import com.simcoder.bimbo.Prevalent.Prevalent;
@@ -195,7 +196,11 @@ public class LoginActivity extends AppCompatActivity
         TryVerificationCode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Intent tryverificationcodeintent = new Intent(LoginActivity.this, ResetPasswordActivity.class);
 
+                tryverificationcodeintent.putExtra("role", role);
+                tryverificationcodeintent.putExtra("userID", userID);
+                startActivity(tryverificationcodeintent);
             }
         });
 

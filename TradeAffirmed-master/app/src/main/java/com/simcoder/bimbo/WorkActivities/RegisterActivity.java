@@ -49,12 +49,12 @@ public class RegisterActivity extends AppCompatActivity
     DatabaseReference UserorTraderDatabase;
     DatabaseReference RegisterDatabase;
 
-    String traderoruser= "";
+
     private static final int RC_SIGN_IN = 1;
     private FirebaseAuth.AuthStateListener firebaseAuthListener;
     private TextView TraderLink, CustomerLink;
-    private String parentDbName = "";
-
+    private String parentDbName = "Customers";
+    String customer;
     //AUTHENTICATORS
 
     private GoogleMap mMap;
@@ -127,8 +127,8 @@ public class RegisterActivity extends AppCompatActivity
 
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                 if (user != null) {
-                    traderoruser="";
-                    traderoruser = user.getUid();
+                    customer ="";
+                    customer = user.getUid();
                 }
 
                 // I HAVE TO TRY TO GET THE SETUP INFORMATION , IF THEY ARE ALREADY PROVIDED WE TAKE TO THE NEXT STAGE
@@ -144,16 +144,14 @@ public class RegisterActivity extends AppCompatActivity
                     }
                 });
             }
-          if ( TraderLink != null) {
-              TraderLink.setOnClickListener(new View.OnClickListener() {
+          if ( CustomerLink != null) {
+              CustomerLink.setOnClickListener(new View.OnClickListener() {
                   @Override
                   public void onClick(View view) {
                       if (CreateAccountButton !=null) {
-                          CreateAccountButton.setText("Create Account Trader");
+                          CreateAccountButton.setText("Create Account of Client");
                       }
-                       if (TraderLink != null) {
-                           TraderLink.setVisibility(View.INVISIBLE);
-                       }
+
                        if (CustomerLink != null) {
                            CustomerLink.setVisibility(View.VISIBLE);
                        }
@@ -161,25 +159,10 @@ public class RegisterActivity extends AppCompatActivity
                   }
               });
           }
-        if (CustomerLink != null) {
-            CustomerLink.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                   if (CreateAccountButton != null) {
-                       CreateAccountButton.setText("Create Account Customer");
-                   }
-                   if (TraderLink != null ) {
-                       TraderLink.setVisibility(View.VISIBLE);
-                   }
-                   if (CustomerLink !=null) {
-                       CustomerLink.setVisibility(View.INVISIBLE);
-                   }
-                    parentDbName = "Drivers";
-                }
-            });
+
 
         }
-    }
+
 
     private  void signIn() {
         //    signInIntent  = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
@@ -229,13 +212,13 @@ public class RegisterActivity extends AppCompatActivity
                                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
                                 if (user != null) {
-                                    traderoruser = "";
-                                    traderoruser = user.getUid();
+                                    customer = "";
+                                    customer = user.getUid();
 
                                     final DatabaseReference RootRef;
 
                                     RootRef = FirebaseDatabase.getInstance().getReference().child("Users");
-                                    UserorTraderDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(parentDbName);
+                                    UserorTraderDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child("Customers");
 
 
                                     usertraderskey = UserorTraderDatabase.push().getKey();
@@ -246,7 +229,7 @@ public class RegisterActivity extends AppCompatActivity
 
                                                                                @Override
                                                                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                                                                   if (!dataSnapshot.child(parentDbName).child(traderoruser).exists()) {
+                                                                                   if (!dataSnapshot.child("Customers").child(customer).exists()) {
                                                                                        dataSnapshot.getValue(Products.class);
                                                                                        //    Users usersData = dataSnapshot.child(parentDbName).child(phone).getValue(Users.class);
 
@@ -258,7 +241,7 @@ public class RegisterActivity extends AppCompatActivity
                                                                                            //    if (usersData.getPassword().equals(password))
 
                                                                                            {
-                                                                                               if (parentDbName.equals("Drivers")) {
+                                                                                               if (parentDbName.equals("Customers")) {
                                                                                                    firebaseAuthListener = new FirebaseAuth.AuthStateListener() {
                                                                                                        @Override
                                                                                                        public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -267,12 +250,12 @@ public class RegisterActivity extends AppCompatActivity
 
 
                                                                                                            if (user != null) {
-                                                                                                               traderoruser = "";
-                                                                                                               traderoruser = user.getUid();
-                                                                                                               role = "Trader";
-                                                                                                               UserorTraderDatabase.child(traderoruser).setValue("role", role);
+                                                                                                               customer = "";
+                                                                                                               customer = user.getUid();
+                                                                                                               role = "Customer";
+                                                                                                               UserorTraderDatabase.child(customer).setValue("role", role);
 
-                                                                                                               if (FirebaseDatabase.getInstance().getReference().child("Users").child(parentDbName).child(traderoruser) != null && role.equals("Trader")) {
+                                                                                                               if (FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child(customer) != null && role.equals("Trader")) {
 
 
                                                                                                                    Toast.makeText(RegisterActivity.this, "logged in Successfully...", Toast.LENGTH_SHORT).show();
@@ -285,7 +268,7 @@ public class RegisterActivity extends AppCompatActivity
                                                                                                            } else {
 
                                                                                                                loadingBar.dismiss();
-                                                                                                               Toast.makeText(RegisterActivity.this, "Trader " + acct.getDisplayName() + "already exists", Toast.LENGTH_SHORT).show();
+                                                                                                               Toast.makeText(RegisterActivity.this, "Customer " + acct.getDisplayName() + "already exists", Toast.LENGTH_SHORT).show();
 
                                                                                                            }
 
@@ -309,13 +292,13 @@ public class RegisterActivity extends AppCompatActivity
 
                                                                                                            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                                                                                                            if (user != null) {
-                                                                                                               traderoruser = "";
-                                                                                                               traderoruser = user.getUid();
+                                                                                                               customer = "";
+                                                                                                               customer = user.getUid();
                                                                                                                role = "Customers";
-                                                                                                               UserorTraderDatabase.child(traderoruser).setValue("role", role);
+                                                                                                               UserorTraderDatabase.child(customer).setValue("role", role);
 
 
-                                                                                                               if (FirebaseDatabase.getInstance().getReference().child("Users").child(parentDbName).child(traderoruser) != null && role.equals("Customer"));
+                                                                                                               if (FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child(customer) != null && role.equals("Customer"));
                                                                                                                {
 
                                                                                                                    Toast.makeText(RegisterActivity.this, "logged in Successfully...", Toast.LENGTH_SHORT).show();
@@ -416,14 +399,14 @@ public class RegisterActivity extends AppCompatActivity
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
         if (user != null) {
-            traderoruser = "";
-            traderoruser = user.getUid();
+            customer = "";
+            customer = user.getUid();
 
             final DatabaseReference RegRef;
 
 
             RegisterDatabase = FirebaseDatabase.getInstance().getReference().child("Users");
-            UserorTraderDatabase =  FirebaseDatabase.getInstance().getReference().child("Users").child(parentDbName);
+            UserorTraderDatabase =  FirebaseDatabase.getInstance().getReference().child("Users").child("Customers");
 
 
 
@@ -434,7 +417,7 @@ public class RegisterActivity extends AppCompatActivity
 
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    if (!dataSnapshot.child(parentDbName).child(traderoruser).exists()) {
+                    if (!dataSnapshot.child("Customers").child(customer).exists()) {
                         //    Users usersData = dataSnapshot.child(parentDbName).child(phone).getValue(Users.class);
 
                         // GETTING THE TYPE OF TRADER
@@ -445,7 +428,7 @@ public class RegisterActivity extends AppCompatActivity
                             //    if (usersData.getPassword().equals(password))
 
                             {
-                                if (parentDbName.equals("Drivers")) {
+                                if (parentDbName.equals("Customers")) {
                                     firebaseAuthListener = new FirebaseAuth.AuthStateListener() {
                                         @Override
                                         public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -454,17 +437,17 @@ public class RegisterActivity extends AppCompatActivity
 
 
                                             if (user != null) {
-                                                traderoruser = "";
-                                                traderoruser = user.getUid();
-                                                    role="Trader";
-                                                UserorTraderDatabase.child(traderoruser).setValue("role", role);
+                                                customer = "";
+                                                customer = user.getUid();
+                                                    role="Customer";
+                                                UserorTraderDatabase.child(customer).setValue("role", role);
                                                     HashMap<String, Object> userdataMap = new HashMap<>();
                                                     userdataMap.put("phone", phone);
                                                     userdataMap.put("password", password);
                                                     userdataMap.put("name", name);
                                                     userdataMap.put("email", email);
 
-                                                    RootRef.child("Users").child(parentDbName).child(traderoruser).updateChildren(userdataMap)
+                                                    RootRef.child("Users").child("Customers").child(customer).updateChildren(userdataMap)
                                                             .addOnCompleteListener(new OnCompleteListener<Void>() {
                                                                 @Override
                                                                 public void onComplete(@NonNull Task<Void> task)
@@ -516,10 +499,10 @@ public class RegisterActivity extends AppCompatActivity
 
 
                                             if (user != null) {
-                                                traderoruser = "";
-                                                traderoruser = user.getUid();
+                                                customer = "";
+                                                customer = user.getUid();
                                                 role="Customers";
-                                                UserorTraderDatabase.child(traderoruser).setValue("role", role);
+                                                UserorTraderDatabase.child(customer).setValue("role", role);
 
                                                 HashMap<String, Object> userdataMap = new HashMap<>();
                                                 userdataMap.put("phone", phone);
@@ -528,7 +511,7 @@ public class RegisterActivity extends AppCompatActivity
                                                 userdataMap.put("email", email);
 
 
-                                                RootRef.child("Users").child(parentDbName).child(traderoruser).updateChildren(userdataMap)
+                                                RootRef.child("Users").child(parentDbName).child(customer).updateChildren(userdataMap)
                                                         .addOnCompleteListener(new OnCompleteListener<Void>() {
                                                             @Override
                                                             public void onComplete(@NonNull Task<Void> task)

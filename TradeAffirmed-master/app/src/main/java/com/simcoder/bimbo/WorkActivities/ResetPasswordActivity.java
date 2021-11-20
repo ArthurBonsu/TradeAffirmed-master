@@ -3,8 +3,14 @@ package com.simcoder.bimbo.WorkActivities;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -13,9 +19,12 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.simcoder.bimbo.R;
+import com.simcoder.bimbo.WorkActivities.ResetPasswordActivity;
 
 public class ResetPasswordActivity extends AppCompatActivity
 {
@@ -34,14 +43,17 @@ public class ResetPasswordActivity extends AppCompatActivity
     private GoogleSignInClient mGoogleSignInClient;
     String role;
     Intent roleintent;
+    String traderID;
+    String emailvalue;
+    EditText emailreset;
+    Button sendemailresetbtn;
     String userID;
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reset_password);
-
+        emailreset = findViewById(R.id.emailreset);
+        sendemailresetbtn = findViewById(R.id.sendemailresetbtn);
         if (roleintent.getExtras().getString("role") != null) {
             role = roleintent.getExtras().getString("role");
         }
@@ -85,9 +97,44 @@ public class ResetPasswordActivity extends AppCompatActivity
             check = getIntent().getStringExtra("check");
         }
 
+        sendemailresetbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                emailvalue = emailreset.getText().toString();
+                AlertDialog.Builder passwordResetDialog = new AlertDialog.Builder(getApplicationContext());
+                passwordResetDialog.setTitle("Reset Password");
+                passwordResetDialog.setMessage("Confirm this email to reset password" + emailvalue);
+                passwordResetDialog.setView(emailreset);
+
+                passwordResetDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        mAuth.sendPasswordResetEmail(emailvalue).addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                Toast.makeText(ResetPasswordActivity.this, "Reset Link Sent To Your Email", Toast.LENGTH_SHORT).show();
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Toast.makeText(ResetPasswordActivity.this, "Error! Reset Link Is Not Sent" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        });
+
+                    }
+                });
+
+                passwordResetDialog.setNegativeButton("No'", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Close Dialog
+
+                    }
+                });
+                passwordResetDialog.create().show();
+            }
+        });
     }
-
-
     @Override
     protected void onStart() {
         super.onStart();
@@ -104,8 +151,8 @@ public class ResetPasswordActivity extends AppCompatActivity
     protected void onStop() {
         super.onStop();
         //     mProgress.hide();
-       if (mAuth !=null) {
-           mAuth.removeAuthStateListener(firebaseAuthListener);
-       }
+        if (mAuth !=null) {
+            mAuth.removeAuthStateListener(firebaseAuthListener);
+        }
     }
 }

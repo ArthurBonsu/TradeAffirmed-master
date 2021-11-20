@@ -29,7 +29,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import com.google.firebase.auth.FirebaseUser;
 
-
+//D:\DOCUMENT\TRADEX  PROJECT\TradeAffirmed-master\TradeAffirmed-master\app\src\main\res\drawable
 
 
 public class CustomerLoginActivity extends AppCompatActivity {

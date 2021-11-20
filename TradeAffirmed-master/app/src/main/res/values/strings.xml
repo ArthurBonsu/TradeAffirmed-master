@@ -456,6 +456,9 @@
 
     <string name="button">Button</string>
     <string name="profile" />
+    <string name="reset_password">Reset Password</string>
+    <string name="please_write_your_email">Please write your email...</string>
+    <string name="verify">Verify</string>
 
     <string-array name="agespinner">
         <item>Your age </item>

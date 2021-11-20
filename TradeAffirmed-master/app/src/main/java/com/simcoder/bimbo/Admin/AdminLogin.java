@@ -164,9 +164,7 @@ public class AdminLogin extends AppCompatActivity
                     }).addApi(Auth.GOOGLE_SIGN_IN_API, gso).build();
         }
 
-       EditText   find_phone_number = findViewById(R.id.find_phone_number);
-        EditText question_1 = findViewById(R.id.question_1);
-       EditText  question_2 = findViewById(R.id.question_2);
+
 
         chkBoxRememberMe = (CheckBox) findViewById(R.id.remember_me_chkb);
         Paper.init(this);
@@ -206,7 +204,11 @@ public class AdminLogin extends AppCompatActivity
         TryVerificationCode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Intent tryverificationcodeintent = new Intent(AdminLogin.this, AdminResetPasswordEmail.class);
 
+                tryverificationcodeintent.putExtra("role", role);
+                tryverificationcodeintent.putExtra("traderID", traderID);
+                startActivity(tryverificationcodeintent);
             }
         });
 

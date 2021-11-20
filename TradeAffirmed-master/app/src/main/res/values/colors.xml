@@ -7,7 +7,8 @@
     <color name="item_default_color">#22EEEEEE</color>
     <color name="item_pressed_color">#CCCCCC</color>
     <color name="item_activated_color">#77CEEE</color>
-
+    <color name="colorBackground"> #FFFFFF</color>
+    <color name="colorOnboardingIndicatorInactive"> #72BCF7</color>
     <color name="grey">#BFBFBF</color>
 
     <color name="white">#FFF</color>
