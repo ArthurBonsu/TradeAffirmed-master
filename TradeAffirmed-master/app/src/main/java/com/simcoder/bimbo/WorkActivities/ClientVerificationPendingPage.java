@@ -1,5 +1,5 @@
-package com.simcoder.bimbo.Admin;
-
+package com.simcoder.bimbo.WorkActivities;
+// We approve the new registration once documents have been accepteed
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -12,10 +12,13 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseUser;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.media.Image;
 import android.net.Uri;
-
+import android.provider.MediaStore;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -29,6 +32,7 @@ import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -40,6 +44,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -53,9 +59,11 @@ import com.google.firebase.storage.UploadTask;
 import com.simcoder.bimbo.DriverMapActivity;
 import com.simcoder.bimbo.HistoryActivity;
 import com.simcoder.bimbo.Model.HashMaps;
+import com.simcoder.bimbo.Model.Products;
 import com.simcoder.bimbo.Model.Users;
 import com.simcoder.bimbo.R;
 import com.simcoder.bimbo.WorkActivities.CartActivity;
+import com.simcoder.bimbo.WorkActivities.HomeActivity;
 import com.simcoder.bimbo.WorkActivities.TraderProfile;
 import com.simcoder.bimbo.instagram.Home.InstagramHomeActivity;
 import com.squareup.picasso.Picasso;
@@ -63,6 +71,8 @@ import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -71,7 +81,9 @@ import java.util.Map;
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.paperdb.Paper;
 
-public class SecurityCheck extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, NavigationView.OnNavigationItemSelectedListener {
+public class ClientVerificationPending extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, NavigationView.OnNavigationItemSelectedListener {
+
+    //
     private static final int GALLERY_REQUEST2 = 2;
     private EditText   Nameinfo, Emailinfo, Phoneinfo;
 
@@ -80,7 +92,7 @@ public class SecurityCheck extends AppCompatActivity implements GoogleApiClient.
     private ImageView mProfileImage;
 
     private FirebaseAuth mAuth;
-    private DatabaseReference mAdminTraderDatabase;
+    private DatabaseReference mUserDatabase;
 
     private String userID;
     private String mName;
@@ -157,13 +169,19 @@ public class SecurityCheck extends AppCompatActivity implements GoogleApiClient.
     EditText NationalID = findViewById(R.id.NationalID);
     Button        ChoseIDFile = findViewById(R.id.ChoseIDFile);
     ImageView ImageViewOfID = findViewById(R.id.ImageViewOfID);
-    Button deletenationalidpicture = findViewById(R.id.deletenationalidpicture);
 
+    Button deletenationalidpicture = findViewById(R.id.deletenationalidpicture);
+    EditText       GpsCodeMapID= findViewById(R.id.GpsCodeMapID);
+    Button PickMap = findViewById(R.id.PickMap);
+    ImageView       ImageViewOfGPSCodeMap = findViewById(R.id.ImageViewOfGPSCodeMap);
+
+    Button       deleteselectedGPSCodeMapmap = findViewById(R.id.deleteselectedGPSCodeMapmap);
 
     private ImageButton mEventImage;
     private EditText mEventtitle;
     private EditText mEventDescription;
     private EditText mEventDate;
+
     String mPostKey;
     String churchkey;
     private Button msubmitButton;
@@ -227,59 +245,45 @@ public class SecurityCheck extends AppCompatActivity implements GoogleApiClient.
     String traderimage;
     String idimage;
 
-    public SecurityCheck() {
+    String gpscode;
+    String gpsimage;
+    Button movetohome;
+
+    public ClientVerificationPending() {
         super();
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.securitycheckpoint);
+        setContentView(R.layout.verificationpage);
         Intent roleintent = getIntent();
         if (roleintent.getExtras().getString("role") != null) {
             role = roleintent.getExtras().getString("role");
         }
 
-        Intent traderIDintent = getIntent();
-        if (traderIDintent.getExtras().getString("traderID") != null) {
-            traderID = traderIDintent.getExtras().getString("traderID");
+        Intent userIDintent = getIntent();
+        if (userIDintent.getExtras().getString("userID") != null) {
+            userID = userIDintent.getExtras().getString("userID");
         }
 
 
 
-         NationalID = findViewById(R.id.NationalID);
-        ChoseIDFile = findViewById(R.id.ChoseIDFile);
-         ImageViewOfID = findViewById(R.id.ImageViewOfID);
-
-         deletenationalidpicture = findViewById(R.id.deletenationalidpicture);
-
-          saveinformationhere = findViewById(R.id.saveinformationhere);
-         movetonext = findViewById(R.id.movetonext);
-         homebutton = findViewById(R.id.homebutton);
-         suggestionsbutton = findViewById(R.id.suggestionsbutton);
-                 services = findViewById(R.id.services);
-         expectedshipping = findViewById(R.id.expectedshipping);
-         adminprofile = findViewById(R.id.adminprofile);
-
-
-        thenationalidstring = NationalID.getText().toString();
-
-
-
+        movetohome = findViewById(R.id.movetohome);
         mAuth = FirebaseAuth.getInstance();
         mCurrentUser = mAuth.getCurrentUser();
 
 
         user = mAuth.getCurrentUser();
         if (user != null) {
-            traderID = "";
-            traderID = user.getUid();
+            userID = "";
+            userID = user.getUid();
         }
         Paper.init(this);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.hometoolbar);
         if (toolbar != null) {
-            toolbar.setTitle("All Customers");
+            toolbar.setTitle(" Client Verification Page");
         }
 
 
@@ -319,12 +323,12 @@ public class SecurityCheck extends AppCompatActivity implements GoogleApiClient.
 
 
                 // GET FROM FOLLOWING KEY
-                   // HAVE TO BUILD THE STORAGE
+                // HAVE TO BUILD THE STORAGE
                 mStorage = FirebaseStorage.getInstance().getReference().child("user_images");
-               myuserfirebasedatabase = FirebaseDatabase.getInstance();
-                mAdminTraderDatabase = myuserfirebasedatabase.getReference().child("Users").child("Drivers").child(traderID);
+                myuserfirebasedatabase = FirebaseDatabase.getInstance();
+                mUserDatabase = myuserfirebasedatabase.getReference().child("Users").child("Customers").child(userID);
 
-                mAdminTraderDatabase.keepSynced(true);
+                mUserDatabase.keepSynced(true);
 /*
                 if (ProductsRef.push() != null) {
                     productRandomKey = ProductsRef.push().getKey();
@@ -342,7 +346,7 @@ public class SecurityCheck extends AppCompatActivity implements GoogleApiClient.
                 }
 
                 if (mGoogleApiClient != null) {
-                    mGoogleApiClient = new GoogleApiClient.Builder(this).enableAutoManage(com.simcoder.bimbo.Admin.ClientSecurityCheck.this,
+                    mGoogleApiClient = new GoogleApiClient.Builder(this).enableAutoManage(ClientVerificationPending.this,
                             new GoogleApiClient.OnConnectionFailedListener() {
                                 @Override
                                 public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
@@ -359,8 +363,8 @@ public class SecurityCheck extends AppCompatActivity implements GoogleApiClient.
     protected synchronized void buildGoogleApiClient() {
         if (mGoogleApiClient != null) {
             mGoogleApiClient = new GoogleApiClient.Builder(this)
-                    .addConnectionCallbacks(com.simcoder.bimbo.Admin.ClientSecurityCheck.this)
-                    .addOnConnectionFailedListener(com.simcoder.bimbo.Admin.ClientSecurityCheck.this)
+                    .addConnectionCallbacks(ClientVerificationPending.this)
+                    .addOnConnectionFailedListener(ClientVerificationPending.this)
                     .addApi(LocationServices.API)
                     .build();
             mGoogleApiClient.connect();
@@ -369,224 +373,38 @@ public class SecurityCheck extends AppCompatActivity implements GoogleApiClient.
 
 
 
-            getUserInfo();
-            // SET THE AGE ADAPTER
+        getUserInfo();
+        // SET THE AGE ADAPTER
+        // CHOSE ID CARD
+        // UPLOAD ID CARD
 
-          // CHOSE ID CARD
-        ChoseIDFile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent galleryIntent = new Intent(Intent.ACTION_GET_CONTENT);
-                galleryIntent.setType("image/*");
-                startActivityForResult(galleryIntent, GALLERY_REQUEST);
-
-            }
-
-
-        });
-
-
-            //DELETE ID CARD
-            deletenationalidpicture.setOnClickListener(new View.OnClickListener() {
+        if (movetohome != null) {
+            movetohome.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    deletePosting();
+                    Intent intent = new Intent(ClientVerificationPending.this, HomeActivity.class);
+                    if (intent != null) {
+                        intent.putExtra("role", role);
+                        intent.putExtra("userID", userID);
+                        startActivity(intent);
+                        finish();
+                    }
                 }
             });
-
-
-            if (saveinformationhere != null) {
-                saveinformationhere.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-
-                        startPosting();
-                      //  saveUserInformation();
-                    }
-                });
-                if (movetonext != null) {
-                    movetonext.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            Intent intent = new Intent(com.simcoder.bimbo.Admin.ClientSecurityCheck.this, VerificationPendingPage.class);
-                            if (intent != null) {
-                                intent.putExtra("role", role);
-                                intent.putExtra("traderID", traderID);
-                                startActivity(intent);
-                                finish();
-                            }
-                        }
-                    });
-                }
-
-
-            }
-
         }
 
 
-    // Post Info
-    public void startPosting() {
-
-        // GET THE INFORMATION FROM THE TEXT BOX
-
-        thenationalidstring = NationalID.getText().toString();
-
-
-        user = mAuth.getCurrentUser();
-
-        // GET DATES FOR PRODUCTS
-        Calendar calendar = Calendar.getInstance();
-        SimpleDateFormat currentDate = new SimpleDateFormat("MMM dd, yyyy");
-
-        if (currentDate != null) {
-            date = currentDate.format(calendar.getTime()).toString();
-
-            SimpleDateFormat currentTime = new SimpleDateFormat("HH:mm:ss a");
-            if (currentTime != null) {
-                time = currentTime.format(calendar.getTime());
-
-            }
-
-
-            if (!TextUtils.isEmpty(thenationalidstring)  && mImageUri != null) {
-                mProgress.setMessage("Adding your security check information");
-
-                mProgress.show();
-
-                // CHECK STORAGE FOR IMAGE AND PASS IMAGES GOTTEN THERE
-                StorageReference filepath = mStorage.child(mImageUri.getLastPathSegment());
-
-                filepath.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                            idcode = thenationalidstring;
-
-
-                        final Uri downloadUrl = taskSnapshot.getUploadSessionUri();
-
-                        traderID = user.getUid();
-                        tradername = user.getDisplayName();
-                        idimage = downloadUrl.toString();
-
-                        Uri myphoto = user.getPhotoUrl();
-                        traderimage = myphoto.toString();
-                        pid =     ProductsRef.push().getKey();
-
-
-                        mAdminTraderDatabase = myuserfirebasedatabase.getReference().child("Users").child("Drivers").child(traderID);
-
-                        mAdminTraderDatabase.keepSynced(true);
-
-                        // PICK UP THE SPECIAL PRODUCT INFO AND LOADING THEM INTO THE DATABASE
-                        Users userstobesent = new Users (idcode,idimage);
-
-                        mAdminTraderDatabase.setValue(userstobesent, new
-                                DatabaseReference.CompletionListener() {
-                                    @Override
-                                    public void onComplete(DatabaseError databaseError, DatabaseReference
-                                            databaseReference) {
-                                        Toast.makeText(getApplicationContext(), "Security Informaation Added", Toast.LENGTH_SHORT).show();
-                                        Intent addadminproductactivity = new Intent(com.simcoder.bimbo.Admin.ClientSecurityCheck.this, com.simcoder.bimbo.Admin.ClientSecurityCheck.class);
-
-                                        startActivity(addadminproductactivity);
-
-                                    }
-                                });
-
-
-                    }
-
-                });
-
-
-                mProgress.dismiss();
-
-            }
-
-
-        }}
-
-    // Post Info
-    public void deletePosting() {
-
-        // GET THE INFORMATION FROM THE TEXT BOX
-
-        thenationalidstring = NationalID.getText().toString();
-
-
-        user = mAuth.getCurrentUser();
-
-        // GET DATES FOR PRODUCTS
-        Calendar calendar = Calendar.getInstance();
-        SimpleDateFormat currentDate = new SimpleDateFormat("MMM dd, yyyy");
-
-        if (currentDate != null) {
-            date = currentDate.format(calendar.getTime()).toString();
-
-            SimpleDateFormat currentTime = new SimpleDateFormat("HH:mm:ss a");
-            if (currentTime != null) {
-                time = currentTime.format(calendar.getTime());
-
-            }
-
-
-            if (!TextUtils.isEmpty(thenationalidstring)  && mImageUri != null) {
-                mProgress.setMessage("Adding your security check information");
-
-                mProgress.show();
-
-                // CHECK STORAGE FOR IMAGE AND PASS IMAGES GOTTEN THERE
-                StorageReference filepath = mStorage.child(mImageUri.getLastPathSegment());
-
-                filepath.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        idcode = "";
-                        final Uri downloadUrl = taskSnapshot.getUploadSessionUri();
-
-                        traderID = user.getUid();
-                        tradername = user.getDisplayName();
-                        idimage = "";
-
-                        Uri myphoto = user.getPhotoUrl();
-                        traderimage = myphoto.toString();
-                        pid =     ProductsRef.push().getKey();
-
-
-                        mAdminTraderDatabase = myuserfirebasedatabase.getReference().child("Users").child("Drivers").child(traderID);
-
-                        mAdminTraderDatabase.keepSynced(true);
-
-                        // PICK UP THE SPECIAL PRODUCT INFO AND LOADING THEM INTO THE DATABASE
-                        Users userstobesent = new Users (idcode,idimage);
-
-                        mAdminTraderDatabase.setValue(userstobesent, new
-                                DatabaseReference.CompletionListener() {
-                                    @Override
-                                    public void onComplete(DatabaseError databaseError, DatabaseReference
-                                            databaseReference) {
-                                        Toast.makeText(getApplicationContext(), "Security Informaation Added", Toast.LENGTH_SHORT).show();
-                                        Intent addadminproductactivity = new Intent(com.simcoder.bimbo.Admin.ClientSecurityCheck.this, com.simcoder.bimbo.Admin.ClientSecurityCheck.class);
-
-                                        startActivity(addadminproductactivity);
-
-                                    }
-                                });
-
-
-                    }
-
-                });
-
-
-                mProgress.dismiss();
-
-            }
-
-
-        }
     }
+
+
+
+
+
+
+
+
+
+
 
     // You get the information here and send it to the top
     // OnActivity result is lacking behind, I have to get the URi from it
@@ -620,36 +438,37 @@ public class SecurityCheck extends AppCompatActivity implements GoogleApiClient.
         }
 
 
-        }
+    }
 
 
 
 
     //POPULATE THE EDIT BOX IF THERE ALREADY EXIST SUCH A TRANSACTION
-    public void getUserInfo(){
-        mAdminTraderDatabase.addValueEventListener(new ValueEventListener() {
+    public void getUserInfo() {
+        mDatabaseUser.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if(dataSnapshot.exists() && dataSnapshot.getChildrenCount()>0) {
+                if (dataSnapshot.exists() && dataSnapshot.getChildrenCount() > 0) {
                     Map<String, Object> map = (Map<String, Object>) dataSnapshot.getValue(HashMaps.class);
                     if (map.get("address") != null) {
-                        String  themailingaddress = map.get("address").toString();
+                        String themailingaddress = map.get("address").toString();
 
                         MailingAddress.setText(themailingaddress);
 
 
                     }
                     if (map.get("gpscode") != null) {
-                        String    thegpscode = map.get("gpscode").toString();
+                        String thegpscode = map.get("gpscode").toString();
                         GpsCode.setText(mPhone);
                     }
 
                     if (map.get("street") != null) {
-                        String   thestreetaddress = map.get("street").toString();
+                        String thestreetaddress = map.get("street").toString();
                         StreetAddress.setText(thestreetaddress);
                     }
 
-                }}
+                }
+            }
 
 
             @Override
@@ -662,28 +481,9 @@ public class SecurityCheck extends AppCompatActivity implements GoogleApiClient.
 
 
 
-    //AFTER FIRST TIME OF CREATING INFO HE CAN HAVE NO ABILITY TO ALTER UNLESS PROVIDED BY ADMINISTRATOR
-    // PERSONAL INFORMATION COULD BE CROSS-CHECKED FOR SECURITY
-    // IT IS THE PAYMENT THAT MAKES IT DECENTRALIZED
 
-    public void saveUserInformation() {
 
-        themailingaddressstring = MailingAddress.getText().toString();
-        thegpscodestring = GpsCode.getText().toString();
-        thestreetaddressstring = StreetAddress.getText().toString();
 
-        if (themailingaddressstring != null && thegpscodestring != null && thestreetaddressstring != null) {
-
-            Map userInfo = new HashMap();
-            userInfo.put("address", themailingaddressstring);
-            userInfo.put("street", thestreetaddressstring);
-            userInfo.put("gpscode", thegpscodestring);
-            userInfo.put("country",countrytext);
-            mAdminTraderDatabase.updateChildren(userInfo);
-
-        }
-
-    }
 
 
     @Override
@@ -713,8 +513,8 @@ public class SecurityCheck extends AppCompatActivity implements GoogleApiClient.
 
                 FirebaseUser user = mAuth.getCurrentUser();
                 if (user != null) {
-                    traderID = "";
-                    traderID = user.getUid();
+                    userID = "";
+                    userID = user.getUid();
                 }
 
                 // I HAVE TO TRY TO GET THE SETUP INFORMATION , IF THEY ARE ALREADY PROVIDED WE TAKE TO THE NEXT STAGE
@@ -774,21 +574,21 @@ public class SecurityCheck extends AppCompatActivity implements GoogleApiClient.
 
 
         if (id == R.id.viewallcustomershere) {
-            if (!role.equals("Trader")) {
+
                 if (FirebaseAuth.getInstance() != null) {
                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                     if (user != null) {
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(com.simcoder.bimbo.Admin.ClientSecurityCheck.this, NotTraderActivity.class);
+                        Intent intent = new Intent(ClientVerificationPending.this, ResidentialInfo.class);
                         if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderID);
+                            intent.putExtra("userID", userID);
                             intent.putExtra("role", role);
                             startActivity(intent);
                         }
                     }
-                }
+
             } else {
                 if (FirebaseAuth.getInstance() != null) {
 
@@ -797,9 +597,9 @@ public class SecurityCheck extends AppCompatActivity implements GoogleApiClient.
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(com.simcoder.bimbo.Admin.ClientSecurityCheck.this, AdminAllCustomers.class);
+                        Intent intent = new Intent(ClientVerificationPending.this, ResidentialInfo.class);
                         if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderID);
+                            intent.putExtra("userID", userID);
                             intent.putExtra("role", role);
                             startActivity(intent);
                         }
@@ -812,21 +612,21 @@ public class SecurityCheck extends AppCompatActivity implements GoogleApiClient.
 
         if (id == R.id. allcustomersincart) {
 
-            if (!role.equals("Trader")) {
+
                 if (FirebaseAuth.getInstance() != null) {
                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                     if (user != null) {
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(com.simcoder.bimbo.Admin.ClientSecurityCheck.this, NotTraderActivity.class);
+                        Intent intent = new Intent(ClientVerificationPending.this, ResidentialInfo.class);
                         if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderID);
+                            intent.putExtra("userID", userID);
                             intent.putExtra("role", role);
                             startActivity(intent);
                         }
                     }
-                }
+
             } else {
                 if (FirebaseAuth.getInstance() != null) {
 
@@ -835,9 +635,9 @@ public class SecurityCheck extends AppCompatActivity implements GoogleApiClient.
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(com.simcoder.bimbo.Admin.ClientSecurityCheck.this, ViewAllCarts.class);
+                        Intent intent = new Intent(ClientVerificationPending.this, ResidentialInfo.class);
                         if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderID);
+                            intent.putExtra("userID", userID);
                             intent.putExtra("role", role);
                             startActivity(intent);
                         }
@@ -849,21 +649,21 @@ public class SecurityCheck extends AppCompatActivity implements GoogleApiClient.
 
 
         if (id == R.id.addnewproducthere) {
-            if (!role.equals("Trader")) {
+
                 if (FirebaseAuth.getInstance() != null) {
                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                     if (user != null) {
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(com.simcoder.bimbo.Admin.ClientSecurityCheck.this, NotTraderActivity.class);
+                        Intent intent = new Intent(ClientVerificationPending.this, ResidentialInfo.class);
                         if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderID);
+                            intent.putExtra("userID", userID);
                             intent.putExtra("role", role);
                             startActivity(intent);
                         }
                     }
-                }
+
             } else {
                 if (FirebaseAuth.getInstance() != null) {
 
@@ -872,9 +672,9 @@ public class SecurityCheck extends AppCompatActivity implements GoogleApiClient.
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(com.simcoder.bimbo.Admin.ClientSecurityCheck.this, AdminAddNewProductActivityII.class);
+                        Intent intent = new Intent(ClientVerificationPending.this, ResidentialInfo.class);
                         if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderID);
+                            intent.putExtra("userID", userID);
                             intent.putExtra("role", role);
                             startActivity(intent);
                         }
@@ -884,21 +684,21 @@ public class SecurityCheck extends AppCompatActivity implements GoogleApiClient.
         }
 
         if (id == R.id.allproductshere) {
-            if (!role.equals("Trader")) {
+
                 if (FirebaseAuth.getInstance() != null) {
                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                     if (user != null) {
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(com.simcoder.bimbo.Admin.ClientSecurityCheck.this, NotTraderActivity.class);
+                        Intent intent = new Intent(ClientVerificationPending.this, ResidentialInfo.class);
                         if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderID);
+                            intent.putExtra("userID", userID);
                             intent.putExtra("role", role);
                             startActivity(intent);
                         }
                     }
-                }
+
             } else {
                 if (FirebaseAuth.getInstance() != null) {
 
@@ -907,30 +707,30 @@ public class SecurityCheck extends AppCompatActivity implements GoogleApiClient.
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(com.simcoder.bimbo.Admin.ClientSecurityCheck.this, AdminAllProducts.class);
+                        Intent intent = new Intent(ClientVerificationPending.this, ResidentialInfo.class);
                         if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderID);
+                            intent.putExtra("userID", userID);
                             intent.putExtra("role", role);
                             startActivity(intent);
                         }
                     }}
 
                 if (id == R.id.allproductspurchased) {
-                    if (!role.equals("Trader")) {
+
                         if (FirebaseAuth.getInstance() != null) {
                             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                             if (user != null) {
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(com.simcoder.bimbo.Admin.ClientSecurityCheck.this, NotTraderActivity.class);
+                                Intent intent = new Intent(ClientVerificationPending.this, HistoryActivity.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
                                     startActivity(intent);
                                 }
                             }
-                        }
+
                     } else {
                         if (FirebaseAuth.getInstance() != null) {
 
@@ -939,7 +739,7 @@ public class SecurityCheck extends AppCompatActivity implements GoogleApiClient.
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(com.simcoder.bimbo.Admin.ClientSecurityCheck.this, AllProductsPurchased.class);
+                                Intent intent = new Intent(ClientVerificationPending.this, HistoryActivity.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
@@ -952,14 +752,14 @@ public class SecurityCheck extends AppCompatActivity implements GoogleApiClient.
 
 
                 if (id == R.id. viewallcustomershere) {
-                    if (!role.equals("Trader")) {
+
                         if (FirebaseAuth.getInstance() != null) {
                             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                             if (user != null) {
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(com.simcoder.bimbo.Admin.ClientSecurityCheck.this, NotTraderActivity.class);
+                                Intent intent = new Intent(ClientVerificationPending.this, HistoryActivity.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
@@ -975,7 +775,7 @@ public class SecurityCheck extends AppCompatActivity implements GoogleApiClient.
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(com.simcoder.bimbo.Admin.ClientSecurityCheck.this, ViewAllCustomers.class);
+                                Intent intent = new Intent(ClientVerificationPending.this, HistoryActivity.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
@@ -994,7 +794,7 @@ public class SecurityCheck extends AppCompatActivity implements GoogleApiClient.
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(com.simcoder.bimbo.Admin.ClientSecurityCheck.this, NotTraderActivity.class);
+                                Intent intent = new Intent(ClientVerificationPending.this, HistoryActivity.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
@@ -1010,7 +810,7 @@ public class SecurityCheck extends AppCompatActivity implements GoogleApiClient.
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(com.simcoder.bimbo.Admin.ClientSecurityCheck.this, TradersFollowing.class);
+                                Intent intent = new Intent(ClientVerificationPending.this, HistoryActivity.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
@@ -1031,7 +831,7 @@ public class SecurityCheck extends AppCompatActivity implements GoogleApiClient.
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(com.simcoder.bimbo.Admin.ClientSecurityCheck.this, NotTraderActivity.class);
+                                Intent intent = new Intent(ClientVerificationPending.this, HistoryActivity.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
@@ -1047,7 +847,7 @@ public class SecurityCheck extends AppCompatActivity implements GoogleApiClient.
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(com.simcoder.bimbo.Admin.ClientSecurityCheck.this, AdminNewOrdersActivity.class);
+                                Intent intent = new Intent(ClientVerificationPending.this, HistoryActivity.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
@@ -1068,7 +868,7 @@ public class SecurityCheck extends AppCompatActivity implements GoogleApiClient.
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(com.simcoder.bimbo.Admin.ClientSecurityCheck.this, NotTraderActivity.class);
+                                Intent intent = new Intent(ClientVerificationPending.this, HistoryActivity.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
@@ -1084,7 +884,7 @@ public class SecurityCheck extends AppCompatActivity implements GoogleApiClient.
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(com.simcoder.bimbo.Admin.ClientSecurityCheck.this, AdminCustomerServed.class);
+                                Intent intent = new Intent(ClientVerificationPending.this, HistoryActivity.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
@@ -1104,7 +904,7 @@ public class SecurityCheck extends AppCompatActivity implements GoogleApiClient.
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(com.simcoder.bimbo.Admin.ClientSecurityCheck.this, NotTraderActivity.class);
+                                Intent intent = new Intent(ClientVerificationPending.this, HistoryActivity.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
@@ -1120,7 +920,7 @@ public class SecurityCheck extends AppCompatActivity implements GoogleApiClient.
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(com.simcoder.bimbo.Admin.ClientSecurityCheck.this, AdminAllOrderHistory.class);
+                                Intent intent = new Intent(ClientVerificationPending.this, HistoryActivity.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
@@ -1133,7 +933,7 @@ public class SecurityCheck extends AppCompatActivity implements GoogleApiClient.
 
 
             }
-        }
+
 
 
         return super.onOptionsItemSelected(item);
@@ -1149,7 +949,7 @@ public class SecurityCheck extends AppCompatActivity implements GoogleApiClient.
         if (id == R.id.viewmap) {
             if (!role.equals("Trader")) {
 
-                Intent intent = new Intent(com.simcoder.bimbo.Admin.ClientSecurityCheck.this, NotTraderActivity.class);
+                Intent intent = new Intent(ClientVerificationPending.this, HistoryActivity.class);
                 if (intent != null) {
                     intent.putExtra("traderorcustomer", traderID);
                     intent.putExtra("role", role);
@@ -1158,7 +958,7 @@ public class SecurityCheck extends AppCompatActivity implements GoogleApiClient.
                 }
             } else {
 
-                Intent intent = new Intent(com.simcoder.bimbo.Admin.ClientSecurityCheck.this, DriverMapActivity.class);
+                Intent intent = new Intent(ClientVerificationPending.this, DriverMapActivity.class);
                 if (intent != null) {
                     intent.putExtra("traderorcustomer", traderID);
                     intent.putExtra("role", role);
@@ -1179,7 +979,7 @@ public class SecurityCheck extends AppCompatActivity implements GoogleApiClient.
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(com.simcoder.bimbo.Admin.ClientSecurityCheck.this, NotTraderActivity.class);
+                        Intent intent = new Intent(ClientVerificationPending.this, HistoryActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderID);
                             intent.putExtra("role", role);
@@ -1195,7 +995,7 @@ public class SecurityCheck extends AppCompatActivity implements GoogleApiClient.
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(com.simcoder.bimbo.Admin.ClientSecurityCheck.this, CartActivity.class);
+                        Intent intent = new Intent(ClientVerificationPending.this, CartActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderID);
                             intent.putExtra("role", role);
@@ -1215,7 +1015,7 @@ public class SecurityCheck extends AppCompatActivity implements GoogleApiClient.
                             String cusomerId = "";
 
                             cusomerId = user.getUid();
-                            Intent intent = new Intent(com.simcoder.bimbo.Admin.ClientSecurityCheck.this, NotTraderActivity.class);
+                            Intent intent = new Intent(ClientVerificationPending.this, HistoryActivity.class);
                             if (intent != null) {
                                 intent.putExtra("traderorcustomer", traderID);
                                 intent.putExtra("role", role);
@@ -1231,7 +1031,7 @@ public class SecurityCheck extends AppCompatActivity implements GoogleApiClient.
                             String cusomerId = "";
                             cusomerId = user.getUid();
 
-                            Intent intent = new Intent(com.simcoder.bimbo.Admin.ClientSecurityCheck.this, InstagramHomeActivity.class);
+                            Intent intent = new Intent(ClientVerificationPending.this, InstagramHomeActivity.class);
                             if (intent != null) {
                                 intent.putExtra("traderorcustomer", traderID);
                                 intent.putExtra("role", role);
@@ -1251,7 +1051,7 @@ public class SecurityCheck extends AppCompatActivity implements GoogleApiClient.
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(com.simcoder.bimbo.Admin.ClientSecurityCheck.this, NotTraderActivity.class);
+                                Intent intent = new Intent(ClientVerificationPending.this, HistoryActivity.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
@@ -1267,7 +1067,7 @@ public class SecurityCheck extends AppCompatActivity implements GoogleApiClient.
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(com.simcoder.bimbo.Admin.ClientSecurityCheck.this, AdminAllProducts.class);
+                                Intent intent = new Intent(ClientVerificationPending.this, HistoryActivity.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
@@ -1284,7 +1084,7 @@ public class SecurityCheck extends AppCompatActivity implements GoogleApiClient.
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(com.simcoder.bimbo.Admin.ClientSecurityCheck.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(ClientVerificationPending.this, HistoryActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1300,7 +1100,7 @@ public class SecurityCheck extends AppCompatActivity implements GoogleApiClient.
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(com.simcoder.bimbo.Admin.ClientSecurityCheck.this, SearchForAdminProductsActivity.class);
+                                        Intent intent = new Intent(ClientVerificationPending.this, HistoryActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1316,7 +1116,7 @@ public class SecurityCheck extends AppCompatActivity implements GoogleApiClient.
                             if (FirebaseAuth.getInstance() != null) {
                                 FirebaseAuth.getInstance().signOut();
                                 if (mGoogleApiClient != null) {
-                                    mGoogleSignInClient.signOut().addOnCompleteListener(com.simcoder.bimbo.Admin.ClientSecurityCheck.this,
+                                    mGoogleSignInClient.signOut().addOnCompleteListener(ClientVerificationPending.this,
                                             new OnCompleteListener<Void>() {
                                                 @Override
                                                 public void onComplete(@NonNull Task<Void> task) {
@@ -1325,7 +1125,7 @@ public class SecurityCheck extends AppCompatActivity implements GoogleApiClient.
                                             });
                                 }
                             }
-                            Intent intent = new Intent(com.simcoder.bimbo.Admin.ClientSecurityCheck.this, com.simcoder.bimbo.MainActivity.class);
+                            Intent intent = new Intent(ClientVerificationPending.this, com.simcoder.bimbo.MainActivity.class);
                             if (intent != null) {
                                 startActivity(intent);
                                 finish();
@@ -1340,7 +1140,7 @@ public class SecurityCheck extends AppCompatActivity implements GoogleApiClient.
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(com.simcoder.bimbo.Admin.ClientSecurityCheck.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(ClientVerificationPending.this, HistoryActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1356,7 +1156,7 @@ public class SecurityCheck extends AppCompatActivity implements GoogleApiClient.
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(com.simcoder.bimbo.Admin.ClientSecurityCheck.this, com.simcoder.bimbo.WorkActivities.SettinsActivity.class);
+                                        Intent intent = new Intent(ClientVerificationPending.this, com.simcoder.bimbo.WorkActivities.SettinsActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1374,7 +1174,7 @@ public class SecurityCheck extends AppCompatActivity implements GoogleApiClient.
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(com.simcoder.bimbo.Admin.ClientSecurityCheck.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(ClientVerificationPending.this, HistoryActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1390,7 +1190,7 @@ public class SecurityCheck extends AppCompatActivity implements GoogleApiClient.
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(com.simcoder.bimbo.Admin.ClientSecurityCheck.this, HistoryActivity.class);
+                                        Intent intent = new Intent(ClientVerificationPending.this, HistoryActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1410,7 +1210,7 @@ public class SecurityCheck extends AppCompatActivity implements GoogleApiClient.
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(com.simcoder.bimbo.Admin.ClientSecurityCheck.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(ClientVerificationPending.this, HistoryActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1426,7 +1226,7 @@ public class SecurityCheck extends AppCompatActivity implements GoogleApiClient.
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(com.simcoder.bimbo.Admin.ClientSecurityCheck.this, TraderProfile.class);
+                                        Intent intent = new Intent(ClientVerificationPending.this, TraderProfile.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1446,7 +1246,7 @@ public class SecurityCheck extends AppCompatActivity implements GoogleApiClient.
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(com.simcoder.bimbo.Admin.ClientSecurityCheck.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(ClientVerificationPending.this, HistoryActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1462,7 +1262,7 @@ public class SecurityCheck extends AppCompatActivity implements GoogleApiClient.
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(com.simcoder.bimbo.Admin.ClientSecurityCheck.this, AdminAllCustomers.class);
+                                        Intent intent = new Intent(ClientVerificationPending.this, HistoryActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1483,7 +1283,7 @@ public class SecurityCheck extends AppCompatActivity implements GoogleApiClient.
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(com.simcoder.bimbo.Admin.ClientSecurityCheck.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(ClientVerificationPending.this, HistoryActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1499,7 +1299,7 @@ public class SecurityCheck extends AppCompatActivity implements GoogleApiClient.
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(com.simcoder.bimbo.Admin.ClientSecurityCheck.this, AdminAddNewProductActivityII.class);
+                                        Intent intent = new Intent(ClientVerificationPending.this, HistoryActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1519,7 +1319,7 @@ public class SecurityCheck extends AppCompatActivity implements GoogleApiClient.
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(com.simcoder.bimbo.Admin.ClientSecurityCheck.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(ClientVerificationPending.this, HistoryActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1535,7 +1335,7 @@ public class SecurityCheck extends AppCompatActivity implements GoogleApiClient.
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(com.simcoder.bimbo.Admin.ClientSecurityCheck.this, AllGoodsBought.class);
+                                        Intent intent = new Intent(ClientVerificationPending.this, HistoryActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1555,7 +1355,7 @@ public class SecurityCheck extends AppCompatActivity implements GoogleApiClient.
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(com.simcoder.bimbo.Admin.ClientSecurityCheck.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(ClientVerificationPending.this, HistoryActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1571,7 +1371,7 @@ public class SecurityCheck extends AppCompatActivity implements GoogleApiClient.
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(com.simcoder.bimbo.Admin.ClientSecurityCheck.this, AdminPaymentHere.class);
+                                        Intent intent = new Intent(ClientVerificationPending.this, HistoryActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1591,7 +1391,7 @@ public class SecurityCheck extends AppCompatActivity implements GoogleApiClient.
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(com.simcoder.bimbo.Admin.ClientSecurityCheck.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(ClientVerificationPending.this, HistoryActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1607,7 +1407,7 @@ public class SecurityCheck extends AppCompatActivity implements GoogleApiClient.
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(com.simcoder.bimbo.Admin.ClientSecurityCheck.this, AdminSettings.class);
+                                        Intent intent = new Intent(ClientVerificationPending.this, HistoryActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);

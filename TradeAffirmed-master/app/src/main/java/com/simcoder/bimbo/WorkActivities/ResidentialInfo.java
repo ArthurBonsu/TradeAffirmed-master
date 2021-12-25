@@ -1,10 +1,15 @@
-package com.simcoder.bimbo.Admin;
+package com.simcoder.bimbo.WorkActivities;
 
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseUser;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.media.Image;
 import android.net.Uri;
-
+import android.provider.MediaStore;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -17,21 +22,32 @@ import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+import com.simcoder.bimbo.Admin.ResidentialInformationPage;
 import com.simcoder.bimbo.Model.HashMaps;
 import com.simcoder.bimbo.R;
 
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class BackgroundCheck extends AppCompatActivity {
+public class ResidentialInfo extends AppCompatActivity {
 
     private EditText   Nameinfo, Emailinfo, Phoneinfo;
 
@@ -40,7 +56,7 @@ public class BackgroundCheck extends AppCompatActivity {
     private ImageView mProfileImage;
 
     private FirebaseAuth mAuth;
-    private DatabaseReference mAdminTraderDatabase;
+    private DatabaseReference mUserDatabase;
 
     private String userID;
     private String mName;
@@ -81,7 +97,7 @@ public class BackgroundCheck extends AppCompatActivity {
 
     RadioButton FemaleMaleRadiobutton;
     Spinner agespinner;
-    Spinner NationalIDofEmergencyPerson;
+    EditText NationalIDofEmergencyPerson;
     Spinner countryspinner;
     Button saveinformationhere;
     ImageButton movetonext;
@@ -103,70 +119,58 @@ public class BackgroundCheck extends AppCompatActivity {
     String  thegpscodestring;
     String thestreetaddressstring;
 
-    EditText EmergencyPersonName;
-    EditText        EmergencyPersonPhoneNumber;
-    EditText EmergencyPersonEmail;
-    Spinner        typeofidspinner;
-    ArrayAdapter<String> myIDAdapter;
-    ArrayAdapter<String> mycountryAdapter;
-    String theemergencypersonnamestring;
-    String theemergencypersonphonestring;
-    String theemergencypersonemailstring;
-    String typeofidtext;
-     @Override
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.backgroundcheck);
+        setContentView(R.layout.residentialinfo);
         Intent roleintent = getIntent();
         if (roleintent.getExtras().getString("role") != null) {
             role = roleintent.getExtras().getString("role");
         }
 
-        Intent traderIDintent = getIntent();
-        if (traderIDintent.getExtras().getString("traderID") != null) {
-            traderID = traderIDintent.getExtras().getString("traderID");
+        Intent userIDintent = getIntent();
+        if (userIDintent.getExtras().getString("userID") != null) {
+            traderID = userIDintent.getExtras().getString("userID");
         }
 
+        MailingAddress = findViewById(R.id.MailingAddress);
+        GpsCode = findViewById(R.id.GpsCode);
+        StreetAddress = findViewById(R.id.StreetAddress);
 
-         EmergencyPersonName = findViewById(R.id.EmergencyPersonName);
-                EmergencyPersonPhoneNumber = findViewById(R.id.EmergencyPersonPhoneNumber);
-         EmergencyPersonEmail = findViewById(R.id.EmergencyPersonEmail);
-                typeofidspinner = findViewById(R.id.typeofidspinner) ;
-         NationalIDofEmergencyPerson = findViewById(R.id.NationalIDofEmergencyPerson);
-               countryspinner = findViewById(R.id.countryspinner);
-         saveinformationhere = findViewById(R.id.saveinformationhere);
-               movetonext = findViewById(R.id.movetonext);
-               homebutton = findViewById(R.id.homebutton);
-               suggestionsbutton = findViewById(R.id.suggestionsbutton);
-         services = findViewById(R.id.services);
-              expectedshipping = findViewById(R.id.expectedshipping);
-              adminprofile =findViewById(R.id.adminprofile);
+        themailingaddressstring = MailingAddress.getText().toString();
+        thegpscodestring = GpsCode.getText().toString();
+        thestreetaddressstring = StreetAddress.getText().toString();
 
 
-        theemergencypersonnamestring = EmergencyPersonName.getText().toString();
-        theemergencypersonphonestring= EmergencyPersonPhoneNumber.getText().toString();
-        theemergencypersonemailstring = EmergencyPersonEmail.getText().toString();
-
+        countryspinner = (Spinner) findViewById(R.id.countryspinner);
+        saveinformationhere = (Button) findViewById(R.id.saveinformationhere);
+        movetonext = (ImageButton) findViewById(R.id.movetonext);
+        homebutton = (ImageButton) findViewById(R.id.homebutton);
+        suggestionsbutton = (ImageButton) findViewById(R.id.suggestionsbutton);
+        services = (ImageButton) findViewById(R.id.services);
+        expectedshipping = (ImageButton) findViewById(R.id.expectedshipping);
+        adminprofile = (ImageButton) findViewById(R.id.adminprofile);
 
 
         mAuth = FirebaseAuth.getInstance();
 
         FirebaseUser user = mAuth.getCurrentUser();
         if (user != null) {
-            traderID = "";
-            traderID = user.getUid();
+            userID = "";
+            userID = user.getUid();
 
 
-            mAdminTraderDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child("Drivers").child(traderID);
+            mUserDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child(userID);
             getUserInfo();
             // SET THE AGE ADAPTER
 
 
             // SET THE COUNTRY ADAPTER
-            mycountryAdapter = new ArrayAdapter<String>(BackgroundCheck.this,
+            ArrayAdapter<String> myAdapter = new ArrayAdapter<String>(ResidentialInfo.this,
                     android.R.layout.simple_list_item_1, getResources().getStringArray(R.array.countryspinner));
-            mycountryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            countryspinner.setAdapter(mycountryAdapter);
+            myAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            countryspinner.setAdapter(myAdapter);
 
             countryspinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
@@ -174,26 +178,6 @@ public class BackgroundCheck extends AppCompatActivity {
                 @Override
                 public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                     countrytext = countryspinner.getSelectedItem().toString();
-                    getUserInfo();
-                }
-
-                @Override
-                public void onNothingSelected(AdapterView<?> adapterView) {
-
-                }
-            });
-               // SET THE TYPE OF ID ADAPTER
-            myIDAdapter = new ArrayAdapter<String>(BackgroundCheck.this,
-                    android.R.layout.simple_list_item_1, getResources().getStringArray(R.array.typeofidspinner));
-            myIDAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            NationalIDofEmergencyPerson.setAdapter(myIDAdapter);
-
-            NationalIDofEmergencyPerson.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-
-
-                @Override
-                public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                    typeofidtext = NationalIDofEmergencyPerson.getSelectedItem().toString();
                     getUserInfo();
                 }
 
@@ -217,10 +201,10 @@ public class BackgroundCheck extends AppCompatActivity {
                     movetonext.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            Intent intent = new Intent(BackgroundCheck.this, SecurityCheck2.class);
+                            Intent intent = new Intent(ResidentialInfo.this, BackgroundInfo.class);
                             if (intent != null) {
                                 intent.putExtra("role", role);
-                                intent.putExtra("traderID", traderID);
+                                intent.putExtra("userID", userID);
                                 startActivity(intent);
                                 finish();
                             }
@@ -236,7 +220,7 @@ public class BackgroundCheck extends AppCompatActivity {
     }
     //POPULATE THE EDIT BOX IF THERE ALREADY EXIST SUCH A TRANSACTION
     public void getUserInfo(){
-        mAdminTraderDatabase.addValueEventListener(new ValueEventListener() {
+        mUserDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if(dataSnapshot.exists() && dataSnapshot.getChildrenCount()>0) {
@@ -288,7 +272,7 @@ public class BackgroundCheck extends AppCompatActivity {
             userInfo.put("street", thestreetaddressstring);
             userInfo.put("gpscode", thegpscodestring);
             userInfo.put("country",countrytext);
-            mAdminTraderDatabase.updateChildren(userInfo);
+            mUserDatabase.updateChildren(userInfo);
 
         }
 

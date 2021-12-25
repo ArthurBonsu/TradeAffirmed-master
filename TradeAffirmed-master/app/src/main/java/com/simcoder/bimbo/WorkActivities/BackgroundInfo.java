@@ -1,4 +1,4 @@
-package com.simcoder.bimbo.Admin;
+package com.simcoder.bimbo.WorkActivities;
 
 import com.google.firebase.auth.FirebaseUser;
 
@@ -31,7 +31,7 @@ import com.simcoder.bimbo.R;
 import java.util.HashMap;
 import java.util.Map;
 
-public class BackgroundCheck extends AppCompatActivity {
+public class BackgroundInfo extends AppCompatActivity {
 
     private EditText   Nameinfo, Emailinfo, Phoneinfo;
 
@@ -40,7 +40,7 @@ public class BackgroundCheck extends AppCompatActivity {
     private ImageView mProfileImage;
 
     private FirebaseAuth mAuth;
-    private DatabaseReference mAdminTraderDatabase;
+    private DatabaseReference mUserDatabase;
 
     private String userID;
     private String mName;
@@ -63,7 +63,7 @@ public class BackgroundCheck extends AppCompatActivity {
     RadioButton FemaleRadioButton;
     RadioButton MaleRadioButton;
     String role;
-    String traderID;
+
     RadioButton radioButtonforgender;
     String radiotext;
 
@@ -113,34 +113,34 @@ public class BackgroundCheck extends AppCompatActivity {
     String theemergencypersonphonestring;
     String theemergencypersonemailstring;
     String typeofidtext;
-     @Override
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.backgroundcheck);
+        setContentView(R.layout.activity_backgroundcheck);
         Intent roleintent = getIntent();
         if (roleintent.getExtras().getString("role") != null) {
             role = roleintent.getExtras().getString("role");
         }
 
-        Intent traderIDintent = getIntent();
-        if (traderIDintent.getExtras().getString("traderID") != null) {
-            traderID = traderIDintent.getExtras().getString("traderID");
+        Intent userIDintent = getIntent();
+        if (userIDintent.getExtras().getString("userID") != null) {
+            userID = userIDintent.getExtras().getString("userID");
         }
 
 
-         EmergencyPersonName = findViewById(R.id.EmergencyPersonName);
-                EmergencyPersonPhoneNumber = findViewById(R.id.EmergencyPersonPhoneNumber);
-         EmergencyPersonEmail = findViewById(R.id.EmergencyPersonEmail);
-                typeofidspinner = findViewById(R.id.typeofidspinner) ;
-         NationalIDofEmergencyPerson = findViewById(R.id.NationalIDofEmergencyPerson);
-               countryspinner = findViewById(R.id.countryspinner);
-         saveinformationhere = findViewById(R.id.saveinformationhere);
-               movetonext = findViewById(R.id.movetonext);
-               homebutton = findViewById(R.id.homebutton);
-               suggestionsbutton = findViewById(R.id.suggestionsbutton);
-         services = findViewById(R.id.services);
-              expectedshipping = findViewById(R.id.expectedshipping);
-              adminprofile =findViewById(R.id.adminprofile);
+        EmergencyPersonName = findViewById(R.id.EmergencyPersonName);
+        EmergencyPersonPhoneNumber = findViewById(R.id.EmergencyPersonPhoneNumber);
+        EmergencyPersonEmail = findViewById(R.id.EmergencyPersonEmail);
+        typeofidspinner = findViewById(R.id.typeofidspinner) ;
+        NationalIDofEmergencyPerson = findViewById(R.id.NationalIDofEmergencyPerson);
+        countryspinner = findViewById(R.id.countryspinner);
+        saveinformationhere = findViewById(R.id.saveinformationhere);
+        movetonext = findViewById(R.id.movetonext);
+        homebutton = findViewById(R.id.homebutton);
+        suggestionsbutton = findViewById(R.id.suggestionsbutton);
+        services = findViewById(R.id.services);
+        expectedshipping = findViewById(R.id.expectedshipping);
+        adminprofile =findViewById(R.id.adminprofile);
 
 
         theemergencypersonnamestring = EmergencyPersonName.getText().toString();
@@ -153,17 +153,17 @@ public class BackgroundCheck extends AppCompatActivity {
 
         FirebaseUser user = mAuth.getCurrentUser();
         if (user != null) {
-            traderID = "";
-            traderID = user.getUid();
+            userID = "";
+            userID = user.getUid();
 
 
-            mAdminTraderDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child("Drivers").child(traderID);
+            mUserDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child(userID);
             getUserInfo();
             // SET THE AGE ADAPTER
 
 
             // SET THE COUNTRY ADAPTER
-            mycountryAdapter = new ArrayAdapter<String>(BackgroundCheck.this,
+            mycountryAdapter = new ArrayAdapter<String>(BackgroundInfo.this,
                     android.R.layout.simple_list_item_1, getResources().getStringArray(R.array.countryspinner));
             mycountryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             countryspinner.setAdapter(mycountryAdapter);
@@ -182,8 +182,8 @@ public class BackgroundCheck extends AppCompatActivity {
 
                 }
             });
-               // SET THE TYPE OF ID ADAPTER
-            myIDAdapter = new ArrayAdapter<String>(BackgroundCheck.this,
+            // SET THE TYPE OF ID ADAPTER
+            myIDAdapter = new ArrayAdapter<String>(BackgroundInfo.this,
                     android.R.layout.simple_list_item_1, getResources().getStringArray(R.array.typeofidspinner));
             myIDAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             NationalIDofEmergencyPerson.setAdapter(myIDAdapter);
@@ -217,10 +217,10 @@ public class BackgroundCheck extends AppCompatActivity {
                     movetonext.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            Intent intent = new Intent(BackgroundCheck.this, SecurityCheck2.class);
+                            Intent intent = new Intent(BackgroundInfo.this, ClientSecurityCheck.class);
                             if (intent != null) {
                                 intent.putExtra("role", role);
-                                intent.putExtra("traderID", traderID);
+                                intent.putExtra("userID", userID);
                                 startActivity(intent);
                                 finish();
                             }
@@ -236,7 +236,7 @@ public class BackgroundCheck extends AppCompatActivity {
     }
     //POPULATE THE EDIT BOX IF THERE ALREADY EXIST SUCH A TRANSACTION
     public void getUserInfo(){
-        mAdminTraderDatabase.addValueEventListener(new ValueEventListener() {
+        mUserDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if(dataSnapshot.exists() && dataSnapshot.getChildrenCount()>0) {
@@ -288,7 +288,7 @@ public class BackgroundCheck extends AppCompatActivity {
             userInfo.put("street", thestreetaddressstring);
             userInfo.put("gpscode", thegpscodestring);
             userInfo.put("country",countrytext);
-            mAdminTraderDatabase.updateChildren(userInfo);
+            mUserDatabase.updateChildren(userInfo);
 
         }
 

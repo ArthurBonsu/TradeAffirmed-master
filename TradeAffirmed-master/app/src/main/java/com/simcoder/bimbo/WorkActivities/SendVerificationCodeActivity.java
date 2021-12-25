@@ -25,7 +25,7 @@ public class SendVerificationCodeActivity extends AppCompatActivity {
     String role;
 
     Intent roleintent;
-    Intent traderIDintent;
+    Intent userIDintent;
     String userID;
     Intent verifyintent;
     public SendVerificationCodeActivity() {
@@ -38,16 +38,16 @@ public class SendVerificationCodeActivity extends AppCompatActivity {
         EditText inputCode1, inputCode2, inputCode3, inputCode4, inputCode5, inputCode6;
         final ProgressBar progressBar = findViewById(R.id.progressBar);
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.adminverificodesend);
+        setContentView(R.layout.activity_verification_code);
 
 
         if (roleintent.getExtras().getString("role") != null) {
             role = roleintent.getExtras().getString("role");
         }
 
-        Intent traderIDintent = getIntent();
-        if (traderIDintent.getExtras().getString("userID") != null) {
-            userID = traderIDintent.getExtras().getString("userID");
+        Intent userIDintent = getIntent();
+        if (userIDintent.getExtras().getString("userID") != null) {
+            userID = userIDintent.getExtras().getString("userID");
         }
 
 

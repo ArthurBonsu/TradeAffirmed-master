@@ -33,14 +33,14 @@
 
              />
 
- <Button
-     android:layout_width="wrap_content"
-     android:layout_height="wrap_content"
-     android:layout_marginRight="@dimen/tw__btn_bar_margin_right"
-     android:text="NEXT"
-     android:id="@+id/movetohome">
+         <Button
+             android:id="@+id/movetohome"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:layout_marginRight="@dimen/tw__btn_bar_margin_right"
+             android:text="HOME">
 
 
- </Button>
+         </Button>
      </LinearLayout>
 </RelativeLayout>

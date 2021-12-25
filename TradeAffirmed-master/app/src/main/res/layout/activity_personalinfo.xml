@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:id="@+id/personalinformationform">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Complete Personal Information"
+            android:textSize="21dp"
+            android:layout_centerHorizontal="true"
+            android:padding="3sp"
+            android:layout_marginBottom="5sp"
+
+            />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Name of Person"
+            android:textSize="21dp"
+            android:layout_centerHorizontal="true"
+            android:padding="3sp"
+            android:layout_marginBottom="2sp"
+            />
+        <EditText
+            android:id="@+id/NameofPerson"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:text="Name Of Person"
+            android:textSize="16dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:padding="25sp"
+            android:layout_marginBottom="10sp"
+
+            />
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Phone Number"
+            android:textSize="21dp"
+            android:layout_centerHorizontal="true"
+            android:padding="3sp"
+            android:layout_marginBottom="2sp"
+            />
+
+        <EditText
+            android:id="@+id/PhoneNumberOfPerson"
+            android:layout_width="match_parent"
+            android:layout_height="40sp"
+            android:ems="10"
+            android:inputType="phone"
+            android:textSize="16dp"
+            android:padding="25sp"
+            android:text="Name of Person"
+            android:layout_below="@+id/NameofPerson"
+            android:layout_marginBottom="10sp"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Person Email"
+            android:textSize="21dp"
+            android:layout_centerHorizontal="true"
+            android:padding="3sp"
+            android:layout_marginBottom="2sp"
+            />
+
+        <EditText
+            android:id="@+id/PersonEmail"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:padding="25sp"
+            android:text="Email of Person"
+            android:textSize="16dp"
+            android:layout_below="@+id/PhoneNumberOfPerson"
+            android:layout_marginBottom="15sp"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Gender"
+            android:textSize="24sp"
+            android:layout_marginBottom="10sp">
+
+        </TextView>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <RadioGroup
+                android:layout_width="match_parent"
+                android:layout_height="40sp"
+                android:orientation="horizontal"
+                android:id="@+id/genderspinnerradiogroup"
+                android:layout_below="@+id/PersonEmail"
+                tools:ignore="DuplicateIds">
+                <RadioButton
+                    android:layout_width="180sp"
+                    android:layout_height="40sp"
+                    android:id="@+id/MaleRadiobutton"
+                    android:text="Male"
+                    android:textSize="24sp"> </RadioButton>
+
+                <RadioButton
+                    android:layout_width="180sp"
+                    android:layout_height="40sp"
+                    android:id="@+id/FemaleMaleRadiobutton"
+                    android:text="Female"
+                    android:textSize="24sp"> </RadioButton>
+
+            </RadioGroup>
+        </LinearLayout>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Age"
+            android:textSize="24sp"
+            android:layout_marginBottom="10sp">
+
+        </TextView>
+
+        <Spinner
+            android:layout_width="match_parent"
+            android:layout_height="40sp"
+
+            android:id="@+id/agespinner"
+            android:layout_below="@+id/PersonEmail"/>
+
+
+        <EditText
+            android:id="@+id/NationalIDofEmergencyPerson"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:padding="25sp"
+            android:text="Emergency Person Email"
+            android:textSize="16dp"
+            android:layout_below="@+id/typeofidspinner"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Country"
+            android:textSize="24sp"
+            android:layout_marginBottom="10sp">
+
+        </TextView>
+        <Spinner
+            android:layout_width="match_parent"
+            android:layout_height="40sp"
+            android:id="@+id/countryspinner"
+            android:padding="30sp"
+            android:layout_marginBottom="10sp"/>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/saveandnextbuttons"
+            android:layout_below ="@+id/personalinformationform"
+            android:orientation="horizontal">
+            <Button
+                android:id="@+id/saveinformationhere"
+                android:layout_width="150dp"
+                android:layout_height="40dp"
+                android:text="SAVE"
+                android:textSize="16dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:background="@color/tw__transparent"
+
+                android:layout_toRightOf="@+id/tv_email"
+                android:layout_below="@+id/tv_last_name"/>
+
+            <ImageButton
+                android:id="@+id/movetonext"
+                android:layout_width="150dp"
+                android:layout_height="40dp"
+                android:layout_below="@+id/tv_last_name"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_toRightOf="@+id/tv_email"
+                android:scaleType="fitCenter"
+                android:background="@color/tw__transparent"
+                android:src="@drawable/righticonimage"
+                android:text=""
+                android:textSize="16dp"
+                android:layout_marginBottom="5sp"/>
+
+
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/navigationalbuttonshere"
+            android:layout_below="@+id/movetonext"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:layout_width="80sp"
+                android:layout_height="80sp"
+                android:src="@drawable/home_icon"
+                android:id="@+id/homebutton"
+                android:scaleType="fitCenter"></ImageButton>
+
+            <ImageButton
+                android:layout_width="80sp"
+                android:layout_height="80sp"
+                android:src="@drawable/home_icon"
+                android:scaleType="fitCenter"
+                android:id="@+id/suggestionsbutton"></ImageButton>
+
+
+            <ImageButton
+                android:layout_width="80sp"
+                android:layout_height="80sp"
+                android:src="@drawable/home_icon"
+                android:scaleType="fitCenter"
+                android:id="@+id/services"></ImageButton>
+
+            <ImageButton
+                android:layout_width="80sp"
+                android:layout_height="80sp"
+                android:src="@drawable/home_icon"
+                android:scaleType="fitCenter"
+                android:id="@+id/expectedshipping"
+                ></ImageButton>
+            <ImageButton
+                android:layout_width="80sp"
+                android:layout_height="80sp"
+                android:src="@drawable/home_icon"
+                android:scaleType="fitCenter"
+                android:id="@+id/adminprofile"></ImageButton>
+
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</RelativeLayout>

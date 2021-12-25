@@ -78,9 +78,9 @@ public class RegisterActivity extends AppCompatActivity
             role = roleintent.getExtras().getString("role");
         }
 
-        Intent traderIDintent = getIntent();
-        if (traderIDintent.getExtras().getString("userID") != null) {
-            userID = traderIDintent.getExtras().getString("userID");
+        Intent clientIDintent = getIntent();
+        if (clientIDintent.getExtras().getString("userID") != null) {
+            userID = clientIDintent.getExtras().getString("userID");
         }
 
         CreateAccountButton = (Button) findViewById(R.id.register_btn);
@@ -241,7 +241,7 @@ public class RegisterActivity extends AppCompatActivity
                                                                                            //    if (usersData.getPassword().equals(password))
 
                                                                                            {
-                                                                                               if (parentDbName.equals("Customers")) {
+                                                                                            //   if (parentDbName.equals("Customers")) {
                                                                                                    firebaseAuthListener = new FirebaseAuth.AuthStateListener() {
                                                                                                        @Override
                                                                                                        public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -283,7 +283,7 @@ public class RegisterActivity extends AppCompatActivity
 
                                                                                                    // Intent intent = new Intent(LoginActivity.this, AdminCategoryActivity.class);
                                                                                                    //   startActivity(intent);
-                                                                                               } else if (parentDbName.equals("Customers")) {
+                                                                                            //   } else if (parentDbName.equals("Customers")) {
 
 
                                                                                                    firebaseAuthListener = new FirebaseAuth.AuthStateListener() {
@@ -304,9 +304,10 @@ public class RegisterActivity extends AppCompatActivity
                                                                                                                    Toast.makeText(RegisterActivity.this, "logged in Successfully...", Toast.LENGTH_SHORT).show();
                                                                                                                    loadingBar.dismiss();
                                                                                                                    Intent intent = new Intent(RegisterActivity.this, HomeActivity.class);
+                                                                                                                        intent.putExtra("role",role);
+                                                                                                                   intent.putExtra("userID",userID);
                                                                                                                    startActivity(intent);
                                                                                                                    finish();
-
                                                                                                                }
                                                                                                            } else {
                                                                                                                loadingBar.dismiss();
@@ -332,7 +333,7 @@ public class RegisterActivity extends AppCompatActivity
                                                                                            }
                                                                                        }
                                                                                    }
-                                                                               }
+
 
                                                                                @Override
                                                                                public void onCancelled(DatabaseError databaseError) {
@@ -489,8 +490,7 @@ public class RegisterActivity extends AppCompatActivity
 
                                     // Intent intent = new Intent(LoginActivity.this, AdminCategoryActivity.class);
                                     //   startActivity(intent);
-                                if (parentDbName != null){
-                                  if (parentDbName.equals("Customers")) {
+
                                     firebaseAuthListener = new FirebaseAuth.AuthStateListener() {
                                         @Override
                                         public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -511,7 +511,7 @@ public class RegisterActivity extends AppCompatActivity
                                                 userdataMap.put("email", email);
 
 
-                                                RootRef.child("Users").child(parentDbName).child(customer).updateChildren(userdataMap)
+                                                RootRef.child("Users").child("Customers").child(customer).updateChildren(userdataMap)
                                                         .addOnCompleteListener(new OnCompleteListener<Void>() {
                                                             @Override
                                                             public void onComplete(@NonNull Task<Void> task)
@@ -552,7 +552,7 @@ public class RegisterActivity extends AppCompatActivity
 
 
 
-                                    ;}}}}}
+                                    ;}}}
 
                 @Override
                 public void onCancelled(DatabaseError databaseError) {

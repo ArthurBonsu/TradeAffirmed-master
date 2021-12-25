@@ -96,7 +96,7 @@ public  class  HomeActivity extends AppCompatActivity
     String productkey;
     String traderkeyhere;
     private String type = "";
-    String traderoruser = "";
+    String clientuser = "";
     private static final int RC_SIGN_IN = 1;
     private FirebaseAuth.AuthStateListener firebaseAuthListener;
     String ProductID;
@@ -251,16 +251,16 @@ public  class  HomeActivity extends AppCompatActivity
             role = roleintent.getExtras().getString("role");
         }
 
-        Intent traderIDintent = getIntent();
-        if (traderIDintent.getExtras().getString("userID") != null) {
-            userID = traderIDintent.getExtras().getString("userID");
+        Intent userIDintent = getIntent();
+        if (userIDintent.getExtras().getString("userID") != null) {
+            userID = userIDintent.getExtras().getString("userID");
         }
 
-
-        if (traderoruser != null) {
-            traderoruser = getIntent().getStringExtra("traderID");
+/*
+        if (clientuser != null) {
+            clientuser = getIntent().getStringExtra("traderID");
         }
-
+*/
         fab = (FloatingActionButton) findViewById(R.id.fab);
 
         SharedPreferences preferences = getSharedPreferences("checkbox", MODE_PRIVATE);
@@ -481,8 +481,8 @@ public  class  HomeActivity extends AppCompatActivity
 
 
                     if (user != null) {
-                        traderoruser = "";
-                        traderoruser = user.getUid();
+                        userID = "";
+                        userID = user.getUid();
 
 
                     }
@@ -1145,7 +1145,7 @@ public  class  HomeActivity extends AppCompatActivity
 
                     }}
                     String getfollowingid  = getmyfollowingsagain.onfollowining(followingid);
-                if (traderoruser != null) {
+                if (clientuser != null) {
                     // No. has to give the whole population details of the product
 */
 
@@ -1400,7 +1400,7 @@ public  class  HomeActivity extends AppCompatActivity
                 if (mAuth != null) {
                     if (user != null) {
 
-                        traderoruser = user.getUid();
+                        userID = user.getUid();
                     }
 
                     // I HAVE TO TRY TO GET THE SETUP INFORMATION , IF THEY ARE ALREADY PROVIDED WE TAKE TO THE NEXT STAGE
@@ -1475,7 +1475,7 @@ public  class  HomeActivity extends AppCompatActivity
                         cusomerId = user.getUid();
                         Intent intent = new Intent(HomeActivity.this, AdminAllCustomers.class);
                         if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderoruser);
+                            intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", type);
                             startActivity(intent);
                         }
@@ -1491,7 +1491,7 @@ public  class  HomeActivity extends AppCompatActivity
 
                         Intent intent = new Intent(HomeActivity.this, AdminAllCustomers.class);
                         if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderoruser);
+                            intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", type);
                             startActivity(intent);
                         }
@@ -1512,7 +1512,7 @@ public  class  HomeActivity extends AppCompatActivity
                         cusomerId = user.getUid();
                         Intent intent = new Intent(HomeActivity.this, AdminAddNewProductActivityII.class);
                         if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderoruser);
+                            intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", type);
                             startActivity(intent);
                         }
@@ -1528,7 +1528,7 @@ public  class  HomeActivity extends AppCompatActivity
 
                         Intent intent = new Intent(HomeActivity.this, AdminAddNewProductActivityII.class);
                         if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderoruser);
+                            intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", type);
                             startActivity(intent);
                         }
@@ -1549,7 +1549,7 @@ public  class  HomeActivity extends AppCompatActivity
                         cusomerId = user.getUid();
                         Intent intent = new Intent(HomeActivity.this, ViewYourPersonalProduct.class);
                         if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderoruser);
+                            intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", type);
                             startActivity(intent);
                         }
@@ -1565,7 +1565,7 @@ public  class  HomeActivity extends AppCompatActivity
 
                         Intent intent = new Intent(HomeActivity.this, ViewYourPersonalProduct.class);
                         if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderoruser);
+                            intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", type);
                             startActivity(intent);
                         }
@@ -1586,7 +1586,7 @@ public  class  HomeActivity extends AppCompatActivity
                         cusomerId = user.getUid();
                         Intent intent = new Intent(HomeActivity.this, ViewSpecificUsersCart.class);
                         if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderoruser);
+                            intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", type);
                             startActivity(intent);
                         }
@@ -1602,7 +1602,7 @@ public  class  HomeActivity extends AppCompatActivity
 
                         Intent intent = new Intent(HomeActivity.this, ViewSpecificUsersCart.class);
                         if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderoruser);
+                            intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", type);
                             startActivity(intent);
                         }
@@ -1622,7 +1622,7 @@ public  class  HomeActivity extends AppCompatActivity
                         cusomerId = user.getUid();
                         Intent intent = new Intent(HomeActivity.this, AdminNewOrdersActivity.class);
                         if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderoruser);
+                            intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", type);
                             startActivity(intent);
                         }
@@ -1638,7 +1638,7 @@ public  class  HomeActivity extends AppCompatActivity
 
                         Intent intent = new Intent(HomeActivity.this, AdminNewOrdersActivity.class);
                         if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderoruser);
+                            intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", type);
                             startActivity(intent);
                         }
@@ -1659,7 +1659,7 @@ public  class  HomeActivity extends AppCompatActivity
                         cusomerId = user.getUid();
                         Intent intent = new Intent(HomeActivity.this, ViewAllCarts.class);
                         if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderoruser);
+                            intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", type);
                             startActivity(intent);
                         }
@@ -1675,7 +1675,7 @@ public  class  HomeActivity extends AppCompatActivity
 
                         Intent intent = new Intent(HomeActivity.this, ViewAllCarts.class);
                         if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderoruser);
+                            intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", type);
                             startActivity(intent);
                         }
@@ -1695,7 +1695,7 @@ public  class  HomeActivity extends AppCompatActivity
                         cusomerId = user.getUid();
                         Intent intent = new Intent(HomeActivity.this, AdminProductDetails.class);
                         if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderoruser);
+                            intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", type);
                             startActivity(intent);
                         }
@@ -1711,7 +1711,7 @@ public  class  HomeActivity extends AppCompatActivity
 
                         Intent intent = new Intent(HomeActivity.this, AdminProductDetails.class);
                         if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderoruser);
+                            intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", type);
                             startActivity(intent);
                         }
@@ -1731,7 +1731,7 @@ public  class  HomeActivity extends AppCompatActivity
                         cusomerId = user.getUid();
                         Intent intent = new Intent(HomeActivity.this, AdminMaintainProductsActivity.class);
                         if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderoruser);
+                            intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", type);
                             startActivity(intent);
                         }
@@ -1747,7 +1747,7 @@ public  class  HomeActivity extends AppCompatActivity
 
                         Intent intent = new Intent(HomeActivity.this, AdminMaintainProductsActivity.class);
                         if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderoruser);
+                            intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", type);
                             startActivity(intent);
                         }
@@ -1768,7 +1768,7 @@ public  class  HomeActivity extends AppCompatActivity
                         cusomerId = user.getUid();
                         Intent intent = new Intent(HomeActivity.this, AdminCategoryActivity.class);
                         if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderoruser);
+                            intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", type);
                             startActivity(intent);
                         }
@@ -1784,7 +1784,7 @@ public  class  HomeActivity extends AppCompatActivity
 
                         Intent intent = new Intent(HomeActivity.this, AdminCategoryActivity.class);
                         if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderoruser);
+                            intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", type);
                             startActivity(intent);
                         }
@@ -1804,7 +1804,7 @@ public  class  HomeActivity extends AppCompatActivity
                         cusomerId = user.getUid();
                         Intent intent = new Intent(HomeActivity.this, AdminAllProducts.class);
                         if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderoruser);
+                            intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", type);
                             startActivity(intent);
                         }
@@ -1820,7 +1820,7 @@ public  class  HomeActivity extends AppCompatActivity
 
                         Intent intent = new Intent(HomeActivity.this, AdminAllProducts.class);
                         if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderoruser);
+                            intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", type);
                             startActivity(intent);
                         }
@@ -1843,7 +1843,7 @@ public  class  HomeActivity extends AppCompatActivity
                 Intent intent = new Intent(HomeActivity.this, com.simcoder.bimbo.CustomerMapActivity.class);
                 if (intent != null) {
                     intent.putExtra("roledhomeactivitytocustomermapactivity", type);
-                    intent.putExtra("fromhomeactivitytocustomermapactivity", traderoruser);
+                    intent.putExtra("fromhomeactivitytocustomermapactivity", userID);
                     startActivity(intent);
                     finish();
                 }
@@ -1852,7 +1852,7 @@ public  class  HomeActivity extends AppCompatActivity
                 Intent intent = new Intent(HomeActivity.this, DriverMapActivity.class);
                 if (intent != null) {
                     intent.putExtra("rolefromhomeactivitytodrivermapactivity", type);
-                    intent.putExtra("fromhomeactivitytodrivermapactivity", traderoruser);
+                    intent.putExtra("fromhomeactivitytodrivermapactivity", userID);
                     startActivity(intent);
                     finish();
                 }
@@ -1942,7 +1942,7 @@ public  class  HomeActivity extends AppCompatActivity
                         cusomerId = user.getUid();
                         Intent intent = new Intent(HomeActivity.this, CustomerProfile.class);
                         if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderoruser);
+                            intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", type);
                             startActivity(intent);
                         }
@@ -1958,7 +1958,7 @@ public  class  HomeActivity extends AppCompatActivity
 
                         Intent intent = new Intent(HomeActivity.this, TraderProfile.class);
                         if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderoruser);
+                            intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", type);
                             startActivity(intent);
                         }
@@ -1976,7 +1976,7 @@ public  class  HomeActivity extends AppCompatActivity
                         cusomerId = user.getUid();
                         Intent intent = new Intent(HomeActivity.this, HomeActivity.class);
                         if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderoruser);
+                            intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", type);
                             startActivity(intent);
                         }
@@ -1992,7 +1992,7 @@ public  class  HomeActivity extends AppCompatActivity
 
                         Intent intent = new Intent(HomeActivity.this, AdminAllCustomers.class);
                         if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderoruser);
+                            intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", type);
                             startActivity(intent);
                         }
@@ -2013,7 +2013,7 @@ public  class  HomeActivity extends AppCompatActivity
                         cusomerId = user.getUid();
                         Intent intent = new Intent(HomeActivity.this, HomeActivity.class);
                         if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderoruser);
+                            intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", type);
                             startActivity(intent);
                         }
@@ -2029,7 +2029,7 @@ public  class  HomeActivity extends AppCompatActivity
 
                         Intent intent = new Intent(HomeActivity.this, AdminAddNewProductActivityII.class);
                         if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderoruser);
+                            intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", type);
                             startActivity(intent);
                         }
@@ -2050,7 +2050,7 @@ public  class  HomeActivity extends AppCompatActivity
                         cusomerId = user.getUid();
                         Intent intent = new Intent(HomeActivity.this, HomeActivity.class);
                         if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderoruser);
+                            intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", type);
                             startActivity(intent);
                         }
@@ -2066,7 +2066,7 @@ public  class  HomeActivity extends AppCompatActivity
 
                         Intent intent = new Intent(HomeActivity.this, ViewYourPersonalProduct.class);
                         if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderoruser);
+                            intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", type);
                             startActivity(intent);
                         }
@@ -2087,7 +2087,7 @@ public  class  HomeActivity extends AppCompatActivity
                         cusomerId = user.getUid();
                         Intent intent = new Intent(HomeActivity.this, HomeActivity.class);
                         if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderoruser);
+                            intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", type);
                             startActivity(intent);
                         }
@@ -2103,7 +2103,7 @@ public  class  HomeActivity extends AppCompatActivity
 
                         Intent intent = new Intent(HomeActivity.this, ViewSpecificUsersCart.class);
                         if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderoruser);
+                            intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", type);
                             startActivity(intent);
                         }
@@ -2124,7 +2124,7 @@ public  class  HomeActivity extends AppCompatActivity
                         cusomerId = user.getUid();
                         Intent intent = new Intent(HomeActivity.this, HomeActivity.class);
                         if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderoruser);
+                            intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", type);
                             startActivity(intent);
                         }
@@ -2140,7 +2140,7 @@ public  class  HomeActivity extends AppCompatActivity
 
                         Intent intent = new Intent(HomeActivity.this, ViewAllCarts.class);
                         if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderoruser);
+                            intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", type);
                             startActivity(intent);
                         }
@@ -2160,7 +2160,7 @@ public  class  HomeActivity extends AppCompatActivity
                         cusomerId = user.getUid();
                         Intent intent = new Intent(HomeActivity.this, HomeActivity.class);
                         if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderoruser);
+                            intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", type);
                             startActivity(intent);
                         }
@@ -2176,7 +2176,7 @@ public  class  HomeActivity extends AppCompatActivity
 
                         Intent intent = new Intent(HomeActivity.this, AdminProductDetails.class);
                         if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderoruser);
+                            intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", type);
                             startActivity(intent);
                         }
@@ -2196,7 +2196,7 @@ public  class  HomeActivity extends AppCompatActivity
                         cusomerId = user.getUid();
                         Intent intent = new Intent(HomeActivity.this, HomeActivity.class);
                         if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderoruser);
+                            intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", type);
                             startActivity(intent);
                         }
@@ -2212,7 +2212,7 @@ public  class  HomeActivity extends AppCompatActivity
 
                         Intent intent = new Intent(HomeActivity.this, AdminMaintainProductsActivity.class);
                         if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderoruser);
+                            intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", type);
                             startActivity(intent);
                         }
@@ -2233,7 +2233,7 @@ public  class  HomeActivity extends AppCompatActivity
                         cusomerId = user.getUid();
                         Intent intent = new Intent(HomeActivity.this, HomeActivity.class);
                         if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderoruser);
+                            intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", type);
                             startActivity(intent);
                         }
@@ -2249,7 +2249,7 @@ public  class  HomeActivity extends AppCompatActivity
 
                         Intent intent = new Intent(HomeActivity.this, AdminCategoryActivity.class);
                         if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderoruser);
+                            intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", type);
                             startActivity(intent);
                         }
@@ -2269,7 +2269,7 @@ public  class  HomeActivity extends AppCompatActivity
                         cusomerId = user.getUid();
                         Intent intent = new Intent(HomeActivity.this, AdminAllProducts.class);
                         if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderoruser);
+                            intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", type);
                             startActivity(intent);
                         }
@@ -2285,7 +2285,7 @@ public  class  HomeActivity extends AppCompatActivity
 
                         Intent intent = new Intent(HomeActivity.this, AdminAllProducts.class);
                         if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderoruser);
+                            intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", type);
                             startActivity(intent);
                         }

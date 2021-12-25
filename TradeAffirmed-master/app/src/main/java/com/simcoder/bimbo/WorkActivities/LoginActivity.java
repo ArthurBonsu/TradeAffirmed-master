@@ -196,7 +196,7 @@ public class LoginActivity extends AppCompatActivity
         TryVerificationCode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent tryverificationcodeintent = new Intent(LoginActivity.this, ResetPasswordActivity.class);
+                Intent tryverificationcodeintent = new Intent(LoginActivity.this, SendVerificationCodeActivity.class);
 
                 tryverificationcodeintent.putExtra("role", role);
                 tryverificationcodeintent.putExtra("userID", userID);
