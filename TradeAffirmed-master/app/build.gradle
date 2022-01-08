@@ -256,6 +256,7 @@ dependencies {
 
     implementation 'com.google.android.gms:play-services-gass:12.0.1'
     implementation 'com.android.support:cardview-v7:28.0.0'
+    implementation 'com.github.zcweng:switch-button:0.0.3@aar'
 
 
 }

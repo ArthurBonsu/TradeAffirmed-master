@@ -1,24 +1,17 @@
-package com.simcoder.bimbo.WorkActivities;
-// We approve the new registration once documents have been accepteed
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.android.material.navigation.NavigationView;
-import com.google.firebase.auth.FirebaseUser;
+package com.simcoder.bimbo.Admin;
 
-import android.app.Activity;
-import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.media.Image;
-import android.net.Uri;
-import android.provider.MediaStore;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -26,264 +19,162 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-import android.os.Bundle;
-import android.text.TextUtils;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
-import android.widget.Spinner;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import com.bumptech.glide.Glide;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.firebase.ui.database.SnapshotParser;
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
+import com.rey.material.widget.ImageView;
 import com.simcoder.bimbo.DriverMapActivity;
 import com.simcoder.bimbo.HistoryActivity;
-import com.simcoder.bimbo.Model.HashMaps;
-import com.simcoder.bimbo.Model.Products;
+import com.simcoder.bimbo.Interface.ItemClickListner;
+import com.simcoder.bimbo.Model.AdminOrders;
 import com.simcoder.bimbo.Model.Users;
 import com.simcoder.bimbo.R;
 import com.simcoder.bimbo.WorkActivities.CartActivity;
-import com.simcoder.bimbo.WorkActivities.HomeActivity;
+import com.simcoder.bimbo.WorkActivities.CustomerProfile;
 import com.simcoder.bimbo.WorkActivities.TraderProfile;
 import com.simcoder.bimbo.instagram.Home.InstagramHomeActivity;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
-import com.theartofdev.edmodo.cropper.CropImage;
-import com.theartofdev.edmodo.cropper.CropImageView;
-
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.paperdb.Paper;
 
-public class ClientVerificationPendingPage extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, NavigationView.OnNavigationItemSelectedListener {
+public  class  ApprovalDetailClass extends AppCompatActivity
+        implements NavigationView.OnNavigationItemSelectedListener {
+    DatabaseReference ProductsRef;
+    private DatabaseReference Userdetails;
+    private DatabaseReference ProductsRefwithproduct;
+    private  DatabaseReference UsersRef;
+    private RecyclerView recyclerView;
+    RecyclerView.LayoutManager layoutManager;
 
-    //
-    private static final int GALLERY_REQUEST2 = 2;
-    private EditText   Nameinfo, Emailinfo, Phoneinfo;
-
-    private Button mBack, mConfirm;
-
-    private ImageView mProfileImage;
-
-    private FirebaseAuth mAuth;
-    private DatabaseReference mUserDatabase;
-
-    private String userID;
-    private String mName;
-    private String mPhone;
-    String  mEmail;
-    private String mCar;
-    String mService;
-    private String mProfileImageUrl;
-    Spinner mySpinner;
-
-    String NameinfoString;
-    String EmailinfoString;
-    String PhoneinfoString;
-
-    private Uri mImageUri = null;
-    private static final int GALLERY_REQUEST = 1;
-
-    private Uri resultUri;
-    String text;
-    private RadioGroup mRadioGroup;
-    RadioButton FemaleRadioButton;
-    RadioButton MaleRadioButton;
-    String role;
-    String traderID;
-    RadioButton radioButtonforgender;
-    String radiotext;
-
-    String thenameinfostring;
-    String theemailinfostring;
-    String thephoneinfostring;
-    String agetext;
-    String countrytext;
-
-    EditText NameofPerson;
-    EditText  PhoneNumberOfPerson;
-    EditText PersonEmail;
-    RadioGroup genderspinnerradiogroup;
-    RadioButton MaleRadiobutton;
-
-    RadioButton FemaleMaleRadiobutton;
-    Spinner agespinner;
-    Spinner NationalIDofEmergencyPerson;
-    Spinner countryspinner;
-    Button saveinformationhere;
-    ImageButton movetonext;
-    ImageButton homebutton;
-    ImageButton suggestionsbutton;
-    ImageButton       services;
-    ImageButton  expectedshipping;
-    ImageButton       adminprofile;
-    EditText MailingAddress;
-    EditText        GpsCode;
-    Spinner CountrySpinner;
-    EditText  StreetAddress;
-    ImageButton      home_icon;
-
-    String  themailingaddressstring;
-    String  thegpscodestring;
-    String thestreetaddressstring;
-
-    EditText EmergencyPersonName;
-    EditText        EmergencyPersonPhoneNumber;
-    EditText EmergencyPersonEmail;
-    Spinner        typeofidspinner;
-    ArrayAdapter<String> myIDAdapter;
-    ArrayAdapter<String> mycountryAdapter;
-    String theemergencypersonnamestring;
-    String theemergencypersonphonestring;
-    String theemergencypersonemailstring;
-    String typeofidtext;
-    String thenationalidstring;
-    String thegpscodeinformationstring;
-
-    EditText NationalID = findViewById(R.id.NationalID);
-    Button        ChoseIDFile = findViewById(R.id.ChoseIDFile);
-    ImageView ImageViewOfID = findViewById(R.id.ImageViewOfID);
-
-    Button deletenationalidpicture = findViewById(R.id.deletenationalidpicture);
-    EditText       GpsCodeMapID= findViewById(R.id.GpsCodeMapID);
-    Button PickMap = findViewById(R.id.PickMap);
-    ImageView       ImageViewOfGPSCodeMap = findViewById(R.id.ImageViewOfGPSCodeMap);
-
-    Button       deleteselectedGPSCodeMapmap = findViewById(R.id.deleteselectedGPSCodeMapmap);
-
-    private ImageButton mEventImage;
-    private EditText mEventtitle;
-    private EditText mEventDescription;
-    private EditText mEventDate;
-
-    String mPostKey;
-    String churchkey;
-    private Button msubmitButton;
-
-    private StorageReference mStorage;
-    private DatabaseReference mDatabase;
-    private DatabaseReference mDatabaseCHURCHCHOSEN;
-    private ProgressDialog mProgress;
-    private FirebaseAuth Auth;
-    private FirebaseUser mCurrentUser;
-    private DatabaseReference mDatabaseUser;
-
-    private String CategoryName, Description, Price, Pname, saveCurrentDate, saveCurrentTime;
-    private Button AddNewProductButton;
-    private ImageView InputProductImage;
-    private EditText InputProductName, InputProductDescription, InputProductPrice;
-    private static final int GalleryPick = 1;
-    private Uri ImageUri;
-    private String productRandomKey, downloadImageUrl;
-    private StorageReference ProductImagesRef;
-    private DatabaseReference ProductsRef;
-    private DatabaseReference ProductsTraderRef;
-    private ProgressDialog loadingBar;
+    DatabaseReference AllOrderDatabaseRef;
+    DatabaseReference FollowerDatabaseReference;
+    String productkey;
+    String traderkeyhere;
+    private String role = "";
+    String traderID = "";
     private static final int RC_SIGN_IN = 1;
     private FirebaseAuth.AuthStateListener firebaseAuthListener;
+    String ProductID;
+    FirebaseDatabase myfirebaseDatabase;
+    FirebaseDatabase FollowerDatabase;
 
-    String traderkeryhere;
-    FirebaseUser user;
-    Uri ImageStore;
-    Intent intent;
-    String date;
-    String time;
-    String userid;
-    String productkey;
-    String mytraderimage;
-    String idcode;
+    public AllOrderViewHolder holders;
+
+    public FirebaseRecyclerAdapter feedadapter;
+
     //AUTHENTICATORS
 
     private GoogleMap mMap;
     GoogleApiClient mGoogleApiClient;
     private static final String TAG = "Google Activity";
-
+    private FirebaseAuth mAuth;
     private GoogleSignInClient mGoogleSignInClient;
 
-    ImageView imagetobesetto;
-    ImageButton setimagebutton;
-    ImageButton AddimageButon;
 
-    FirebaseDatabase  myuserfirebasedatabase;
-    String titleval;
-    String descval;
-    String  price;
-    String tradername;
-    String myphotoimage;
-    String traderid;
-    String pimage;
-    String tid;
-    String pname;
-    String  desc;
-    String pid;
+    TextView allcustomersname;
+    TextView allcustomersphonenumber;
+    TextView allcustomersjob;
+    ImageView allcustomersimage;
+    String traderkey;
+    String key;
+    String tradename;
     String traderimage;
-    String idimage;
+    FirebaseUser user;
 
-    String gpscode;
-    String gpsimage;
-    Button movetohome;
 
-    public ClientVerificationPendingPage() {
-        super();
-    }
+    String categoryname, date, desc, discount, time, pid, pimage, pname, price, image, name, size, tradername, tid;
+    String thetraderimage;
+    String address;
+    String amount;
+    String city;
+    String delivered;
+    String distance;
+    String uid;
+    String mode;
+
+    String number;
+    String phone;
+    String quantity;
+    String shippingcost;
+    String state;
+    String thecustomersjob;
+    String orderkey;
+    String newornot;
+    Getmyfollowings getmyfollowingsagain;
+    String userkey;
+    TextView  orderid;
+    TextView customername;
+    TextView thetradername;
+    TextView orderedtime;
+    TextView ordereddate;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.verificationpage);
+        setContentView(
+                (R.layout.activityhomeforadmin));
+
         Intent roleintent = getIntent();
         if (roleintent.getExtras().getString("role") != null) {
             role = roleintent.getExtras().getString("role");
         }
 
-        Intent userIDintent = getIntent();
-        if (userIDintent.getExtras().getString("userID") != null) {
-            userID = userIDintent.getExtras().getString("userID");
+        Intent traderIDintent = getIntent();
+        if (traderIDintent.getExtras().getString("traderID") != null) {
+            traderID = traderIDintent.getExtras().getString("traderID");
+        }
+
+        recyclerView = findViewById(R.id.recycler_menu);
+
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        layoutManager.setReverseLayout(true);
+        layoutManager.setStackFromEnd(true);
+        if (recyclerView != null) {
+            recyclerView.setLayoutManager(layoutManager);
         }
 
 
+        orderid = findViewById(R.id.orderid);
+        customername = findViewById(R.id.customername);
 
-        movetohome = findViewById(R.id.movetohome);
-        mAuth = FirebaseAuth.getInstance();
-        mCurrentUser = mAuth.getCurrentUser();
+        thetradername = findViewById(R.id.tradername);
+
+        allcustomersimage = (ImageView) findViewById(R.id.allcustomersimage);
+        orderedtime = (TextView)findViewById(R.id.orderedtime);
+        ordereddate = (TextView)findViewById(R.id.ordereddate);
 
 
-        user = mAuth.getCurrentUser();
-        if (user != null) {
-            userID = "";
-            userID = user.getUid();
-        }
         Paper.init(this);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.hometoolbar);
         if (toolbar != null) {
-            toolbar.setTitle(" Client Verification Page");
+            toolbar.setTitle("All Orders");
         }
 
 
@@ -322,220 +213,475 @@ public class ClientVerificationPendingPage extends AppCompatActivity implements 
                 }
 
 
+                myfirebaseDatabase = FirebaseDatabase.getInstance();
+
+                UsersRef = myfirebaseDatabase.getReference().child("Users");
+
+
+                userkey = UsersRef.getKey();
                 // GET FROM FOLLOWING KEY
-                // HAVE TO BUILD THE STORAGE
-                mStorage = FirebaseStorage.getInstance().getReference().child("user_images");
-                myuserfirebasedatabase = FirebaseDatabase.getInstance();
-                mUserDatabase = myuserfirebasedatabase.getReference().child("Users").child("Customers").child(userID);
 
-                mUserDatabase.keepSynced(true);
-/*
-                if (ProductsRef.push() != null) {
-                    productRandomKey = ProductsRef.push().getKey();
+
+                fetch();
+                recyclerView.setAdapter(feedadapter);
+
+
+                if (mAuth != null) {
+                    user = mAuth.getCurrentUser();
+                    if (user != null) {
+                        traderID = user.getUid();
+
+                    }
+
+
+//        setSupportActionBar(toolbar);
+
+                    GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestIdToken(getString(R.string.default_web_client_id)).requestEmail().build();
+                    if (mGoogleApiClient != null) {
+
+                        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+                    }
+
+                    if (mGoogleApiClient != null) {
+                        mGoogleApiClient = new GoogleApiClient.Builder(this).enableAutoManage(AllOrdersAccepted.this,
+                                new GoogleApiClient.OnConnectionFailedListener() {
+                                    @Override
+                                    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+                                    }
+                                }).addApi(Auth.GOOGLE_SIGN_IN_API, gso).build();
+                    }
+
+
+                    // USER
+                    user = mAuth.getCurrentUser();
+
 
                 }
-*/
-                //I have to  check to ensure that gallery intent is not placed here for the other classes
-                mProgress = new ProgressDialog(this);
-
-
-                mAuth = FirebaseAuth.getInstance();
-                GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestIdToken(getString(R.string.default_web_client_id)).requestEmail().build();
-                if (mGoogleApiClient != null) {
-                    mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
-                }
-
-                if (mGoogleApiClient != null) {
-                    mGoogleApiClient = new GoogleApiClient.Builder(this).enableAutoManage(ClientVerificationPendingPage.this,
-                            new GoogleApiClient.OnConnectionFailedListener() {
-                                @Override
-                                public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
-                                }
-                            }).addApi(com.google.android.gms.auth.api.Auth.GOOGLE_SIGN_IN_API, gso).build();
-                }
-                buildGoogleApiClient();
-
-
             }
-        }}
+        }
+    }
 
-    protected synchronized void buildGoogleApiClient() {
-        if (mGoogleApiClient != null) {
-            mGoogleApiClient = new GoogleApiClient.Builder(this)
-                    .addConnectionCallbacks(ClientVerificationPendingPage.this)
-                    .addOnConnectionFailedListener(ClientVerificationPendingPage.this)
-                    .addApi(LocationServices.API)
-                    .build();
-            mGoogleApiClient.connect();
+
+    public interface Getmyfollowings {
+
+        void onCallback(String followingid, String followingname, String followingimage);
+
+
+    }
+
+
+
+
+
+    //GETFOLLOWING WILL PULL FROM DIFFERENT DATASTORE( THE USER DATASTORE)
+
+
+    public class AllOrderViewHolder extends RecyclerView.ViewHolder {
+        public LinearLayout root;
+
+
+
+        public TextView orderid;
+        public TextView customername;
+
+        public TextView thetradername;
+        public TextView ordereddate;
+        public TextView orderedtime;
+
+        public android.widget.ImageView allcustomersimage;
+        public ItemClickListner listner;
+
+        public AllOrderViewHolder(View itemView) {
+            super(itemView);
+
+
+
+            orderid = itemView.findViewById(R.id.orderid);
+            customername = itemView.findViewById(R.id.customername);
+            thetradername = itemView.findViewById(R.id.tradername);
+            ordereddate = itemView.findViewById(R.id.ordereddate);
+            orderedtime = itemView.findViewById(R.id.orderedtime);
+
+
+
         }
 
+        public void setItemClickListner(ItemClickListner listner) {
+            this.listner = listner;
+        }
+
+        public void setallorderid(String allorderids) {
+
+            orderid.setText(allorderids);
+        }
+
+        public void setallcustomername(String thatcustomername) {
+
+            customername.setText(thatcustomername);
+        }
+
+        public void settradername(String thetradernamereceived) {
+
+            thetradername.setText(thetradernamereceived);
+        }
+
+        public void setordereddate(String ordereddatehere) {
+
+            ordereddate.setText(ordereddatehere);
+        }
+        public void setorderedtime(String orderedtimereceived) {
+
+            orderedtime.setText(orderedtimereceived);
+        }
+
+        public void setallcustomersimage(final Context ctx, final String image) {
+            final android.widget.ImageView allcustomersimage = (android.widget.ImageView) itemView.findViewById(R.id.allcustomersimage);
+
+            Picasso.get().load(image).resize(400, 0).networkPolicy(NetworkPolicy.OFFLINE).into(allcustomersimage, new Callback() {
 
 
-
-        getUserInfo();
-        // SET THE AGE ADAPTER
-        // CHOSE ID CARD
-        // UPLOAD ID CARD
-
-        if (movetohome != null) {
-            movetohome.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(ClientVerificationPendingPage.this, HomeActivity.class);
-                    if (intent != null) {
-                        intent.putExtra("role", role);
-                        intent.putExtra("userID", userID);
-                        startActivity(intent);
-                        finish();
-                    }
+                public void onSuccess() {
+
                 }
+
+                @Override
+                public void onError(Exception e) {
+                    Picasso.get().load(image).resize(100, 0).into(allcustomersimage);
+                }
+
+
             });
         }
 
 
+
+
+    };
+
+
+    public void useValue (String yourValue){
+
+        Log.d(TAG, "countryNameCode: " + yourValue);
+
     }
 
 
+    private void fetch() {
+        if (mAuth != null) {
+            user = mAuth.getCurrentUser();
+            if (user != null) {
+                traderID = user.getUid();
+
+            }
+
+            @Nullable
+
+            Query queryhere =
+
+                    FirebaseDatabase.getInstance().getReference().child("Orders").orderByChild("tid").equalTo(traderID);
+            if (queryhere != null) {
+
+                FirebaseRecyclerOptions<AdminOrders> options =
+                        new FirebaseRecyclerOptions.Builder<AdminOrders>()
+                                .setQuery(queryhere, new SnapshotParser<AdminOrders>() {
+
+
+                                    @Nullable
+                                    @Override
+                                    public AdminOrders parseSnapshot(@Nullable DataSnapshot snapshot) {
+
+
+                                      /*
+                                      String commentkey = snapshot.child("Comments").getKey();
+                                      String likekey = snapshot.child("Likes").getKey();
+*/
+
+
+                                        Log.i(TAG, "AdminAllCustomers " + snapshot);
+
+
+                                        if (snapshot.child("date").getValue(String.class) != null) {
+                                            date = snapshot.child("date").getValue(String.class);
+                                        }
+
+                                        if (snapshot.child("time").getValue(String.class) != null) {
+                                            time = snapshot.child("time").getValue(String.class);
+                                        }
+
+                                        if (snapshot.child("tid").getValue(String.class) != null) {
+                                            tid = snapshot.child("tid").getValue(String.class);
+                                        }
+                                        if (snapshot.child("traderimage").getValue(String.class) != null) {
+                                            thetraderimage = snapshot.child("traderimage").getValue(String.class);
+                                        }
+
+
+                                        if (snapshot.child("tradername").getValue(String.class) != null) {
+                                            tradername = snapshot.child("tradername").getValue(String.class);
+                                        }
+
+
+                                        if (snapshot.child("address").getValue(String.class) != null) {
+                                            address = snapshot.child("address").getValue(String.class);
+                                        }
+
+
+                                        if (snapshot.child("amount").getValue(String.class) != null) {
+                                            amount = snapshot.child("amount").getValue(String.class);
+                                        }
+
+
+                                        if (snapshot.child("city").getValue(String.class) != null) {
+                                            city = snapshot.child("city").getValue(String.class);
+                                        }
+
+
+                                        if (snapshot.child("delivered").getValue(String.class) != null) {
+                                            delivered = snapshot.child("delivered").getValue(String.class);
+                                        }
+
+                                        if (snapshot.child("distance").getValue(String.class) != null) {
+                                            distance = snapshot.child("distance").getValue(String.class);
+                                        }
+
+                                        if (snapshot.child("image").getValue(String.class) != null) {
+                                            image = snapshot.child("image").getValue(String.class);
+                                        }
+                                        if (snapshot.child("uid").getValue(String.class) != null) {
+                                            uid = snapshot.child("uid").getValue(String.class);
+                                        }
+                                        if (snapshot.child("name").getValue(String.class) != null) {
+                                            name = snapshot.child("name").getValue(String.class);
+                                        }
+                                        if (snapshot.child("mode").getValue(String.class) != null) {
+                                            mode = snapshot.child("mode").getValue(String.class);
+                                        }
+
+
+                                        if (snapshot.child("likenumber").getValue(String.class) != null) {
+                                            number = snapshot.child("likenumber").getValue(String.class);
+                                        }
+
+                                        if (snapshot.child("phone").getValue(String.class) != null) {
+                                            phone = snapshot.child("phone").getValue(String.class);
+                                        }
+                                        if (snapshot.child("quantity").getValue(String.class) != null) {
+                                            quantity = snapshot.child("quantity").getValue(String.class);
+                                        }
+
+                                        if (snapshot.child("shippingcost").getValue(String.class) != null) {
+                                            shippingcost = snapshot.child("shippingcost").getValue(String.class);
+                                        }
+
+                                        if (snapshot.child("state").getValue(String.class) != null) {
+                                            state = snapshot.child("state").getValue(String.class);
+                                        }
+                                        if (snapshot.child("state").getValue(String.class) != null) {
+                                            orderkey = snapshot.child("state").getValue(String.class);
+                                        }
+                                        if (snapshot.child("newornot").getValue(String.class) != null) {
+                                            newornot = snapshot.child("newornot").getValue(String.class);
+                                        }
+
+                                        return new AdminOrders(orderkey, date, time, tid, thetraderimage, tradername, address, amount, city, delivered, distance, image, uid, name, mode,
+
+                                                number, phone, quantity, shippingcost, state,newornot);
+                                    }
+
+                                }).build();
+
+
+                feedadapter = new FirebaseRecyclerAdapter<AdminOrders, AllOrdersAccepted.AllOrderViewHolder>(options) {
+                    @Nullable
+                    @Override
+                    public AllOrderViewHolder onCreateViewHolder(ViewGroup parent, int viewrole) {
+
+                        @Nullable
+                        View view = LayoutInflater.from(parent.getContext())
+                                .inflate(R.layout.adminallorder, parent, false);
+
+                        return new AllOrderViewHolder(view);
+                    }
+
+
+                    @Override
+                    public int getItemCount() {
+                        return super.getItemCount();
+                    }
+
+
+
+                    @Override
+                    protected void onBindViewHolder(@Nullable final AllOrdersAccepted.AllOrderViewHolder holder, int position, @Nullable AdminOrders model) {
+                        if (model != null) {
+                            holders = holder;
+
+
+                            holder.orderid.setText(orderkey);
+                            holder.customername.setText(name);
+                            holder.thetradername.setText(tradername);
+                            holder.ordereddate.setText(date);
+                            holder.orderedtime.setText(time);
+
+                            Log.d(TAG, "The Customers here " + name + phone );
+                            holder.setallcustomersimage(getApplicationContext(), image);
+
+
+                            myfirebaseDatabase = FirebaseDatabase.getInstance();
+
+                            AllOrderDatabaseRef = myfirebaseDatabase.getReference().child("Users").child("Customers");
+                            AllOrderDatabaseRef.keepSynced(true);
+             /*
+                            Query firebasequery =  myfirebaseDatabase.getReference().child("Users").child("Customers").orderByChild("uid").equalTo(uid);
+
+                            firebasequery.addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+
+                                    for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
+
+
+
+                                        userkey = dataSnapshot1.getKey();
+                                        Log.d(TAG, "The Photokey " + userkey);
+
+                                        Log.d(TAG, "UserID here  " + uid );
+                                        if (dataSnapshot1.child("job").getValue() != null) {
+                                            thecustomersjob = dataSnapshot1.child("job").getValue(String.class);
+                                            holders.allcustomersjob.setText(thecustomersjob);
+                                            Log.d(TAG, "The CustomerJob " + thecustomersjob);
+
+
+
+                                            useValue (thecustomersjob);
+                                            Log.d(TAG, "The UseValueJob " + thecustomersjob);
+                                        }
+                                    }
+                                }
+
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+
+                                }
+                            });
+ */
+
+
+                            if (allcustomersimage != null) {
+                                Picasso.get().load(image).placeholder(R.drawable.profile).into(allcustomersimage);
+                            }
+                            holder.orderid.setText(orderkey);
+                            holder.customername.setText(name);
+                            holder.thetradername.setText(tradername);
+                            holder.ordereddate.setText(date);
+                            holder.orderedtime.setText(time);
+                            if (holder.orderid != null) {
+                                holder.orderid.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        Intent checkspecificorderidintent = new Intent(AllOrdersAccepted.this, ViewSpecificUsersOrder.class);
+
+                                        startActivity(checkspecificorderidintent);
+
+                                    }
+                                });
+                            }
+
+                            if (holder.customername != null) {
+                                holder.customername.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        Intent checkcustomerwhoorderedintent = new Intent(AllOrdersAccepted.this, CustomerProfile.class);
+
+                                        startActivity(checkcustomerwhoorderedintent);
+
+                                    }
+                                });
+                            }
+
+                            if (holder.allcustomersimage != null) {
+                                holder.allcustomersimage.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        Intent allcustomerimagesintent = new Intent(AllOrdersAccepted.this, CustomerProfile.class);
+
+                                        startActivity(allcustomerimagesintent);
+
+                                    }
+                                });
+                            }
+
+
+                        }
+                    }
+
+
+                };
+
+
+
+            }
 
 
 
 
-
-
-
-
-
-    // You get the information here and send it to the top
-    // OnActivity result is lacking behind, I have to get the URi from it
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        // PICK NATIONAL ID INFORMATION
-        if (requestCode == GALLERY_REQUEST && resultCode == RESULT_OK) {
-
-            Uri imageUri = data.getData();
-
-            CropImage.activity(imageUri).setGuidelines(CropImageView.Guidelines.ON).setAspectRatio(1, 1).start(this);
-
-
-        }
-
-        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
-            CropImage.ActivityResult result = CropImage.getActivityResult(data);
-            if (resultCode == RESULT_OK) {
-
-                mImageUri = result.getUri();
-
-                InputProductImage.setImageURI(mImageUri);
-
-
-            } else if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
-
-                Exception error = result.getError();
+            if (recyclerView != null) {
+                recyclerView.setAdapter(feedadapter);
             }
 
         }
 
-
     }
-
-
-
-
-    //POPULATE THE EDIT BOX IF THERE ALREADY EXIST SUCH A TRANSACTION
-    public void getUserInfo() {
-        mDatabaseUser.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists() && dataSnapshot.getChildrenCount() > 0) {
-                    Map<String, Object> map = (Map<String, Object>) dataSnapshot.getValue(HashMaps.class);
-                    if (map.get("address") != null) {
-                        String themailingaddress = map.get("address").toString();
-
-                        MailingAddress.setText(themailingaddress);
-
-
-                    }
-                    if (map.get("gpscode") != null) {
-                        String thegpscode = map.get("gpscode").toString();
-                        GpsCode.setText(mPhone);
-                    }
-
-                    if (map.get("street") != null) {
-                        String thestreetaddress = map.get("street").toString();
-                        StreetAddress.setText(thestreetaddress);
-                    }
-
-                }
-            }
-
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-            }
-        });
-
-
-    }
-
-
-
-
-
-
-
-
+    @Nullable
     @Override
-    public void onConnected(@Nullable Bundle bundle) {
-
-    }
-
-    @Override
-    public void onConnectionSuspended(int i) {
-        if (mGoogleApiClient != null) {
-            mGoogleApiClient.connect();
-        }
-    }
-
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
-    }
-
-    @Override
-    protected void onStart() {
+    public void onStart() {
         super.onStart();
+        if (feedadapter != null) {
+            feedadapter.startListening();
+        }
 
         firebaseAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
 
-                FirebaseUser user = mAuth.getCurrentUser();
-                if (user != null) {
-                    userID = "";
-                    userID = user.getUid();
+                user = mAuth.getCurrentUser();
+                if (mAuth != null) {
+                    if (user != null) {
+
+                        traderID = user.getUid();
+                    }
+
+                    // I HAVE TO TRY TO GET THE SETUP INFORMATION , IF THEY ARE ALREADY PROVIDED WE TAKE TO THE NEXT STAGE
+                    // WHICH IS CUSTOMER TO BE ADDED.
+                    // PULLING DATABASE REFERENCE IS NULL, WE CHANGE BACK TO THE SETUP PAGE ELSE WE GO STRAIGHT TO MAP PAGE
                 }
-
-                // I HAVE TO TRY TO GET THE SETUP INFORMATION , IF THEY ARE ALREADY PROVIDED WE TAKE TO THE NEXT STAGE
-                // WHICH IS CUSTOMER TO BE ADDED.
-                // PULLING DATABASE REFERENCE IS NULL, WE CHANGE BACK TO THE SETUP PAGE ELSE WE GO STRAIGHT TO MAP PAGE
-            }
-        };
-
+            }    };
 
 
         if (mAuth != null) {
             mAuth.addAuthStateListener(firebaseAuthListener);
         }
+
+
+
     }
+
+
     @Override
-    protected void onStop() {
+    public void onStop () {
         super.onStop();
-        if (mAuth !=null) {
+        if (feedadapter != null) {
+            feedadapter.stopListening();
+        }
+        //     mProgress.hide();
+        if (mAuth != null) {
             mAuth.removeAuthStateListener(firebaseAuthListener);
         }
     }
+
 
 
     @Override
@@ -574,21 +720,21 @@ public class ClientVerificationPendingPage extends AppCompatActivity implements 
 
 
         if (id == R.id.viewallcustomershere) {
-
+            if (!role.equals("Trader")) {
                 if (FirebaseAuth.getInstance() != null) {
                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                     if (user != null) {
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(ClientVerificationPendingPage.this, ResidentialInfo.class);
+                        Intent intent = new Intent(AllOrdersAccepted .this, NotTraderActivity.class);
                         if (intent != null) {
-                            intent.putExtra("userID", userID);
+                            intent.putExtra("traderorcustomer", traderID);
                             intent.putExtra("role", role);
                             startActivity(intent);
                         }
                     }
-
+                }
             } else {
                 if (FirebaseAuth.getInstance() != null) {
 
@@ -597,9 +743,9 @@ public class ClientVerificationPendingPage extends AppCompatActivity implements 
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(ClientVerificationPendingPage.this, ResidentialInfo.class);
+                        Intent intent = new Intent(AllOrdersAccepted .this, AdminAllCustomers.class);
                         if (intent != null) {
-                            intent.putExtra("userID", userID);
+                            intent.putExtra("traderorcustomer", traderID);
                             intent.putExtra("role", role);
                             startActivity(intent);
                         }
@@ -612,21 +758,21 @@ public class ClientVerificationPendingPage extends AppCompatActivity implements 
 
         if (id == R.id. allcustomersincart) {
 
-
+            if (!role.equals("Trader")) {
                 if (FirebaseAuth.getInstance() != null) {
                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                     if (user != null) {
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(ClientVerificationPendingPage.this, ResidentialInfo.class);
+                        Intent intent = new Intent(AllOrdersAccepted.this, NotTraderActivity.class);
                         if (intent != null) {
-                            intent.putExtra("userID", userID);
+                            intent.putExtra("traderorcustomer", traderID);
                             intent.putExtra("role", role);
                             startActivity(intent);
                         }
                     }
-
+                }
             } else {
                 if (FirebaseAuth.getInstance() != null) {
 
@@ -635,9 +781,9 @@ public class ClientVerificationPendingPage extends AppCompatActivity implements 
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(ClientVerificationPendingPage.this, ResidentialInfo.class);
+                        Intent intent = new Intent(AllOrdersAccepted.this, ViewAllCarts.class);
                         if (intent != null) {
-                            intent.putExtra("userID", userID);
+                            intent.putExtra("traderorcustomer", traderID);
                             intent.putExtra("role", role);
                             startActivity(intent);
                         }
@@ -649,21 +795,21 @@ public class ClientVerificationPendingPage extends AppCompatActivity implements 
 
 
         if (id == R.id.addnewproducthere) {
-
+            if (!role.equals("Trader")) {
                 if (FirebaseAuth.getInstance() != null) {
                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                     if (user != null) {
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(ClientVerificationPendingPage.this, ResidentialInfo.class);
+                        Intent intent = new Intent(AllOrdersAccepted.this, NotTraderActivity.class);
                         if (intent != null) {
-                            intent.putExtra("userID", userID);
+                            intent.putExtra("traderorcustomer", traderID);
                             intent.putExtra("role", role);
                             startActivity(intent);
                         }
                     }
-
+                }
             } else {
                 if (FirebaseAuth.getInstance() != null) {
 
@@ -672,9 +818,9 @@ public class ClientVerificationPendingPage extends AppCompatActivity implements 
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(ClientVerificationPendingPage.this, ResidentialInfo.class);
+                        Intent intent = new Intent(AllOrdersAccepted.this, AdminAddNewProductActivityII.class);
                         if (intent != null) {
-                            intent.putExtra("userID", userID);
+                            intent.putExtra("traderorcustomer", traderID);
                             intent.putExtra("role", role);
                             startActivity(intent);
                         }
@@ -684,21 +830,21 @@ public class ClientVerificationPendingPage extends AppCompatActivity implements 
         }
 
         if (id == R.id.allproductshere) {
-
+            if (!role.equals("Trader")) {
                 if (FirebaseAuth.getInstance() != null) {
                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                     if (user != null) {
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(ClientVerificationPendingPage.this, ResidentialInfo.class);
+                        Intent intent = new Intent(AllOrdersAccepted.this, NotTraderActivity.class);
                         if (intent != null) {
-                            intent.putExtra("userID", userID);
+                            intent.putExtra("traderorcustomer", traderID);
                             intent.putExtra("role", role);
                             startActivity(intent);
                         }
                     }
-
+                }
             } else {
                 if (FirebaseAuth.getInstance() != null) {
 
@@ -707,30 +853,30 @@ public class ClientVerificationPendingPage extends AppCompatActivity implements 
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(ClientVerificationPendingPage.this, ResidentialInfo.class);
+                        Intent intent = new Intent(AllOrdersAccepted.this, AdminAllProducts.class);
                         if (intent != null) {
-                            intent.putExtra("userID", userID);
+                            intent.putExtra("traderorcustomer", traderID);
                             intent.putExtra("role", role);
                             startActivity(intent);
                         }
                     }}
 
                 if (id == R.id.allproductspurchased) {
-
+                    if (!role.equals("Trader")) {
                         if (FirebaseAuth.getInstance() != null) {
                             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                             if (user != null) {
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(ClientVerificationPendingPage.this, HistoryActivity.class);
+                                Intent intent = new Intent(AllOrdersAccepted.this, NotTraderActivity.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
                                     startActivity(intent);
                                 }
                             }
-
+                        }
                     } else {
                         if (FirebaseAuth.getInstance() != null) {
 
@@ -739,7 +885,7 @@ public class ClientVerificationPendingPage extends AppCompatActivity implements 
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(ClientVerificationPendingPage.this, HistoryActivity.class);
+                                Intent intent = new Intent(AllOrdersAccepted.this, AllProductsPurchased.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
@@ -752,14 +898,14 @@ public class ClientVerificationPendingPage extends AppCompatActivity implements 
 
 
                 if (id == R.id. viewallcustomershere) {
-
+                    if (!role.equals("Trader")) {
                         if (FirebaseAuth.getInstance() != null) {
                             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                             if (user != null) {
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(ClientVerificationPendingPage.this, HistoryActivity.class);
+                                Intent intent = new Intent(AllOrdersAccepted.this, NotTraderActivity.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
@@ -775,7 +921,7 @@ public class ClientVerificationPendingPage extends AppCompatActivity implements 
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(ClientVerificationPendingPage.this, HistoryActivity.class);
+                                Intent intent = new Intent(AllOrdersAccepted.this, ViewAllCustomers.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
@@ -794,7 +940,7 @@ public class ClientVerificationPendingPage extends AppCompatActivity implements 
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(ClientVerificationPendingPage.this, HistoryActivity.class);
+                                Intent intent = new Intent(AllOrdersAccepted.this, NotTraderActivity.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
@@ -810,7 +956,7 @@ public class ClientVerificationPendingPage extends AppCompatActivity implements 
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(ClientVerificationPendingPage.this, HistoryActivity.class);
+                                Intent intent = new Intent(AllOrdersAccepted.this, TradersFollowing.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
@@ -831,7 +977,7 @@ public class ClientVerificationPendingPage extends AppCompatActivity implements 
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(ClientVerificationPendingPage.this, HistoryActivity.class);
+                                Intent intent = new Intent(AllOrdersAccepted.this, NotTraderActivity.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
@@ -847,7 +993,7 @@ public class ClientVerificationPendingPage extends AppCompatActivity implements 
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(ClientVerificationPendingPage.this, HistoryActivity.class);
+                                Intent intent = new Intent(AllOrdersAccepted.this, AdminNewOrdersActivity.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
@@ -868,7 +1014,7 @@ public class ClientVerificationPendingPage extends AppCompatActivity implements 
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(ClientVerificationPendingPage.this, HistoryActivity.class);
+                                Intent intent = new Intent(AllOrdersAccepted.this, NotTraderActivity.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
@@ -884,7 +1030,7 @@ public class ClientVerificationPendingPage extends AppCompatActivity implements 
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(ClientVerificationPendingPage.this, HistoryActivity.class);
+                                Intent intent = new Intent(AllOrdersAccepted.this, AdminCustomerServed.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
@@ -904,7 +1050,7 @@ public class ClientVerificationPendingPage extends AppCompatActivity implements 
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(ClientVerificationPendingPage.this, HistoryActivity.class);
+                                Intent intent = new Intent(AllOrdersAccepted.this, NotTraderActivity.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
@@ -920,7 +1066,7 @@ public class ClientVerificationPendingPage extends AppCompatActivity implements 
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(ClientVerificationPendingPage.this, HistoryActivity.class);
+                                Intent intent = new Intent(AllOrdersAccepted.this, AdminAllOrderHistory.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
@@ -933,7 +1079,7 @@ public class ClientVerificationPendingPage extends AppCompatActivity implements 
 
 
             }
-
+        }
 
 
         return super.onOptionsItemSelected(item);
@@ -949,7 +1095,7 @@ public class ClientVerificationPendingPage extends AppCompatActivity implements 
         if (id == R.id.viewmap) {
             if (!role.equals("Trader")) {
 
-                Intent intent = new Intent(ClientVerificationPendingPage.this, HistoryActivity.class);
+                Intent intent = new Intent(AllOrdersAccepted.this, NotTraderActivity.class);
                 if (intent != null) {
                     intent.putExtra("traderorcustomer", traderID);
                     intent.putExtra("role", role);
@@ -958,7 +1104,7 @@ public class ClientVerificationPendingPage extends AppCompatActivity implements 
                 }
             } else {
 
-                Intent intent = new Intent(ClientVerificationPendingPage.this, DriverMapActivity.class);
+                Intent intent = new Intent(AllOrdersAccepted.this, DriverMapActivity.class);
                 if (intent != null) {
                     intent.putExtra("traderorcustomer", traderID);
                     intent.putExtra("role", role);
@@ -979,7 +1125,7 @@ public class ClientVerificationPendingPage extends AppCompatActivity implements 
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(ClientVerificationPendingPage.this, HistoryActivity.class);
+                        Intent intent = new Intent(AllOrdersAccepted.this, NotTraderActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderID);
                             intent.putExtra("role", role);
@@ -995,7 +1141,7 @@ public class ClientVerificationPendingPage extends AppCompatActivity implements 
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(ClientVerificationPendingPage.this, CartActivity.class);
+                        Intent intent = new Intent(AllOrdersAccepted.this, CartActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderID);
                             intent.putExtra("role", role);
@@ -1015,7 +1161,7 @@ public class ClientVerificationPendingPage extends AppCompatActivity implements 
                             String cusomerId = "";
 
                             cusomerId = user.getUid();
-                            Intent intent = new Intent(ClientVerificationPendingPage.this, HistoryActivity.class);
+                            Intent intent = new Intent(AllOrdersAccepted.this, NotTraderActivity.class);
                             if (intent != null) {
                                 intent.putExtra("traderorcustomer", traderID);
                                 intent.putExtra("role", role);
@@ -1031,7 +1177,7 @@ public class ClientVerificationPendingPage extends AppCompatActivity implements 
                             String cusomerId = "";
                             cusomerId = user.getUid();
 
-                            Intent intent = new Intent(ClientVerificationPendingPage.this, InstagramHomeActivity.class);
+                            Intent intent = new Intent(AllOrdersAccepted.this, InstagramHomeActivity.class);
                             if (intent != null) {
                                 intent.putExtra("traderorcustomer", traderID);
                                 intent.putExtra("role", role);
@@ -1051,7 +1197,7 @@ public class ClientVerificationPendingPage extends AppCompatActivity implements 
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(ClientVerificationPendingPage.this, HistoryActivity.class);
+                                Intent intent = new Intent(AllOrdersAccepted.this, NotTraderActivity.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
@@ -1067,7 +1213,7 @@ public class ClientVerificationPendingPage extends AppCompatActivity implements 
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(ClientVerificationPendingPage.this, HistoryActivity.class);
+                                Intent intent = new Intent(AllOrdersAccepted.this, AdminAllProducts.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
@@ -1084,7 +1230,7 @@ public class ClientVerificationPendingPage extends AppCompatActivity implements 
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(ClientVerificationPendingPage.this, HistoryActivity.class);
+                                        Intent intent = new Intent(AllOrdersAccepted.this, NotTraderActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1100,7 +1246,7 @@ public class ClientVerificationPendingPage extends AppCompatActivity implements 
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(ClientVerificationPendingPage.this, HistoryActivity.class);
+                                        Intent intent = new Intent(AllOrdersAccepted.this, SearchForAdminProductsActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1116,7 +1262,7 @@ public class ClientVerificationPendingPage extends AppCompatActivity implements 
                             if (FirebaseAuth.getInstance() != null) {
                                 FirebaseAuth.getInstance().signOut();
                                 if (mGoogleApiClient != null) {
-                                    mGoogleSignInClient.signOut().addOnCompleteListener(ClientVerificationPendingPage.this,
+                                    mGoogleSignInClient.signOut().addOnCompleteListener(AllOrdersAccepted.this,
                                             new OnCompleteListener<Void>() {
                                                 @Override
                                                 public void onComplete(@NonNull Task<Void> task) {
@@ -1125,7 +1271,7 @@ public class ClientVerificationPendingPage extends AppCompatActivity implements 
                                             });
                                 }
                             }
-                            Intent intent = new Intent(ClientVerificationPendingPage.this, com.simcoder.bimbo.MainActivity.class);
+                            Intent intent = new Intent(AllOrdersAccepted.this, com.simcoder.bimbo.MainActivity.class);
                             if (intent != null) {
                                 startActivity(intent);
                                 finish();
@@ -1140,7 +1286,7 @@ public class ClientVerificationPendingPage extends AppCompatActivity implements 
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(ClientVerificationPendingPage.this, HistoryActivity.class);
+                                        Intent intent = new Intent(AllOrdersAccepted.this, NotTraderActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1156,7 +1302,7 @@ public class ClientVerificationPendingPage extends AppCompatActivity implements 
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(ClientVerificationPendingPage.this, com.simcoder.bimbo.WorkActivities.SettinsActivity.class);
+                                        Intent intent = new Intent(AllOrdersAccepted.this, com.simcoder.bimbo.WorkActivities.SettinsActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1174,7 +1320,7 @@ public class ClientVerificationPendingPage extends AppCompatActivity implements 
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(ClientVerificationPendingPage.this, HistoryActivity.class);
+                                        Intent intent = new Intent(AllOrdersAccepted.this, NotTraderActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1190,7 +1336,7 @@ public class ClientVerificationPendingPage extends AppCompatActivity implements 
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(ClientVerificationPendingPage.this, HistoryActivity.class);
+                                        Intent intent = new Intent(AllOrdersAccepted.this, HistoryActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1210,7 +1356,7 @@ public class ClientVerificationPendingPage extends AppCompatActivity implements 
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(ClientVerificationPendingPage.this, HistoryActivity.class);
+                                        Intent intent = new Intent(AllOrdersAccepted.this, NotTraderActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1226,7 +1372,7 @@ public class ClientVerificationPendingPage extends AppCompatActivity implements 
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(ClientVerificationPendingPage.this, TraderProfile.class);
+                                        Intent intent = new Intent(AllOrdersAccepted.this, TraderProfile.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1246,7 +1392,7 @@ public class ClientVerificationPendingPage extends AppCompatActivity implements 
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(ClientVerificationPendingPage.this, HistoryActivity.class);
+                                        Intent intent = new Intent(AllOrdersAccepted.this, NotTraderActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1262,7 +1408,7 @@ public class ClientVerificationPendingPage extends AppCompatActivity implements 
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(ClientVerificationPendingPage.this, HistoryActivity.class);
+                                        Intent intent = new Intent(AllOrdersAccepted.this, AdminAllCustomers.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1283,7 +1429,7 @@ public class ClientVerificationPendingPage extends AppCompatActivity implements 
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(ClientVerificationPendingPage.this, HistoryActivity.class);
+                                        Intent intent = new Intent(AllOrdersAccepted.this, NotTraderActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1299,7 +1445,7 @@ public class ClientVerificationPendingPage extends AppCompatActivity implements 
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(ClientVerificationPendingPage.this, HistoryActivity.class);
+                                        Intent intent = new Intent(AllOrdersAccepted.this, AdminAddNewProductActivityII.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1319,7 +1465,7 @@ public class ClientVerificationPendingPage extends AppCompatActivity implements 
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(ClientVerificationPendingPage.this, HistoryActivity.class);
+                                        Intent intent = new Intent(AllOrdersAccepted.this, NotTraderActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1335,7 +1481,7 @@ public class ClientVerificationPendingPage extends AppCompatActivity implements 
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(ClientVerificationPendingPage.this, HistoryActivity.class);
+                                        Intent intent = new Intent(AllOrdersAccepted.this, AllGoodsBought.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1355,7 +1501,7 @@ public class ClientVerificationPendingPage extends AppCompatActivity implements 
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(ClientVerificationPendingPage.this, HistoryActivity.class);
+                                        Intent intent = new Intent(AllOrdersAccepted.this, NotTraderActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1371,7 +1517,7 @@ public class ClientVerificationPendingPage extends AppCompatActivity implements 
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(ClientVerificationPendingPage.this, HistoryActivity.class);
+                                        Intent intent = new Intent(AllOrdersAccepted.this, AdminPaymentHere.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1391,7 +1537,7 @@ public class ClientVerificationPendingPage extends AppCompatActivity implements 
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(ClientVerificationPendingPage.this, HistoryActivity.class);
+                                        Intent intent = new Intent(AllOrdersAccepted.this, NotTraderActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1407,7 +1553,7 @@ public class ClientVerificationPendingPage extends AppCompatActivity implements 
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(ClientVerificationPendingPage.this, HistoryActivity.class);
+                                        Intent intent = new Intent(AllOrdersAccepted.this, AdminSettings.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1422,22 +1568,10 @@ public class ClientVerificationPendingPage extends AppCompatActivity implements 
                     }
                 }
 
-
-                return true;
             }
 
-            return true;
         }
-        return true;
-    }
-
-    @Override
-    public void onPointerCaptureChanged(boolean hasCapture) {
-
-    }
-
-}
-
-
+        return false;
+    }}
 
 

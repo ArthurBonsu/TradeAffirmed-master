@@ -81,7 +81,7 @@ import java.util.Map;
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.paperdb.Paper;
 
-public class ClientVerificationPendingPage extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, NavigationView.OnNavigationItemSelectedListener {
+public class ClientVerificationAcceptancePage extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, NavigationView.OnNavigationItemSelectedListener {
 
     //
     private static final int GALLERY_REQUEST2 = 2;
@@ -249,14 +249,14 @@ public class ClientVerificationPendingPage extends AppCompatActivity implements 
     String gpsimage;
     Button movetohome;
 
-    public ClientVerificationPendingPage() {
+    public ClientVerificationAcceptancePage() {
         super();
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.verificationpage);
+        setContentView(R.layout.clientverificationacceptancepage);
         Intent roleintent = getIntent();
         if (roleintent.getExtras().getString("role") != null) {
             role = roleintent.getExtras().getString("role");
@@ -346,7 +346,7 @@ public class ClientVerificationPendingPage extends AppCompatActivity implements 
                 }
 
                 if (mGoogleApiClient != null) {
-                    mGoogleApiClient = new GoogleApiClient.Builder(this).enableAutoManage(ClientVerificationPendingPage.this,
+                    mGoogleApiClient = new GoogleApiClient.Builder(this).enableAutoManage(ClientVerificationAcceptancePage.this,
                             new GoogleApiClient.OnConnectionFailedListener() {
                                 @Override
                                 public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
@@ -363,8 +363,8 @@ public class ClientVerificationPendingPage extends AppCompatActivity implements 
     protected synchronized void buildGoogleApiClient() {
         if (mGoogleApiClient != null) {
             mGoogleApiClient = new GoogleApiClient.Builder(this)
-                    .addConnectionCallbacks(ClientVerificationPendingPage.this)
-                    .addOnConnectionFailedListener(ClientVerificationPendingPage.this)
+                    .addConnectionCallbacks(ClientVerificationAcceptancePage.this)
+                    .addOnConnectionFailedListener(ClientVerificationAcceptancePage.this)
                     .addApi(LocationServices.API)
                     .build();
             mGoogleApiClient.connect();
@@ -382,7 +382,7 @@ public class ClientVerificationPendingPage extends AppCompatActivity implements 
             movetohome.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(ClientVerificationPendingPage.this, HomeActivity.class);
+                    Intent intent = new Intent(ClientVerificationAcceptancePage.this, HomeActivity.class);
                     if (intent != null) {
                         intent.putExtra("role", role);
                         intent.putExtra("userID", userID);
@@ -479,13 +479,6 @@ public class ClientVerificationPendingPage extends AppCompatActivity implements 
 
     }
 
-
-
-
-
-
-
-
     @Override
     public void onConnected(@Nullable Bundle bundle) {
 
@@ -575,19 +568,19 @@ public class ClientVerificationPendingPage extends AppCompatActivity implements 
 
         if (id == R.id.viewallcustomershere) {
 
-                if (FirebaseAuth.getInstance() != null) {
-                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                    if (user != null) {
-                        String cusomerId = "";
+            if (FirebaseAuth.getInstance() != null) {
+                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                if (user != null) {
+                    String cusomerId = "";
 
-                        cusomerId = user.getUid();
-                        Intent intent = new Intent(ClientVerificationPendingPage.this, ResidentialInfo.class);
-                        if (intent != null) {
-                            intent.putExtra("userID", userID);
-                            intent.putExtra("role", role);
-                            startActivity(intent);
-                        }
+                    cusomerId = user.getUid();
+                    Intent intent = new Intent(ClientVerificationAcceptancePage.this, ResidentialInfo.class);
+                    if (intent != null) {
+                        intent.putExtra("userID", userID);
+                        intent.putExtra("role", role);
+                        startActivity(intent);
                     }
+                }
 
             } else {
                 if (FirebaseAuth.getInstance() != null) {
@@ -597,7 +590,7 @@ public class ClientVerificationPendingPage extends AppCompatActivity implements 
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(ClientVerificationPendingPage.this, ResidentialInfo.class);
+                        Intent intent = new Intent(ClientVerificationAcceptancePage.this, ResidentialInfo.class);
                         if (intent != null) {
                             intent.putExtra("userID", userID);
                             intent.putExtra("role", role);
@@ -613,19 +606,19 @@ public class ClientVerificationPendingPage extends AppCompatActivity implements 
         if (id == R.id. allcustomersincart) {
 
 
-                if (FirebaseAuth.getInstance() != null) {
-                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                    if (user != null) {
-                        String cusomerId = "";
+            if (FirebaseAuth.getInstance() != null) {
+                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                if (user != null) {
+                    String cusomerId = "";
 
-                        cusomerId = user.getUid();
-                        Intent intent = new Intent(ClientVerificationPendingPage.this, ResidentialInfo.class);
-                        if (intent != null) {
-                            intent.putExtra("userID", userID);
-                            intent.putExtra("role", role);
-                            startActivity(intent);
-                        }
+                    cusomerId = user.getUid();
+                    Intent intent = new Intent(ClientVerificationAcceptancePage.this, ResidentialInfo.class);
+                    if (intent != null) {
+                        intent.putExtra("userID", userID);
+                        intent.putExtra("role", role);
+                        startActivity(intent);
                     }
+                }
 
             } else {
                 if (FirebaseAuth.getInstance() != null) {
@@ -635,7 +628,7 @@ public class ClientVerificationPendingPage extends AppCompatActivity implements 
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(ClientVerificationPendingPage.this, ResidentialInfo.class);
+                        Intent intent = new Intent(ClientVerificationAcceptancePage.this, ResidentialInfo.class);
                         if (intent != null) {
                             intent.putExtra("userID", userID);
                             intent.putExtra("role", role);
@@ -650,19 +643,19 @@ public class ClientVerificationPendingPage extends AppCompatActivity implements 
 
         if (id == R.id.addnewproducthere) {
 
-                if (FirebaseAuth.getInstance() != null) {
-                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                    if (user != null) {
-                        String cusomerId = "";
+            if (FirebaseAuth.getInstance() != null) {
+                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                if (user != null) {
+                    String cusomerId = "";
 
-                        cusomerId = user.getUid();
-                        Intent intent = new Intent(ClientVerificationPendingPage.this, ResidentialInfo.class);
-                        if (intent != null) {
-                            intent.putExtra("userID", userID);
-                            intent.putExtra("role", role);
-                            startActivity(intent);
-                        }
+                    cusomerId = user.getUid();
+                    Intent intent = new Intent(ClientVerificationAcceptancePage.this, ResidentialInfo.class);
+                    if (intent != null) {
+                        intent.putExtra("userID", userID);
+                        intent.putExtra("role", role);
+                        startActivity(intent);
                     }
+                }
 
             } else {
                 if (FirebaseAuth.getInstance() != null) {
@@ -672,7 +665,7 @@ public class ClientVerificationPendingPage extends AppCompatActivity implements 
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(ClientVerificationPendingPage.this, ResidentialInfo.class);
+                        Intent intent = new Intent(ClientVerificationAcceptancePage.this, ResidentialInfo.class);
                         if (intent != null) {
                             intent.putExtra("userID", userID);
                             intent.putExtra("role", role);
@@ -685,19 +678,19 @@ public class ClientVerificationPendingPage extends AppCompatActivity implements 
 
         if (id == R.id.allproductshere) {
 
-                if (FirebaseAuth.getInstance() != null) {
-                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                    if (user != null) {
-                        String cusomerId = "";
+            if (FirebaseAuth.getInstance() != null) {
+                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                if (user != null) {
+                    String cusomerId = "";
 
-                        cusomerId = user.getUid();
-                        Intent intent = new Intent(ClientVerificationPendingPage.this, ResidentialInfo.class);
-                        if (intent != null) {
-                            intent.putExtra("userID", userID);
-                            intent.putExtra("role", role);
-                            startActivity(intent);
-                        }
+                    cusomerId = user.getUid();
+                    Intent intent = new Intent(ClientVerificationAcceptancePage.this, ResidentialInfo.class);
+                    if (intent != null) {
+                        intent.putExtra("userID", userID);
+                        intent.putExtra("role", role);
+                        startActivity(intent);
                     }
+                }
 
             } else {
                 if (FirebaseAuth.getInstance() != null) {
@@ -707,7 +700,7 @@ public class ClientVerificationPendingPage extends AppCompatActivity implements 
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(ClientVerificationPendingPage.this, ResidentialInfo.class);
+                        Intent intent = new Intent(ClientVerificationAcceptancePage.this, ResidentialInfo.class);
                         if (intent != null) {
                             intent.putExtra("userID", userID);
                             intent.putExtra("role", role);
@@ -717,19 +710,19 @@ public class ClientVerificationPendingPage extends AppCompatActivity implements 
 
                 if (id == R.id.allproductspurchased) {
 
-                        if (FirebaseAuth.getInstance() != null) {
-                            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                            if (user != null) {
-                                String cusomerId = "";
+                    if (FirebaseAuth.getInstance() != null) {
+                        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                        if (user != null) {
+                            String cusomerId = "";
 
-                                cusomerId = user.getUid();
-                                Intent intent = new Intent(ClientVerificationPendingPage.this, HistoryActivity.class);
-                                if (intent != null) {
-                                    intent.putExtra("traderorcustomer", traderID);
-                                    intent.putExtra("role", role);
-                                    startActivity(intent);
-                                }
+                            cusomerId = user.getUid();
+                            Intent intent = new Intent(ClientVerificationAcceptancePage.this, HistoryActivity.class);
+                            if (intent != null) {
+                                intent.putExtra("traderorcustomer", traderID);
+                                intent.putExtra("role", role);
+                                startActivity(intent);
                             }
+                        }
 
                     } else {
                         if (FirebaseAuth.getInstance() != null) {
@@ -739,7 +732,7 @@ public class ClientVerificationPendingPage extends AppCompatActivity implements 
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(ClientVerificationPendingPage.this, HistoryActivity.class);
+                                Intent intent = new Intent(ClientVerificationAcceptancePage.this, HistoryActivity.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
@@ -753,186 +746,186 @@ public class ClientVerificationPendingPage extends AppCompatActivity implements 
 
                 if (id == R.id. viewallcustomershere) {
 
-                        if (FirebaseAuth.getInstance() != null) {
-                            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                            if (user != null) {
-                                String cusomerId = "";
+                    if (FirebaseAuth.getInstance() != null) {
+                        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                        if (user != null) {
+                            String cusomerId = "";
 
-                                cusomerId = user.getUid();
-                                Intent intent = new Intent(ClientVerificationPendingPage.this, HistoryActivity.class);
-                                if (intent != null) {
-                                    intent.putExtra("traderorcustomer", traderID);
-                                    intent.putExtra("role", role);
-                                    startActivity(intent);
-                                }
+                            cusomerId = user.getUid();
+                            Intent intent = new Intent(ClientVerificationAcceptancePage.this, HistoryActivity.class);
+                            if (intent != null) {
+                                intent.putExtra("traderorcustomer", traderID);
+                                intent.putExtra("role", role);
+                                startActivity(intent);
                             }
                         }
-                    } else {
-                        if (FirebaseAuth.getInstance() != null) {
+                    }
+                } else {
+                    if (FirebaseAuth.getInstance() != null) {
 
-                            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                            if (user != null) {
-                                String cusomerId = "";
-                                cusomerId = user.getUid();
+                        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                        if (user != null) {
+                            String cusomerId = "";
+                            cusomerId = user.getUid();
 
-                                Intent intent = new Intent(ClientVerificationPendingPage.this, HistoryActivity.class);
-                                if (intent != null) {
-                                    intent.putExtra("traderorcustomer", traderID);
-                                    intent.putExtra("role", role);
-                                    startActivity(intent);
-                                }
+                            Intent intent = new Intent(ClientVerificationAcceptancePage.this, HistoryActivity.class);
+                            if (intent != null) {
+                                intent.putExtra("traderorcustomer", traderID);
+                                intent.putExtra("role", role);
+                                startActivity(intent);
                             }
                         }
                     }
                 }
-
-                if (id == R.id.tradersfollowing) {
-                    if (!role.equals("Trader")) {
-                        if (FirebaseAuth.getInstance() != null) {
-                            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                            if (user != null) {
-                                String cusomerId = "";
-
-                                cusomerId = user.getUid();
-                                Intent intent = new Intent(ClientVerificationPendingPage.this, HistoryActivity.class);
-                                if (intent != null) {
-                                    intent.putExtra("traderorcustomer", traderID);
-                                    intent.putExtra("role", role);
-                                    startActivity(intent);
-                                }
-                            }
-                        }
-                    } else {
-                        if (FirebaseAuth.getInstance() != null) {
-
-                            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                            if (user != null) {
-                                String cusomerId = "";
-                                cusomerId = user.getUid();
-
-                                Intent intent = new Intent(ClientVerificationPendingPage.this, HistoryActivity.class);
-                                if (intent != null) {
-                                    intent.putExtra("traderorcustomer", traderID);
-                                    intent.putExtra("role", role);
-                                    startActivity(intent);
-                                }
-                            }
-                        }
-                    }
-                }
-
-
-                if (id == R.id.AdminNewOrders) {
-
-                    if (!role.equals("Trader")) {
-                        if (FirebaseAuth.getInstance() != null) {
-                            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                            if (user != null) {
-                                String cusomerId = "";
-
-                                cusomerId = user.getUid();
-                                Intent intent = new Intent(ClientVerificationPendingPage.this, HistoryActivity.class);
-                                if (intent != null) {
-                                    intent.putExtra("traderorcustomer", traderID);
-                                    intent.putExtra("role", role);
-                                    startActivity(intent);
-                                }
-                            }
-                        }
-                    } else {
-                        if (FirebaseAuth.getInstance() != null) {
-
-                            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                            if (user != null) {
-                                String cusomerId = "";
-                                cusomerId = user.getUid();
-
-                                Intent intent = new Intent(ClientVerificationPendingPage.this, HistoryActivity.class);
-                                if (intent != null) {
-                                    intent.putExtra("traderorcustomer", traderID);
-                                    intent.putExtra("role", role);
-                                    startActivity(intent);
-                                }
-                            }
-                        }
-                    }
-                }
-
-
-                if (id == R.id.allcustomersserved) {
-
-                    if (!role.equals("Trader")) {
-                        if (FirebaseAuth.getInstance() != null) {
-                            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                            if (user != null) {
-                                String cusomerId = "";
-
-                                cusomerId = user.getUid();
-                                Intent intent = new Intent(ClientVerificationPendingPage.this, HistoryActivity.class);
-                                if (intent != null) {
-                                    intent.putExtra("traderorcustomer", traderID);
-                                    intent.putExtra("role", role);
-                                    startActivity(intent);
-                                }
-                            }
-                        }
-                    } else {
-                        if (FirebaseAuth.getInstance() != null) {
-
-                            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                            if (user != null) {
-                                String cusomerId = "";
-                                cusomerId = user.getUid();
-
-                                Intent intent = new Intent(ClientVerificationPendingPage.this, HistoryActivity.class);
-                                if (intent != null) {
-                                    intent.putExtra("traderorcustomer", traderID);
-                                    intent.putExtra("role", role);
-                                    startActivity(intent);
-                                }
-                            }
-                        }
-                    }
-                }
-
-                if (id == R.id.allordershistory) {
-
-                    if (!role.equals("Trader")) {
-                        if (FirebaseAuth.getInstance() != null) {
-                            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                            if (user != null) {
-                                String cusomerId = "";
-
-                                cusomerId = user.getUid();
-                                Intent intent = new Intent(ClientVerificationPendingPage.this, HistoryActivity.class);
-                                if (intent != null) {
-                                    intent.putExtra("traderorcustomer", traderID);
-                                    intent.putExtra("role", role);
-                                    startActivity(intent);
-                                }
-                            }
-                        }
-                    } else {
-                        if (FirebaseAuth.getInstance() != null) {
-
-                            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                            if (user != null) {
-                                String cusomerId = "";
-                                cusomerId = user.getUid();
-
-                                Intent intent = new Intent(ClientVerificationPendingPage.this, HistoryActivity.class);
-                                if (intent != null) {
-                                    intent.putExtra("traderorcustomer", traderID);
-                                    intent.putExtra("role", role);
-                                    startActivity(intent);
-                                }
-                            }
-                        }
-                    }
-                }
-
-
             }
+
+            if (id == R.id.tradersfollowing) {
+                if (!role.equals("Trader")) {
+                    if (FirebaseAuth.getInstance() != null) {
+                        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                        if (user != null) {
+                            String cusomerId = "";
+
+                            cusomerId = user.getUid();
+                            Intent intent = new Intent(ClientVerificationAcceptancePage.this, HistoryActivity.class);
+                            if (intent != null) {
+                                intent.putExtra("traderorcustomer", traderID);
+                                intent.putExtra("role", role);
+                                startActivity(intent);
+                            }
+                        }
+                    }
+                } else {
+                    if (FirebaseAuth.getInstance() != null) {
+
+                        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                        if (user != null) {
+                            String cusomerId = "";
+                            cusomerId = user.getUid();
+
+                            Intent intent = new Intent(ClientVerificationAcceptancePage.this, HistoryActivity.class);
+                            if (intent != null) {
+                                intent.putExtra("traderorcustomer", traderID);
+                                intent.putExtra("role", role);
+                                startActivity(intent);
+                            }
+                        }
+                    }
+                }
+            }
+
+
+            if (id == R.id.AdminNewOrders) {
+
+                if (!role.equals("Trader")) {
+                    if (FirebaseAuth.getInstance() != null) {
+                        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                        if (user != null) {
+                            String cusomerId = "";
+
+                            cusomerId = user.getUid();
+                            Intent intent = new Intent(ClientVerificationAcceptancePage.this, HistoryActivity.class);
+                            if (intent != null) {
+                                intent.putExtra("traderorcustomer", traderID);
+                                intent.putExtra("role", role);
+                                startActivity(intent);
+                            }
+                        }
+                    }
+                } else {
+                    if (FirebaseAuth.getInstance() != null) {
+
+                        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                        if (user != null) {
+                            String cusomerId = "";
+                            cusomerId = user.getUid();
+
+                            Intent intent = new Intent(ClientVerificationAcceptancePage.this, HistoryActivity.class);
+                            if (intent != null) {
+                                intent.putExtra("traderorcustomer", traderID);
+                                intent.putExtra("role", role);
+                                startActivity(intent);
+                            }
+                        }
+                    }
+                }
+            }
+
+
+            if (id == R.id.allcustomersserved) {
+
+                if (!role.equals("Trader")) {
+                    if (FirebaseAuth.getInstance() != null) {
+                        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                        if (user != null) {
+                            String cusomerId = "";
+
+                            cusomerId = user.getUid();
+                            Intent intent = new Intent(ClientVerificationAcceptancePage.this, HistoryActivity.class);
+                            if (intent != null) {
+                                intent.putExtra("traderorcustomer", traderID);
+                                intent.putExtra("role", role);
+                                startActivity(intent);
+                            }
+                        }
+                    }
+                } else {
+                    if (FirebaseAuth.getInstance() != null) {
+
+                        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                        if (user != null) {
+                            String cusomerId = "";
+                            cusomerId = user.getUid();
+
+                            Intent intent = new Intent(ClientVerificationAcceptancePage.this, HistoryActivity.class);
+                            if (intent != null) {
+                                intent.putExtra("traderorcustomer", traderID);
+                                intent.putExtra("role", role);
+                                startActivity(intent);
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (id == R.id.allordershistory) {
+
+                if (!role.equals("Trader")) {
+                    if (FirebaseAuth.getInstance() != null) {
+                        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                        if (user != null) {
+                            String cusomerId = "";
+
+                            cusomerId = user.getUid();
+                            Intent intent = new Intent(ClientVerificationAcceptancePage.this, HistoryActivity.class);
+                            if (intent != null) {
+                                intent.putExtra("traderorcustomer", traderID);
+                                intent.putExtra("role", role);
+                                startActivity(intent);
+                            }
+                        }
+                    }
+                } else {
+                    if (FirebaseAuth.getInstance() != null) {
+
+                        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                        if (user != null) {
+                            String cusomerId = "";
+                            cusomerId = user.getUid();
+
+                            Intent intent = new Intent(ClientVerificationAcceptancePage.this, HistoryActivity.class);
+                            if (intent != null) {
+                                intent.putExtra("traderorcustomer", traderID);
+                                intent.putExtra("role", role);
+                                startActivity(intent);
+                            }
+                        }
+                    }
+                }
+            }
+
+
+        }
 
 
 
@@ -949,7 +942,7 @@ public class ClientVerificationPendingPage extends AppCompatActivity implements 
         if (id == R.id.viewmap) {
             if (!role.equals("Trader")) {
 
-                Intent intent = new Intent(ClientVerificationPendingPage.this, HistoryActivity.class);
+                Intent intent = new Intent(ClientVerificationAcceptancePage.this, HistoryActivity.class);
                 if (intent != null) {
                     intent.putExtra("traderorcustomer", traderID);
                     intent.putExtra("role", role);
@@ -958,7 +951,7 @@ public class ClientVerificationPendingPage extends AppCompatActivity implements 
                 }
             } else {
 
-                Intent intent = new Intent(ClientVerificationPendingPage.this, DriverMapActivity.class);
+                Intent intent = new Intent(ClientVerificationAcceptancePage.this, DriverMapActivity.class);
                 if (intent != null) {
                     intent.putExtra("traderorcustomer", traderID);
                     intent.putExtra("role", role);
@@ -979,7 +972,7 @@ public class ClientVerificationPendingPage extends AppCompatActivity implements 
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(ClientVerificationPendingPage.this, HistoryActivity.class);
+                        Intent intent = new Intent(ClientVerificationAcceptancePage.this, HistoryActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderID);
                             intent.putExtra("role", role);
@@ -995,7 +988,7 @@ public class ClientVerificationPendingPage extends AppCompatActivity implements 
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(ClientVerificationPendingPage.this, CartActivity.class);
+                        Intent intent = new Intent(ClientVerificationAcceptancePage.this, CartActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderID);
                             intent.putExtra("role", role);
@@ -1015,7 +1008,7 @@ public class ClientVerificationPendingPage extends AppCompatActivity implements 
                             String cusomerId = "";
 
                             cusomerId = user.getUid();
-                            Intent intent = new Intent(ClientVerificationPendingPage.this, HistoryActivity.class);
+                            Intent intent = new Intent(ClientVerificationAcceptancePage.this, HistoryActivity.class);
                             if (intent != null) {
                                 intent.putExtra("traderorcustomer", traderID);
                                 intent.putExtra("role", role);
@@ -1031,7 +1024,7 @@ public class ClientVerificationPendingPage extends AppCompatActivity implements 
                             String cusomerId = "";
                             cusomerId = user.getUid();
 
-                            Intent intent = new Intent(ClientVerificationPendingPage.this, InstagramHomeActivity.class);
+                            Intent intent = new Intent(ClientVerificationAcceptancePage.this, InstagramHomeActivity.class);
                             if (intent != null) {
                                 intent.putExtra("traderorcustomer", traderID);
                                 intent.putExtra("role", role);
@@ -1051,7 +1044,7 @@ public class ClientVerificationPendingPage extends AppCompatActivity implements 
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(ClientVerificationPendingPage.this, HistoryActivity.class);
+                                Intent intent = new Intent(ClientVerificationAcceptancePage.this, HistoryActivity.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
@@ -1067,7 +1060,7 @@ public class ClientVerificationPendingPage extends AppCompatActivity implements 
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(ClientVerificationPendingPage.this, HistoryActivity.class);
+                                Intent intent = new Intent(ClientVerificationAcceptancePage.this, HistoryActivity.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
@@ -1084,7 +1077,7 @@ public class ClientVerificationPendingPage extends AppCompatActivity implements 
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(ClientVerificationPendingPage.this, HistoryActivity.class);
+                                        Intent intent = new Intent(ClientVerificationAcceptancePage.this, HistoryActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1100,7 +1093,7 @@ public class ClientVerificationPendingPage extends AppCompatActivity implements 
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(ClientVerificationPendingPage.this, HistoryActivity.class);
+                                        Intent intent = new Intent(ClientVerificationAcceptancePage.this, HistoryActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1116,7 +1109,7 @@ public class ClientVerificationPendingPage extends AppCompatActivity implements 
                             if (FirebaseAuth.getInstance() != null) {
                                 FirebaseAuth.getInstance().signOut();
                                 if (mGoogleApiClient != null) {
-                                    mGoogleSignInClient.signOut().addOnCompleteListener(ClientVerificationPendingPage.this,
+                                    mGoogleSignInClient.signOut().addOnCompleteListener(ClientVerificationAcceptancePage.this,
                                             new OnCompleteListener<Void>() {
                                                 @Override
                                                 public void onComplete(@NonNull Task<Void> task) {
@@ -1125,7 +1118,7 @@ public class ClientVerificationPendingPage extends AppCompatActivity implements 
                                             });
                                 }
                             }
-                            Intent intent = new Intent(ClientVerificationPendingPage.this, com.simcoder.bimbo.MainActivity.class);
+                            Intent intent = new Intent(ClientVerificationAcceptancePage.this, com.simcoder.bimbo.MainActivity.class);
                             if (intent != null) {
                                 startActivity(intent);
                                 finish();
@@ -1140,7 +1133,7 @@ public class ClientVerificationPendingPage extends AppCompatActivity implements 
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(ClientVerificationPendingPage.this, HistoryActivity.class);
+                                        Intent intent = new Intent(ClientVerificationAcceptancePage.this, HistoryActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1156,7 +1149,7 @@ public class ClientVerificationPendingPage extends AppCompatActivity implements 
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(ClientVerificationPendingPage.this, com.simcoder.bimbo.WorkActivities.SettinsActivity.class);
+                                        Intent intent = new Intent(ClientVerificationAcceptancePage.this, com.simcoder.bimbo.WorkActivities.SettinsActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1174,7 +1167,7 @@ public class ClientVerificationPendingPage extends AppCompatActivity implements 
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(ClientVerificationPendingPage.this, HistoryActivity.class);
+                                        Intent intent = new Intent(ClientVerificationAcceptancePage.this, HistoryActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1190,7 +1183,7 @@ public class ClientVerificationPendingPage extends AppCompatActivity implements 
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(ClientVerificationPendingPage.this, HistoryActivity.class);
+                                        Intent intent = new Intent(ClientVerificationAcceptancePage.this, HistoryActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1210,7 +1203,7 @@ public class ClientVerificationPendingPage extends AppCompatActivity implements 
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(ClientVerificationPendingPage.this, HistoryActivity.class);
+                                        Intent intent = new Intent(ClientVerificationAcceptancePage.this, HistoryActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1226,7 +1219,7 @@ public class ClientVerificationPendingPage extends AppCompatActivity implements 
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(ClientVerificationPendingPage.this, TraderProfile.class);
+                                        Intent intent = new Intent(ClientVerificationAcceptancePage.this, TraderProfile.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1246,7 +1239,7 @@ public class ClientVerificationPendingPage extends AppCompatActivity implements 
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(ClientVerificationPendingPage.this, HistoryActivity.class);
+                                        Intent intent = new Intent(ClientVerificationAcceptancePage.this, HistoryActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1262,7 +1255,7 @@ public class ClientVerificationPendingPage extends AppCompatActivity implements 
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(ClientVerificationPendingPage.this, HistoryActivity.class);
+                                        Intent intent = new Intent(ClientVerificationAcceptancePage.this, HistoryActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1283,7 +1276,7 @@ public class ClientVerificationPendingPage extends AppCompatActivity implements 
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(ClientVerificationPendingPage.this, HistoryActivity.class);
+                                        Intent intent = new Intent(ClientVerificationAcceptancePage.this, HistoryActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1299,7 +1292,7 @@ public class ClientVerificationPendingPage extends AppCompatActivity implements 
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(ClientVerificationPendingPage.this, HistoryActivity.class);
+                                        Intent intent = new Intent(ClientVerificationAcceptancePage.this, HistoryActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1319,7 +1312,7 @@ public class ClientVerificationPendingPage extends AppCompatActivity implements 
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(ClientVerificationPendingPage.this, HistoryActivity.class);
+                                        Intent intent = new Intent(ClientVerificationAcceptancePage.this, HistoryActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1335,7 +1328,7 @@ public class ClientVerificationPendingPage extends AppCompatActivity implements 
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(ClientVerificationPendingPage.this, HistoryActivity.class);
+                                        Intent intent = new Intent(ClientVerificationAcceptancePage.this, HistoryActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1355,7 +1348,7 @@ public class ClientVerificationPendingPage extends AppCompatActivity implements 
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(ClientVerificationPendingPage.this, HistoryActivity.class);
+                                        Intent intent = new Intent(ClientVerificationAcceptancePage.this, HistoryActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1371,7 +1364,7 @@ public class ClientVerificationPendingPage extends AppCompatActivity implements 
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(ClientVerificationPendingPage.this, HistoryActivity.class);
+                                        Intent intent = new Intent(ClientVerificationAcceptancePage.this, HistoryActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1391,7 +1384,7 @@ public class ClientVerificationPendingPage extends AppCompatActivity implements 
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(ClientVerificationPendingPage.this, HistoryActivity.class);
+                                        Intent intent = new Intent(ClientVerificationAcceptancePage.this, HistoryActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1407,7 +1400,7 @@ public class ClientVerificationPendingPage extends AppCompatActivity implements 
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(ClientVerificationPendingPage.this, HistoryActivity.class);
+                                        Intent intent = new Intent(ClientVerificationAcceptancePage.this, HistoryActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);

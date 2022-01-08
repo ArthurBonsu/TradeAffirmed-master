@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Verification"
+            android:textSize="34sp"
+            android:layout_centerHorizontal="true"
+            android:padding="25sp"
+            android:id="@+id/verificationtextview"
+            android:layout_marginBottom="30sp"
+
+            />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="200sp"
+            android:text="Thanks You have been confirmed to join our platform! You are welcome to TRADEX. Deal Courageously!"
+            android:textSize="21dp"
+            android:layout_centerHorizontal="true"
+            android:padding="3sp"
+            android:id="@+id/verificationtextnotification"
+            android:layout_marginBottom="100sp"
+
+            />
+
+        <com.suke.widget.SwitchButton
+            android:id="@+id/personapprovebutton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+</RelativeLayout>

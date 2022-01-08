@@ -377,10 +377,6 @@ public class CustomerProfile extends AppCompatActivity  implements  View.OnClick
 
                         }
 
-
-
-
-
                         }
                 }}
                 @Override
