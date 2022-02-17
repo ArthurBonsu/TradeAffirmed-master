@@ -6,7 +6,7 @@ import java.util.List;
 
 public class Users {
 
-    private String desc, image, title, name, phone, discount, pid, price, quantity, tid, traderID, commentkey, likeid;
+    private String desc, image, title, name,age, phone, discount, pid, price, quantity, tid, traderID, commentkey, likeid;
 
     private String address, amount, city, date, state, distance, mode, number, shippingcost, time, delivered;
 
@@ -24,14 +24,10 @@ public class Users {
     private String comment;
     String approved;
     String likenumber;
+    String response;
 
     private List<Like> likes;
-
-
-
-
-
-    String subject;
+   String subject;
     String photoid;
     String orderkey;
     String reply;
@@ -45,12 +41,25 @@ public class Users {
     String paymentkey;
     String idcode;
     String idimage;
+    String email;
+    String gender;
+    String pause;
+    String reject;
+    String approve;
+
+    //pause
+    // reject
+    //approve
+    //email
+    //gender
+    //response
+    //age
 
 
 
 
 
-    public Users() {
+    public Users(String uid, String name, String image, String phone, String email, String gender, String age) {
     }
 
     public Users(
@@ -132,14 +141,10 @@ public class Users {
         this.newornot = newornot;
         this.paymentkey = paymentkey;
         this.likenumber = likenumber;
+        this.age =age;
+        this.response = response;
 
     }
-
-
-
-
-
-
 
     public Users(String comment, String uid, List<Like> likes, String date, String time, String tid, String name, String number, String subject, String likeid, String pid, String commentkey, String photoid, String orderkey,
                    String reply,String replyid,String traderimage,String tradername,String pname,String pimage,String image
@@ -346,15 +351,87 @@ public class Users {
     this.approved = approved;
     }
 
+    public Users(String uid, String name, String image, String phone, String email, String gender, String age, String response) {
+     this.uid = uid;
+     this.name = name;
+     this.image = image;
+     this.phone = phone;
 
-    public String gettradername() {
-        return tradername;
+     this.email = email;
+     this.gender = gender;
+     this.age = age;
+     this.response = response;
+
+
+     if (response == "approve"){
+         this.approve = approve;
+              }
+     if (response == "reject"){
+          this.reject = reject;
+     }
+
+     if(response == "pause"){
+         this.pause = pause;
+     }
+    }
+
+
+      public String getreject() {
+        return reject;
+    }
+
+
+    public void setreject(String reject) {
+        this.reject = reject;
+    }
+
+
+    public void setapprove(String approve) {
+        this.approve = approve;
+    }
+    public String getapprove() {
+        return approve;
+    }
+    public String getpause() {
+        return pause;
+    }
+
+    public void setpause(String pause) {
+        this.pause = pause;
+    }
+
+     public String getemail() {
+        return email;
+    }
+
+
+    public void setemail(String email) {
+        this.email = email;
+    }
+
+      public void setgender(String gender) {
+        this.gender = gender;
+    }
+
+
+
+    public String getgender() {
+        return gender;
+    }
+
+
+    public void setage(String age) {
+        this.age = age;
+    }
+    public String getage() {
+        return age;
     }
 
 
     public void settradername(String tradername) {
         this.tradername = tradername;
     }
+
     public String getorderkey() {
         return orderkey;
     }

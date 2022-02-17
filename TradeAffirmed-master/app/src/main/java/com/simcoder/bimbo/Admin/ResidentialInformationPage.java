@@ -218,6 +218,12 @@ public class ResidentialInformationPage extends AppCompatActivity {
 
     }
               //POPULATE THE EDIT BOX IF THERE ALREADY EXIST SUCH A TRANSACTION
+
+    // address
+    // gpscode
+    // street
+    // country
+
     public void getUserInfo(){
         mAdminTraderDatabase.addValueEventListener(new ValueEventListener() {
             @Override

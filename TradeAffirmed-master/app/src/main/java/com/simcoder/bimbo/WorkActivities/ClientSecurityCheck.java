@@ -283,30 +283,17 @@ public class ClientSecurityCheck extends AppCompatActivity implements GoogleApiC
         services = findViewById(R.id.services);
         expectedshipping = findViewById(R.id.expectedshipping);
         adminprofile = findViewById(R.id.adminprofile);
-
-
-
         thegpscodeinformationstring= GpsCodeMapID.getText().toString();
-
-
-
         mAuth = FirebaseAuth.getInstance();
         mCurrentUser = mAuth.getCurrentUser();
-
-
         user = mAuth.getCurrentUser();
         if (user != null) {
             userID = "";
-            userID = user.getUid();
-        }
+            userID = user.getUid();        }
         Paper.init(this);
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.hometoolbar);
         if (toolbar != null) {
-            toolbar.setTitle("GPS Code Upload");
-        }
-
-
+            toolbar.setTitle("GPS Code Upload");    }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer != null) {
             ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -315,7 +302,6 @@ public class ClientSecurityCheck extends AppCompatActivity implements GoogleApiC
             if (toggle != null) {
                 toggle.syncState();
             }
-
             NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
             if (navigationView != null) {
                 navigationView.setNavigationItemSelectedListener(this);

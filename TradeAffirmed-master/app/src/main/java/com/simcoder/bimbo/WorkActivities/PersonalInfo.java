@@ -141,6 +141,9 @@ public class PersonalInfo extends AppCompatActivity {
         countryspinner = (Spinner)findViewById(R.id.countryspinner);
         saveinformationhere = (Button)findViewById(R.id.saveinformationhere);
         movetonext = (ImageButton)findViewById(R.id.movetonext);
+
+
+        // THESE ARE FOOTER BUTTONS FOR EASY NAVIGATION CAN BE SENT THROUGH THE WHOLE APPLLICATION
         homebutton = (ImageButton)findViewById(R.id.homebutton);
         suggestionsbutton = (ImageButton)findViewById(R.id.suggestionsbutton);
         services = (ImageButton)findViewById(R.id.services);
@@ -211,8 +214,6 @@ public class PersonalInfo extends AppCompatActivity {
             saveinformationhere.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
-
                     saveUserInformation();
                 }
             });
@@ -230,14 +231,8 @@ public class PersonalInfo extends AppCompatActivity {
                     }
                 });
             }
-
-
         }
-
     }
-
-
-
     public void getUserInfo(){
         mUserDatabase.addValueEventListener(new ValueEventListener() {
             @Override
@@ -278,8 +273,6 @@ public class PersonalInfo extends AppCompatActivity {
     // IT IS THE PAYMENT THAT MAKES IT DECENTRALIZED
 
     public void saveUserInformation() {
-
-
         thenameinfostring = NameofPerson.getText().toString();
         theemailinfostring = PersonEmail.getText().toString();
         thephoneinfostring = PhoneNumberOfPerson.getText().toString();

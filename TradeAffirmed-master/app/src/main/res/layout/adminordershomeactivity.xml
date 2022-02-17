@@ -64,26 +64,7 @@
                 android:layout_height="wrap_content"
                 android:id = "@+id/ordergridneworders"/>
 
-            ordergridneworders
-            ordergridneworderstext
-            ordergridincart
-            ordergridincarttext
-            ordergriddelivery
-            ordergriddeliverytext
-            ordergridpaiddelivery
-            ordergriddeliverytext
-            ordergridhistory
-            ordergridhistorytext
-            ordergridinqueue
-            ordergridinqueuetext
-            ordergridspecificuserorder
-            ordergridspecificuserordertext
-            ordergridspecificproductorder
-            ordergridspecificproductordertext
-            ordergridacceptedorder
-            ordergridordergridacceptedordertext
-            ordergridrejectedorder
-            ordergridrejectedordertext
+
 
 
 
