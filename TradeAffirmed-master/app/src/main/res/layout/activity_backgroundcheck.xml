@@ -7,14 +7,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Background Information"
-            android:textSize="21dp"
             android:layout_centerHorizontal="true"
-            android:padding="15sp"
             android:layout_marginBottom="30sp"
+            android:padding="15sp"
+            android:text="Background Information"
+            android:textSize="12sp"
 
             />
 
@@ -22,10 +23,10 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Emergency Contact"
-            android:textSize="21dp"
             android:layout_centerHorizontal="true"
             android:padding="5sp"
+            android:text="Emergency Contact"
+            android:textSize="12sp"
 
             />
 
@@ -45,14 +46,14 @@
             />
 
         <TextView
+            android:id="@+id/EmergencyContact"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Emergency Phone Contact"
-            android:textSize="21dp"
-            android:id="@+id/EmergencyContact"
             android:layout_centerHorizontal="true"
-            android:padding="15sp"
             android:layout_marginBottom="10sp"
+            android:padding="15sp"
+            android:text="Emergency Phone Contact"
+            android:textSize="12sp"
 
             />
 
@@ -70,11 +71,11 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Emergency Email"
-            android:textSize="21dp"
             android:layout_centerHorizontal="true"
-            android:padding="15sp"
             android:layout_marginBottom="10sp"
+            android:padding="15sp"
+            android:text="Emergency Email"
+            android:textSize="12sp"
 
             />
 
@@ -88,32 +89,47 @@
             android:text="Emergency Person Email"
             android:textSize="16dp"
             android:layout_below="@+id/EmergencyPersonPhoneNumber"/>
+
         <TextView
+            android:id="@+id/typeofidtextview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Type of ID"
-            android:textSize="21dp"
-            android:layout_centerHorizontal="true"
-            android:id="@+id/typeofidtextview"
-            android:padding="15sp"
-            android:layout_marginBottom="10sp"
             android:layout_below="@+id/EmergencyPersonEmail"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="10sp"
+            android:padding="15sp"
+            android:text="Type of ID"
+            android:textSize="12sp"
 
             />
+
+
+
         <Spinner
             android:layout_width="match_parent"
             android:layout_height="40sp"
             android:id="@+id/NationalIDofEmergencyPerson"
             android:layout_below="@+id/typeofidtextview"/>
 
+        <EditText
+            android:id="@+id/emergencypersonID"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:padding="25sp"
+            android:text="Emergency Person Id"
+            android:textSize="16dp"
+            android:layout_below="@+id/NationalIDofEmergencyPerson"/>
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Country"
-            android:textSize="21dp"
             android:layout_centerHorizontal="true"
-            android:padding="15sp"
             android:layout_marginBottom="10sp"
+            android:padding="15sp"
+            android:text="Country"
+            android:textSize="12sp"
 
             />
 

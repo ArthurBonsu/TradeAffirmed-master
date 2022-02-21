@@ -170,6 +170,12 @@ public class BackgroundCheck extends AppCompatActivity {
 
             countryspinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
+                // EmergencyPersonName
+                // EmergencyPersonPhoneNumber
+                //  EmergencyPersonEmail
+                //NationalIDofEmergencyPerson
+                //countryspinner
+
 
                 @Override
                 public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {

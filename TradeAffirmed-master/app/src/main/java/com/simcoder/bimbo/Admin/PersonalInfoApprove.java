@@ -50,6 +50,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.rey.material.widget.ImageView;
+import com.simcoder.bimbo.CustomerLoginActivity;
 import com.simcoder.bimbo.Model.Products;
 import com.simcoder.bimbo.Model.Users;
 import com.simcoder.bimbo.WorkActivities.CartActivity;
@@ -448,7 +449,7 @@ public  class PersonalInfoApprove extends AppCompatActivity
 
             Query queryhere =
 
-                    FirebaseDatabase.getInstance().getReference().child("Users").orderByChild("userID").equalTo(userID);
+                    FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").orderByChild("uid").equalTo(userID);
             if (queryhere != null) {
 
                 FirebaseRecyclerOptions<Users> options =
@@ -544,11 +545,11 @@ public  class PersonalInfoApprove extends AppCompatActivity
                                 public void onClick(View v) {
                                     response = "approve";
                                     setDecision(response);
-                                    Intent approvalintent = new Intent(PersonalInfoApprove.this, CustomerProfile.class);
+                                    Intent approvalintent = new Intent(PersonalInfoApprove.this, PersonalInfoApprove.class);
                                     approvalintent.putExtra("role", role);
                                     approvalintent.putExtra("uid", uid);
                                     approvalintent.putExtra("traderID", traderID);
-
+                                    Toast.makeText(PersonalInfoApprove.this, "Candidate has been approved", Toast.LENGTH_SHORT).show();
                                     startActivity(approvalintent);
                                 }
                             });
@@ -557,13 +558,15 @@ public  class PersonalInfoApprove extends AppCompatActivity
                                 holder.RejectButton.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View view) {
+
+                                          /// Dialog Box
                                         response = "reject";
                                         setDecision(response);
-                                        Intent rejectintent = new Intent(PersonalInfoApprove.this, AdminProductDetails.class);
+                                        Intent rejectintent = new Intent(PersonalInfoApprove.this, PersonalInfoApprove.class);
                                         rejectintent.putExtra("role", role);
                                         rejectintent.putExtra("uid", uid);
                                         rejectintent.putExtra("traderID", traderID);
-
+                                        Toast.makeText(PersonalInfoApprove.this, "Candidate has been rejected", Toast.LENGTH_SHORT).show();
                                         startActivity(rejectintent);
 
 
@@ -578,33 +581,19 @@ public  class PersonalInfoApprove extends AppCompatActivity
                                     public void onClick(View view) {
                                         response = "pause";
                                         setDecision(response);
-                                        Intent pausebuttonintent = new Intent(PersonalInfoApprove.this, AdminProductDetails.class);
+                                        Intent pausebuttonintent = new Intent(PersonalInfoApprove.this, PersonalInfoApprove.class);
                                         pausebuttonintent.putExtra("role", role);
                                         pausebuttonintent.putExtra("uid", uid);
                                         pausebuttonintent.putExtra("traderID", traderID);
+                                        Toast.makeText(PersonalInfoApprove.this, "Candidate has been paused", Toast.LENGTH_SHORT).show();
                                         startActivity(pausebuttonintent);
 
                                     }
                                 });
                             }
 
-                            // Product Details
-                            if (holder.PauseButton != null) {
-                                holder.PauseButton.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
-                                        response = "pause";
-                                        setDecision(response);
-                                        Intent pausebuttonintent = new Intent(PersonalInfoApprove.this, AdminProductDetails.class);
-                                        pausebuttonintent.putExtra("role", role);
-                                        pausebuttonintent.putExtra("uid", uid);
-                                        pausebuttonintent.putExtra("traderID", traderID);
-                                        startActivity(pausebuttonintent);
-
-                                    }
-                                });
-                            }
 ////
+
 
                             // Product Details
                             if (holder.candidateapprovebackbutton != null) {
@@ -618,6 +607,8 @@ public  class PersonalInfoApprove extends AppCompatActivity
 
                                         /// Controllers
                                         candidatebackbutton.putExtra("traderID", traderID);
+
+                                        Toast.makeText(PersonalInfoApprove.this, "Back to candidate list", Toast.LENGTH_SHORT).show();
                                         startActivity(candidatebackbutton);
 
                                     }
@@ -635,6 +626,8 @@ public  class PersonalInfoApprove extends AppCompatActivity
                                         caandidateapprovenextbutton.putExtra("role", role);
                                         caandidateapprovenextbutton.putExtra("uid", uid);
                                         caandidateapprovenextbutton.putExtra("traderID", traderID);
+                                        Toast.makeText(PersonalInfoApprove.this, "To Residential Page", Toast.LENGTH_SHORT).show();
+
                                         startActivity(caandidateapprovenextbutton);
 
                                     }
@@ -685,7 +678,7 @@ public  class PersonalInfoApprove extends AppCompatActivity
                                     @Override
                                     public void onComplete(DatabaseError databaseError, DatabaseReference
                                             databaseReference) {
-                                        Toast.makeText(getApplicationContext(), "User Decision Taken", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(getApplicationContext(), "User Decision Taken as "  +response, Toast.LENGTH_SHORT).show();
                                         Intent personapprovalloginfointent = new Intent(PersonalInfoApprove.this, HomeActivity.class);
 
                                         startActivity(personapprovalloginfointent);

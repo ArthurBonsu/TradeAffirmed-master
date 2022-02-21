@@ -17,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -106,12 +107,14 @@ public class BackgroundInfo extends AppCompatActivity {
     EditText EmergencyPersonName;
     EditText        EmergencyPersonPhoneNumber;
     EditText EmergencyPersonEmail;
+    EditText YourEmergencypersonID;
     Spinner        typeofidspinner;
     ArrayAdapter<String> myIDAdapter;
     ArrayAdapter<String> mycountryAdapter;
     String theemergencypersonnamestring;
     String theemergencypersonphonestring;
     String theemergencypersonemailstring;
+    String emergencypersonidstring;
     String typeofidtext;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -131,6 +134,7 @@ public class BackgroundInfo extends AppCompatActivity {
         EmergencyPersonName = findViewById(R.id.EmergencyPersonName);
         EmergencyPersonPhoneNumber = findViewById(R.id.EmergencyPersonPhoneNumber);
         EmergencyPersonEmail = findViewById(R.id.EmergencyPersonEmail);
+        YourEmergencypersonID = findViewById(R.id.emergencypersonID);
         typeofidspinner = findViewById(R.id.typeofidspinner) ;
         NationalIDofEmergencyPerson = findViewById(R.id.NationalIDofEmergencyPerson);
         countryspinner = findViewById(R.id.countryspinner);
@@ -146,7 +150,7 @@ public class BackgroundInfo extends AppCompatActivity {
         theemergencypersonnamestring = EmergencyPersonName.getText().toString();
         theemergencypersonphonestring= EmergencyPersonPhoneNumber.getText().toString();
         theemergencypersonemailstring = EmergencyPersonEmail.getText().toString();
-
+        emergencypersonidstring = YourEmergencypersonID.getText().toString();
 
 
         mAuth = FirebaseAuth.getInstance();
@@ -158,7 +162,7 @@ public class BackgroundInfo extends AppCompatActivity {
 
 
             mUserDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child(userID);
-            getUserInfo();
+
             // SET THE AGE ADAPTER
 
 
@@ -174,7 +178,7 @@ public class BackgroundInfo extends AppCompatActivity {
                 @Override
                 public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                     countrytext = countryspinner.getSelectedItem().toString();
-                    getUserInfo();
+
                 }
 
                 @Override
@@ -194,7 +198,7 @@ public class BackgroundInfo extends AppCompatActivity {
                 @Override
                 public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                     typeofidtext = NationalIDofEmergencyPerson.getSelectedItem().toString();
-                    getUserInfo();
+
                 }
 
                 @Override
@@ -211,6 +215,7 @@ public class BackgroundInfo extends AppCompatActivity {
 
 
                         saveUserInformation();
+                        Toast.makeText(BackgroundInfo.this, "Background Information Saved", Toast.LENGTH_SHORT).show();
                     }
                 });
                 if (movetonext != null) {
@@ -234,67 +239,35 @@ public class BackgroundInfo extends AppCompatActivity {
         }
 
     }
-    //POPULATE THE EDIT BOX IF THERE ALREADY EXIST SUCH A TRANSACTION
-    public void getUserInfo(){
-        mUserDatabase.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if(dataSnapshot.exists() && dataSnapshot.getChildrenCount()>0) {
-                    Map<String, Object> map = (Map<String, Object>) dataSnapshot.getValue(HashMaps.class);
-                    if (map.get("address") != null) {
-                        String  themailingaddress = map.get("address").toString();
-
-                        MailingAddress.setText(themailingaddress);
-
-
-                    }
-                    if (map.get("gpscode") != null) {
-                        String    thegpscode = map.get("gpscode").toString();
-                        GpsCode.setText(mPhone);
-                    }
-
-                    if (map.get("street") != null) {
-                        String   thestreetaddress = map.get("street").toString();
-                        StreetAddress.setText(thestreetaddress);
-                    }
-
-                }}
-
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-            }
-        });
-
-
-    }
-
-
 
     //AFTER FIRST TIME OF CREATING INFO HE CAN HAVE NO ABILITY TO ALTER UNLESS PROVIDED BY ADMINISTRATOR
     // PERSONAL INFORMATION COULD BE CROSS-CHECKED FOR SECURITY
     // IT IS THE PAYMENT THAT MAKES IT DECENTRALIZED
 
     public void saveUserInformation() {
+        theemergencypersonnamestring = EmergencyPersonName.getText().toString();
+        theemergencypersonphonestring= EmergencyPersonPhoneNumber.getText().toString();
+        theemergencypersonemailstring = EmergencyPersonEmail.getText().toString();
+        emergencypersonidstring = YourEmergencypersonID.getText().toString();
 
-        themailingaddressstring = MailingAddress.getText().toString();
-        thegpscodestring = GpsCode.getText().toString();
-        thestreetaddressstring = StreetAddress.getText().toString();
+        if (theemergencypersonnamestring != null && theemergencypersonphonestring != null && theemergencypersonemailstring != null && emergencypersonidstring !=null) {
 
-        if (themailingaddressstring != null && thegpscodestring != null && thestreetaddressstring != null) {
 
-            Map userInfo = new HashMap();
-            userInfo.put("address", themailingaddressstring);
-            userInfo.put("street", thestreetaddressstring);
-            userInfo.put("gpscode", thegpscodestring);
-            userInfo.put("country",countrytext);
-            mUserDatabase.updateChildren(userInfo);
 
-        }
+                //WE WILL USE FULL NAME TO STORE VALUE TO PREVENT USERNAME
 
-    }
+                    Map userInfo = new HashMap();
+                    userInfo.put("auxname", theemergencypersonnamestring);
+                    userInfo.put("auxphone", theemergencypersonphonestring);
+                    userInfo.put("auxemail", theemergencypersonemailstring);
+                    userInfo.put("auxid", emergencypersonidstring);
+                    userInfo.put("typeofid", typeofidtext);
+                    userInfo.put("auxid", emergencypersonidstring);
+                    userInfo.put("auxcountry", countrytext);
+                    mUserDatabase.updateChildren(userInfo);
 
-}
+                }}}
+
 
 
 

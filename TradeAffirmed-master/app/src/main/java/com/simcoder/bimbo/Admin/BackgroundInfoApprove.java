@@ -81,7 +81,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import io.paperdb.Paper;
 
 
-public  class ResidentialInfoApprove extends AppCompatActivity
+public  class BackgroundInfoApprove extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     DatabaseReference ProductsRef;
     private DatabaseReference Userdetails;
@@ -170,6 +170,8 @@ public  class ResidentialInfoApprove extends AppCompatActivity
     String age;
     TextView candidateuserid;
     String response = "approved";
+
+    String  auxname,auxemail,auxcountry,auxid,auxidtype, auxphone;
     //
     //AUTHENTICATORS
     android.widget.ImageView admincartimageofproduct;
@@ -191,10 +193,17 @@ public  class ResidentialInfoApprove extends AppCompatActivity
     private DatabaseReference mDatabase;
     private DatabaseReference mDatabaseCHURCHCHOSEN;
     private ProgressDialog mProgress;
-    TextView CandidateAddress;
+    TextView CadidateId;
     TextView CandidateStreet;
     TextView CandidateGPSCode;
     TextView CandidateCountry;
+
+    TextView EmergencyPersonName;
+    TextView EmergencyPersonPhone;
+    TextView EmergencyPersonEmail;
+    TextView EmergencyPersonID;
+    TextView EmergencyPersonCountry;
+    TextView EmergencyPersonType;
 
     ImageButton candidateapprovebackbutton;
     ImageButton candidateapprovenextbutton;
@@ -237,12 +246,19 @@ public  class ResidentialInfoApprove extends AppCompatActivity
         PauseButton = (ImageButton) findViewById(R.id.pauseapproval);
 
         ProfileImageofPerson = (ImageView) findViewById(R.id.candidateprofileimage);
+        EmergencyPersonName = (TextView) findViewById(R.id.emergencypersonname);
+
         NameofPerson = (TextView) findViewById(R.id.candidatename);
         candidateuserid = (TextView) findViewById(R.id.candidateuserid);
-        CandidateAddress = (TextView) findViewById(R.id.candidateaddresss);
-        CandidateStreet = (TextView) findViewById(R.id. candidatestreet);
-        CandidateGPSCode = (TextView) findViewById(R.id.  GpsCode);
-        CandidateCountry = (TextView) findViewById(R.id. candidatecountry);
+        EmergencyPersonName = (TextView) findViewById(R.id.emergencypersonname);
+        EmergencyPersonPhone = (TextView) findViewById(R.id.emergencypersonphone);
+        EmergencyPersonEmail = (TextView) findViewById(R.id.emergencypersonemail);
+        EmergencyPersonCountry = (TextView) findViewById(R.id.emergencypersoncountry);
+        EmergencyPersonID = (TextView) findViewById(R.id.emergencypersonID);
+        EmergencyPersonType = (TextView) findViewById(R.id.emergencypersonidtype);
+
+
+
 
         candidateapprovebackbutton =  (ImageButton) findViewById(R.id.candidateapproveback);
         candidateapprovenextbutton = (ImageButton) findViewById(R.id.candidateapprovenext);
@@ -255,7 +271,7 @@ public  class ResidentialInfoApprove extends AppCompatActivity
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         if (toolbar != null) {
-            toolbar.setTitle("Personal Information Activity");
+            toolbar.setTitle("Background Information Activity");
         }
 //        setSupportActionBar(toolbar);
 
@@ -320,7 +336,7 @@ public  class ResidentialInfoApprove extends AppCompatActivity
                     }
 
                     if (mGoogleApiClient != null) {
-                        mGoogleApiClient = new GoogleApiClient.Builder(this).enableAutoManage(ResidentialInfoApprove.this,
+                        mGoogleApiClient = new GoogleApiClient.Builder(this).enableAutoManage(BackgroundInfoApprove.this,
                                 new GoogleApiClient.OnConnectionFailedListener() {
                                     @Override
                                     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
@@ -349,12 +365,20 @@ public  class ResidentialInfoApprove extends AppCompatActivity
         public ImageButton candidateapprovebackbutton;
         public ImageButton candidateapprovenextbutton;
 
+
+
+
+
+
+
         public TextView NameofPerson;
         public  TextView candidateuserid;
-        public  TextView CandidateAddress;
-        public TextView  CandidateStreet;
-        public TextView CandidateGPSCode;
-        public  TextView  CandidateCountry;
+        public  TextView EmergencyPersonName;
+        public TextView  EmergencyPersonPhone;
+        public TextView EmergencyPersonEmail;
+        public  TextView  EmergencyPersonCountry;
+        public  TextView  EmergencyPersonID;
+        public  TextView EmergencyPersonType;
         public android.widget.ImageView ProfileImageofPerson;
 
 
@@ -370,19 +394,15 @@ public  class ResidentialInfoApprove extends AppCompatActivity
 
             ProfileImageofPerson = itemView.findViewById(R.id.candidateprofileimage);
 
-
-
-            NameofPerson = itemView.findViewById(R.id.candidatename);
-            candidateuserid = itemView.findViewById(R.id.candidateuserid);
-
-            CandidateAddress = itemView.findViewById(R.id.candidateaddresss);
-            CandidateStreet = itemView. findViewById(R.id. candidatestreet);
-            CandidateGPSCode = itemView.findViewById(R.id.  GpsCode);
-            CandidateCountry =itemView.findViewById(R.id. candidatecountry);
-
-
-
-        }
+            NameofPerson = itemView. findViewById(R.id.candidatename);
+            candidateuserid = itemView. findViewById(R.id.candidateuserid);
+            EmergencyPersonName = itemView. findViewById(R.id.emergencypersonname);
+            EmergencyPersonPhone = itemView. findViewById(R.id.emergencypersonphone);
+            EmergencyPersonEmail = itemView. findViewById(R.id.emergencypersonemail);
+            EmergencyPersonCountry = itemView.findViewById(R.id.emergencypersoncountry);
+            EmergencyPersonID = itemView. findViewById(R.id.emergencypersonID);
+            EmergencyPersonType =itemView. findViewById(R.id.emergencypersonidtype);
+                 }
 
         public void setItemClickListner(ItemClickListner listner) {
             this.listner = listner;
@@ -398,26 +418,33 @@ public  class ResidentialInfoApprove extends AppCompatActivity
             NameofPerson.setText(nameofcandidate);
         }
 
-        public void setcandidateaddress(String addressofcandidate) {
+        public void setemergencypersonname(String emergencyperson) {
 
-            CandidateAddress.setText(addressofcandidate);
+            EmergencyPersonName.setText(emergencyperson);
         }
 
-        public void setcandidatestreetinfo(String candidatestreetinfo) {
+        public void setemergencypersonphone(String emergencypersonphone) {
 
-            CandidateStreet.setText(candidatestreetinfo);
+            EmergencyPersonPhone.setText(emergencypersonphone);
         }
 
-        public void setcandidategpsinfo(String candidategpsinfo) {
+        public void set(String emergencypersonemail) {
 
-            CandidateGPSCode.setText(candidategpsinfo);
+            EmergencyPersonEmail.setText(emergencypersonemail);
+        }
+        public void setemergencypersonID(String emergencypersonID) {
+
+            EmergencyPersonID.setText(emergencypersonID);
         }
 
-        public void setcandidatecountry(String candidategpsinfo) {
+        public void setemergencypersoncountry(String emergencypersoncountry) {
 
-            CandidateCountry.setText(candidategpsinfo);
+            EmergencyPersonCountry.setText(emergencypersoncountry);
         }
+        public void setemergencypersontype(String emergencypersontype) {
 
+            EmergencyPersonType.setText(emergencypersontype);
+        }
 
         public void setcandidateprofileimage(final Context ctx, final String image) {
             final android.widget.ImageView candidateprofileimage = (android.widget.ImageView) itemView.findViewById(R.id.candidateprofileimage);
@@ -488,27 +515,35 @@ public  class ResidentialInfoApprove extends AppCompatActivity
                                             name = snapshot.child("name").getValue(String.class);
                                         }
 
-                                        if (snapshot.child("address").getValue() != null) {
-                                            address = snapshot.child("address").getValue(String.class);
+                                        if (snapshot.child("auxname").getValue() != null) {
+                                            auxname = snapshot.child("auxname").getValue(String.class);
                                         }
 
 
-                                        if (snapshot.child("street").getValue() != null) {
-                                            street = snapshot.child("street").getValue(String.class);
+                                        if (snapshot.child("auxphone").getValue() != null) {
+                                            auxphone = snapshot.child("auxphone").getValue(String.class);
                                         }
-                                        if (snapshot.child("gpscode").getValue() != null) {
-                                            gpscode = snapshot.child("gpscode").getValue(String.class);
+                                        if (snapshot.child("auxemail").getValue() != null) {
+                                            auxemail = snapshot.child("auxemail").getValue(String.class);
                                         }
-                                        if (snapshot.child("country").getValue() != null) {
-                                            country = snapshot.child("country").getValue(String.class);
+                                        if (snapshot.child("auxcountry").getValue() != null) {
+                                            auxcountry = snapshot.child("auxcountry").getValue(String.class);
+                                        }
+                                        if (snapshot.child("auxid").getValue() != null) {
+                                            auxid = snapshot.child("country").getValue(String.class);
                                         }
 
+                                        if (snapshot.child("auxidtype").getValue() != null) {
+                                            auxidtype = snapshot.child("auxidtype").getValue(String.class);
+                                        }
                                         return new Users(uid, name, address, street, gpscode, country);
 
 
                                     }
 
                                 }).build();
+
+
 
 
                 feedadapter = new FirebaseRecyclerAdapter<Users, ViewHolder>(options) {
@@ -537,10 +572,14 @@ public  class ResidentialInfoApprove extends AppCompatActivity
 
                             holder.NameofPerson.setText( name);
                             holder.candidateuserid.setText(uid);
-                            holder.CandidateAddress.setText(email);
-                            holder.CandidateStreet.setText(gender);
-                            holder.CandidateGPSCode.setText(age);
-                            holder.CandidateCountry.setText(uid);
+
+
+                            holder.EmergencyPersonName.setText(auxname);
+                            holder.EmergencyPersonPhone.setText(auxphone);
+                            holder.EmergencyPersonEmail.setText(auxemail);
+                            holder.EmergencyPersonCountry.setText(auxcountry);
+                            holder.EmergencyPersonID.setText(auxid);
+                            holder.EmergencyPersonTypeID.setText(auxidtype);
 
                             Log.d(TAG, "Residential Approval Info" + name);
                             holder.setcandidateprofileimage(getApplicationContext(), image);

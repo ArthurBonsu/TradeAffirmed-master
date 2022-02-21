@@ -46,6 +46,17 @@ public class Users {
     String pause;
     String reject;
     String approve;
+    String street;
+    String country;
+    String gpscode;
+    String auxname;
+    String auxphone;
+    String auxemail;
+    String auxid;
+    String typeofid;
+    String auxcountry;
+
+
 
     //pause
     // reject
@@ -375,8 +386,44 @@ public class Users {
      }
     }
 
+    public Users(String uid, String name, String address, String street, String gpscode, String country) {
+        this.uid = uid;
+        this.name = name;
+        this.address = address;
+        this.street = street;
+        this.gpscode = gpscode;
+        this.country = country;
+    }
 
-      public String getreject() {
+
+
+    public String getstreet() {
+        return street;
+    }
+
+
+    public void setstreet(String street) {
+        this.street = street;
+    }
+    public String getgpscode() {
+        return gpscode;
+    }
+
+
+    public void setgpscode(String gpscode) {
+        this.gpscode= gpscode;
+    }
+    public String getcountry() {
+        return country;
+    }
+
+
+    public void setcountry(String country) {
+        this.country= country;
+    }
+
+
+    public String getreject() {
         return reject;
     }
 
@@ -412,6 +459,7 @@ public class Users {
       public void setgender(String gender) {
         this.gender = gender;
     }
+
 
 
 
