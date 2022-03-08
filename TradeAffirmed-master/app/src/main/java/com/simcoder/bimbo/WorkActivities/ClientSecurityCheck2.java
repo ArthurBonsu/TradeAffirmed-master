@@ -1,6 +1,5 @@
 package com.simcoder.bimbo.WorkActivities;
 
-
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -90,7 +89,7 @@ import java.util.Map;
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.paperdb.Paper;
 
-public class ClientSecurityCheck extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, NavigationView.OnNavigationItemSelectedListener {
+public class ClientSecurityCheck2 extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, NavigationView.OnNavigationItemSelectedListener {
     private static final int GALLERY_REQUEST2 = 2;
     private EditText   Nameinfo, Emailinfo, Phoneinfo;
 
@@ -99,7 +98,7 @@ public class ClientSecurityCheck extends AppCompatActivity implements GoogleApiC
     private ImageView mProfileImage;
 
     private FirebaseAuth mAuth;
-    private DatabaseReference mCustomerUserDatabase;
+    private DatabaseReference mAdminTraderDatabase;
 
     private String userID;
     private String mName;
@@ -123,7 +122,7 @@ public class ClientSecurityCheck extends AppCompatActivity implements GoogleApiC
     RadioButton FemaleRadioButton;
     RadioButton MaleRadioButton;
     String role;
-    String traderID;
+    DatabaseReference mCustomerUserDatabase;
     RadioButton radioButtonforgender;
     String radiotext;
 
@@ -143,7 +142,7 @@ public class ClientSecurityCheck extends AppCompatActivity implements GoogleApiC
     Spinner agespinner;
     Spinner NationalIDofEmergencyPerson;
     Spinner countryspinner;
-
+    Button saveinformationhere;
     ImageButton movetonext;
     ImageButton homebutton;
     ImageButton suggestionsbutton;
@@ -172,7 +171,7 @@ public class ClientSecurityCheck extends AppCompatActivity implements GoogleApiC
     String typeofidtext;
     String thenationalidstring;
     String thegpscodeinformationstring;
-    String natidimage;
+
 
 
     private ImageButton mEventImage;
@@ -234,7 +233,7 @@ public class ClientSecurityCheck extends AppCompatActivity implements GoogleApiC
     String  price;
     String tradername;
     String myphotoimage;
-    String traderid;
+
     String pimage;
     String tid;
     String pname;
@@ -242,7 +241,6 @@ public class ClientSecurityCheck extends AppCompatActivity implements GoogleApiC
     String pid;
     String traderimage;
     String idimage;
-    String  username,userimage;
 
     String gpscode;
     String gpsimage;
@@ -257,16 +255,22 @@ public class ClientSecurityCheck extends AppCompatActivity implements GoogleApiC
     Button  NationalIDUploadButton;
     Button NationalIDDeleteButton;
 
-    public ClientSecurityCheck() {
+
+
+
+
+
+
+
+
+    public ClientSecurityCheck2 () {
         super();
     }
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_security_check);
+        setContentView(R.layout.activity_security_check2);
         Intent roleintent = getIntent();
         if (roleintent.getExtras().getString("role") != null) {
             role = roleintent.getExtras().getString("role");
@@ -278,6 +282,16 @@ public class ClientSecurityCheck extends AppCompatActivity implements GoogleApiC
         }
 
 
+
+
+        //  deletenationalidpicture  nationalidpicture
+        //        // gps code GpsCodeMapID,
+        //        // pick up  PickMap
+        //        // ImageViewOfGPSCodeMap (GPSCodeID)
+
+
+
+        saveinformationhere = findViewById(R.id.saveinformationhere);
         movetonext = findViewById(R.id.movetonext);
         homebutton = findViewById(R.id.homebutton);
         suggestionsbutton = findViewById(R.id.suggestionsbutton);
@@ -285,12 +299,15 @@ public class ClientSecurityCheck extends AppCompatActivity implements GoogleApiC
         expectedshipping = findViewById(R.id.expectedshipping);
         adminprofile = findViewById(R.id.adminprofile);
 
-        // CHOSE ID CARD
-        nationalidpic = (ImageView)findViewById(R.id.nationalidpic);
-        NationalIDPickButton = (Button) findViewById(R.id.NationalIDPickButton);
-        NationalIDUploadButton = (Button) findViewById(R.id.NationalIDPickButton);
-        NationalIDDeleteButton = (Button)findViewById(R.id.NationalIDDeleteButton);
 
+        GPSCodeIdText = (EditText) findViewById(R.id.GPSCodeIdText);
+
+        GpsCodeMapID = (ImageView)findViewById(R.id.GpsCodeMapID );
+        GPSPickButton = (Button)findViewById(R.id.GPSPickButton);
+        deleteGPSCodeButton = (Button) findViewById(R.id.deleteGPSCodeButton);
+        GPSCodeButton = (Button)findViewById(R.id.GPSCodeButton);
+
+        thegpscodeinformationstring= GPSCodeIdText.getText().toString();
 
 
 
@@ -370,7 +387,7 @@ public class ClientSecurityCheck extends AppCompatActivity implements GoogleApiC
                 }
 
                 if (mGoogleApiClient != null) {
-                    mGoogleApiClient = new GoogleApiClient.Builder(this).enableAutoManage(ClientSecurityCheck.this,
+                    mGoogleApiClient = new GoogleApiClient.Builder(this).enableAutoManage(ClientSecurityCheck2.this,
                             new GoogleApiClient.OnConnectionFailedListener() {
                                 @Override
                                 public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
@@ -387,16 +404,17 @@ public class ClientSecurityCheck extends AppCompatActivity implements GoogleApiC
     protected synchronized void buildGoogleApiClient() {
         if (mGoogleApiClient != null) {
             mGoogleApiClient = new GoogleApiClient.Builder(this)
-                    .addConnectionCallbacks(ClientSecurityCheck.this)
-                    .addOnConnectionFailedListener(ClientSecurityCheck.this)
+                    .addConnectionCallbacks(ClientSecurityCheck2.this)
+                    .addOnConnectionFailedListener(ClientSecurityCheck2.this)
                     .addApi(LocationServices.API)
                     .build();
             mGoogleApiClient.connect();
         }
 
 
+
         // PICK UP MAP LOCATION IN ALBUMS
-        NationalIDPickButton.setOnClickListener(new View.OnClickListener() {
+        GPSPickButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent galleryIntent = new Intent(Intent.ACTION_GET_CONTENT);
@@ -406,7 +424,7 @@ public class ClientSecurityCheck extends AppCompatActivity implements GoogleApiC
         });
 
         // UPLOAD ID CARD
-        NationalIDUploadButton.setOnClickListener(new View.OnClickListener() {
+        GpsCodeMapID.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startPosting();
@@ -416,18 +434,26 @@ public class ClientSecurityCheck extends AppCompatActivity implements GoogleApiC
 
         //DELETE ID CARD
 
-        NationalIDDeleteButton.setOnClickListener(new View.OnClickListener() {
+        deleteGPSCodeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 deletePosting();
             }
 
         });
+
+
+
+
+
+
+
+
         if (movetonext != null) {
             movetonext.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(ClientSecurityCheck.this, ClientSecurityCheck2.class);
+                    Intent intent = new Intent(ClientSecurityCheck2.this, ClientVerificationPendingPage.class);
                     if (intent != null) {
                         intent.putExtra("role", role);
                         intent.putExtra("userID", userID);
@@ -468,8 +494,8 @@ public class ClientSecurityCheck extends AppCompatActivity implements GoogleApiC
             }
 
 
-            if ( mImageUri != null) {
-                mProgress.setMessage("Adding your National ID Image information");
+            if (!TextUtils.isEmpty(thegpscodeinformationstring)  && mImageUri != null) {
+                mProgress.setMessage("Adding your GPS Check information");
 
                 mProgress.show();
 
@@ -479,36 +505,37 @@ public class ClientSecurityCheck extends AppCompatActivity implements GoogleApiC
                 filepath.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-
+                        gpscode = thegpscodeinformationstring;
 
 
 
                         final Uri downloadUrl = taskSnapshot.getUploadSessionUri();
 
                         userID = user.getUid();
-                        username = user.getDisplayName();
+                        tradername = user.getDisplayName();
+                        gpsimage = downloadUrl.toString();
 
                         Uri myphoto = user.getPhotoUrl();
-                        userimage = myphoto.toString();
-                        natidimage = downloadUrl.toString();
+                        traderimage = myphoto.toString();
+
 
 
                         mCustomerUserDatabase = myuserfirebasedatabase.getReference().child("Users").child("Customers").child(userID);
 
-                        mCustomerUserDatabase.keepSynced(true);
+                        mAdminTraderDatabase.keepSynced(true);
 
                         // PICK UP THE SPECIAL PRODUCT INFO AND LOADING THEM INTO THE DATABASE
-                        Users userstobesent = new Users (natidimage);
+                        Users userstobesent = new Users (gpscode,idimage);
 
-                        mCustomerUserDatabase.setValue(userstobesent, new
+                        mAdminTraderDatabase.setValue(userstobesent, new
                                 DatabaseReference.CompletionListener() {
                                     @Override
                                     public void onComplete(DatabaseError databaseError, DatabaseReference
                                             databaseReference) {
-                                        Toast.makeText(getApplicationContext(), "National ID Information Added", Toast.LENGTH_SHORT).show();
-                                        Intent uploadnationalidinfoactivity = new Intent(ClientSecurityCheck.this, ClientSecurityCheck.class);
+                                        Toast.makeText(getApplicationContext(), "Add GPS Code Information Added", Toast.LENGTH_SHORT).show();
+                                        Intent addgpscodeinformationintent = new Intent(ClientSecurityCheck2.this, ClientSecurityCheck2.class);
 
-                                        startActivity(uploadnationalidinfoactivity);
+                                        startActivity(addgpscodeinformationintent);
 
                                     }
                                 });
@@ -533,6 +560,9 @@ public class ClientSecurityCheck extends AppCompatActivity implements GoogleApiC
 
         // GET THE INFORMATION FROM THE TEXT BOX
 
+
+        thegpscodeinformationstring= GPSCodeIdText.getText().toString();
+
         user = mAuth.getCurrentUser();
 
         // GET DATES FOR PRODUCTS
@@ -545,11 +575,12 @@ public class ClientSecurityCheck extends AppCompatActivity implements GoogleApiC
             SimpleDateFormat currentTime = new SimpleDateFormat("HH:mm:ss a");
             if (currentTime != null) {
                 time = currentTime.format(calendar.getTime());
+
             }
 
 
-            if (mImageUri != null) {
-                mProgress.setMessage("Deleting your national id picture  information");
+            if (!TextUtils.isEmpty(thegpscodeinformationstring)  && mImageUri != null) {
+                mProgress.setMessage("Adding your GPS security check information");
 
                 mProgress.show();
 
@@ -559,34 +590,38 @@ public class ClientSecurityCheck extends AppCompatActivity implements GoogleApiC
                 filepath.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-
+                        gpscode = "";
                         final Uri downloadUrl = taskSnapshot.getUploadSessionUri();
 
-                        traderID = user.getUid();
+                        userID = user.getUid();
                         tradername = user.getDisplayName();
+                        gpsimage ="";
+
+
+
 
                         Uri myphoto = user.getPhotoUrl();
                         traderimage = myphoto.toString();
-                        // This is how you delete the image
-                        natidimage = "";
 
 
-                        mCustomerUserDatabase = myuserfirebasedatabase.getReference().child("Users").child("Customers").child(userID);
+
+
+                        mCustomerUserDatabase = myuserfirebasedatabase.getReference().child("Users").child("Drivers").child(userID);
 
                         mCustomerUserDatabase.keepSynced(true);
 
                         // PICK UP THE SPECIAL PRODUCT INFO AND LOADING THEM INTO THE DATABASE
-                        Users userstobesent = new Users (natidimage);
+                        Users userstobesent = new Users (gpscode,gpsimage);
 
                         mCustomerUserDatabase.setValue(userstobesent, new
                                 DatabaseReference.CompletionListener() {
                                     @Override
                                     public void onComplete(DatabaseError databaseError, DatabaseReference
                                             databaseReference) {
-                                        Toast.makeText(getApplicationContext(), "National Information  Deleted", Toast.LENGTH_SHORT).show();
-                                        Intent deletenationalidimageintent = new Intent(ClientSecurityCheck.this, ClientSecurityCheck2.class);
+                                        Toast.makeText(getApplicationContext(), "GPS Security Information Deleted, Reuplod Info", Toast.LENGTH_SHORT).show();
+                                        Intent addadminproductactivity = new Intent(ClientSecurityCheck2.this, ClientSecurityCheck2.class);
 
-                                        startActivity(deletenationalidimageintent);
+                                        startActivity(addadminproductactivity);
 
                                     }
                                 });
@@ -626,7 +661,7 @@ public class ClientSecurityCheck extends AppCompatActivity implements GoogleApiC
 
                 mImageUri = result.getUri();
 
-                nationalidpic.setImageURI(mImageUri);
+                GpsCodeMapID.setImageURI(mImageUri);
 
 
             } else if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
@@ -639,9 +674,12 @@ public class ClientSecurityCheck extends AppCompatActivity implements GoogleApiC
 
     }
 
-    //AFTER FIRST TIME OF CREATING INFO HE CAN HAVE NO ABILITY TO ALTER UNLESS PROVIDED BY ADMINISTRATOR
-    // PERSONAL INFORMATION COULD BE CROSS-CHECKED FOR SECURITY
-    // IT IS THE PAYMENT THAT MAKES IT DECENTRALIZED
+
+
+
+
+
+
 
 
 
@@ -737,7 +775,7 @@ public class ClientSecurityCheck extends AppCompatActivity implements GoogleApiC
                         String userID = "";
 
                         userID = user.getUid();
-                        Intent intent = new Intent(ClientSecurityCheck.this, AdminAllCustomers.class);
+                        Intent intent = new Intent(ClientSecurityCheck2.this, AdminAllCustomers.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", role);
@@ -753,7 +791,7 @@ public class ClientSecurityCheck extends AppCompatActivity implements GoogleApiC
                         String userID = "";
                         userID = user.getUid();
 
-                        Intent intent = new Intent(ClientSecurityCheck.this, AdminAllCustomers.class);
+                        Intent intent = new Intent(ClientSecurityCheck2.this, AdminAllCustomers.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", role);
@@ -774,7 +812,7 @@ public class ClientSecurityCheck extends AppCompatActivity implements GoogleApiC
                         String userID = "";
 
                         userID = user.getUid();
-                        Intent intent = new Intent(ClientSecurityCheck.this, AdminAddNewProductActivity.class);
+                        Intent intent = new Intent(ClientSecurityCheck2.this, AdminAddNewProductActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", role);
@@ -790,7 +828,7 @@ public class ClientSecurityCheck extends AppCompatActivity implements GoogleApiC
                         String userID = "";
                         userID = user.getUid();
 
-                        Intent intent = new Intent(ClientSecurityCheck.this, AdminAddNewProductActivity.class);
+                        Intent intent = new Intent(ClientSecurityCheck2.this, AdminAddNewProductActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", role);
@@ -811,7 +849,7 @@ public class ClientSecurityCheck extends AppCompatActivity implements GoogleApiC
                         String userID = "";
 
                         userID = user.getUid();
-                        Intent intent = new Intent(ClientSecurityCheck.this, ViewYourPersonalProduct.class);
+                        Intent intent = new Intent(ClientSecurityCheck2.this, ViewYourPersonalProduct.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", role);
@@ -827,7 +865,7 @@ public class ClientSecurityCheck extends AppCompatActivity implements GoogleApiC
                         String userID = "";
                         userID = user.getUid();
 
-                        Intent intent = new Intent(ClientSecurityCheck.this, ViewYourPersonalProduct.class);
+                        Intent intent = new Intent(ClientSecurityCheck2.this, ViewYourPersonalProduct.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", role);
@@ -848,7 +886,7 @@ public class ClientSecurityCheck extends AppCompatActivity implements GoogleApiC
                         String userID = "";
 
                         userID = user.getUid();
-                        Intent intent = new Intent(ClientSecurityCheck.this, ViewSpecificUsersCart.class);
+                        Intent intent = new Intent(ClientSecurityCheck2.this, ViewSpecificUsersCart.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", role);
@@ -864,7 +902,7 @@ public class ClientSecurityCheck extends AppCompatActivity implements GoogleApiC
                         String userID = "";
                         userID = user.getUid();
 
-                        Intent intent = new Intent(ClientSecurityCheck.this, ViewSpecificUsersCart.class);
+                        Intent intent = new Intent(ClientSecurityCheck2.this, ViewSpecificUsersCart.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", role);
@@ -885,7 +923,7 @@ public class ClientSecurityCheck extends AppCompatActivity implements GoogleApiC
                         String userID = "";
 
                         userID = user.getUid();
-                        Intent intent = new Intent(ClientSecurityCheck.this, ViewAllCarts.class);
+                        Intent intent = new Intent(ClientSecurityCheck2.this, ViewAllCarts.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", role);
@@ -901,7 +939,7 @@ public class ClientSecurityCheck extends AppCompatActivity implements GoogleApiC
                         String userID = "";
                         userID = user.getUid();
 
-                        Intent intent = new Intent(ClientSecurityCheck.this, ViewAllCarts.class);
+                        Intent intent = new Intent(ClientSecurityCheck2.this, ViewAllCarts.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", role);
@@ -921,7 +959,7 @@ public class ClientSecurityCheck extends AppCompatActivity implements GoogleApiC
                         String userID = "";
 
                         userID = user.getUid();
-                        Intent intent = new Intent(ClientSecurityCheck.this, AdminProductDetails.class);
+                        Intent intent = new Intent(ClientSecurityCheck2.this, AdminProductDetails.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", role);
@@ -937,7 +975,7 @@ public class ClientSecurityCheck extends AppCompatActivity implements GoogleApiC
                         String userID = "";
                         userID = user.getUid();
 
-                        Intent intent = new Intent(ClientSecurityCheck.this, AdminProductDetails.class);
+                        Intent intent = new Intent(ClientSecurityCheck2.this, AdminProductDetails.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", role);
@@ -957,7 +995,7 @@ public class ClientSecurityCheck extends AppCompatActivity implements GoogleApiC
                         String userID = "";
 
                         userID = user.getUid();
-                        Intent intent = new Intent(ClientSecurityCheck.this, AdminMaintainProductsActivity.class);
+                        Intent intent = new Intent(ClientSecurityCheck2.this, AdminMaintainProductsActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", role);
@@ -973,7 +1011,7 @@ public class ClientSecurityCheck extends AppCompatActivity implements GoogleApiC
                         String userID = "";
                         userID = user.getUid();
 
-                        Intent intent = new Intent(ClientSecurityCheck.this, AdminMaintainProductsActivity.class);
+                        Intent intent = new Intent(ClientSecurityCheck2.this, AdminMaintainProductsActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", role);
@@ -994,7 +1032,7 @@ public class ClientSecurityCheck extends AppCompatActivity implements GoogleApiC
                         String userID = "";
 
                         userID = user.getUid();
-                        Intent intent = new Intent(ClientSecurityCheck.this, AdminCategoryActivity.class);
+                        Intent intent = new Intent(ClientSecurityCheck2.this, AdminCategoryActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", role);
@@ -1010,7 +1048,7 @@ public class ClientSecurityCheck extends AppCompatActivity implements GoogleApiC
                         String userID = "";
                         userID = user.getUid();
 
-                        Intent intent = new Intent(ClientSecurityCheck.this, AdminCategoryActivity.class);
+                        Intent intent = new Intent(ClientSecurityCheck2.this, AdminCategoryActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", role);
@@ -1030,7 +1068,7 @@ public class ClientSecurityCheck extends AppCompatActivity implements GoogleApiC
                         String userID = "";
 
                         userID = user.getUid();
-                        Intent intent = new Intent(ClientSecurityCheck.this, AdminAllCustomers.class);
+                        Intent intent = new Intent(ClientSecurityCheck2.this, AdminAllCustomers.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", role);
@@ -1046,7 +1084,7 @@ public class ClientSecurityCheck extends AppCompatActivity implements GoogleApiC
                         String userID = "";
                         userID = user.getUid();
 
-                        Intent intent = new Intent(ClientSecurityCheck.this, AdminAllCustomers.class);
+                        Intent intent = new Intent(ClientSecurityCheck2.this, AdminAllCustomers.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", role);
@@ -1068,7 +1106,7 @@ public class ClientSecurityCheck extends AppCompatActivity implements GoogleApiC
         if (id == R.id.viewmap) {
             if (!role.equals("Trader")) {
 
-                Intent intent = new Intent(ClientSecurityCheck.this, com.simcoder.bimbo.CustomerMapActivity.class);
+                Intent intent = new Intent(ClientSecurityCheck2.this, com.simcoder.bimbo.CustomerMapActivity.class);
                 if (intent != null) {
                     intent.putExtra("roledhomeactivitytocustomermapactivity", role);
                     intent.putExtra("fromhomeactivitytocustomermapactivity", userID);
@@ -1077,7 +1115,7 @@ public class ClientSecurityCheck extends AppCompatActivity implements GoogleApiC
                 }
             } else {
 
-                Intent intent = new Intent(ClientSecurityCheck.this, DriverMapActivity.class);
+                Intent intent = new Intent(ClientSecurityCheck2.this, DriverMapActivity.class);
                 if (intent != null) {
                     intent.putExtra("rolefromhomeactivitytodrivermapactivity", role);
                     intent.putExtra("fromhomeactivitytodrivermapactivity", userID);
@@ -1093,7 +1131,7 @@ public class ClientSecurityCheck extends AppCompatActivity implements GoogleApiC
         if (id == R.id.nav_social_media) {
             if (!role.equals("Trader")) {
 
-                Intent intent = new Intent(ClientSecurityCheck.this, InstagramHomeActivity.class);
+                Intent intent = new Intent(ClientSecurityCheck2.this, InstagramHomeActivity.class);
                 if (intent != null) {
                     intent.putExtra("roledhomeactivitytocustomermapactivity", role);
                     intent.putExtra("fromhomeactivitytocustomermapactivity", userID);
@@ -1102,7 +1140,7 @@ public class ClientSecurityCheck extends AppCompatActivity implements GoogleApiC
                 }
             } else {
 
-                Intent intent = new Intent(ClientSecurityCheck.this, InstagramHomeActivity.class);
+                Intent intent = new Intent(ClientSecurityCheck2.this, InstagramHomeActivity.class);
                 if (intent != null) {
                     intent.putExtra("rolefromhomeactivitytodrivermapactivity", role);
                     intent.putExtra("fromhomeactivitytodrivermapactivity", userID);
@@ -1115,7 +1153,7 @@ public class ClientSecurityCheck extends AppCompatActivity implements GoogleApiC
         }
         if (id == R.id.nav_cart) {
             if (!role.equals("Trader")) {
-                Intent intent = new Intent(ClientSecurityCheck.this, CartActivity.class);
+                Intent intent = new Intent(ClientSecurityCheck2.this, CartActivity.class);
                 if (intent != null) {
                     startActivity(intent);
                 }
@@ -1126,7 +1164,7 @@ public class ClientSecurityCheck extends AppCompatActivity implements GoogleApiC
 
         if (id == R.id.viewproducts) {
             if (!role.equals("Trader")) {
-                Intent intent = new Intent(ClientSecurityCheck.this, HomeActivity.class);
+                Intent intent = new Intent(ClientSecurityCheck2.this, HomeActivity.class);
                 if (intent != null) {
                     startActivity(intent);
                 }
@@ -1136,7 +1174,7 @@ public class ClientSecurityCheck extends AppCompatActivity implements GoogleApiC
         }
         if (id == R.id.nav_search) {
             if (!role.equals("Trader")) {
-                Intent intent = new Intent(ClientSecurityCheck.this, SearchProductsActivity.class);
+                Intent intent = new Intent(ClientSecurityCheck2.this, SearchProductsActivity.class);
                 if (intent != null) {
                     startActivity(intent);
                 }
@@ -1149,7 +1187,7 @@ public class ClientSecurityCheck extends AppCompatActivity implements GoogleApiC
             if (FirebaseAuth.getInstance() != null) {
                 FirebaseAuth.getInstance().signOut();
                 if (mGoogleApiClient != null) {
-                    mGoogleSignInClient.signOut().addOnCompleteListener(ClientSecurityCheck.this,
+                    mGoogleSignInClient.signOut().addOnCompleteListener(ClientSecurityCheck2.this,
                             new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
@@ -1158,7 +1196,7 @@ public class ClientSecurityCheck extends AppCompatActivity implements GoogleApiC
                             });
                 }
             }
-            Intent intent = new Intent(ClientSecurityCheck.this, com.simcoder.bimbo.MainActivity.class);
+            Intent intent = new Intent(ClientSecurityCheck2.this, com.simcoder.bimbo.MainActivity.class);
             if (intent != null) {
                 startActivity(intent);
                 finish();
@@ -1167,7 +1205,7 @@ public class ClientSecurityCheck extends AppCompatActivity implements GoogleApiC
 
         if (id == R.id.nav_settings) {
             if (!role.equals("Trader")) {
-                Intent intent = new Intent(ClientSecurityCheck.this, com.simcoder.bimbo.WorkActivities.SettinsActivity.class);
+                Intent intent = new Intent(ClientSecurityCheck2.this, com.simcoder.bimbo.WorkActivities.SettinsActivity.class);
                 if (intent != null) {
                     startActivity(intent);
                 }
@@ -1176,7 +1214,7 @@ public class ClientSecurityCheck extends AppCompatActivity implements GoogleApiC
         }
         if (id == R.id.nav_history) {
             if (!role.equals("Trader")) {
-                Intent intent = new Intent(ClientSecurityCheck.this, HistoryActivity.class);
+                Intent intent = new Intent(ClientSecurityCheck2.this, HistoryActivity.class);
                 if (intent != null) {
                     startActivity(intent);
                 }
@@ -1194,7 +1232,7 @@ public class ClientSecurityCheck extends AppCompatActivity implements GoogleApiC
                         String userID = "";
 
                         userID = user.getUid();
-                        Intent intent = new Intent(ClientSecurityCheck.this, CustomerProfile.class);
+                        Intent intent = new Intent(ClientSecurityCheck2.this, CustomerProfile.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", role);
@@ -1210,7 +1248,7 @@ public class ClientSecurityCheck extends AppCompatActivity implements GoogleApiC
                         String userID = "";
                         userID = user.getUid();
 
-                        Intent intent = new Intent(ClientSecurityCheck.this, TraderProfile.class);
+                        Intent intent = new Intent(ClientSecurityCheck2.this, TraderProfile.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", role);
@@ -1228,7 +1266,7 @@ public class ClientSecurityCheck extends AppCompatActivity implements GoogleApiC
                         String userID = "";
 
                         userID = user.getUid();
-                        Intent intent = new Intent(ClientSecurityCheck.this, HomeActivity.class);
+                        Intent intent = new Intent(ClientSecurityCheck2.this, HomeActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", role);
@@ -1244,7 +1282,7 @@ public class ClientSecurityCheck extends AppCompatActivity implements GoogleApiC
                         String userID = "";
                         userID = user.getUid();
 
-                        Intent intent = new Intent(ClientSecurityCheck.this, AdminAllCustomers.class);
+                        Intent intent = new Intent(ClientSecurityCheck2.this, AdminAllCustomers.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", role);
@@ -1265,7 +1303,7 @@ public class ClientSecurityCheck extends AppCompatActivity implements GoogleApiC
                         String userID = "";
 
                         userID = user.getUid();
-                        Intent intent = new Intent(ClientSecurityCheck.this, HomeActivity.class);
+                        Intent intent = new Intent(ClientSecurityCheck2.this, HomeActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", role);
@@ -1281,7 +1319,7 @@ public class ClientSecurityCheck extends AppCompatActivity implements GoogleApiC
                         String userID = "";
                         userID = user.getUid();
 
-                        Intent intent = new Intent(ClientSecurityCheck.this, AdminAddNewProductActivity.class);
+                        Intent intent = new Intent(ClientSecurityCheck2.this, AdminAddNewProductActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", role);
@@ -1302,7 +1340,7 @@ public class ClientSecurityCheck extends AppCompatActivity implements GoogleApiC
                         String userID = "";
 
                         userID = user.getUid();
-                        Intent intent = new Intent(ClientSecurityCheck.this, HomeActivity.class);
+                        Intent intent = new Intent(ClientSecurityCheck2.this, HomeActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", role);
@@ -1318,7 +1356,7 @@ public class ClientSecurityCheck extends AppCompatActivity implements GoogleApiC
                         String userID = "";
                         userID = user.getUid();
 
-                        Intent intent = new Intent(ClientSecurityCheck.this, ViewYourPersonalProduct.class);
+                        Intent intent = new Intent(ClientSecurityCheck2.this, ViewYourPersonalProduct.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", role);
@@ -1339,7 +1377,7 @@ public class ClientSecurityCheck extends AppCompatActivity implements GoogleApiC
                         String userID = "";
 
                         userID = user.getUid();
-                        Intent intent = new Intent(ClientSecurityCheck.this, HomeActivity.class);
+                        Intent intent = new Intent(ClientSecurityCheck2.this, HomeActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", role);
@@ -1355,7 +1393,7 @@ public class ClientSecurityCheck extends AppCompatActivity implements GoogleApiC
                         String userID = "";
                         userID = user.getUid();
 
-                        Intent intent = new Intent(ClientSecurityCheck.this, ViewSpecificUsersCart.class);
+                        Intent intent = new Intent(ClientSecurityCheck2.this, ViewSpecificUsersCart.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", role);
@@ -1376,7 +1414,7 @@ public class ClientSecurityCheck extends AppCompatActivity implements GoogleApiC
                         String userID = "";
 
                         userID = user.getUid();
-                        Intent intent = new Intent(ClientSecurityCheck.this, HomeActivity.class);
+                        Intent intent = new Intent(ClientSecurityCheck2.this, HomeActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", role);
@@ -1392,7 +1430,7 @@ public class ClientSecurityCheck extends AppCompatActivity implements GoogleApiC
                         String userID = "";
                         userID = user.getUid();
 
-                        Intent intent = new Intent(ClientSecurityCheck.this, ViewAllCarts.class);
+                        Intent intent = new Intent(ClientSecurityCheck2.this, ViewAllCarts.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", role);
@@ -1412,7 +1450,7 @@ public class ClientSecurityCheck extends AppCompatActivity implements GoogleApiC
                         String userID = "";
 
                         userID = user.getUid();
-                        Intent intent = new Intent(ClientSecurityCheck.this, HomeActivity.class);
+                        Intent intent = new Intent(ClientSecurityCheck2.this, HomeActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", role);
@@ -1428,7 +1466,7 @@ public class ClientSecurityCheck extends AppCompatActivity implements GoogleApiC
                         String userID = "";
                         userID = user.getUid();
 
-                        Intent intent = new Intent(ClientSecurityCheck.this, AdminProductDetails.class);
+                        Intent intent = new Intent(ClientSecurityCheck2.this, AdminProductDetails.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", role);
@@ -1448,7 +1486,7 @@ public class ClientSecurityCheck extends AppCompatActivity implements GoogleApiC
                         String userID = "";
 
                         userID = user.getUid();
-                        Intent intent = new Intent(ClientSecurityCheck.this, HomeActivity.class);
+                        Intent intent = new Intent(ClientSecurityCheck2.this, HomeActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", role);
@@ -1464,7 +1502,7 @@ public class ClientSecurityCheck extends AppCompatActivity implements GoogleApiC
                         String userID = "";
                         userID = user.getUid();
 
-                        Intent intent = new Intent(ClientSecurityCheck.this, AdminMaintainProductsActivity.class);
+                        Intent intent = new Intent(ClientSecurityCheck2.this, AdminMaintainProductsActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", role);
@@ -1485,7 +1523,7 @@ public class ClientSecurityCheck extends AppCompatActivity implements GoogleApiC
                         String userID = "";
 
                         userID = user.getUid();
-                        Intent intent = new Intent(ClientSecurityCheck.this, HomeActivity.class);
+                        Intent intent = new Intent(ClientSecurityCheck2.this, HomeActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", role);
@@ -1501,7 +1539,7 @@ public class ClientSecurityCheck extends AppCompatActivity implements GoogleApiC
                         String userID = "";
                         userID = user.getUid();
 
-                        Intent intent = new Intent(ClientSecurityCheck.this, AdminCategoryActivity.class);
+                        Intent intent = new Intent(ClientSecurityCheck2.this, AdminCategoryActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", role);
@@ -1521,7 +1559,7 @@ public class ClientSecurityCheck extends AppCompatActivity implements GoogleApiC
                         String userID = "";
 
                         userID = user.getUid();
-                        Intent intent = new Intent(ClientSecurityCheck.this, HomeActivity.class);
+                        Intent intent = new Intent(ClientSecurityCheck2.this, HomeActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", role);
@@ -1537,7 +1575,7 @@ public class ClientSecurityCheck extends AppCompatActivity implements GoogleApiC
                         String userID = "";
                         userID = user.getUid();
 
-                        Intent intent = new Intent(ClientSecurityCheck.this, AdminAllCustomers.class);
+                        Intent intent = new Intent(ClientSecurityCheck2.this, AdminAllCustomers.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", role);

@@ -164,16 +164,7 @@ public class SecurityCheck2 extends AppCompatActivity implements GoogleApiClient
     String thenationalidstring;
     String thegpscodeinformationstring;
 
-    EditText NationalID = findViewById(R.id.NationalID);
-    Button        ChoseIDFile = findViewById(R.id.ChoseIDFile);
-    ImageView ImageViewOfID = findViewById(R.id.ImageViewOfID);
 
-    Button deletenationalidpicture = findViewById(R.id.deletenationalidpicture);
-    EditText       GpsCodeMapID= findViewById(R.id.GpsCodeMapID);
-    Button PickMap = findViewById(R.id.PickMap);
-    ImageView       ImageViewOfGPSCodeMap = findViewById(R.id.ImageViewOfGPSCodeMap);
-
-    Button       deleteselectedGPSCodeMapmap = findViewById(R.id.deleteselectedGPSCodeMapmap);
 
     private ImageButton mEventImage;
     private EditText mEventtitle;
@@ -246,6 +237,24 @@ public class SecurityCheck2 extends AppCompatActivity implements GoogleApiClient
     String gpscode;
     String gpsimage;
 
+    EditText    GPSCodeIdText;
+    ImageView GpsCodeMapID;
+    Button GPSPickButton;
+    Button deleteGPSCodeButton;
+    Button GPSCodeButton;
+    ImageView  nationalidpic;
+    Button NationalIDPickButton;
+    Button  NationalIDUploadButton;
+    Button NationalIDDeleteButton;
+
+
+
+
+
+
+
+
+
     public SecurityCheck2() {
         super();
     }
@@ -267,14 +276,13 @@ public class SecurityCheck2 extends AppCompatActivity implements GoogleApiClient
 
 
 
-        ImageViewOfID = findViewById(R.id.ImageViewOfID);
+        //  deletenationalidpicture  nationalidpicture
+        //        // gps code GpsCodeMapID,
+        //        // pick up  PickMap
+        //        // ImageViewOfGPSCodeMap (GPSCodeID)
 
-        deletenationalidpicture = findViewById(R.id.deletenationalidpicture);
-        GpsCodeMapID= findViewById(R.id.GpsCodeMapID);
-        PickMap = findViewById(R.id.PickMap);
-        ImageViewOfGPSCodeMap = findViewById(R.id.ImageViewOfGPSCodeMap);
 
-        deleteselectedGPSCodeMapmap = findViewById(R.id.deleteselectedGPSCodeMapmap);
+
         saveinformationhere = findViewById(R.id.saveinformationhere);
         movetonext = findViewById(R.id.movetonext);
         homebutton = findViewById(R.id.homebutton);
@@ -284,8 +292,14 @@ public class SecurityCheck2 extends AppCompatActivity implements GoogleApiClient
         adminprofile = findViewById(R.id.adminprofile);
 
 
+           GPSCodeIdText = (EditText) findViewById(R.id.GPSCodeIdText);
 
-        thegpscodeinformationstring= GpsCodeMapID.getText().toString();
+        GpsCodeMapID = (ImageView)findViewById(R.id.GpsCodeMapID );
+         GPSPickButton = (Button)findViewById(R.id.GPSPickButton);
+         deleteGPSCodeButton = (Button) findViewById(R.id.deleteGPSCodeButton);
+         GPSCodeButton = (Button)findViewById(R.id.GPSCodeButton);
+
+        thegpscodeinformationstring= GPSCodeIdText.getText().toString();
 
 
 
@@ -391,12 +405,15 @@ public class SecurityCheck2 extends AppCompatActivity implements GoogleApiClient
 
 
 
-
-        getUserInfo();
-        // SET THE AGE ADAPTER
-
-        // CHOSE ID CARD
-
+        // PICK UP MAP LOCATION IN ALBUMS
+        GPSPickButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent galleryIntent = new Intent(Intent.ACTION_GET_CONTENT);
+                galleryIntent.setType("image/*");
+                startActivityForResult(galleryIntent, GALLERY_REQUEST);
+            }
+        });
 
         // UPLOAD ID CARD
         GpsCodeMapID.setOnClickListener(new View.OnClickListener() {
@@ -409,32 +426,21 @@ public class SecurityCheck2 extends AppCompatActivity implements GoogleApiClient
 
         //DELETE ID CARD
 
-        deletenationalidpicture.setOnClickListener(new View.OnClickListener() {
+        deleteGPSCodeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 deletePosting();
             }
 
         });
-        // PICK UP MAP LOCATION IN ALBUMS
-        PickMap.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent galleryIntent = new Intent(Intent.ACTION_GET_CONTENT);
-                galleryIntent.setType("image/*");
-                startActivityForResult(galleryIntent, GALLERY_REQUEST);
-            }
-        });
 
-        if (saveinformationhere != null) {
-            saveinformationhere.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
 
-                    startPosting();
-                    //  saveUserInformation();
-                }
-            });
+
+
+
+
+
+
             if (movetonext != null) {
                 movetonext.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -453,7 +459,7 @@ public class SecurityCheck2 extends AppCompatActivity implements GoogleApiClient
 
         }
 
-    }
+
 
 
     // Post Info
@@ -462,7 +468,7 @@ public class SecurityCheck2 extends AppCompatActivity implements GoogleApiClient
         // GET THE INFORMATION FROM THE TEXT BOX
 
 
-        thegpscodeinformationstring= GpsCodeMapID.getText().toString();
+        thegpscodeinformationstring= GPSCodeIdText.getText().toString();
 
         user = mAuth.getCurrentUser();
 
@@ -503,7 +509,7 @@ public class SecurityCheck2 extends AppCompatActivity implements GoogleApiClient
 
                         Uri myphoto = user.getPhotoUrl();
                         traderimage = myphoto.toString();
-                        pid =     ProductsRef.push().getKey();
+
 
 
                         mAdminTraderDatabase = myuserfirebasedatabase.getReference().child("Users").child("Drivers").child(traderID);
@@ -511,17 +517,17 @@ public class SecurityCheck2 extends AppCompatActivity implements GoogleApiClient
                         mAdminTraderDatabase.keepSynced(true);
 
                         // PICK UP THE SPECIAL PRODUCT INFO AND LOADING THEM INTO THE DATABASE
-                        Users userstobesent = new Users (idcode,idimage);
+                        Users userstobesent = new Users (gpscode,idimage);
 
                         mAdminTraderDatabase.setValue(userstobesent, new
                                 DatabaseReference.CompletionListener() {
                                     @Override
                                     public void onComplete(DatabaseError databaseError, DatabaseReference
                                             databaseReference) {
-                                        Toast.makeText(getApplicationContext(), "Security Information Added", Toast.LENGTH_SHORT).show();
-                                        Intent addadminproductactivity = new Intent(SecurityCheck2.this, SecurityCheck2.class);
+                                        Toast.makeText(getApplicationContext(), "Add GPS Code Information Added", Toast.LENGTH_SHORT).show();
+                                        Intent addgpscodeinformationintent = new Intent(SecurityCheck2.this, SecurityCheck2.class);
 
-                                        startActivity(addadminproductactivity);
+                                        startActivity(addgpscodeinformationintent);
 
                                     }
                                 });
@@ -547,7 +553,7 @@ public class SecurityCheck2 extends AppCompatActivity implements GoogleApiClient
         // GET THE INFORMATION FROM THE TEXT BOX
 
 
-        thegpscodeinformationstring= GpsCodeMapID.getText().toString();
+        thegpscodeinformationstring= GPSCodeIdText.getText().toString();
 
         user = mAuth.getCurrentUser();
 
@@ -566,7 +572,7 @@ public class SecurityCheck2 extends AppCompatActivity implements GoogleApiClient
 
 
             if (!TextUtils.isEmpty(thegpscodeinformationstring)  && mImageUri != null) {
-                mProgress.setMessage("Adding your security check information");
+                mProgress.setMessage("Adding your GPS security check information");
 
                 mProgress.show();
 
@@ -576,16 +582,19 @@ public class SecurityCheck2 extends AppCompatActivity implements GoogleApiClient
                 filepath.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        idcode = "";
+                        gpscode = "";
                         final Uri downloadUrl = taskSnapshot.getUploadSessionUri();
 
                         traderID = user.getUid();
                         tradername = user.getDisplayName();
-                        idimage ="";
+                        gpsimage ="";
+
+
+
 
                         Uri myphoto = user.getPhotoUrl();
                         traderimage = myphoto.toString();
-                        pid =     ProductsRef.push().getKey();
+
 
 
                         mAdminTraderDatabase = myuserfirebasedatabase.getReference().child("Users").child("Drivers").child(traderID);
@@ -593,14 +602,14 @@ public class SecurityCheck2 extends AppCompatActivity implements GoogleApiClient
                         mAdminTraderDatabase.keepSynced(true);
 
                         // PICK UP THE SPECIAL PRODUCT INFO AND LOADING THEM INTO THE DATABASE
-                        Users userstobesent = new Users (idcode,idimage);
+                        Users userstobesent = new Users (gpscode,gpsimage);
 
                         mAdminTraderDatabase.setValue(userstobesent, new
                                 DatabaseReference.CompletionListener() {
                                     @Override
                                     public void onComplete(DatabaseError databaseError, DatabaseReference
                                             databaseReference) {
-                                        Toast.makeText(getApplicationContext(), "Security Informaation Deleted", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(getApplicationContext(), "GPS Security Information Deleted, Reuplod Info", Toast.LENGTH_SHORT).show();
                                         Intent addadminproductactivity = new Intent(SecurityCheck2.this, SecurityCheck2.class);
 
                                         startActivity(addadminproductactivity);
@@ -643,7 +652,7 @@ public class SecurityCheck2 extends AppCompatActivity implements GoogleApiClient
 
                 mImageUri = result.getUri();
 
-                InputProductImage.setImageURI(mImageUri);
+                GpsCodeMapID.setImageURI(mImageUri);
 
 
             } else if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
@@ -659,65 +668,10 @@ public class SecurityCheck2 extends AppCompatActivity implements GoogleApiClient
 
 
 
-    //POPULATE THE EDIT BOX IF THERE ALREADY EXIST SUCH A TRANSACTION
-    public void getUserInfo(){
-        mAdminTraderDatabase.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if(dataSnapshot.exists() && dataSnapshot.getChildrenCount()>0) {
-                    Map<String, Object> map = (Map<String, Object>) dataSnapshot.getValue(HashMaps.class);
-                    if (map.get("address") != null) {
-                        String  themailingaddress = map.get("address").toString();
-
-                        MailingAddress.setText(themailingaddress);
-
-
-                    }
-                    if (map.get("gpscode") != null) {
-                        String    thegpscode = map.get("gpscode").toString();
-                        GpsCode.setText(mPhone);
-                    }
-
-                    if (map.get("street") != null) {
-                        String   thestreetaddress = map.get("street").toString();
-                        StreetAddress.setText(thestreetaddress);
-                    }
-
-                }}
-
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-            }
-        });
-
-
-    }
 
 
 
-    //AFTER FIRST TIME OF CREATING INFO HE CAN HAVE NO ABILITY TO ALTER UNLESS PROVIDED BY ADMINISTRATOR
-    // PERSONAL INFORMATION COULD BE CROSS-CHECKED FOR SECURITY
-    // IT IS THE PAYMENT THAT MAKES IT DECENTRALIZED
 
-    public void saveUserInformation() {
-
-        themailingaddressstring = MailingAddress.getText().toString();
-        thegpscodestring = GpsCode.getText().toString();
-        thestreetaddressstring = StreetAddress.getText().toString();
-
-        if (themailingaddressstring != null && thegpscodestring != null && thestreetaddressstring != null) {
-
-            Map userInfo = new HashMap();
-            userInfo.put("address", themailingaddressstring);
-            userInfo.put("street", thestreetaddressstring);
-            userInfo.put("gpscode", thegpscodestring);
-            userInfo.put("country",countrytext);
-            mAdminTraderDatabase.updateChildren(userInfo);
-
-        }
-
-    }
 
 
     @Override

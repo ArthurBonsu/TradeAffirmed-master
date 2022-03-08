@@ -3,6 +3,7 @@ package com.simcoder.bimbo.Admin;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
@@ -25,6 +26,7 @@ import androidx.appcompat.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -42,6 +44,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.SignInMethodQueryResult;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.Query;
@@ -81,7 +84,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import io.paperdb.Paper;
 
 
-public  class BackgroundInfoApprove extends AppCompatActivity
+public  class SecurityCheckApprove extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     DatabaseReference ProductsRef;
     private DatabaseReference Userdetails;
@@ -155,7 +158,7 @@ public  class BackgroundInfoApprove extends AppCompatActivity
     String getimage;
     DatabaseReference myreferencetoimage;
     String productID;
-
+      String gpsimage, natidimage;
     ImageButton ApprovalButtton;
     ImageButton RejectButton;
     ImageButton PauseButton;
@@ -208,6 +211,11 @@ public  class BackgroundInfoApprove extends AppCompatActivity
     ImageButton candidateapprovebackbutton;
     ImageButton candidateapprovenextbutton;
 
+        ImageView nationalidimageview;
+        ImageView gpsimageview;
+         TextView gpscodetextpull;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -246,18 +254,13 @@ public  class BackgroundInfoApprove extends AppCompatActivity
         PauseButton = (ImageButton) findViewById(R.id.pauseapproval);
 
         ProfileImageofPerson = (ImageView) findViewById(R.id.candidateprofileimage);
-        EmergencyPersonName = (TextView) findViewById(R.id.emergencypersonname);
 
         NameofPerson = (TextView) findViewById(R.id.candidatename);
         candidateuserid = (TextView) findViewById(R.id.candidateuserid);
-        EmergencyPersonName = (TextView) findViewById(R.id.emergencypersonname);
-        EmergencyPersonPhone = (TextView) findViewById(R.id.emergencypersonphone);
-        EmergencyPersonEmail = (TextView) findViewById(R.id.emergencypersonemail);
-        EmergencyPersonCountry = (TextView) findViewById(R.id.emergencypersoncountry);
-        EmergencyPersonID = (TextView) findViewById(R.id.emergencypersonID);
-        EmergencyPersonType = (TextView) findViewById(R.id.emergencypersonidtype);
 
-
+        nationalidimageview = (ImageView) findViewById(R.id.nationalidimageview);
+                gpsimageview = (ImageView) findViewById(R.id.gpsimageview);
+        gpscodetextpull = (TextView) findViewById(R.id.gpscodetextpull);
 
 
         candidateapprovebackbutton =  (ImageButton) findViewById(R.id.candidateapproveback);
@@ -336,7 +339,7 @@ public  class BackgroundInfoApprove extends AppCompatActivity
                     }
 
                     if (mGoogleApiClient != null) {
-                        mGoogleApiClient = new GoogleApiClient.Builder(this).enableAutoManage(BackgroundInfoApprove.this,
+                        mGoogleApiClient = new GoogleApiClient.Builder(this).enableAutoManage(SecurityCheckApprove.this,
                                 new GoogleApiClient.OnConnectionFailedListener() {
                                     @Override
                                     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
@@ -353,6 +356,10 @@ public  class BackgroundInfoApprove extends AppCompatActivity
         }
     }    //GETFOLLOWING WILL PULL FROM DIFFERENT DATASTORE( THE USER DATASTORE)
 
+    //  deletenationalidpicture  nationalid "nationalid"
+    //        // gps code GpsCodeMapID,  "GpsCodeMapID"
+    //        // pick up  PickMap       "PickMap"
+    //        // ImageViewOfGPSCodeMap  "ImageViewOfGPSCodeMap"
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public LinearLayout root;
@@ -373,12 +380,10 @@ public  class BackgroundInfoApprove extends AppCompatActivity
 
         public TextView NameofPerson;
         public  TextView candidateuserid;
-        public  TextView EmergencyPersonName;
-        public TextView  EmergencyPersonPhone;
-        public TextView EmergencyPersonEmail;
-        public  TextView  EmergencyPersonCountry;
-        public  TextView  EmergencyPersonID;
-        public  TextView EmergencyPersonType;
+        public ImageView nationalidimageview;
+        public ImageView gpsimageview;
+        public  TextView gpscodetextpull;
+
         public android.widget.ImageView ProfileImageofPerson;
 
 
@@ -396,13 +401,16 @@ public  class BackgroundInfoApprove extends AppCompatActivity
 
             NameofPerson = itemView. findViewById(R.id.candidatename);
             candidateuserid = itemView. findViewById(R.id.candidateuserid);
-            EmergencyPersonName = itemView. findViewById(R.id.emergencypersonname);
-            EmergencyPersonPhone = itemView. findViewById(R.id.emergencypersonphone);
-            EmergencyPersonEmail = itemView. findViewById(R.id.emergencypersonemail);
-            EmergencyPersonCountry = itemView.findViewById(R.id.emergencypersoncountry);
-            EmergencyPersonID = itemView. findViewById(R.id.emergencypersonID);
-            EmergencyPersonType =itemView. findViewById(R.id.emergencypersonidtype);
-                 }
+
+
+
+            nationalidimageview = itemView. findViewById(R.id.nationalidimageview);
+            gpsimageview = itemView. findViewById(R.id.gpsimageview);
+            gpscodetextpull = itemView. findViewById(R.id.gpscodetextpull);
+
+        }
+
+
 
         public void setItemClickListner(ItemClickListner listner) {
             this.listner = listner;
@@ -418,33 +426,15 @@ public  class BackgroundInfoApprove extends AppCompatActivity
             NameofPerson.setText(nameofcandidate);
         }
 
-        public void setemergencypersonname(String emergencyperson) {
 
-            EmergencyPersonName.setText(emergencyperson);
+
+
+        public void setegpscodetextpulltext(String gpscodetextpulltext) {
+
+            gpscodetextpull.setText(gpscodetextpulltext);
         }
 
-        public void setemergencypersonphone(String emergencypersonphone) {
 
-            EmergencyPersonPhone.setText(emergencypersonphone);
-        }
-
-        public void set(String emergencypersonemail) {
-
-            EmergencyPersonEmail.setText(emergencypersonemail);
-        }
-        public void setemergencypersonID(String emergencypersonID) {
-
-            EmergencyPersonID.setText(emergencypersonID);
-        }
-
-        public void setemergencypersoncountry(String emergencypersoncountry) {
-
-            EmergencyPersonCountry.setText(emergencypersoncountry);
-        }
-        public void setemergencypersontype(String emergencypersontype) {
-
-            EmergencyPersonType.setText(emergencypersontype);
-        }
 
         public void setcandidateprofileimage(final Context ctx, final String image) {
             final android.widget.ImageView candidateprofileimage = (android.widget.ImageView) itemView.findViewById(R.id.candidateprofileimage);
@@ -466,9 +456,51 @@ public  class BackgroundInfoApprove extends AppCompatActivity
             });
         }
 
+
+        public void setnationalidimageview(final Context ctx, final String image) {
+            final android.widget.ImageView nationalidimagview = (android.widget.ImageView) itemView.findViewById(R.id.nationalidimageview);
+
+            Picasso.get().load(image).resize(400, 0).networkPolicy(NetworkPolicy.OFFLINE).into(nationalidimagview, new Callback() {
+
+
+                @Override
+                public void onSuccess() {
+
+                }
+
+                @Override
+                public void onError(Exception e) {
+                    Picasso.get().load(image).resize(100, 0).into(nationalidimagview);
+                }
+
+
+            });
+        }
+
+
+        public void setgpsimageview(final Context ctx, final String image) {
+            final android.widget.ImageView candidategpscodeimageview = (android.widget.ImageView) itemView.findViewById(R.id.gpsimageview);
+
+            Picasso.get().load(image).resize(400, 0).networkPolicy(NetworkPolicy.OFFLINE).into(candidategpscodeimageview, new Callback() {
+
+
+                @Override
+                public void onSuccess() {
+
+                }
+
+                @Override
+                public void onError(Exception e) {
+                    Picasso.get().load(image).resize(100, 0).into(candidategpscodeimageview);
+                }
+
+
+            });
+        }
+
+
     }
 
-    ;
 
 
     public void useValue(String yourValue) {
@@ -515,30 +547,19 @@ public  class BackgroundInfoApprove extends AppCompatActivity
                                             name = snapshot.child("name").getValue(String.class);
                                         }
 
-                                        if (snapshot.child("auxname").getValue() != null) {
-                                            auxname = snapshot.child("auxname").getValue(String.class);
+                                        if (snapshot.child("gpscode").getValue() != null) {
+                                            gpscode = snapshot.child("gpscode").getValue(String.class);
                                         }
 
 
-                                        if (snapshot.child("auxphone").getValue() != null) {
-                                            auxphone = snapshot.child("auxphone").getValue(String.class);
+                                        if (snapshot.child("gpsimage").getValue() != null) {
+                                            gpsimage = snapshot.child("gpsimage").getValue(String.class);
                                         }
-                                        if (snapshot.child("auxemail").getValue() != null) {
-                                            auxemail = snapshot.child("auxemail").getValue(String.class);
-                                        }
-
-                                        if (snapshot.child("auxid").getValue() != null) {
-                                            auxid = snapshot.child("auxid").getValue(String.class);
+                                        if (snapshot.child("natidimage").getValue() != null) {
+                                            natidimage = snapshot.child("natidimage").getValue(String.class);
                                         }
 
-                                        if (snapshot.child("auxidtype").getValue() != null) {
-                                            auxidtype = snapshot.child("auxidtype").getValue(String.class);
-                                        }
-
-                                        if (snapshot.child("auxcountry").getValue() != null) {
-                                            auxcountry = snapshot.child("auxcountry").getValue(String.class);
-                                        }
-                                        return new Users(uid, name, address, street, gpscode, country);
+                                        return new Users(uid, name, gpsimage, gpscode,  natidimage);
 
 
                                     }
@@ -576,21 +597,30 @@ public  class BackgroundInfoApprove extends AppCompatActivity
                             holder.candidateuserid.setText(uid);
 
 
-                            holder.EmergencyPersonName.setText(auxname);
-                            holder.EmergencyPersonPhone.setText(auxphone);
-                            holder.EmergencyPersonEmail.setText(auxemail);
-                            holder.EmergencyPersonType.setText(auxidtype);
-                            holder.EmergencyPersonID.setText(auxid);
-                            holder.EmergencyPersonCountry.setText(auxcountry);
+                            holder.gpscodetextpull.setText(gpscode);
 
-                            Log.d(TAG, "Residential Approval Info" + name);
+
+
+                            Log.d(TAG, "Security Check  Approval Info" + name);
                             holder.setcandidateprofileimage(getApplicationContext(), image);
-
+                            holder.setnationalidimageview(getApplicationContext(), natidimage);
+                            holder.setgpsimageview(getApplicationContext(), gpscode);
 
                             if (ProfileImageofPerson != null) {
                                 Picasso.get().load(image).placeholder(R.drawable.profile).into(ProfileImageofPerson);
                             }
 
+
+
+
+
+                            if (nationalidimageview != null) {
+                                Picasso.get().load(image).placeholder(R.drawable.profile).into(nationalidimageview);
+                            }
+
+                            if (gpsimageview != null) {
+                                Picasso.get().load(image).placeholder(R.drawable.profile).into(gpsimageview);
+                            }
 
 
 
@@ -601,11 +631,11 @@ public  class BackgroundInfoApprove extends AppCompatActivity
                                 public void onClick(View v) {
                                     response = "approve";
                                     setDecision(response);
-                                    Intent approvalintent = new Intent(BackgroundInfoApprove.this, BackgroundInfoApprove.class);
+                                    Intent approvalintent = new Intent(SecurityCheckApprove.this, BackgroundInfoApprove.class);
                                     approvalintent.putExtra("role", role);
                                     approvalintent.putExtra("uid", uid);
                                     approvalintent.putExtra("traderID", traderID);
-                                    Toast.makeText(BackgroundInfoApprove.this, "Background has been approved", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(SecurityCheckApprove.this, "Background has been approved", Toast.LENGTH_SHORT).show();
                                     startActivity(approvalintent);
                                 }
                             });
@@ -616,11 +646,11 @@ public  class BackgroundInfoApprove extends AppCompatActivity
                                     public void onClick(View view) {
                                         response = "reject";
                                         setDecision(response);
-                                        Intent rejectintent = new Intent(BackgroundInfoApprove.this, BackgroundInfoApprove.class);
+                                        Intent rejectintent = new Intent(SecurityCheckApprove.this, BackgroundInfoApprove.class);
                                         rejectintent.putExtra("role", role);
                                         rejectintent.putExtra("uid", uid);
                                         rejectintent.putExtra("traderID", traderID);
-                                        Toast.makeText(BackgroundInfoApprove.this, "BackgroundInfo has been rejected", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(SecurityCheckApprove.this, "BackgroundInfo has been rejected", Toast.LENGTH_SHORT).show();
                                         startActivity(rejectintent);
 
 
@@ -635,12 +665,12 @@ public  class BackgroundInfoApprove extends AppCompatActivity
                                     public void onClick(View view) {
                                         response = "pause";
                                         setDecision(response);
-                                        Intent pausebuttonintent = new Intent(BackgroundInfoApprove.this, BackgroundInfoApprove.class);
+                                        Intent pausebuttonintent = new Intent(SecurityCheckApprove.this, BackgroundInfoApprove.class);
                                         pausebuttonintent.putExtra("role", role);
                                         pausebuttonintent.putExtra("uid", uid);
                                         pausebuttonintent.putExtra("tid", tid);
 
-                                        Toast.makeText(BackgroundInfoApprove.this, "BackgroundInfo has been paused", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(SecurityCheckApprove.this, "BackgroundInfo has been paused", Toast.LENGTH_SHORT).show();
                                         startActivity(pausebuttonintent);
 
                                     }
@@ -653,14 +683,14 @@ public  class BackgroundInfoApprove extends AppCompatActivity
                                     @Override
                                     public void onClick(View view) {
 
-                                        Intent candidatebackbutton  = new Intent(BackgroundInfoApprove.this, PersonalInfoApprove.class);
+                                        Intent candidatebackbutton  = new Intent(SecurityCheckApprove.this, PersonalInfoApprove.class);
                                         candidatebackbutton.putExtra("role", role);
                                         candidatebackbutton.putExtra("uid", uid);
 
                                         /// Controllers
                                         candidatebackbutton.putExtra("traderID", traderID);
 
-                                        Toast.makeText(BackgroundInfoApprove.this, "Back to Residence Approval List", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(SecurityCheckApprove.this, "Back to Residence Approval List", Toast.LENGTH_SHORT).show();
                                         startActivity(candidatebackbutton);
 
                                     }
@@ -674,11 +704,11 @@ public  class BackgroundInfoApprove extends AppCompatActivity
                                     @Override
                                     public void onClick(View view) {
 
-                                        Intent caandidateapprovenextbutton = new Intent(BackgroundInfoApprove.this, BackgroundInfoApprove.class);
+                                        Intent caandidateapprovenextbutton = new Intent(SecurityCheckApprove.this, BackgroundInfoApprove.class);
                                         caandidateapprovenextbutton.putExtra("role", role);
                                         caandidateapprovenextbutton.putExtra("uid", uid);
                                         caandidateapprovenextbutton.putExtra("traderID", traderID);
-                                        Toast.makeText(BackgroundInfoApprove.this, "To Security Check Page", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(SecurityCheckApprove.this, "To Security Check Page", Toast.LENGTH_SHORT).show();
 
                                         startActivity(caandidateapprovenextbutton);
 
@@ -734,7 +764,7 @@ public  class BackgroundInfoApprove extends AppCompatActivity
                             public void onComplete(DatabaseError databaseError, DatabaseReference
                                     databaseReference) {
                                 Toast.makeText(getApplicationContext(), "User Decision Taken as "  +response, Toast.LENGTH_SHORT).show();
-                                Intent personapprovalloginfointent = new Intent(BackgroundInfoApprove.this, HomeActivity.class);
+                                Intent personapprovalloginfointent = new Intent(SecurityCheckApprove.this, HomeActivity.class);
 
                                 startActivity(personapprovalloginfointent);
 
@@ -847,7 +877,7 @@ public  class BackgroundInfoApprove extends AppCompatActivity
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(BackgroundInfoApprove.this, NotTraderActivity.class);
+                        Intent intent = new Intent(SecurityCheckApprove.this, NotTraderActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderoruser);
                             intent.putExtra("role", type);
@@ -863,7 +893,7 @@ public  class BackgroundInfoApprove extends AppCompatActivity
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(BackgroundInfoApprove.this, AdminAllCustomers.class);
+                        Intent intent = new Intent(SecurityCheckApprove.this, AdminAllCustomers.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderoruser);
                             intent.putExtra("role", type);
@@ -885,7 +915,7 @@ public  class BackgroundInfoApprove extends AppCompatActivity
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(BackgroundInfoApprove.this, NotTraderActivity.class);
+                        Intent intent = new Intent(SecurityCheckApprove.this, NotTraderActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderoruser);
                             intent.putExtra("role", type);
@@ -901,7 +931,7 @@ public  class BackgroundInfoApprove extends AppCompatActivity
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(BackgroundInfoApprove.this, ViewAllCarts.class);
+                        Intent intent = new Intent(SecurityCheckApprove.this, ViewAllCarts.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderoruser);
                             intent.putExtra("role", type);
@@ -922,7 +952,7 @@ public  class BackgroundInfoApprove extends AppCompatActivity
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(BackgroundInfoApprove.this, NotTraderActivity.class);
+                        Intent intent = new Intent(SecurityCheckApprove.this, NotTraderActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderoruser);
                             intent.putExtra("role", type);
@@ -938,7 +968,7 @@ public  class BackgroundInfoApprove extends AppCompatActivity
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(BackgroundInfoApprove.this, AdminAddNewProductActivityII.class);
+                        Intent intent = new Intent(SecurityCheckApprove.this, AdminAddNewProductActivityII.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderoruser);
                             intent.putExtra("role", type);
@@ -957,7 +987,7 @@ public  class BackgroundInfoApprove extends AppCompatActivity
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(BackgroundInfoApprove.this, NotTraderActivity.class);
+                        Intent intent = new Intent(SecurityCheckApprove.this, NotTraderActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderoruser);
                             intent.putExtra("role", type);
@@ -973,7 +1003,7 @@ public  class BackgroundInfoApprove extends AppCompatActivity
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(BackgroundInfoApprove.this, AdminAllProducts.class);
+                        Intent intent = new Intent(SecurityCheckApprove.this, AdminAllProducts.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderoruser);
                             intent.putExtra("role", type);
@@ -989,7 +1019,7 @@ public  class BackgroundInfoApprove extends AppCompatActivity
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(BackgroundInfoApprove.this, NotTraderActivity.class);
+                                Intent intent = new Intent(SecurityCheckApprove.this, NotTraderActivity.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderoruser);
                                     intent.putExtra("role", type);
@@ -1005,7 +1035,7 @@ public  class BackgroundInfoApprove extends AppCompatActivity
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(BackgroundInfoApprove.this, AllProductsPurchased.class);
+                                Intent intent = new Intent(SecurityCheckApprove.this, AllProductsPurchased.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderoruser);
                                     intent.putExtra("role", type);
@@ -1025,7 +1055,7 @@ public  class BackgroundInfoApprove extends AppCompatActivity
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(BackgroundInfoApprove.this, NotTraderActivity.class);
+                                Intent intent = new Intent(SecurityCheckApprove.this, NotTraderActivity.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderoruser);
                                     intent.putExtra("role", type);
@@ -1041,7 +1071,7 @@ public  class BackgroundInfoApprove extends AppCompatActivity
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(BackgroundInfoApprove.this, ViewAllCustomers.class);
+                                Intent intent = new Intent(SecurityCheckApprove.this, ViewAllCustomers.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderoruser);
                                     intent.putExtra("role", type);
@@ -1060,7 +1090,7 @@ public  class BackgroundInfoApprove extends AppCompatActivity
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(BackgroundInfoApprove.this, NotTraderActivity.class);
+                                Intent intent = new Intent(SecurityCheckApprove.this, NotTraderActivity.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderoruser);
                                     intent.putExtra("role", type);
@@ -1076,7 +1106,7 @@ public  class BackgroundInfoApprove extends AppCompatActivity
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(BackgroundInfoApprove.this, TradersFollowing.class);
+                                Intent intent = new Intent(SecurityCheckApprove.this, TradersFollowing.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderoruser);
                                     intent.putExtra("role", type);
@@ -1097,7 +1127,7 @@ public  class BackgroundInfoApprove extends AppCompatActivity
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(BackgroundInfoApprove.this, NotTraderActivity.class);
+                                Intent intent = new Intent(SecurityCheckApprove.this, NotTraderActivity.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderoruser);
                                     intent.putExtra("role", type);
@@ -1113,7 +1143,7 @@ public  class BackgroundInfoApprove extends AppCompatActivity
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(BackgroundInfoApprove.this, AdminNewOrdersActivity.class);
+                                Intent intent = new Intent(SecurityCheckApprove.this, AdminNewOrdersActivity.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderoruser);
                                     intent.putExtra("role", type);
@@ -1134,7 +1164,7 @@ public  class BackgroundInfoApprove extends AppCompatActivity
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(BackgroundInfoApprove.this, NotTraderActivity.class);
+                                Intent intent = new Intent(SecurityCheckApprove.this, NotTraderActivity.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderoruser);
                                     intent.putExtra("role", type);
@@ -1150,7 +1180,7 @@ public  class BackgroundInfoApprove extends AppCompatActivity
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(BackgroundInfoApprove.this, AdminCustomerServed.class);
+                                Intent intent = new Intent(SecurityCheckApprove.this, AdminCustomerServed.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderoruser);
                                     intent.putExtra("role", type);
@@ -1170,7 +1200,7 @@ public  class BackgroundInfoApprove extends AppCompatActivity
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(BackgroundInfoApprove.this, NotTraderActivity.class);
+                                Intent intent = new Intent(SecurityCheckApprove.this, NotTraderActivity.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderoruser);
                                     intent.putExtra("role", type);
@@ -1186,7 +1216,7 @@ public  class BackgroundInfoApprove extends AppCompatActivity
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(BackgroundInfoApprove.this, AdminAllOrderHistory.class);
+                                Intent intent = new Intent(SecurityCheckApprove.this, AdminAllOrderHistory.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderoruser);
                                     intent.putExtra("role", type);
@@ -1215,7 +1245,7 @@ public  class BackgroundInfoApprove extends AppCompatActivity
         if (id == R.id.viewmap) {
             if (!type.equals("Trader")) {
 
-                Intent intent = new Intent(BackgroundInfoApprove.this, NotTraderActivity.class);
+                Intent intent = new Intent(SecurityCheckApprove.this, NotTraderActivity.class);
                 if (intent != null) {
                     intent.putExtra("traderorcustomer", traderoruser);
                     intent.putExtra("role", type);
@@ -1224,7 +1254,7 @@ public  class BackgroundInfoApprove extends AppCompatActivity
                 }
             } else {
 
-                Intent intent = new Intent(BackgroundInfoApprove.this, DriverMapActivity.class);
+                Intent intent = new Intent(SecurityCheckApprove.this, DriverMapActivity.class);
                 if (intent != null) {
                     intent.putExtra("traderorcustomer", traderoruser);
                     intent.putExtra("role", type);
@@ -1245,7 +1275,7 @@ public  class BackgroundInfoApprove extends AppCompatActivity
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(BackgroundInfoApprove.this, NotTraderActivity.class);
+                        Intent intent = new Intent(SecurityCheckApprove.this, NotTraderActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderoruser);
                             intent.putExtra("role", type);
@@ -1261,7 +1291,7 @@ public  class BackgroundInfoApprove extends AppCompatActivity
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(BackgroundInfoApprove.this, CartActivity.class);
+                        Intent intent = new Intent(SecurityCheckApprove.this, CartActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderoruser);
                             intent.putExtra("role", type);
@@ -1281,7 +1311,7 @@ public  class BackgroundInfoApprove extends AppCompatActivity
                             String cusomerId = "";
 
                             cusomerId = user.getUid();
-                            Intent intent = new Intent(BackgroundInfoApprove.this, NotTraderActivity.class);
+                            Intent intent = new Intent(SecurityCheckApprove.this, NotTraderActivity.class);
                             if (intent != null) {
                                 intent.putExtra("traderorcustomer", traderoruser);
                                 intent.putExtra("role", type);
@@ -1297,7 +1327,7 @@ public  class BackgroundInfoApprove extends AppCompatActivity
                             String cusomerId = "";
                             cusomerId = user.getUid();
 
-                            Intent intent = new Intent(BackgroundInfoApprove.this, InstagramHomeActivity.class);
+                            Intent intent = new Intent(SecurityCheckApprove.this, InstagramHomeActivity.class);
                             if (intent != null) {
                                 intent.putExtra("traderorcustomer", traderoruser);
                                 intent.putExtra("role", type);
@@ -1317,7 +1347,7 @@ public  class BackgroundInfoApprove extends AppCompatActivity
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(BackgroundInfoApprove.this, NotTraderActivity.class);
+                                Intent intent = new Intent(SecurityCheckApprove.this, NotTraderActivity.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderoruser);
                                     intent.putExtra("role", type);
@@ -1333,7 +1363,7 @@ public  class BackgroundInfoApprove extends AppCompatActivity
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(BackgroundInfoApprove.this, AdminAllProducts.class);
+                                Intent intent = new Intent(SecurityCheckApprove.this, AdminAllProducts.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderoruser);
                                     intent.putExtra("role", type);
@@ -1350,7 +1380,7 @@ public  class BackgroundInfoApprove extends AppCompatActivity
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(BackgroundInfoApprove.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(SecurityCheckApprove.this, NotTraderActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderoruser);
                                             intent.putExtra("role", type);
@@ -1366,7 +1396,7 @@ public  class BackgroundInfoApprove extends AppCompatActivity
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(BackgroundInfoApprove.this, SearchForAdminProductsActivity.class);
+                                        Intent intent = new Intent(SecurityCheckApprove.this, SearchForAdminProductsActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderoruser);
                                             intent.putExtra("role", type);
@@ -1382,7 +1412,7 @@ public  class BackgroundInfoApprove extends AppCompatActivity
                             if (FirebaseAuth.getInstance() != null) {
                                 FirebaseAuth.getInstance().signOut();
                                 if (mGoogleApiClient != null) {
-                                    mGoogleSignInClient.signOut().addOnCompleteListener(BackgroundInfoApprove.this,
+                                    mGoogleSignInClient.signOut().addOnCompleteListener(SecurityCheckApprove.this,
                                             new OnCompleteListener<Void>() {
                                                 @Override
                                                 public void onComplete(@NonNull Task<Void> task) {
@@ -1391,7 +1421,7 @@ public  class BackgroundInfoApprove extends AppCompatActivity
                                             });
                                 }
                             }
-                            Intent intent = new Intent(BackgroundInfoApprove.this, com.simcoder.bimbo.MainActivity.class);
+                            Intent intent = new Intent(SecurityCheckApprove.this, com.simcoder.bimbo.MainActivity.class);
                             if (intent != null) {
                                 startActivity(intent);
                                 finish();
@@ -1406,7 +1436,7 @@ public  class BackgroundInfoApprove extends AppCompatActivity
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(BackgroundInfoApprove.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(SecurityCheckApprove.this, NotTraderActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderoruser);
                                             intent.putExtra("role", type);
@@ -1422,7 +1452,7 @@ public  class BackgroundInfoApprove extends AppCompatActivity
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(BackgroundInfoApprove.this, com.simcoder.bimbo.WorkActivities.SettinsActivity.class);
+                                        Intent intent = new Intent(SecurityCheckApprove.this, com.simcoder.bimbo.WorkActivities.SettinsActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderoruser);
                                             intent.putExtra("role", type);
@@ -1440,7 +1470,7 @@ public  class BackgroundInfoApprove extends AppCompatActivity
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(BackgroundInfoApprove.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(SecurityCheckApprove.this, NotTraderActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderoruser);
                                             intent.putExtra("role", type);
@@ -1456,7 +1486,7 @@ public  class BackgroundInfoApprove extends AppCompatActivity
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(BackgroundInfoApprove.this, HistoryActivity.class);
+                                        Intent intent = new Intent(SecurityCheckApprove.this, HistoryActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderoruser);
                                             intent.putExtra("role", type);
@@ -1476,7 +1506,7 @@ public  class BackgroundInfoApprove extends AppCompatActivity
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(BackgroundInfoApprove.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(SecurityCheckApprove.this, NotTraderActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderoruser);
                                             intent.putExtra("role", type);
@@ -1492,7 +1522,7 @@ public  class BackgroundInfoApprove extends AppCompatActivity
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(BackgroundInfoApprove.this, TraderProfile.class);
+                                        Intent intent = new Intent(SecurityCheckApprove.this, TraderProfile.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderoruser);
                                             intent.putExtra("role", type);
@@ -1512,7 +1542,7 @@ public  class BackgroundInfoApprove extends AppCompatActivity
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(BackgroundInfoApprove.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(SecurityCheckApprove.this, NotTraderActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderoruser);
                                             intent.putExtra("role", type);
@@ -1528,7 +1558,7 @@ public  class BackgroundInfoApprove extends AppCompatActivity
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(BackgroundInfoApprove.this, AdminAllCustomers.class);
+                                        Intent intent = new Intent(SecurityCheckApprove.this, AdminAllCustomers.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderoruser);
                                             intent.putExtra("role", type);
@@ -1549,7 +1579,7 @@ public  class BackgroundInfoApprove extends AppCompatActivity
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(BackgroundInfoApprove.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(SecurityCheckApprove.this, NotTraderActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderoruser);
                                             intent.putExtra("role", type);
@@ -1565,7 +1595,7 @@ public  class BackgroundInfoApprove extends AppCompatActivity
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(BackgroundInfoApprove.this, AdminAddNewProductActivityII.class);
+                                        Intent intent = new Intent(SecurityCheckApprove.this, AdminAddNewProductActivityII.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderoruser);
                                             intent.putExtra("role", type);
@@ -1585,7 +1615,7 @@ public  class BackgroundInfoApprove extends AppCompatActivity
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(BackgroundInfoApprove.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(SecurityCheckApprove.this, NotTraderActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderoruser);
                                             intent.putExtra("role", type);
@@ -1601,7 +1631,7 @@ public  class BackgroundInfoApprove extends AppCompatActivity
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(BackgroundInfoApprove.this, AllGoodsBought.class);
+                                        Intent intent = new Intent(SecurityCheckApprove.this, AllGoodsBought.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderoruser);
                                             intent.putExtra("role", type);
@@ -1621,7 +1651,7 @@ public  class BackgroundInfoApprove extends AppCompatActivity
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(BackgroundInfoApprove.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(SecurityCheckApprove.this, NotTraderActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderoruser);
                                             intent.putExtra("role", type);
@@ -1637,7 +1667,7 @@ public  class BackgroundInfoApprove extends AppCompatActivity
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(BackgroundInfoApprove.this, AdminPaymentHere.class);
+                                        Intent intent = new Intent(SecurityCheckApprove.this, AdminPaymentHere.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderoruser);
                                             intent.putExtra("role", type);
@@ -1657,7 +1687,7 @@ public  class BackgroundInfoApprove extends AppCompatActivity
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(BackgroundInfoApprove.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(SecurityCheckApprove.this, NotTraderActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderoruser);
                                             intent.putExtra("role", type);
@@ -1673,7 +1703,7 @@ public  class BackgroundInfoApprove extends AppCompatActivity
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(BackgroundInfoApprove.this, AdminSettings.class);
+                                        Intent intent = new Intent(SecurityCheckApprove.this, AdminSettings.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderoruser);
                                             intent.putExtra("role", type);

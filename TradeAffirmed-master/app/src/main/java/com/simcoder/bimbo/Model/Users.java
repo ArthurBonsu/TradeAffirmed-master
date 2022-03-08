@@ -15,6 +15,7 @@ public class Users {
     private String coverimage, g, one, zero, customerId, customerRideId, destination, destinationLat, destinationLng;
     private String driverFoundID, customer, driver, predictDistance, lat, lng, rating, triptime;
     private String job, quote, role;
+    String  natidimage, gpscode, gpsimage;
 
     private String car, descriptions;
 
@@ -48,13 +49,14 @@ public class Users {
     String approve;
     String street;
     String country;
-    String gpscode;
+
     String auxname;
     String auxphone;
     String auxemail;
     String auxid;
     String typeofid;
     String auxcountry;
+
 
 
 
@@ -185,11 +187,7 @@ public class Users {
         this.tradername = tradername;
 
     }
-     public  Users(String idcode, String idimage){
-        this.idcode = idcode;
-        this.idimage = idimage;
 
-     }
     public Users(String date, String time, String tid, String traderimage, String tradername, String address, String amount, String city, String delivered, String distance, String image, String uid, String name, String mode, String number, String phone, String quantity, String shippingcost, String state) {
 
         this.desc = desc;
@@ -395,6 +393,45 @@ public class Users {
         this.country = country;
     }
 
+    // this.natidimage = natidimage;
+    //   this.gpscode = gpscode;
+    //  this.gpsimage = gpsimage;
+    public Users(String natidimage) {
+      this.natidimage = natidimage;
+    }
+    public Users(String gpscode, String gpsimage) {
+        this.gpscode = gpscode;
+        this.gpsimage = gpsimage;
+    }
+
+    public Users(String uid, String name, String gpsimage, String gpscode, String natidimage) {
+        this.uid = uid;
+        this.name = name;
+        this.gpsimage = gpsimage;
+        this.gpscode = gpscode;
+        this.natidimage = natidimage;
+    }
+
+
+    public String getnatidimage() {
+        return natidimage;
+    }
+
+
+    public void setnatidimage(String natidimage) {
+        this.natidimage = natidimage;
+    }
+
+
+
+    public String getgpsimage() {
+        return gpsimage;
+    }
+
+
+    public void setgpsimage(String street) {
+        this.gpsimage = gpsimage;
+    }
 
 
     public String getstreet() {
