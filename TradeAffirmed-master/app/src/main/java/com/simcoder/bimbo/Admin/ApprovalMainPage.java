@@ -56,6 +56,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.simcoder.bimbo.DriverLoginActivity;
 import com.simcoder.bimbo.DriverMapActivity;
 import com.simcoder.bimbo.HistoryActivity;
 import com.simcoder.bimbo.Model.HashMaps;
@@ -64,6 +65,7 @@ import com.simcoder.bimbo.Model.Users;
 import com.simcoder.bimbo.R;
 import com.simcoder.bimbo.WorkActivities.CartActivity;
 import com.simcoder.bimbo.WorkActivities.HomeActivity;
+import com.simcoder.bimbo.WorkActivities.LoginActivity;
 import com.simcoder.bimbo.WorkActivities.TraderProfile;
 import com.simcoder.bimbo.instagram.Home.InstagramHomeActivity;
 import com.squareup.picasso.Picasso;
@@ -81,7 +83,7 @@ import java.util.Map;
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.paperdb.Paper;
 
-public class AdminMainPage extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, NavigationView.OnNavigationItemSelectedListener {
+public class ApprovalMainPage extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, NavigationView.OnNavigationItemSelectedListener {
     private static final int GALLERY_REQUEST2 = 2;
     private EditText   Nameinfo, Emailinfo, Phoneinfo;
 
@@ -191,7 +193,7 @@ public class AdminMainPage extends AppCompatActivity implements GoogleApiClient.
     private String productRandomKey, downloadImageUrl;
     private StorageReference ProductImagesRef;
     private DatabaseReference ProductsRef;
-    private DatabaseReference ProductsTraderRef;
+    private DatabaseReference mApproverDatabase;
     private ProgressDialog loadingBar;
     private static final int RC_SIGN_IN = 1;
     private FirebaseAuth.AuthStateListener firebaseAuthListener;
@@ -240,38 +242,42 @@ public class AdminMainPage extends AppCompatActivity implements GoogleApiClient.
     Button zoneshop;
     Button zonemap;
     Button zonetalkhub;
-    public AdminMainPage() {
+
+    Button approverclientlogin;
+    Button approvertraderlogin;
+    String approverID;
+
+    public ApprovalMainPage() {
         super();
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.adminmainpage);
+        setContentView(R.layout.approvalmainpage);
         Intent roleintent = getIntent();
         if (roleintent.getExtras().getString("role") != null) {
             role = roleintent.getExtras().getString("role");
         }
 
         Intent traderIDintent = getIntent();
-        if (traderIDintent.getExtras().getString("traderID") != null) {
-            traderID = traderIDintent.getExtras().getString("traderID");
+        if (traderIDintent.getExtras().getString("approvalID") != null) {
+            approverID = traderIDintent.getExtras().getString("approvalID");
         }
 
 
 
 
-         zoneshop= findViewById(R.id.zoneshop);
-         zonemap = findViewById(R.id.zonemap);
-         zonetalkhub = findViewById(R.id.zonetalkhub);
+        approverclientlogin = findViewById(R.id.approverclientlogin);
+         approvertraderlogin = findViewById(R.id.approvertraderlogin);
         mAuth = FirebaseAuth.getInstance();
         mCurrentUser = mAuth.getCurrentUser();
 
 
         user = mAuth.getCurrentUser();
         if (user != null) {
-            traderID = "";
-            traderID = user.getUid();
+            approverID = "";
+            approverID = user.getUid();
         }
         Paper.init(this);
 
@@ -320,9 +326,9 @@ public class AdminMainPage extends AppCompatActivity implements GoogleApiClient.
                 // HAVE TO BUILD THE STORAGE
                 mStorage = FirebaseStorage.getInstance().getReference().child("user_images");
                 myuserfirebasedatabase = FirebaseDatabase.getInstance();
-                mAdminTraderDatabase = myuserfirebasedatabase.getReference().child("Users").child("Drivers").child(traderID);
+                mApproverDatabase = myuserfirebasedatabase.getReference().child("Users").child("Approvers").child(approverID);
 
-                mAdminTraderDatabase.keepSynced(true);
+                mApproverDatabase.keepSynced(true);
 /*
                 if (ProductsRef.push() != null) {
                     productRandomKey = ProductsRef.push().getKey();
@@ -340,7 +346,7 @@ public class AdminMainPage extends AppCompatActivity implements GoogleApiClient.
                 }
 
                 if (mGoogleApiClient != null) {
-                    mGoogleApiClient = new GoogleApiClient.Builder(this).enableAutoManage(AdminMainPage.this,
+                    mGoogleApiClient = new GoogleApiClient.Builder(this).enableAutoManage(ApprovalMainPage.this,
                             new GoogleApiClient.OnConnectionFailedListener() {
                                 @Override
                                 public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
@@ -357,8 +363,8 @@ public class AdminMainPage extends AppCompatActivity implements GoogleApiClient.
     protected synchronized void buildGoogleApiClient() {
         if (mGoogleApiClient != null) {
             mGoogleApiClient = new GoogleApiClient.Builder(this)
-                    .addConnectionCallbacks(AdminMainPage.this)
-                    .addOnConnectionFailedListener(AdminMainPage.this)
+                    .addConnectionCallbacks(ApprovalMainPage.this)
+                    .addOnConnectionFailedListener(ApprovalMainPage.this)
                     .addApi(LocationServices.API)
                     .build();
             mGoogleApiClient.connect();
@@ -372,14 +378,15 @@ public class AdminMainPage extends AppCompatActivity implements GoogleApiClient.
         // CHOSE ID CARD
         // UPLOAD ID CARD
 
-        if (zoneshop != null) {
-            zoneshop.setOnClickListener(new View.OnClickListener() {
+
+        if (approverclientlogin != null) {
+            approverclientlogin.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(AdminMainPage.this, AdminHomeActivity.class);
+                    Intent intent = new Intent(ApprovalMainPage.this, LoginActivity.class);
                     if (intent != null) {
                         intent.putExtra("role", role);
-                        intent.putExtra("traderID", traderID);
+                        intent.putExtra("userID", approverID);
                         startActivity(intent);
                         finish();
                     }
@@ -388,14 +395,14 @@ public class AdminMainPage extends AppCompatActivity implements GoogleApiClient.
         }
 
 
-        if (zonemap != null) {
-            zonemap.setOnClickListener(new View.OnClickListener() {
+        if (approvertraderlogin != null) {
+            approvertraderlogin.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(AdminMainPage.this, DriverMapActivity.class);
+                    Intent intent = new Intent(ApprovalMainPage.this, DriverLoginActivity.class);
                     if (intent != null) {
                         intent.putExtra("role", role);
-                        intent.putExtra("traderID", traderID);
+                        intent.putExtra("traderID", approverID);
                         startActivity(intent);
                         finish();
                     }
@@ -404,23 +411,9 @@ public class AdminMainPage extends AppCompatActivity implements GoogleApiClient.
         }
 
 
-        if (zonetalkhub != null) {
-            zonetalkhub.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(AdminMainPage.this, InstagramHomeActivity.class);
-                    if (intent != null) {
-                        intent.putExtra("role", role);
-                        intent.putExtra("traderID", traderID);
-                        startActivity(intent);
-                        finish();
-                    }
-                }
-            });
+
         }
 
-
-    }
 
     // You get the information here and send it to the top
     // OnActivity result is lacking behind, I have to get the URi from it
@@ -461,7 +454,7 @@ public class AdminMainPage extends AppCompatActivity implements GoogleApiClient.
 
     //POPULATE THE EDIT BOX IF THERE ALREADY EXIST SUCH A TRANSACTION
     public void getUserInfo() {
-        mAdminTraderDatabase.addValueEventListener(new ValueEventListener() {
+        mApproverDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists() && dataSnapshot.getChildrenCount() > 0) {
@@ -529,8 +522,8 @@ public class AdminMainPage extends AppCompatActivity implements GoogleApiClient.
 
                 FirebaseUser user = mAuth.getCurrentUser();
                 if (user != null) {
-                    traderID = "";
-                    traderID = user.getUid();
+                    approverID = "";
+                    approverID = user.getUid();
                 }
 
                 // I HAVE TO TRY TO GET THE SETUP INFORMATION , IF THEY ARE ALREADY PROVIDED WE TAKE TO THE NEXT STAGE
@@ -597,9 +590,9 @@ public class AdminMainPage extends AppCompatActivity implements GoogleApiClient.
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(AdminMainPage.this, NotTraderActivity.class);
+                        Intent intent = new Intent(ApprovalMainPage.this, NotTraderActivity.class);
                         if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderID);
+                            intent.putExtra("trader", traderID);
                             intent.putExtra("role", role);
                             startActivity(intent);
                         }
@@ -613,9 +606,9 @@ public class AdminMainPage extends AppCompatActivity implements GoogleApiClient.
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(AdminMainPage.this, AdminAllCustomers.class);
+                        Intent intent = new Intent(ApprovalMainPage.this, AdminAllCustomers.class);
                         if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderID);
+                            intent.putExtra("traderID", traderID);
                             intent.putExtra("role", role);
                             startActivity(intent);
                         }
@@ -628,16 +621,16 @@ public class AdminMainPage extends AppCompatActivity implements GoogleApiClient.
 
         if (id == R.id. allcustomersincart) {
 
-            if (!role.equals("Trader")) {
+            if (!role.equals("Approver")) {
                 if (FirebaseAuth.getInstance() != null) {
                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                     if (user != null) {
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(AdminMainPage.this, NotTraderActivity.class);
+                        Intent intent = new Intent(ApprovalMainPage.this, NotTraderActivity.class);
                         if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderID);
+                            intent.putExtra("traderID", approverID);
                             intent.putExtra("role", role);
                             startActivity(intent);
                         }
@@ -651,9 +644,9 @@ public class AdminMainPage extends AppCompatActivity implements GoogleApiClient.
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(AdminMainPage.this, ViewAllCarts.class);
+                        Intent intent = new Intent(ApprovalMainPage.this, ViewAllCarts.class);
                         if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderID);
+                            intent.putExtra("traderID", traderID);
                             intent.putExtra("role", role);
                             startActivity(intent);
                         }
@@ -672,9 +665,9 @@ public class AdminMainPage extends AppCompatActivity implements GoogleApiClient.
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(AdminMainPage.this, NotTraderActivity.class);
+                        Intent intent = new Intent(ApprovalMainPage.this, NotTraderActivity.class);
                         if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderID);
+                            intent.putExtra("traderID", approverID);
                             intent.putExtra("role", role);
                             startActivity(intent);
                         }
@@ -688,9 +681,9 @@ public class AdminMainPage extends AppCompatActivity implements GoogleApiClient.
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(AdminMainPage.this, AdminAddNewProductActivityII.class);
+                        Intent intent = new Intent(ApprovalMainPage.this, AdminAddNewProductActivityII.class);
                         if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderID);
+                            intent.putExtra("traderID", approverID);
                             intent.putExtra("role", role);
                             startActivity(intent);
                         }
@@ -707,9 +700,9 @@ public class AdminMainPage extends AppCompatActivity implements GoogleApiClient.
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(AdminMainPage.this, NotTraderActivity.class);
+                        Intent intent = new Intent(ApprovalMainPage.this, NotTraderActivity.class);
                         if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderID);
+                            intent.putExtra("traderID", approverID);
                             intent.putExtra("role", role);
                             startActivity(intent);
                         }
@@ -723,9 +716,9 @@ public class AdminMainPage extends AppCompatActivity implements GoogleApiClient.
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(AdminMainPage.this, AdminAllProducts.class);
+                        Intent intent = new Intent(ApprovalMainPage.this, AdminAllProducts.class);
                         if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderID);
+                            intent.putExtra("traderID", approverID);
                             intent.putExtra("role", role);
                             startActivity(intent);
                         }
@@ -739,9 +732,9 @@ public class AdminMainPage extends AppCompatActivity implements GoogleApiClient.
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(AdminMainPage.this, NotTraderActivity.class);
+                                Intent intent = new Intent(ApprovalMainPage.this, NotTraderActivity.class);
                                 if (intent != null) {
-                                    intent.putExtra("traderorcustomer", traderID);
+                                    intent.putExtra("traderID", approverID);
                                     intent.putExtra("role", role);
                                     startActivity(intent);
                                 }
@@ -755,9 +748,9 @@ public class AdminMainPage extends AppCompatActivity implements GoogleApiClient.
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(AdminMainPage.this, AllProductsPurchased.class);
+                                Intent intent = new Intent(ApprovalMainPage.this, AllProductsPurchased.class);
                                 if (intent != null) {
-                                    intent.putExtra("traderorcustomer", traderID);
+                                    intent.putExtra("traderID", approverID);
                                     intent.putExtra("role", role);
                                     startActivity(intent);
                                 }
@@ -775,9 +768,9 @@ public class AdminMainPage extends AppCompatActivity implements GoogleApiClient.
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(AdminMainPage.this, NotTraderActivity.class);
+                                Intent intent = new Intent(ApprovalMainPage.this, NotTraderActivity.class);
                                 if (intent != null) {
-                                    intent.putExtra("traderorcustomer", traderID);
+                                    intent.putExtra("traderID", approverID);
                                     intent.putExtra("role", role);
                                     startActivity(intent);
                                 }
@@ -791,9 +784,9 @@ public class AdminMainPage extends AppCompatActivity implements GoogleApiClient.
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(AdminMainPage.this, ViewAllCustomers.class);
+                                Intent intent = new Intent(ApprovalMainPage.this, ViewAllCustomers.class);
                                 if (intent != null) {
-                                    intent.putExtra("traderorcustomer", traderID);
+                                    intent.putExtra("traderID", approverID);
                                     intent.putExtra("role", role);
                                     startActivity(intent);
                                 }
@@ -810,9 +803,9 @@ public class AdminMainPage extends AppCompatActivity implements GoogleApiClient.
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(AdminMainPage.this, NotTraderActivity.class);
+                                Intent intent = new Intent(ApprovalMainPage.this, NotTraderActivity.class);
                                 if (intent != null) {
-                                    intent.putExtra("traderorcustomer", traderID);
+                                    intent.putExtra("traderID", approverID);
                                     intent.putExtra("role", role);
                                     startActivity(intent);
                                 }
@@ -826,9 +819,9 @@ public class AdminMainPage extends AppCompatActivity implements GoogleApiClient.
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(AdminMainPage.this, TradersFollowing.class);
+                                Intent intent = new Intent(ApprovalMainPage.this, TradersFollowing.class);
                                 if (intent != null) {
-                                    intent.putExtra("traderorcustomer", traderID);
+                                    intent.putExtra("traderID", approverID);
                                     intent.putExtra("role", role);
                                     startActivity(intent);
                                 }
@@ -847,9 +840,9 @@ public class AdminMainPage extends AppCompatActivity implements GoogleApiClient.
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(AdminMainPage.this, NotTraderActivity.class);
+                                Intent intent = new Intent(ApprovalMainPage.this, NotTraderActivity.class);
                                 if (intent != null) {
-                                    intent.putExtra("traderorcustomer", traderID);
+                                    intent.putExtra("traderID", approverID);
                                     intent.putExtra("role", role);
                                     startActivity(intent);
                                 }
@@ -863,9 +856,9 @@ public class AdminMainPage extends AppCompatActivity implements GoogleApiClient.
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(AdminMainPage.this, AdminNewOrdersActivity.class);
+                                Intent intent = new Intent(ApprovalMainPage.this, AdminNewOrdersActivity.class);
                                 if (intent != null) {
-                                    intent.putExtra("traderorcustomer", traderID);
+                                    intent.putExtra("traderID", approverID);
                                     intent.putExtra("role", role);
                                     startActivity(intent);
                                 }
@@ -884,9 +877,9 @@ public class AdminMainPage extends AppCompatActivity implements GoogleApiClient.
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(AdminMainPage.this, NotTraderActivity.class);
+                                Intent intent = new Intent(ApprovalMainPage.this, NotTraderActivity.class);
                                 if (intent != null) {
-                                    intent.putExtra("traderorcustomer", traderID);
+                                    intent.putExtra("traderID", approverID);
                                     intent.putExtra("role", role);
                                     startActivity(intent);
                                 }
@@ -900,9 +893,9 @@ public class AdminMainPage extends AppCompatActivity implements GoogleApiClient.
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(AdminMainPage.this, AdminCustomerServed.class);
+                                Intent intent = new Intent(ApprovalMainPage.this, AdminCustomerServed.class);
                                 if (intent != null) {
-                                    intent.putExtra("traderorcustomer", traderID);
+                                    intent.putExtra("trader", approverID);
                                     intent.putExtra("role", role);
                                     startActivity(intent);
                                 }
@@ -920,9 +913,9 @@ public class AdminMainPage extends AppCompatActivity implements GoogleApiClient.
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(AdminMainPage.this, NotTraderActivity.class);
+                                Intent intent = new Intent(ApprovalMainPage.this, NotTraderActivity.class);
                                 if (intent != null) {
-                                    intent.putExtra("traderorcustomer", traderID);
+                                    intent.putExtra("trader", approverID);
                                     intent.putExtra("role", role);
                                     startActivity(intent);
                                 }
@@ -936,9 +929,9 @@ public class AdminMainPage extends AppCompatActivity implements GoogleApiClient.
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(AdminMainPage.this, AdminAllOrderHistory.class);
+                                Intent intent = new Intent(ApprovalMainPage.this, AdminAllOrderHistory.class);
                                 if (intent != null) {
-                                    intent.putExtra("traderorcustomer", traderID);
+                                    intent.putExtra("trader", approverID);
                                     intent.putExtra("role", role);
                                     startActivity(intent);
                                 }
@@ -965,18 +958,18 @@ public class AdminMainPage extends AppCompatActivity implements GoogleApiClient.
         if (id == R.id.viewmap) {
             if (!role.equals("Trader")) {
 
-                Intent intent = new Intent(AdminMainPage.this, NotTraderActivity.class);
+                Intent intent = new Intent(ApprovalMainPage.this, NotTraderActivity.class);
                 if (intent != null) {
-                    intent.putExtra("traderorcustomer", traderID);
+                    intent.putExtra("trader", approverID);
                     intent.putExtra("role", role);
                     startActivity(intent);
                     finish();
                 }
             } else {
 
-                Intent intent = new Intent(AdminMainPage.this, DriverMapActivity.class);
+                Intent intent = new Intent(ApprovalMainPage.this, DriverMapActivity.class);
                 if (intent != null) {
-                    intent.putExtra("traderorcustomer", traderID);
+                    intent.putExtra("trader", approverID);
                     intent.putExtra("role", role);
                     startActivity(intent);
                     finish();
@@ -995,9 +988,9 @@ public class AdminMainPage extends AppCompatActivity implements GoogleApiClient.
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(AdminMainPage.this, NotTraderActivity.class);
+                        Intent intent = new Intent(ApprovalMainPage.this, NotTraderActivity.class);
                         if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderID);
+                            intent.putExtra("trader", approverID);
                             intent.putExtra("role", role);
                             startActivity(intent);
                         }
@@ -1011,9 +1004,9 @@ public class AdminMainPage extends AppCompatActivity implements GoogleApiClient.
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(AdminMainPage.this, CartActivity.class);
+                        Intent intent = new Intent(ApprovalMainPage.this, CartActivity.class);
                         if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderID);
+                            intent.putExtra("trader", approverID);
                             intent.putExtra("role", role);
                             startActivity(intent);
                         }
@@ -1031,9 +1024,9 @@ public class AdminMainPage extends AppCompatActivity implements GoogleApiClient.
                             String cusomerId = "";
 
                             cusomerId = user.getUid();
-                            Intent intent = new Intent(AdminMainPage.this, NotTraderActivity.class);
+                            Intent intent = new Intent(ApprovalMainPage.this, NotTraderActivity.class);
                             if (intent != null) {
-                                intent.putExtra("traderorcustomer", traderID);
+                                intent.putExtra("trader", approverID);
                                 intent.putExtra("role", role);
                                 startActivity(intent);
                             }
@@ -1047,9 +1040,9 @@ public class AdminMainPage extends AppCompatActivity implements GoogleApiClient.
                             String cusomerId = "";
                             cusomerId = user.getUid();
 
-                            Intent intent = new Intent(AdminMainPage.this, InstagramHomeActivity.class);
+                            Intent intent = new Intent(ApprovalMainPage.this, InstagramHomeActivity.class);
                             if (intent != null) {
-                                intent.putExtra("traderorcustomer", traderID);
+                                intent.putExtra("trader", approverID);
                                 intent.putExtra("role", role);
                                 startActivity(intent);
                             }
@@ -1067,9 +1060,9 @@ public class AdminMainPage extends AppCompatActivity implements GoogleApiClient.
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(AdminMainPage.this, NotTraderActivity.class);
+                                Intent intent = new Intent(ApprovalMainPage.this, NotTraderActivity.class);
                                 if (intent != null) {
-                                    intent.putExtra("traderorcustomer", traderID);
+                                    intent.putExtra("trader", approverID);
                                     intent.putExtra("role", role);
                                     startActivity(intent);
                                 }
@@ -1083,9 +1076,9 @@ public class AdminMainPage extends AppCompatActivity implements GoogleApiClient.
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(AdminMainPage.this, AdminAllProducts.class);
+                                Intent intent = new Intent(ApprovalMainPage.this, AdminAllProducts.class);
                                 if (intent != null) {
-                                    intent.putExtra("traderorcustomer", traderID);
+                                    intent.putExtra("trader", approverID);
                                     intent.putExtra("role", role);
                                     startActivity(intent);
                                 }
@@ -1100,9 +1093,9 @@ public class AdminMainPage extends AppCompatActivity implements GoogleApiClient.
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(AdminMainPage.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(ApprovalMainPage.this, NotTraderActivity.class);
                                         if (intent != null) {
-                                            intent.putExtra("traderorcustomer", traderID);
+                                            intent.putExtra("trader", approverID);
                                             intent.putExtra("role", role);
                                             startActivity(intent);
                                         }
@@ -1116,9 +1109,9 @@ public class AdminMainPage extends AppCompatActivity implements GoogleApiClient.
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(AdminMainPage.this, SearchForAdminProductsActivity.class);
+                                        Intent intent = new Intent(ApprovalMainPage.this, SearchForAdminProductsActivity.class);
                                         if (intent != null) {
-                                            intent.putExtra("traderorcustomer", traderID);
+                                            intent.putExtra("trader", approverID);
                                             intent.putExtra("role", role);
                                             startActivity(intent);
                                         }
@@ -1132,7 +1125,7 @@ public class AdminMainPage extends AppCompatActivity implements GoogleApiClient.
                             if (FirebaseAuth.getInstance() != null) {
                                 FirebaseAuth.getInstance().signOut();
                                 if (mGoogleApiClient != null) {
-                                    mGoogleSignInClient.signOut().addOnCompleteListener(AdminMainPage.this,
+                                    mGoogleSignInClient.signOut().addOnCompleteListener(ApprovalMainPage.this,
                                             new OnCompleteListener<Void>() {
                                                 @Override
                                                 public void onComplete(@NonNull Task<Void> task) {
@@ -1141,7 +1134,7 @@ public class AdminMainPage extends AppCompatActivity implements GoogleApiClient.
                                             });
                                 }
                             }
-                            Intent intent = new Intent(AdminMainPage.this, com.simcoder.bimbo.MainActivity.class);
+                            Intent intent = new Intent(ApprovalMainPage.this, com.simcoder.bimbo.MainActivity.class);
                             if (intent != null) {
                                 startActivity(intent);
                                 finish();
@@ -1156,9 +1149,9 @@ public class AdminMainPage extends AppCompatActivity implements GoogleApiClient.
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(AdminMainPage.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(ApprovalMainPage.this, NotTraderActivity.class);
                                         if (intent != null) {
-                                            intent.putExtra("traderorcustomer", traderID);
+                                            intent.putExtra("trader", approverID);
                                             intent.putExtra("role", role);
                                             startActivity(intent);
                                         }
@@ -1172,9 +1165,9 @@ public class AdminMainPage extends AppCompatActivity implements GoogleApiClient.
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(AdminMainPage.this, com.simcoder.bimbo.WorkActivities.SettinsActivity.class);
+                                        Intent intent = new Intent(ApprovalMainPage.this, com.simcoder.bimbo.WorkActivities.SettinsActivity.class);
                                         if (intent != null) {
-                                            intent.putExtra("traderorcustomer", traderID);
+                                            intent.putExtra("trader", approverID);
                                             intent.putExtra("role", role);
                                             startActivity(intent);
                                         }
@@ -1190,9 +1183,9 @@ public class AdminMainPage extends AppCompatActivity implements GoogleApiClient.
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(AdminMainPage.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(ApprovalMainPage.this, NotTraderActivity.class);
                                         if (intent != null) {
-                                            intent.putExtra("traderorcustomer", traderID);
+                                            intent.putExtra("trader", approverID);
                                             intent.putExtra("role", role);
                                             startActivity(intent);
                                         }
@@ -1206,9 +1199,9 @@ public class AdminMainPage extends AppCompatActivity implements GoogleApiClient.
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(AdminMainPage.this, HistoryActivity.class);
+                                        Intent intent = new Intent(ApprovalMainPage.this, HistoryActivity.class);
                                         if (intent != null) {
-                                            intent.putExtra("traderorcustomer", traderID);
+                                            intent.putExtra("trader", approverID);
                                             intent.putExtra("role", role);
                                             startActivity(intent);
                                         }
@@ -1226,9 +1219,9 @@ public class AdminMainPage extends AppCompatActivity implements GoogleApiClient.
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(AdminMainPage.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(ApprovalMainPage.this, NotTraderActivity.class);
                                         if (intent != null) {
-                                            intent.putExtra("traderorcustomer", traderID);
+                                            intent.putExtra("trader", approverID);
                                             intent.putExtra("role", role);
                                             startActivity(intent);
                                         }
@@ -1242,9 +1235,9 @@ public class AdminMainPage extends AppCompatActivity implements GoogleApiClient.
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(AdminMainPage.this, TraderProfile.class);
+                                        Intent intent = new Intent(ApprovalMainPage.this, TraderProfile.class);
                                         if (intent != null) {
-                                            intent.putExtra("traderorcustomer", traderID);
+                                            intent.putExtra("trader", approverID);
                                             intent.putExtra("role", role);
                                             startActivity(intent);
                                         }
@@ -1262,9 +1255,9 @@ public class AdminMainPage extends AppCompatActivity implements GoogleApiClient.
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(AdminMainPage.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(ApprovalMainPage.this, NotTraderActivity.class);
                                         if (intent != null) {
-                                            intent.putExtra("traderorcustomer", traderID);
+                                            intent.putExtra("trader", approverID);
                                             intent.putExtra("role", role);
                                             startActivity(intent);
                                         }
@@ -1278,9 +1271,9 @@ public class AdminMainPage extends AppCompatActivity implements GoogleApiClient.
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(AdminMainPage.this, AdminAllCustomers.class);
+                                        Intent intent = new Intent(ApprovalMainPage.this, AdminAllCustomers.class);
                                         if (intent != null) {
-                                            intent.putExtra("traderorcustomer", traderID);
+                                            intent.putExtra("trader", approverID);
                                             intent.putExtra("role", role);
                                             startActivity(intent);
                                         }
@@ -1299,9 +1292,9 @@ public class AdminMainPage extends AppCompatActivity implements GoogleApiClient.
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(AdminMainPage.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(ApprovalMainPage.this, NotTraderActivity.class);
                                         if (intent != null) {
-                                            intent.putExtra("traderorcustomer", traderID);
+                                            intent.putExtra("trader", approverID);
                                             intent.putExtra("role", role);
                                             startActivity(intent);
                                         }
@@ -1315,9 +1308,9 @@ public class AdminMainPage extends AppCompatActivity implements GoogleApiClient.
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(AdminMainPage.this, AdminAddNewProductActivityII.class);
+                                        Intent intent = new Intent(ApprovalMainPage.this, AdminAddNewProductActivityII.class);
                                         if (intent != null) {
-                                            intent.putExtra("traderorcustomer", traderID);
+                                            intent.putExtra("trader", approverID);
                                             intent.putExtra("role", role);
                                             startActivity(intent);
                                         }
@@ -1335,9 +1328,9 @@ public class AdminMainPage extends AppCompatActivity implements GoogleApiClient.
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(AdminMainPage.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(ApprovalMainPage.this, NotTraderActivity.class);
                                         if (intent != null) {
-                                            intent.putExtra("traderorcustomer", traderID);
+                                            intent.putExtra("trader", approverID);
                                             intent.putExtra("role", role);
                                             startActivity(intent);
                                         }
@@ -1351,9 +1344,9 @@ public class AdminMainPage extends AppCompatActivity implements GoogleApiClient.
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(AdminMainPage.this, AllGoodsBought.class);
+                                        Intent intent = new Intent(ApprovalMainPage.this, AllGoodsBought.class);
                                         if (intent != null) {
-                                            intent.putExtra("traderorcustomer", traderID);
+                                            intent.putExtra("trader", approverID);
                                             intent.putExtra("role", role);
                                             startActivity(intent);
                                         }
@@ -1371,9 +1364,9 @@ public class AdminMainPage extends AppCompatActivity implements GoogleApiClient.
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(AdminMainPage.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(ApprovalMainPage.this, NotTraderActivity.class);
                                         if (intent != null) {
-                                            intent.putExtra("traderorcustomer", traderID);
+                                            intent.putExtra("trader", approverID);
                                             intent.putExtra("role", role);
                                             startActivity(intent);
                                         }
@@ -1387,9 +1380,9 @@ public class AdminMainPage extends AppCompatActivity implements GoogleApiClient.
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(AdminMainPage.this, AdminPaymentHere.class);
+                                        Intent intent = new Intent(ApprovalMainPage.this, AdminPaymentHere.class);
                                         if (intent != null) {
-                                            intent.putExtra("traderorcustomer", traderID);
+                                            intent.putExtra("trader", approverID);
                                             intent.putExtra("role", role);
                                             startActivity(intent);
                                         }
@@ -1407,9 +1400,9 @@ public class AdminMainPage extends AppCompatActivity implements GoogleApiClient.
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(AdminMainPage.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(ApprovalMainPage.this, NotTraderActivity.class);
                                         if (intent != null) {
-                                            intent.putExtra("traderorcustomer", traderID);
+                                            intent.putExtra("trader", approverID);
                                             intent.putExtra("role", role);
                                             startActivity(intent);
                                         }
@@ -1423,9 +1416,9 @@ public class AdminMainPage extends AppCompatActivity implements GoogleApiClient.
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(AdminMainPage.this, AdminSettings.class);
+                                        Intent intent = new Intent(ApprovalMainPage.this, AdminSettings.class);
                                         if (intent != null) {
-                                            intent.putExtra("traderorcustomer", traderID);
+                                            intent.putExtra("trader", approverID);
                                             intent.putExtra("role", role);
                                             startActivity(intent);
                                         }

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20sp"
+        tools:ignore="MissingConstraints"
+        android:orientation="vertical">
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="You can login into multiple account"
+            android:textSize="21sp"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:gravity="center_horizontal"
+            android:layout_marginBottom="70sp">
+
+
+        </TextView>
+
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="LOGIN"
+            android:id="@+id/zoneshop"
+            android:layout_marginBottom="30sp">
+
+
+        </Button>
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="CLIENT"
+            android:textSize="14sp"
+            android:id="@+id/approvertraderlogin"
+            android:layout_marginBottom="30sp">
+
+
+        </Button>
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="USER"
+            android:id="@+id/approverclientlogin"
+            android:layout_marginBottom="30sp">
+
+
+        </Button>
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="You can login as the user of the account"
+            android:textSize="21sp"
+            android:textAlignment="center"
+            android:layout_marginTop="40sp"
+            android:textColor="@color/black"
+            android:gravity="center_horizontal"
+            android:layout_marginBottom="70sp">
+
+
+        </TextView>
+
+    </LinearLayout>
+
+</RelativeLayout>

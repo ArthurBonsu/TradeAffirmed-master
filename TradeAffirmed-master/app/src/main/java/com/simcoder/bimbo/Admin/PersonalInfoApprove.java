@@ -169,7 +169,7 @@ public  class PersonalInfoApprove extends AppCompatActivity
     String email;
     String age;
     TextView candidateuserid;
-    String response = "approved";
+    String personalinforesponse = "approved";
     //
     //AUTHENTICATORS
     android.widget.ImageView admincartimageofproduct;
@@ -193,6 +193,7 @@ public  class PersonalInfoApprove extends AppCompatActivity
     private DatabaseReference mDatabase;
     private DatabaseReference mDatabaseCHURCHCHOSEN;
     private ProgressDialog mProgress;
+    String personalinfoapproveactivity = "personalinfoapproveact";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -543,8 +544,8 @@ public  class PersonalInfoApprove extends AppCompatActivity
                             holder.ApprovalButtton.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    response = "approve";
-                                    setDecision(response);
+                                    personalinforesponse = "approve";
+                                    setDecision(personalinforesponse);
                                     Intent approvalintent = new Intent(PersonalInfoApprove.this, PersonalInfoApprove.class);
                                     approvalintent.putExtra("role", role);
                                     approvalintent.putExtra("uid", uid);
@@ -560,8 +561,8 @@ public  class PersonalInfoApprove extends AppCompatActivity
                                     public void onClick(View view) {
 
                                           /// Dialog Box
-                                        response = "reject";
-                                        setDecision(response);
+                                        personalinforesponse = "reject";
+                                        setDecision(personalinforesponse);
                                         Intent rejectintent = new Intent(PersonalInfoApprove.this, PersonalInfoApprove.class);
                                         rejectintent.putExtra("role", role);
                                         rejectintent.putExtra("uid", uid);
@@ -579,8 +580,8 @@ public  class PersonalInfoApprove extends AppCompatActivity
                                 holder.PauseButton.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View view) {
-                                        response = "pause";
-                                        setDecision(response);
+                                        personalinforesponse = "pause";
+                                        setDecision(personalinforesponse);
                                         Intent pausebuttonintent = new Intent(PersonalInfoApprove.this, PersonalInfoApprove.class);
                                         pausebuttonintent.putExtra("role", role);
                                         pausebuttonintent.putExtra("uid", uid);
@@ -646,7 +647,7 @@ public  class PersonalInfoApprove extends AppCompatActivity
 
 
     // Post Info
-    private void setDecision(String response) {
+    private void setDecision(String personalinforesponse) {
 
         user = mAuth.getCurrentUser();
 
@@ -663,8 +664,8 @@ public  class PersonalInfoApprove extends AppCompatActivity
 
             }
 
-            if (response != null) {
-                mProgress.setMessage("Making +" + response + "for this current user");
+            if (personalinforesponse != null) {
+                mProgress.setMessage("Making +" + personalinforesponse + "for this current user");
 
                 mProgress.show();
 
@@ -672,13 +673,14 @@ public  class PersonalInfoApprove extends AppCompatActivity
 
 
                         // PICK UP THE SPECIAL PRODUCT INFO AND LOADING THEM INTO THE DATABASE
-                        Users newuserapprovalinfo =     new Users(uid, name, image, phone, email, gender, age,response);
+
+                        Users newuserapprovalinfo =     new Users(uid, name, image, phone, email, gender, age,personalinforesponse,personalinfoapproveactivity);
                         UsersRef.child(userID).setValue(newuserapprovalinfo, new
                                 DatabaseReference.CompletionListener() {
                                     @Override
                                     public void onComplete(DatabaseError databaseError, DatabaseReference
                                             databaseReference) {
-                                        Toast.makeText(getApplicationContext(), "User Decision Taken as "  +response, Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(getApplicationContext(), "User Decision Taken as "  +personalinforesponse, Toast.LENGTH_SHORT).show();
                                         Intent personapprovalloginfointent = new Intent(PersonalInfoApprove.this, HomeActivity.class);
 
                                         startActivity(personapprovalloginfointent);

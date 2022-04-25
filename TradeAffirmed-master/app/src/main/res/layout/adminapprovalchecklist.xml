@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    android:orientation="vertical">
+
+     <LinearLayout
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/approvalchecklisttextview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25sp"
+        android:text="Approval CheckList"
+        android:textColor="@color/textColor"
+        android:textSize="24sp" />
+
+    <TextView
+        android:id="@+id/PersonalInfoTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25sp"
+        android:text="Personal Info CheckList"
+        android:textColor="@color/textColor"
+        android:textSize="24sp" />
+
+
+    <EditText
+        android:id="@+id/personalinforequirement"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25sp"
+        android:text="Personal Requirement To Fill"
+        android:textColor="@color/textColor"
+        android:textSize="15sp" />
+
+    <TextView
+        android:id="@+id/ResidenceInfoTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25sp"
+        android:text="Residence Info CheckList"
+        android:textColor="@color/textColor"
+        android:textSize="15sp" />
+
+
+    <EditText
+        android:id="@+id/residenceinforequirement"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25sp"
+        android:text="Residence Requirement To Fill"
+        android:textColor="@color/textColor"
+        android:textSize="15sp" />
+
+    <TextView
+        android:id="@+id/BackgroundInfoTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25sp"
+        android:text="Background Info CheckList"
+        android:textColor="@color/textColor"
+        android:textSize="15sp" />
+
+
+    <EditText
+        android:id="@+id/backgroundinforequirement"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25sp"
+        android:text="Background Requirement To Fill"
+        android:textColor="@color/textColor"
+        android:textSize="15sp" />
+
+    <TextView
+        android:id="@+id/SecurityInfoTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25sp"
+        android:text="Security Info CheckList"
+        android:textColor="@color/textColor"
+        android:textSize="15sp" />
+
+
+
+
+    <EditText
+        android:id="@+id/securityinforequirement"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25sp"
+        android:text="Needed Requirement To Fill"
+        android:textColor="@color/textColor"
+        android:textSize="15sp" />
+
+    <Button
+        android:id="@+id/approvalinfotextsubmit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Button"
+        tools:text="SUBMIT" />
+
+     </LinearLayout>
+</androidx.core.widget.NestedScrollView>

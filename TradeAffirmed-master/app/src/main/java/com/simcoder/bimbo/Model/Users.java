@@ -5,6 +5,12 @@ import com.simcoder.bimbo.instagram.Models.Like;
 import java.util.List;
 
 public class Users {
+    // securityinfostatus
+    // personalinfostatus
+    // residenceinfostatus
+    // backgroundinfostatus
+    // securityinfostatus
+    String securityinfostatus, personalinfostatus, residenceinfostatus, backgroundinfostatus;
 
     private String desc, image, title, name,age, phone, discount, pid, price, quantity, tid, traderID, commentkey, likeid;
 
@@ -56,7 +62,7 @@ public class Users {
     String auxid;
     String typeofid;
     String auxcountry;
-
+ String personalinfo,residenceinfo, backgroundinfo,securityinfo;
 
 
 
@@ -74,6 +80,7 @@ public class Users {
 
     public Users(String uid, String name, String image, String phone, String email, String gender, String age) {
     }
+
 
     public Users(
             String desc, String image, String title, String name, String phone, String discount, String pid, String price, String quantity, String tid, String traderID,
@@ -360,29 +367,10 @@ public class Users {
     this.approved = approved;
     }
 
-    public Users(String uid, String name, String image, String phone, String email, String gender, String age, String response) {
-     this.uid = uid;
-     this.name = name;
-     this.image = image;
-     this.phone = phone;
-
-     this.email = email;
-     this.gender = gender;
-     this.age = age;
-     this.response = response;
 
 
-     if (response == "approve"){
-         this.approve = approve;
-              }
-     if (response == "reject"){
-          this.reject = reject;
-     }
 
-     if(response == "pause"){
-         this.pause = pause;
-     }
-    }
+
 
     public Users(String uid, String name, String address, String street, String gpscode, String country) {
         this.uid = uid;
@@ -412,6 +400,105 @@ public class Users {
         this.natidimage = natidimage;
     }
 
+    public Users(String personalinfo, String residenceinfo, String backgroundinfo, String securityinfo) {
+        this.personalinfo = personalinfo;
+        this.residenceinfo = residenceinfo;
+        this.backgroundinfo = backgroundinfo;
+        this.securityinfo = securityinfo;
+    }
+     public Users(String uid, String name, String image, String phone, String email, String gender, String age, String inforesponse, String approvalactivitytype) {
+        this.uid = uid;
+        this.name = name;
+        this.image = image;
+        this.phone = phone;
+        this.email = email;
+        this.gender = gender;
+        this.age = age;
+        if (approvalactivitytype == "personalinfoapproveact") {
+            this.personalinfostatus = inforesponse;
+        }
+        if (approvalactivitytype == "backgroundinfoapproveact") {
+            this.backgroundinfostatus = inforesponse;
+        }
+         if (approvalactivitytype == "residentialinfoapproveact") {
+             this.residenceinfostatus = inforesponse;
+         }
+
+         if (approvalactivitytype == "securityinfoapproveact") {
+             this.securityinfostatus = inforesponse;
+         }
+    }
+
+    public Users(String uid, String name, String address, String street, String gpscode, String country, String inforesponse, String securitycheckapprove) {
+        this.uid = uid;
+        this.name = name;
+        this.image = image;
+        this.phone = phone;
+        this.email = email;
+        this.gender = gender;
+        this.age = age;
+        this.securityinfostatus = inforesponse;
+
+    }
+
+    public Users(String uid, String name, String reasons) {
+        this.uid = uid;
+        this.name = name;
+        this.reasons = reasons;
+
+
+    }
+    // securityinfostatus
+    // personalinfostatus
+    // residenceinfostatus
+    // backgroundinfostatus
+    // securityinfostatus
+
+    public String getreasons() {
+        return reasons;
+    }
+
+
+    public void setreasons(String reasons) {
+        this.reasons = reasons;
+    }
+
+
+    public String getpersonalinfo() {
+        return personalinfo;
+    }
+
+
+    public void setpersonalinfo(String personalinfo) {
+        this.personalinfo = personalinfo;
+    }
+
+    public String getresidenceinfo() {
+        return residenceinfo;
+    }
+
+
+    public void setresidenceinfo(String residenceinfo) {
+        this.residenceinfo = residenceinfo;
+    }
+
+    public String getbackgroundinfo() {
+        return backgroundinfo;
+    }
+
+
+    public void setbackgroundinfo(String backgroundinfo) {
+        this.backgroundinfo = backgroundinfo;
+    }
+
+    public String getsecurityinfo() {
+        return securityinfo;
+    }
+
+
+    public void setsecurityinfo(String securityinfo) {
+        this.securityinfo = securityinfo;
+    }
 
     public String getnatidimage() {
         return natidimage;
@@ -752,6 +839,35 @@ public class Users {
     }
 
 
+    public String getsecurityinfostatus() {
+        return securityinfostatus;
+    }
+
+    public void setsecurityinfostatus(String securityinfostatus) {
+        this.securityinfostatus = securityinfostatus;
+    }
+    public String getpersonalinfostatus() {
+        return personalinfostatus;
+    }
+
+    public void setpersonalinfostatus(String personalinfostatus) {
+        this.personalinfostatus = personalinfostatus;
+    }
+
+    public String getresidenceinfostatus() {
+        return residenceinfostatus;
+    }
+
+    public void setresidenceinfostatus(String residenceinfostatus) {
+        this.residenceinfostatus = residenceinfostatus;
+    }
+    public String getbackgroundinfostatus() {
+        return backgroundinfostatus;
+    }
+
+    public void setbackgroundinfostatus(String backgroundinfostatus) {
+        this.backgroundinfostatus = backgroundinfostatus;
+    }
     public String getquantity() {
         return quantity;
     }
@@ -1142,3 +1258,4 @@ public class Users {
     }
 
 }
+

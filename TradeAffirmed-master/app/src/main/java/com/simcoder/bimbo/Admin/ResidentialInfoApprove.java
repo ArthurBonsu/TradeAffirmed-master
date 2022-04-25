@@ -199,6 +199,7 @@ public  class ResidentialInfoApprove extends AppCompatActivity
     ImageButton candidateapprovebackbutton;
     ImageButton candidateapprovenextbutton;
 
+    String residentialactivity = "residentialinfoapproveact";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -686,7 +687,7 @@ public  class ResidentialInfoApprove extends AppCompatActivity
 
 
                 // PICK UP THE SPECIAL PRODUCT INFO AND LOADING THEM INTO THE DATABASE
-                Users newuserapprovalinfo =     new Users(uid, name, address, street, gpscode, country,response);
+                Users newuserapprovalinfo =     new Users(uid, name, address, street, gpscode, country,response,residentialactivity);
                 UsersRef.child(userID).setValue(newuserapprovalinfo, new
                         DatabaseReference.CompletionListener() {
                             @Override

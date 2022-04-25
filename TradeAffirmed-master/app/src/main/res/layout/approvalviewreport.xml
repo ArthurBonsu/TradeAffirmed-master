@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:orientation="vertical">
+
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="match_parent"
+        android:layout_height="50sp"
+
+        android:text="Report And Instruction" />
+
+    <TextView
+        android:id="@+id/candidateidinfo"
+        android:layout_width="match_parent"
+        android:layout_height="50sp"
+
+        android:text="Report And Instruction" />
+
+    <TextView
+        android:id="@+id/reportpost"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:text="Full Instruction Given To Client" />
+
+    <Button
+        android:id="@+id/back"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:text="Back To Confirmation Page" />
+
+</LinearLayout>
