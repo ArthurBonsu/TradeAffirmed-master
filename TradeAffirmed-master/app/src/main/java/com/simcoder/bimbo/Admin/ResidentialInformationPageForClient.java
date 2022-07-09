@@ -1,4 +1,4 @@
-package com.simcoder.bimbo.WorkActivities;
+package com.simcoder.bimbo.Admin;
 
 import com.google.firebase.auth.FirebaseUser;
 
@@ -31,7 +31,7 @@ import com.simcoder.bimbo.R;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ResidentialInfo extends AppCompatActivity {
+public class ResidentialInformationPageForClient extends AppCompatActivity {
 
     private EditText   Nameinfo, Emailinfo, Phoneinfo;
 
@@ -40,7 +40,7 @@ public class ResidentialInfo extends AppCompatActivity {
     private ImageView mProfileImage;
 
     private FirebaseAuth mAuth;
-    private DatabaseReference mUserDatabase;
+    private DatabaseReference mAdminTraderDatabase;
 
     private String userID;
     private String mName;
@@ -97,25 +97,25 @@ public class ResidentialInfo extends AppCompatActivity {
     EditText        GpsCode;
     Spinner CountrySpinner;
     EditText  StreetAddress;
-    ImageButton      home_icon;
+      ImageButton      home_icon;
 
-    String  themailingaddressstring;
-    String  thegpscodestring;
-    String thestreetaddressstring;
+   String  themailingaddressstring;
+   String  thegpscodestring;
+   String thestreetaddressstring;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.residentialinfo);
+        setContentView(R.layout.residentialinformationpage);
         Intent roleintent = getIntent();
         if (roleintent.getExtras().getString("role") != null) {
             role = roleintent.getExtras().getString("role");
         }
 
-        Intent userIDintent = getIntent();
-        if (userIDintent.getExtras().getString("userID") != null) {
-            traderID = userIDintent.getExtras().getString("userID");
+        Intent traderIDintent = getIntent();
+        if (traderIDintent.getExtras().getString("traderID") != null) {
+            traderID = traderIDintent.getExtras().getString("traderID");
         }
 
         MailingAddress = findViewById(R.id.MailingAddress);
@@ -141,17 +141,17 @@ public class ResidentialInfo extends AppCompatActivity {
 
         FirebaseUser user = mAuth.getCurrentUser();
         if (user != null) {
-            userID = "";
-            userID = user.getUid();
+            traderID = "";
+            traderID = user.getUid();
 
 
-            mUserDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child(userID);
+            mAdminTraderDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child(traderID);
             getUserInfo();
             // SET THE AGE ADAPTER
 
 
             // SET THE COUNTRY ADAPTER
-            ArrayAdapter<String> myAdapter = new ArrayAdapter<String>(ResidentialInfo.this,
+            ArrayAdapter<String> myAdapter = new ArrayAdapter<String>(ResidentialInformationPageForClient.this,
                     android.R.layout.simple_list_item_1, getResources().getStringArray(R.array.countryspinner));
             myAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             countryspinner.setAdapter(myAdapter);
@@ -185,10 +185,10 @@ public class ResidentialInfo extends AppCompatActivity {
                     movetonext.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            Intent intent = new Intent(ResidentialInfo.this, BackgroundInfo.class);
+                            Intent intent = new Intent(ResidentialInformationPageForClient.this, BackgroundCheck.class);
                             if (intent != null) {
                                 intent.putExtra("role", role);
-                                intent.putExtra("userID", userID);
+                                intent.putExtra("traderID", traderID);
                                 startActivity(intent);
                                 finish();
                             }
@@ -202,27 +202,33 @@ public class ResidentialInfo extends AppCompatActivity {
         }
 
     }
-    //POPULATE THE EDIT BOX IF THERE ALREADY EXIST SUCH A TRANSACTION
+              //POPULATE THE EDIT BOX IF THERE ALREADY EXIST SUCH A TRANSACTION
+
+    // address
+    // gpscode
+    // street
+    // country
+
     public void getUserInfo(){
-        mUserDatabase.addValueEventListener(new ValueEventListener() {
+        mAdminTraderDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if(dataSnapshot.exists() && dataSnapshot.getChildrenCount()>0) {
                     Map<String, Object> map = (Map<String, Object>) dataSnapshot.getValue(HashMaps.class);
                     if (map.get("address") != null) {
-                        String  themailingaddress = map.get("address").toString();
+                       String  themailingaddress = map.get("address").toString();
 
                         MailingAddress.setText(themailingaddress);
 
 
                     }
                     if (map.get("gpscode") != null) {
-                        String    thegpscode = map.get("gpscode").toString();
+                     String    thegpscode = map.get("gpscode").toString();
                         GpsCode.setText(mPhone);
                     }
 
                     if (map.get("street") != null) {
-                        String   thestreetaddress = map.get("street").toString();
+                      String   thestreetaddress = map.get("street").toString();
                         StreetAddress.setText(thestreetaddress);
                     }
 
@@ -251,14 +257,14 @@ public class ResidentialInfo extends AppCompatActivity {
 
         if (themailingaddressstring != null && thegpscodestring != null && thestreetaddressstring != null) {
 
-            Map userInfo = new HashMap();
-            userInfo.put("address", themailingaddressstring);
-            userInfo.put("street", thestreetaddressstring);
-            userInfo.put("gpscode", thegpscodestring);
-            userInfo.put("country",countrytext);
-            mUserDatabase.updateChildren(userInfo);
+                    Map userInfo = new HashMap();
+                    userInfo.put("address", themailingaddressstring);
+                    userInfo.put("street", thestreetaddressstring);
+                    userInfo.put("gpscode", thegpscodestring);
+                    userInfo.put("country",countrytext);
+                    mAdminTraderDatabase.updateChildren(userInfo);
 
-        }
+                }
 
     }
 

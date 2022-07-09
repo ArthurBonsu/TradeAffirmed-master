@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+
+    <TextView
+        android:id="@+id/aprovalsummarybanner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Full Summary Of Pending Approval"
+        />
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+    <TextView
+        android:id="@+id/approvalidtag"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="ApprovalID"
+        android:layout_marginRight="10sp"
+       />
+
+
+        <TextView
+            android:id="@+id/approvalidtobefixed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="myapprovalid"
+            />
+    </LinearLayout>
+
+
+
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/approveridtag"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="ApproverID"
+            android:layout_marginRight="10sp"
+            />
+
+
+        <TextView
+            android:id="@+id/approveridtobefixed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="approverID"
+            />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/approvernametag"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="ApproverName"
+            android:layout_marginRight="10sp"
+            />
+
+
+        <TextView
+            android:id="@+id/approvernametobefixed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="myapprovername"
+            />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/userIDtag"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="userID"
+            android:layout_marginRight="10sp"
+            />
+
+
+        <TextView
+            android:id="@+id/userIDtobefixed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="myuserID"
+            />
+
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/traderIDtag"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="traderID"
+            android:layout_marginRight="10sp"
+            />
+
+
+        <TextView
+            android:id="@+id/traderIDtagtobefixed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="mytraderIDtobefixed"
+            />
+
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/datetag"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Date"
+            android:layout_marginRight="10sp"
+            />
+
+
+        <TextView
+            android:id="@+id/datetobefixed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="mydate"
+            />
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/timetag"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Time"
+            android:layout_marginRight="10sp"
+            />
+
+
+        <TextView
+            android:id="@+id/timetobefixed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="mytime"
+            />
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/gendertag"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Gender"
+            android:layout_marginRight="10sp"
+            />
+
+
+        <TextView
+            android:id="@+id/gendertobefixed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="mygender"
+            />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <Button
+            android:id="@+id/backoftheprofile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:paddingBottom="@dimen/activity_vertical_margin"
+            android:text="ViewProfile"
+            android:textAlignment="center"
+            android:textColor="@color/colorPrimary"
+            android:textSize="24sp"
+            android:visibility="visible"
+            android:gravity="center_horizontal"
+            android:layout_below="@+id/approvernamehere"/>
+
+
+
+
+        <Button
+            android:id="@+id/nextoftheprofile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:paddingBottom="@dimen/activity_vertical_margin"
+            android:text="Pending Approvals"
+            android:textAlignment="center"
+            android:textColor="@color/colorPrimary"
+            android:textSize="24sp"
+            android:visibility="visible"
+            android:gravity="center_horizontal"
+            android:layout_below="@+id/approvernamehere"/>
+    </LinearLayout>
+</LinearLayout>

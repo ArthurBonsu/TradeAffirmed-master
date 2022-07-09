@@ -256,6 +256,7 @@ public class ApprovalMainPage extends AppCompatActivity implements GoogleApiClie
         super.onCreate(savedInstanceState);
         setContentView(R.layout.approvalmainpage);
         Intent roleintent = getIntent();
+
         if (roleintent.getExtras().getString("role") != null) {
             role = roleintent.getExtras().getString("role");
         }

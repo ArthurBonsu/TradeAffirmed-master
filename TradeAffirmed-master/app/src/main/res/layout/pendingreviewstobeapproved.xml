@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Pending Reviews"
+        android:textAlignment="center"
+        android:gravity="center_horizontal"
+        android:layout_marginBottom="15sp">
+
+
+    </TextView>
+
+    <LinearLayout
+        android:layout_marginTop="40sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="CUSTOMER"
+            android:id="@+id/pendingreviewcustomer"
+            android:layout_marginRight="40sp">
+
+
+        </Button>
+
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="TRADER"
+            android:id="@+id/pendingreviewtrader"
+            android:layout_marginRight="40sp">
+
+
+        </Button>
+
+    </LinearLayout>
+
+</LinearLayout>

@@ -39,20 +39,17 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
 import com.rey.material.widget.ImageView;
 import com.simcoder.bimbo.DriverMapActivity;
 import com.simcoder.bimbo.HistoryActivity;
 import com.simcoder.bimbo.Interface.ItemClickListner;
 import com.simcoder.bimbo.Model.AdminOrders;
-import com.simcoder.bimbo.Model.Users;
 import com.simcoder.bimbo.R;
 import com.simcoder.bimbo.WorkActivities.CartActivity;
-import com.simcoder.bimbo.WorkActivities.CustomerProfile;
+import com.simcoder.bimbo.WorkActivities.PersonalInfo;
 import com.simcoder.bimbo.WorkActivities.TraderProfile;
 import com.simcoder.bimbo.instagram.Home.InstagramHomeActivity;
 import com.squareup.picasso.Callback;
@@ -62,7 +59,7 @@ import com.squareup.picasso.Picasso;
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.paperdb.Paper;
 
-public  class  ApprovalViewPending extends AppCompatActivity
+public  class ApprovalViewPendingForTrader extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     DatabaseReference ProductsRef;
     private DatabaseReference Userdetails;
@@ -133,6 +130,10 @@ public  class  ApprovalViewPending extends AppCompatActivity
     TextView orderedtime;
     TextView ordereddate;
     String newornot;
+    String   aid;
+    String  approvername;
+    String approvalID;
+    String userID;
 
 /*
     addnewproducthere
@@ -150,26 +151,41 @@ public  class  ApprovalViewPending extends AppCompatActivity
 TextView    theuserstatus;
  ImageView   theapproverhomepic;
  TextView   theuiditself;
-  TextView   theapprovalpendingstatusdetails;
+ TextView theapprovername;
+  Button   theapprovalpendingstatusdetails;
  Button   nextoftheprofile;
   Button  backoftheprofile;
 String approverID;
 String  status, approverimage;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(
-                (R.layout.approvalviewpending));
+                (R.layout.activityhomeforadmin));
 
         Intent roleintent = getIntent();
         if (roleintent.getExtras().getString("role") != null) {
             role = roleintent.getExtras().getString("role");
         }
 
-        Intent approvalIDintent = getIntent();
-        if (approvalIDintent.getExtras().getString("approverID") != null) {
-             approverID= approvalIDintent.getExtras().getString("approverID");
+        Intent approverIDintent = getIntent();
+        if (approverIDintent.getExtras().getString("approverID") != null) {
+             approverID= approverIDintent.getExtras().getString("approverID");
         }
+        Intent userIDIntent = getIntent();
+        if (userIDIntent.getExtras().getString("userID") != null) {
+            userID= userIDIntent.getExtras().getString("userID");
+        }
+
+
+
+        Intent approvalIDintent = getIntent();
+        if (approvalIDintent.getExtras().getString("approvalID") != null) {
+            approvalID= approvalIDintent.getExtras().getString("approvalID");
+        }
+
 
         recyclerView = findViewById(R.id.recycler_menu);
 
@@ -186,15 +202,14 @@ String  status, approverimage;
         }
 */
 
-
-        theuserstatus = (TextView)findViewById(R.id.theuserstatus);
-                theapproverhomepic = (ImageView)findViewById(R.id.theapproverhomepic);
+         theuserstatus = (TextView)findViewById(R.id.theuserstatus);
+         theapproverhomepic = (ImageView)findViewById(R.id.theapproverhomepic);
+        theapprovername = (TextView)findViewById(R.id.theapprovername);
         theuiditself = (TextView)findViewById(R.id.theuiditself);
-                theapprovalpendingstatusdetails = (TextView)findViewById(R.id.theapprovalpendingstatusdetails);
+        theapprovalpendingstatusdetails = (Button)findViewById(R.id.theapprovalpendingstatusdetails);
         nextoftheprofile = (Button) findViewById(R.id.nextoftheprofile);
-                backoftheprofile = (Button)findViewById(R.id.backoftheprofile);
-
-
+        backoftheprofile = (Button)findViewById(R.id.backoftheprofile);
+        theapprovername = (TextView)findViewById(R.id.theapprovername);
 
 
         Paper.init(this);
@@ -270,7 +285,7 @@ String  status, approverimage;
                     }
 
                     if (mGoogleApiClient != null) {
-                        mGoogleApiClient = new GoogleApiClient.Builder(this).enableAutoManage(ApprovalViewPending.this,
+                        mGoogleApiClient = new GoogleApiClient.Builder(this).enableAutoManage(ApprovalViewPendingForTrader.this,
                                 new GoogleApiClient.OnConnectionFailedListener() {
                                     @Override
                                     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
@@ -307,15 +322,10 @@ String  status, approverimage;
     public class ApprovalViewViewHolder extends RecyclerView.ViewHolder {
         public LinearLayout root;
 
-
-
-
         public TextView theuserstatus;
-
-
         public TextView theuiditself;
-
-        public TextView theapprovalpendingstatusdetails;
+        public  TextView theapprovername;
+        public Button theapprovalpendingstatusdetails;
         public Button nextoftheprofile;
         public Button backoftheprofile;
 
@@ -325,14 +335,13 @@ String  status, approverimage;
         public ApprovalViewViewHolder(View itemView) {
             super(itemView);
 
-
             theuserstatus = itemView.findViewById(R.id.theuserstatus);
             theapproverhomepic = itemView.findViewById(R.id.theapproverhomepic);
             theuiditself = itemView.findViewById(R.id.theuiditself);
             theapprovalpendingstatusdetails = itemView.findViewById(R.id.theapprovalpendingstatusdetails);
             nextoftheprofile = itemView.findViewById(R.id.nextoftheprofile);
             backoftheprofile = itemView.findViewById(R.id.backoftheprofile);
-
+            theapprovername = itemView.findViewById(R.id.theapprovername);
 
         }
 
@@ -340,15 +349,18 @@ String  status, approverimage;
             this.listner = listner;
         }
 
+
+        public void settheuserstatus(String theuserstatushere) {
+
+            theuserstatus.setText(theuserstatushere);
+        }
+
         public void settheuiditself(String theuiditselftext) {
 
             theuiditself.setText(theuiditselftext);
         }
 
-        public void settheapprovalpendingstatusdetails(String theapprovalpendingstatusdetailstext) {
 
-            customername.setText(theapprovalpendingstatusdetailstext);
-        }
 
 
 
@@ -397,7 +409,7 @@ String  status, approverimage;
 
             Query queryhere =
 
-                    FirebaseDatabase.getInstance().getReference().child("Users").child("Approvers").orderByChild("status").equalTo("pending");
+                    FirebaseDatabase.getInstance().getReference().child("Approval").orderByChild("statusidentifier").equalTo("pendingTrader");
             if (queryhere != null) {
 
                 FirebaseRecyclerOptions<AdminOrders> options =
@@ -416,7 +428,7 @@ String  status, approverimage;
 */
 
 
-                                        Log.i(TAG, "AdminAllCustomers " + snapshot);
+                                        Log.i(TAG, "Approval View Pending " + snapshot);
 
 
                                         if (snapshot.child("uid").getValue(String.class) != null) {
@@ -430,16 +442,28 @@ String  status, approverimage;
                                         if (snapshot.child("approverimage").getValue(String.class) != null) {
                                             approverimage = snapshot.child("approverimage").getValue(String.class);
                                         }
+                                        if (snapshot.child("aid").getValue(String.class) != null) {
+                                            aid = snapshot.child("aid").getValue(String.class);
+                                        }
+                                        if (snapshot.child("approvername").getValue(String.class) != null) {
+                                            approvername = snapshot.child("approvername").getValue(String.class);
+                                        }
+                                        if (snapshot.child("tid").getValue(String.class) != null) {
+                                            tid = snapshot.child("tid").getValue(String.class);
+                                        }
+                                        if (snapshot.child("date").getValue(String.class) != null) {
+                                            date = snapshot.child("date").getValue(String.class);
+                                        }
+                                        if (snapshot.child("time").getValue(String.class) != null) {
+                                            time = snapshot.child("time").getValue(String.class);
+                                        }
 
-
-
-
-                                        return new AdminOrders(uid, status, approverimage);
+                                        return new AdminOrders(tid, status, approverimage);
                                     }
                                 }).build();
 
 
-                feedadapter = new FirebaseRecyclerAdapter<AdminOrders, ApprovalViewPending.ApprovalViewViewHolder>(options) {
+                feedadapter = new FirebaseRecyclerAdapter<AdminOrders, ApprovalViewPendingForTrader.ApprovalViewViewHolder>(options) {
                     @Nullable
                     @Override
                     public ApprovalViewViewHolder onCreateViewHolder(ViewGroup parent, int viewrole) {
@@ -460,108 +484,67 @@ String  status, approverimage;
 
 
                     @Override
-                    protected void onBindViewHolder(@Nullable final ApprovalViewPending.ApprovalViewViewHolder holder, int position, @Nullable AdminOrders model) {
+                    protected void onBindViewHolder(@Nullable final ApprovalViewPendingForTrader.ApprovalViewViewHolder holder, int position, @Nullable AdminOrders model) {
                         if (model != null) {
                             holders = holder;
 
 
-
-                            theapproverhomepic = itemView.findViewById(R.id.theapproverhomepic);
-                            theuiditself = itemView.findViewById(R.id.theuiditself);
-                            theapprovalpendingstatusdetails = itemView.findViewById(R.id.theapprovalpendingstatusdetails);
-                            nextoftheprofile = itemView.findViewById(R.id.nextoftheprofile);
-                            backoftheprofile = itemView.findViewById(R.id.backoftheprofile);
+                            holder.theuserstatus.setText(status);
+                            holder.theapprovername.setText(approvername);
+                            holder.theuiditself.setText(tid);
 
 
 
-                            holder.theuiditself.setText(uid);
-                            holder.theapprovalpendingstatusdetails.setText(status);
-
-
-                            Log.d(TAG, "The UID here " + uid + status );
+                            Log.d(TAG, "The Approvers Here  " + status + approvername );
                             holder.setapproverhomepic(getApplicationContext(), approverimage);
 
 
-                            myfirebaseDatabase = FirebaseDatabase.getInstance();
 
-                            AllOrderDatabaseRef = myfirebaseDatabase.getReference().child("Users").child("Customers");
-                            AllOrderDatabaseRef.keepSynced(true);
-             /*
-                            Query firebasequery =  myfirebaseDatabase.getReference().child("Users").child("Customers").orderByChild("uid").equalTo(uid);
-
-                            firebasequery.addValueEventListener(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(DataSnapshot dataSnapshot) {
-
-                                    for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
+                            Log.d(TAG, "The UID here " + tid + status );
+                            holder.setapproverhomepic(getApplicationContext(), approverimage);
 
 
 
-                                        userkey = dataSnapshot1.getKey();
-                                        Log.d(TAG, "The Photokey " + userkey);
-
-                                        Log.d(TAG, "UserID here  " + uid );
-                                        if (dataSnapshot1.child("job").getValue() != null) {
-                                            thecustomersjob = dataSnapshot1.child("job").getValue(String.class);
-                                            holders.allcustomersjob.setText(thecustomersjob);
-                                            Log.d(TAG, "The CustomerJob " + thecustomersjob);
-
-
-
-                                            useValue (thecustomersjob);
-                                            Log.d(TAG, "The UseValueJob " + thecustomersjob);
-                                        }
-                                    }
-                                }
-
-
-                                @Override
-                                public void onCancelled(DatabaseError databaseError) {
-
-                                }
-                            });
- */
-
-
-                            if (allcustomersimage != null) {
-                                Picasso.get().load(image).placeholder(R.drawable.profile).into(allcustomersimage);
-                            }
-                            holder.orderid.setText(orderkey);
-                            holder.customername.setText(name);
-                            holder.thetradername.setText(tradername);
-                            holder.ordereddate.setText(date);
-                            holder.orderedtime.setText(time);
-                            if (holder.orderid != null) {
-                                holder.orderid.setOnClickListener(new View.OnClickListener() {
+                            if (holder.theapprovalpendingstatusdetails != null) {
+                                holder.theapprovalpendingstatusdetails.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View view) {
-                                        Intent checkspecificorderidintent = new Intent(AllOrdersDelivered.this, ViewSpecificUsersOrder.class);
+                                        Intent approvalpendingbuttonintent = new Intent(ApprovalViewPendingForTrader.this, PersonalInfo.class);
+                                        approvalpendingbuttonintent.putExtra("userID" , uid);
+                                        approvalpendingbuttonintent.putExtra("uid", tid);
+                                        approvalpendingbuttonintent.putExtra("approverID", aid);
+                                        approvalpendingbuttonintent.putExtra("approvalID", approvalID);
+                                        approvalpendingbuttonintent.putExtra("role", role);
 
-                                        startActivity(checkspecificorderidintent);
+                                        startActivity(approvalpendingbuttonintent);
+
+                                    }
+                                });
+                            }
+                            if (holder.backoftheprofile != null) {
+                                holder.backoftheprofile.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        Intent backtoapprovehomeintent = new Intent(ApprovalViewPendingForTrader.this, ApproveHome.class);
+
+                                        startActivity(backtoapprovehomeintent);
 
                                     }
                                 });
                             }
 
-                            if (holder.customername != null) {
-                                holder.customername.setOnClickListener(new View.OnClickListener() {
+                            if (holder.nextoftheprofile != null) {
+                                holder.nextoftheprofile.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View view) {
-                                        Intent checkcustomerwhoorderedintent = new Intent(AllOrdersDelivered.this, CustomerProfile.class);
+                                        Intent personalinfonextoftheprofile = new Intent(ApprovalViewPendingForTrader.this, PersonalInfoApproveForClient.class);
+                                        personalinfonextoftheprofile.putExtra("userID" , uid);
+                                        personalinfonextoftheprofile.putExtra("uid", tid);
+                                        personalinfonextoftheprofile.putExtra("approverID", aid);
+                                        personalinfonextoftheprofile.putExtra("approvalID", approvalID);
+                                        personalinfonextoftheprofile.putExtra("role", role);
 
-                                        startActivity(checkcustomerwhoorderedintent);
-
-                                    }
-                                });
-                            }
-
-                            if (holder.allcustomersimage != null) {
-                                holder.allcustomersimage.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
-                                        Intent allcustomerimagesintent = new Intent(AllOrdersDelivered.this, CustomerProfile.class);
-
-                                        startActivity(allcustomerimagesintent);
+                                        startActivity(personalinfonextoftheprofile);
 
                                     }
                                 });
@@ -680,7 +663,7 @@ String  status, approverimage;
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(AllOrdersDelivered.this, NotTraderActivity.class);
+                        Intent intent = new Intent(ApprovalViewPendingForTrader.this, NotTraderActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderID);
                             intent.putExtra("role", role);
@@ -696,7 +679,7 @@ String  status, approverimage;
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(AllOrdersDelivered.this, AdminAllCustomers.class);
+                        Intent intent = new Intent(ApprovalViewPendingForTrader.this, AdminAllCustomers.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderID);
                             intent.putExtra("role", role);
@@ -718,7 +701,7 @@ String  status, approverimage;
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(AllOrdersDelivered.this, NotTraderActivity.class);
+                        Intent intent = new Intent(ApprovalViewPendingForTrader.this, NotTraderActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderID);
                             intent.putExtra("role", role);
@@ -734,7 +717,7 @@ String  status, approverimage;
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(AllOrdersDelivered.this, ViewAllCarts.class);
+                        Intent intent = new Intent(ApprovalViewPendingForTrader.this, ViewAllCarts.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderID);
                             intent.putExtra("role", role);
@@ -755,7 +738,7 @@ String  status, approverimage;
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(AllOrdersDelivered.this, NotTraderActivity.class);
+                        Intent intent = new Intent(ApprovalViewPendingForTrader.this, NotTraderActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderID);
                             intent.putExtra("role", role);
@@ -771,7 +754,7 @@ String  status, approverimage;
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(AllOrdersDelivered.this, AdminAddNewProductActivityII.class);
+                        Intent intent = new Intent(ApprovalViewPendingForTrader.this, AdminAddNewProductActivityII.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderID);
                             intent.putExtra("role", role);
@@ -790,7 +773,7 @@ String  status, approverimage;
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(AllOrdersDelivered.this, NotTraderActivity.class);
+                        Intent intent = new Intent(ApprovalViewPendingForTrader.this, NotTraderActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderID);
                             intent.putExtra("role", role);
@@ -806,7 +789,7 @@ String  status, approverimage;
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(AllOrdersDelivered.this, AdminAllProducts.class);
+                        Intent intent = new Intent(ApprovalViewPendingForTrader.this, AdminAllProducts.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderID);
                             intent.putExtra("role", role);
@@ -822,7 +805,7 @@ String  status, approverimage;
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(AllOrdersDelivered.this, NotTraderActivity.class);
+                                Intent intent = new Intent(ApprovalViewPendingForTrader.this, NotTraderActivity.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
@@ -838,7 +821,7 @@ String  status, approverimage;
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(AllOrdersDelivered.this, AllProductsPurchased.class);
+                                Intent intent = new Intent(ApprovalViewPendingForTrader.this, AllProductsPurchased.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
@@ -858,7 +841,7 @@ String  status, approverimage;
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(AllOrdersDelivered.this, NotTraderActivity.class);
+                                Intent intent = new Intent(ApprovalViewPendingForTrader.this, NotTraderActivity.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
@@ -874,7 +857,7 @@ String  status, approverimage;
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(AllOrdersDelivered.this, ViewAllCustomers.class);
+                                Intent intent = new Intent(ApprovalViewPendingForTrader.this, ViewAllCustomers.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
@@ -893,7 +876,7 @@ String  status, approverimage;
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(AllOrdersDelivered.this, NotTraderActivity.class);
+                                Intent intent = new Intent(ApprovalViewPendingForTrader.this, NotTraderActivity.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
@@ -909,7 +892,7 @@ String  status, approverimage;
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(AllOrdersDelivered.this, TradersFollowing.class);
+                                Intent intent = new Intent(ApprovalViewPendingForTrader.this, TradersFollowing.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
@@ -930,7 +913,7 @@ String  status, approverimage;
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(AllOrdersDelivered.this, NotTraderActivity.class);
+                                Intent intent = new Intent(ApprovalViewPendingForTrader.this, NotTraderActivity.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
@@ -946,7 +929,7 @@ String  status, approverimage;
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(AllOrdersDelivered.this, AdminNewOrdersActivity.class);
+                                Intent intent = new Intent(ApprovalViewPendingForTrader.this, AdminNewOrdersActivity.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
@@ -967,7 +950,7 @@ String  status, approverimage;
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(AllOrdersDelivered.this, NotTraderActivity.class);
+                                Intent intent = new Intent(ApprovalViewPendingForTrader.this, NotTraderActivity.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
@@ -983,7 +966,7 @@ String  status, approverimage;
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(AllOrdersDelivered.this, AdminCustomerServed.class);
+                                Intent intent = new Intent(ApprovalViewPendingForTrader.this, AdminCustomerServed.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
@@ -1003,7 +986,7 @@ String  status, approverimage;
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(AllOrdersDelivered.this, NotTraderActivity.class);
+                                Intent intent = new Intent(ApprovalViewPendingForTrader.this, NotTraderActivity.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
@@ -1019,7 +1002,7 @@ String  status, approverimage;
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(AllOrdersDelivered.this, AdminAllOrderHistory.class);
+                                Intent intent = new Intent(ApprovalViewPendingForTrader.this, AdminAllOrderHistory.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
@@ -1048,7 +1031,7 @@ String  status, approverimage;
         if (id == R.id.viewmap) {
             if (!role.equals("Trader")) {
 
-                Intent intent = new Intent(AllOrdersDelivered.this, NotTraderActivity.class);
+                Intent intent = new Intent(ApprovalViewPendingForTrader.this, NotTraderActivity.class);
                 if (intent != null) {
                     intent.putExtra("traderorcustomer", traderID);
                     intent.putExtra("role", role);
@@ -1057,7 +1040,7 @@ String  status, approverimage;
                 }
             } else {
 
-                Intent intent = new Intent(AllOrdersDelivered.this, DriverMapActivity.class);
+                Intent intent = new Intent(ApprovalViewPendingForTrader.this, DriverMapActivity.class);
                 if (intent != null) {
                     intent.putExtra("traderorcustomer", traderID);
                     intent.putExtra("role", role);
@@ -1078,7 +1061,7 @@ String  status, approverimage;
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(AllOrdersDelivered.this, NotTraderActivity.class);
+                        Intent intent = new Intent(ApprovalViewPendingForTrader.this, NotTraderActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderID);
                             intent.putExtra("role", role);
@@ -1094,7 +1077,7 @@ String  status, approverimage;
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(AllOrdersDelivered.this, CartActivity.class);
+                        Intent intent = new Intent(ApprovalViewPendingForTrader.this, CartActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderID);
                             intent.putExtra("role", role);
@@ -1114,7 +1097,7 @@ String  status, approverimage;
                             String cusomerId = "";
 
                             cusomerId = user.getUid();
-                            Intent intent = new Intent(AllOrdersDelivered.this, NotTraderActivity.class);
+                            Intent intent = new Intent(ApprovalViewPendingForTrader.this, NotTraderActivity.class);
                             if (intent != null) {
                                 intent.putExtra("traderorcustomer", traderID);
                                 intent.putExtra("role", role);
@@ -1130,7 +1113,7 @@ String  status, approverimage;
                             String cusomerId = "";
                             cusomerId = user.getUid();
 
-                            Intent intent = new Intent(AllOrdersDelivered.this, InstagramHomeActivity.class);
+                            Intent intent = new Intent(ApprovalViewPendingForTrader.this, InstagramHomeActivity.class);
                             if (intent != null) {
                                 intent.putExtra("traderorcustomer", traderID);
                                 intent.putExtra("role", role);
@@ -1150,7 +1133,7 @@ String  status, approverimage;
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(AllOrdersDelivered.this, NotTraderActivity.class);
+                                Intent intent = new Intent(ApprovalViewPendingForTrader.this, NotTraderActivity.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
@@ -1166,7 +1149,7 @@ String  status, approverimage;
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(AllOrdersDelivered.this, AdminAllProducts.class);
+                                Intent intent = new Intent(ApprovalViewPendingForTrader.this, AdminAllProducts.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
@@ -1183,7 +1166,7 @@ String  status, approverimage;
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(AllOrdersDelivered.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(ApprovalViewPendingForTrader.this, NotTraderActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1199,7 +1182,7 @@ String  status, approverimage;
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(AllOrdersDelivered.this, SearchForAdminProductsActivity.class);
+                                        Intent intent = new Intent(ApprovalViewPendingForTrader.this, SearchForAdminProductsActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1215,7 +1198,7 @@ String  status, approverimage;
                             if (FirebaseAuth.getInstance() != null) {
                                 FirebaseAuth.getInstance().signOut();
                                 if (mGoogleApiClient != null) {
-                                    mGoogleSignInClient.signOut().addOnCompleteListener(AllOrdersDelivered.this,
+                                    mGoogleSignInClient.signOut().addOnCompleteListener(ApprovalViewPendingForTrader.this,
                                             new OnCompleteListener<Void>() {
                                                 @Override
                                                 public void onComplete(@NonNull Task<Void> task) {
@@ -1224,7 +1207,7 @@ String  status, approverimage;
                                             });
                                 }
                             }
-                            Intent intent = new Intent(AllOrdersDelivered.this, com.simcoder.bimbo.MainActivity.class);
+                            Intent intent = new Intent(ApprovalViewPendingForTrader.this, com.simcoder.bimbo.MainActivity.class);
                             if (intent != null) {
                                 startActivity(intent);
                                 finish();
@@ -1239,7 +1222,7 @@ String  status, approverimage;
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(AllOrdersDelivered.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(ApprovalViewPendingForTrader.this, NotTraderActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1255,7 +1238,7 @@ String  status, approverimage;
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(AllOrdersDelivered.this, com.simcoder.bimbo.WorkActivities.SettinsActivity.class);
+                                        Intent intent = new Intent(ApprovalViewPendingForTrader.this, com.simcoder.bimbo.WorkActivities.SettinsActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1273,7 +1256,7 @@ String  status, approverimage;
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(AllOrdersDelivered.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(ApprovalViewPendingForTrader.this, NotTraderActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1289,7 +1272,7 @@ String  status, approverimage;
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(AllOrdersDelivered.this, HistoryActivity.class);
+                                        Intent intent = new Intent(ApprovalViewPendingForTrader.this, HistoryActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1309,7 +1292,7 @@ String  status, approverimage;
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(AllOrdersDelivered.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(ApprovalViewPendingForTrader.this, NotTraderActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1325,7 +1308,7 @@ String  status, approverimage;
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(AllOrdersDelivered.this, TraderProfile.class);
+                                        Intent intent = new Intent(ApprovalViewPendingForTrader.this, TraderProfile.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1345,7 +1328,7 @@ String  status, approverimage;
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(AllOrdersDelivered.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(ApprovalViewPendingForTrader.this, NotTraderActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1361,7 +1344,7 @@ String  status, approverimage;
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(AllOrdersDelivered.this, AdminAllCustomers.class);
+                                        Intent intent = new Intent(ApprovalViewPendingForTrader.this, AdminAllCustomers.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1382,7 +1365,7 @@ String  status, approverimage;
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(AllOrdersDelivered.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(ApprovalViewPendingForTrader.this, NotTraderActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1398,7 +1381,7 @@ String  status, approverimage;
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(AllOrdersDelivered.this, AdminAddNewProductActivityII.class);
+                                        Intent intent = new Intent(ApprovalViewPendingForTrader.this, AdminAddNewProductActivityII.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1418,7 +1401,7 @@ String  status, approverimage;
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(AllOrdersDelivered.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(ApprovalViewPendingForTrader.this, NotTraderActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1434,7 +1417,7 @@ String  status, approverimage;
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(AllOrdersDelivered.this, AllGoodsBought.class);
+                                        Intent intent = new Intent(ApprovalViewPendingForTrader.this, AllGoodsBought.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1454,7 +1437,7 @@ String  status, approverimage;
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(AllOrdersDelivered.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(ApprovalViewPendingForTrader.this, NotTraderActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1470,7 +1453,7 @@ String  status, approverimage;
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(AllOrdersDelivered.this, AdminPaymentHere.class);
+                                        Intent intent = new Intent(ApprovalViewPendingForTrader.this, AdminPaymentHere.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1490,7 +1473,7 @@ String  status, approverimage;
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(AllOrdersDelivered.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(ApprovalViewPendingForTrader.this, NotTraderActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1506,7 +1489,7 @@ String  status, approverimage;
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(AllOrdersDelivered.this, AdminSettings.class);
+                                        Intent intent = new Intent(ApprovalViewPendingForTrader.this, AdminSettings.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);

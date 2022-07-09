@@ -12,7 +12,7 @@ public class Users {
     // securityinfostatus
     String securityinfostatus, personalinfostatus, residenceinfostatus, backgroundinfostatus;
 
-    private String desc, image, title, name,age, phone, discount, pid, price, quantity, tid, traderID, commentkey, likeid;
+    private String desc, image, title, name, age, phone, discount, pid, price, quantity, tid, traderID, commentkey, likeid;
 
     private String address, amount, city, date, state, distance, mode, number, shippingcost, time, delivered;
 
@@ -21,9 +21,10 @@ public class Users {
     private String coverimage, g, one, zero, customerId, customerRideId, destination, destinationLat, destinationLng;
     private String driverFoundID, customer, driver, predictDistance, lat, lng, rating, triptime;
     private String job, quote, role;
-    String  natidimage, gpscode, gpsimage;
-
+    String natidimage, gpscode, gpsimage;
+    String reasons;
     private String car, descriptions;
+    String approverimage, aid, approvername, approvalID, status;
 
     private String field, followersname, customerPaid, driverPaidOut;
     private String timestamp, operations, reviewBy, residences, service, setinformations;
@@ -34,7 +35,7 @@ public class Users {
     String response;
 
     private List<Like> likes;
-   String subject;
+    String subject;
     String photoid;
     String orderkey;
     String reply;
@@ -62,8 +63,7 @@ public class Users {
     String auxid;
     String typeofid;
     String auxcountry;
- String personalinfo,residenceinfo, backgroundinfo,securityinfo;
-
+    String personalinfo, residenceinfo, backgroundinfo, securityinfo;
 
 
     //pause
@@ -73,9 +73,6 @@ public class Users {
     //gender
     //response
     //age
-
-
-
 
 
     public Users(String uid, String name, String image, String phone, String email, String gender, String age) {
@@ -92,7 +89,7 @@ public class Users {
             String coverimage, String g, String one, String zero, String customerId, String customerRideId, String destination, String destinationLat, String destinationLng,
             String driverFoundID, String customer, String driver, String predictDistance, String lat, String lng, String rating, String triptime,
             String job, String quote, String role, String car, String descriptions, String field, String followersname, String customerPaid, String driverPaidOut,
-            String timestamp, String operations, String reviewBy, String residences, String service, String setinformations, String baseprice, String commentkey, String likeid, String newornot, String paymentkey,    String likenumber
+            String timestamp, String operations, String reviewBy, String residences, String service, String setinformations, String baseprice, String commentkey, String likeid, String newornot, String paymentkey, String likenumber
     ) {
 
 
@@ -157,17 +154,17 @@ public class Users {
         this.setinformations = setinformations;
         this.baseprice = baseprice;
         this.commentkey = commentkey;
-        this. likeid = likeid;
+        this.likeid = likeid;
         this.newornot = newornot;
         this.paymentkey = paymentkey;
         this.likenumber = likenumber;
-        this.age =age;
+        this.age = age;
         this.response = response;
 
     }
 
     public Users(String comment, String uid, List<Like> likes, String date, String time, String tid, String name, String number, String subject, String likeid, String pid, String commentkey, String photoid, String orderkey,
-                   String reply,String replyid,String traderimage,String tradername,String pname,String pimage,String image
+                 String reply, String replyid, String traderimage, String tradername, String pname, String pimage, String image
     ) {
         this.comment = comment;
         this.uid = uid;
@@ -262,13 +259,12 @@ public class Users {
         this.setinformations = setinformations;
         this.baseprice = baseprice;
         this.commentkey = commentkey;
-        this. likeid = likeid;
-
+        this.likeid = likeid;
 
 
     }
 
-    public Users(String date, String time, String tid, String traderimage, String tradername, String address, String amount, String city, String delivered, String distance, String image, String uid, String name, String mode, String number, String phone, String quantity, String shippingcost, String state,  String approved) {
+    public Users(String date, String time, String tid, String traderimage, String tradername, String address, String amount, String city, String delivered, String distance, String image, String uid, String name, String mode, String number, String phone, String quantity, String shippingcost, String state, String approved) {
 
         this.desc = desc;
         this.image = image;
@@ -336,40 +332,35 @@ public class Users {
         this.setinformations = setinformations;
         this.baseprice = baseprice;
         this.commentkey = commentkey;
-        this. likeid = likeid;
-
+        this.likeid = likeid;
 
 
     }
 
 
     public Users(String orderkey, String date, String time, String tid, String traderimage, String tradername, String address, String amount, String city, String delivered, String distance, String image, String uid, String name, String mode, String number, String phone, String quantity, String state, String shippingcost, String approved) {
-    this.orderkey = orderkey;
-    this.date = date;
-    this.time = time;
-    this.tid = tid;
-    this.traderimage = traderimage;
-    this.tradername = tradername;
-    this.address = address;
-    this.amount =amount;
-    this.city = city;
-    this.delivered = delivered;
-    this.distance = distance;
-    this.image = image;
-    this.uid = uid;
-    this.name = name;
-    this.mode = mode;
-    this.number = number;
-    this.phone = phone;
-    this.quantity = quantity;
-    this.state = state;
-    this.shippingcost = shippingcost;
-    this.approved = approved;
+        this.orderkey = orderkey;
+        this.date = date;
+        this.time = time;
+        this.tid = tid;
+        this.traderimage = traderimage;
+        this.tradername = tradername;
+        this.address = address;
+        this.amount = amount;
+        this.city = city;
+        this.delivered = delivered;
+        this.distance = distance;
+        this.image = image;
+        this.uid = uid;
+        this.name = name;
+        this.mode = mode;
+        this.number = number;
+        this.phone = phone;
+        this.quantity = quantity;
+        this.state = state;
+        this.shippingcost = shippingcost;
+        this.approved = approved;
     }
-
-
-
-
 
 
     public Users(String uid, String name, String address, String street, String gpscode, String country) {
@@ -385,8 +376,9 @@ public class Users {
     //   this.gpscode = gpscode;
     //  this.gpsimage = gpsimage;
     public Users(String natidimage) {
-      this.natidimage = natidimage;
+        this.natidimage = natidimage;
     }
+
     public Users(String gpscode, String gpsimage) {
         this.gpscode = gpscode;
         this.gpsimage = gpsimage;
@@ -406,7 +398,8 @@ public class Users {
         this.backgroundinfo = backgroundinfo;
         this.securityinfo = securityinfo;
     }
-     public Users(String uid, String name, String image, String phone, String email, String gender, String age, String inforesponse, String approvalactivitytype) {
+
+    public Users(String uid, String name, String image, String phone, String email, String gender, String age, String inforesponse, String approvalactivitytype) {
         this.uid = uid;
         this.name = name;
         this.image = image;
@@ -420,13 +413,13 @@ public class Users {
         if (approvalactivitytype == "backgroundinfoapproveact") {
             this.backgroundinfostatus = inforesponse;
         }
-         if (approvalactivitytype == "residentialinfoapproveact") {
-             this.residenceinfostatus = inforesponse;
-         }
+        if (approvalactivitytype == "residentialinfoapproveact") {
+            this.residenceinfostatus = inforesponse;
+        }
 
-         if (approvalactivitytype == "securityinfoapproveact") {
-             this.securityinfostatus = inforesponse;
-         }
+        if (approvalactivitytype == "securityinfoapproveact") {
+            this.securityinfostatus = inforesponse;
+        }
     }
 
     public Users(String uid, String name, String address, String street, String gpscode, String country, String inforesponse, String securitycheckapprove) {
@@ -448,12 +441,61 @@ public class Users {
 
 
     }
+
+
+
+
+
+
     // securityinfostatus
     // personalinfostatus
     // residenceinfostatus
     // backgroundinfostatus
     // securityinfostatus
 
+    public String getapproverimage() {
+        return approverimage;
+    }
+
+
+    public void setapproverimage(String approverimage) {
+        this.approverimage = approverimage;
+    }
+
+    public String getaid() {
+        return aid;
+    }
+
+
+    public void setaid(String aid) {
+        this.aid = aid;
+    }
+
+
+    public String getapprovername() {
+        return approvername;
+    }
+
+
+    public void setapprovername(String approvername) {
+        this.approvername = approvername;
+    }
+
+    public String getApprovalID() {
+        return approvalID;
+    }
+
+
+    public void setApprovalID(String approvalID) {
+        this.approvalID = approvalID;
+    }
+    public String getstatus() {
+        return status;
+    }
+
+    public void setstatus(String status) {
+        this.status = status;
+    }
     public String getreasons() {
         return reasons;
     }

@@ -223,7 +223,7 @@ public class BackgroundCheck extends AppCompatActivity {
                     movetonext.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            Intent intent = new Intent(BackgroundCheck.this, SecurityCheck2.class);
+                            Intent intent = new Intent(BackgroundCheck.this, SecurityCheck2ForClient.class);
                             if (intent != null) {
                                 intent.putExtra("role", role);
                                 intent.putExtra("traderID", traderID);

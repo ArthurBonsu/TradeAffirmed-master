@@ -1,16 +1,7 @@
 package com.simcoder.bimbo.Admin;
 
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseUser;
-
-import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.media.Image;
 import android.net.Uri;
-import android.provider.MediaStore;
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -22,31 +13,23 @@ import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
-import android.widget.TextView;
-import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 import com.simcoder.bimbo.Model.HashMaps;
 import com.simcoder.bimbo.R;
 
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ResidentialInformationPage extends AppCompatActivity {
+public class ResidentialInformationPageForTrader extends AppCompatActivity {
 
     private EditText   Nameinfo, Emailinfo, Phoneinfo;
 
@@ -166,7 +149,7 @@ public class ResidentialInformationPage extends AppCompatActivity {
 
 
             // SET THE COUNTRY ADAPTER
-            ArrayAdapter<String> myAdapter = new ArrayAdapter<String>(ResidentialInformationPage.this,
+            ArrayAdapter<String> myAdapter = new ArrayAdapter<String>(ResidentialInformationPageForTrader.this,
                     android.R.layout.simple_list_item_1, getResources().getStringArray(R.array.countryspinner));
             myAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             countryspinner.setAdapter(myAdapter);
@@ -200,7 +183,7 @@ public class ResidentialInformationPage extends AppCompatActivity {
                     movetonext.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            Intent intent = new Intent(ResidentialInformationPage.this, BackgroundCheck.class);
+                            Intent intent = new Intent(ResidentialInformationPageForTrader.this, BackgroundCheck.class);
                             if (intent != null) {
                                 intent.putExtra("role", role);
                                 intent.putExtra("traderID", traderID);

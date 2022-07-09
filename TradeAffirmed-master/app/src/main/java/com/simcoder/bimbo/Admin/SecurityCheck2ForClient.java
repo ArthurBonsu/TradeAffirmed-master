@@ -1,79 +1,64 @@
 package com.simcoder.bimbo.Admin;
 
-import android.app.ProgressDialog;
-import android.content.Context;
-import android.content.Intent;
-import android.media.Image;
-import android.net.Uri;
-import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import android.text.TextUtils;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.material.navigation.NavigationView;
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import com.firebase.ui.database.SnapshotParser;
-import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
+import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
+
+import android.app.ProgressDialog;
+import android.content.Intent;
+import android.net.Uri;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+
+import android.os.Bundle;
+import android.text.TextUtils;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.Query;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
-import com.rey.material.widget.ImageView;
-import com.simcoder.bimbo.CustomerLoginActivity;
-import com.simcoder.bimbo.Model.Products;
-import com.simcoder.bimbo.Model.Users;
-import com.simcoder.bimbo.WorkActivities.CartActivity;
-import com.simcoder.bimbo.WorkActivities.CustomerProfile;
-import com.simcoder.bimbo.WorkActivities.HomeActivity;
-import com.simcoder.bimbo.DriverMapActivity;
-import com.simcoder.bimbo.HistoryActivity;
-import com.simcoder.bimbo.Interface.ItemClickListner;
-import com.simcoder.bimbo.Model.Cart;
-import com.firebase.ui.database.FirebaseRecyclerAdapter;
-import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+import com.simcoder.bimbo.DriverMapActivity;
+import com.simcoder.bimbo.HistoryActivity;
+import com.simcoder.bimbo.Model.Users;
 import com.simcoder.bimbo.R;
-import com.simcoder.bimbo.WorkActivities.SearchProductsActivity;
+import com.simcoder.bimbo.WorkActivities.CartActivity;
 import com.simcoder.bimbo.WorkActivities.TraderProfile;
 import com.simcoder.bimbo.instagram.Home.InstagramHomeActivity;
-import com.squareup.picasso.Callback;
-import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
+
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -81,155 +66,188 @@ import java.util.Calendar;
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.paperdb.Paper;
 
+public class SecurityCheck2ForClient extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, NavigationView.OnNavigationItemSelectedListener {
+    private static final int GALLERY_REQUEST2 = 2;
+    private EditText   Nameinfo, Emailinfo, Phoneinfo;
 
-public  class ApprovalSubmission extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
-    DatabaseReference ProductsRef;
-    private DatabaseReference Userdetails;
-    private DatabaseReference ProductsRefwithproduct;
-    private RecyclerView recyclerView;
-    RecyclerView.LayoutManager layoutManager;
-    DatabaseReference UsersRef;
-    DatabaseReference FollowerDatabaseReference;
-    String productkey;
-    String traderkeyhere;
+    private Button mBack, mConfirm;
 
-    private static final int RC_SIGN_IN = 1;
-    private FirebaseAuth.AuthStateListener firebaseAuthListener;
-    String ProductID;
-    FirebaseDatabase myfirebaseDatabase;
-    FirebaseDatabase FollowerDatabase;
-    String gender;
-    public ViewHolder holders;
-
-    public FirebaseRecyclerAdapter feedadapter;
-
-    //AUTHENTICATORS
-
-    private GoogleMap mMap;
-    GoogleApiClient mGoogleApiClient;
+    private ImageView mProfileImage;
 
     private FirebaseAuth mAuth;
-    private GoogleSignInClient mGoogleSignInClient;
+    private DatabaseReference mAdminTraderDatabase;
 
+    private String userID;
+    private String mName;
+    private String mPhone;
+    String  mEmail;
+    private String mCar;
+    String mService;
+    private String mProfileImageUrl;
+    Spinner mySpinner;
 
-    TextView allcustomersname;
-    TextView allcustomersphonenumber;
-    TextView allcustomersjob;
-    ImageView allcustomersimage;
-    String traderkey;
-    String key;
-    String tradename;
-    String traderimage;
-    FirebaseUser user;
+    String NameinfoString;
+    String EmailinfoString;
+    String PhoneinfoString;
 
-
-    String categoryname, date, desc, discount, time, pid, pimage, pname, price, image, name, size, tradername, tid;
-    String thetraderimage;
-    String address;
-    String amount;
-    String city;
-    String delivered;
-    String distance;
-    String uid;
-    String mode;
-
-    String number;
-    String phone;
-    String quantity;
-    String shippingcost;
-    String state;
-    String thecustomersjob;
-
-    String userkey;
-
-    private RecyclerView productsList;
-    private DatabaseReference cartListRef;
-    private Query mQueryTraderandUserCart;
-
-    Query QueryUser;
-    String role;
-    String cartkey;
-    String photoid;
-    String getimage;
-    DatabaseReference myreferencetoimage;
-    String productID;
-
-    ImageButton ApprovalButtton;
-    ImageButton RejectButton;
-    ImageButton PauseButton;
-
-    ImageView ProfileImageofPerson;
-    TextView NameofPerson;
-    TextView PhoneNumberofPerson;
-    TextView PersonEmail;
-    TextView Gender;
-    TextView Age;
-    String email;
-    String age;
-    TextView candidateuserid;
-
-    //
-    //AUTHENTICATORS
-    android.widget.ImageView admincartimageofproduct;
-    TextView admincartproductid;
-    TextView admincarttitlehere;
-    TextView admincartquantity;
-    TextView admincart_price;
-    TextView admincarttime;
-
-    ImageView admincartimageofuser;
-    TextView admincartusername;
-    ImageButton candidateapprovebackbutton;
-    ImageButton candidateapprovenextbutton;
-
-    ImageView admincartimageofprouct;
-    String traderuser;
-    String trader;
     private Uri mImageUri = null;
     private static final int GALLERY_REQUEST = 1;
+
+    private Uri resultUri;
+    String text;
+    private RadioGroup mRadioGroup;
+    RadioButton FemaleRadioButton;
+    RadioButton MaleRadioButton;
+    String role;
+    String traderID;
+    RadioButton radioButtonforgender;
+    String radiotext;
+
+    String thenameinfostring;
+    String theemailinfostring;
+    String thephoneinfostring;
+    String agetext;
+    String countrytext;
+
+    EditText NameofPerson;
+    EditText  PhoneNumberOfPerson;
+    EditText PersonEmail;
+    RadioGroup genderspinnerradiogroup;
+    RadioButton MaleRadiobutton;
+
+    RadioButton FemaleMaleRadiobutton;
+    Spinner agespinner;
+    Spinner NationalIDofEmergencyPerson;
+    Spinner countryspinner;
+    Button saveinformationhere;
+    ImageButton movetonext;
+    ImageButton homebutton;
+    ImageButton suggestionsbutton;
+    ImageButton       services;
+    ImageButton  expectedshipping;
+    ImageButton       adminprofile;
+    EditText MailingAddress;
+    EditText        GpsCode;
+    Spinner CountrySpinner;
+    EditText  StreetAddress;
+    ImageButton      home_icon;
+
+    String  themailingaddressstring;
+    String  thegpscodestring;
+    String thestreetaddressstring;
+
+    EditText EmergencyPersonName;
+    EditText        EmergencyPersonPhoneNumber;
+    EditText EmergencyPersonEmail;
+    Spinner        typeofidspinner;
+    ArrayAdapter<String> myIDAdapter;
+    ArrayAdapter<String> mycountryAdapter;
+    String theemergencypersonnamestring;
+    String theemergencypersonphonestring;
+    String theemergencypersonemailstring;
+    String typeofidtext;
+    String thenationalidstring;
+    String thegpscodeinformationstring;
+
+
+
+    private ImageButton mEventImage;
+    private EditText mEventtitle;
+    private EditText mEventDescription;
+    private EditText mEventDate;
+
+    String mPostKey;
+    String churchkey;
+    private Button msubmitButton;
+
     private StorageReference mStorage;
     private DatabaseReference mDatabase;
     private DatabaseReference mDatabaseCHURCHCHOSEN;
     private ProgressDialog mProgress;
+    private FirebaseAuth Auth;
+    private FirebaseUser mCurrentUser;
+    private DatabaseReference mDatabaseUser;
 
-    ImageView candidateimage;
-    TextView candidateuid = (TextView)findViewById(R.id.candidateuid);
-    TextView candidatename;
+    private String CategoryName, Description, Price, Pname, saveCurrentDate, saveCurrentTime;
+    private Button AddNewProductButton;
+    private ImageView InputProductImage;
+    private EditText InputProductName, InputProductDescription, InputProductPrice;
+    private static final int GalleryPick = 1;
+    private Uri ImageUri;
+    private String productRandomKey, downloadImageUrl;
+    private StorageReference ProductImagesRef;
+    private DatabaseReference ProductsRef;
+    private DatabaseReference ProductsTraderRef;
+    private ProgressDialog loadingBar;
+    private static final int RC_SIGN_IN = 1;
+    private FirebaseAuth.AuthStateListener firebaseAuthListener;
 
-    TextView personalstatustab;
+    String traderkeryhere;
+    FirebaseUser user;
+    Uri ImageStore;
+    Intent intent;
+    String date;
+    String time;
+    String userid;
+    String productkey;
+    String mytraderimage;
+    String idcode;
+    //AUTHENTICATORS
 
-    TextView personalstatus;
-    TextView residencestatustab;
-    TextView residencestatus;
-    TextView backgroundstatustab;
-    TextView backgroundstatus;
-    TextView securitystatustab;
-    TextView securitystatus;
-    Button back,next;
-    String residenceinfostatus, personalinfostatus, backgroundinfostatus, securityinfostatus;
+    private GoogleMap mMap;
+    GoogleApiClient mGoogleApiClient;
+    private static final String TAG = "Google Activity";
 
-    EditText reasons;
-    Button submitbutton;
-    String reasonsstring;
-    String traderID;
-    String userID;
-    String TAG;
-    String reasonstext;
-    String traderoruser;
+    private GoogleSignInClient mGoogleSignInClient;
+
+    ImageView imagetobesetto;
+    ImageButton setimagebutton;
+    ImageButton AddimageButon;
+
+    FirebaseDatabase  myuserfirebasedatabase;
+    String titleval;
+    String descval;
+    String  price;
+    String tradername;
+    String myphotoimage;
+    String traderid;
+    String pimage;
+    String tid;
+    String pname;
+    String  desc;
+    String pid;
+    String traderimage;
+    String idimage;
+
+    String gpscode;
+    String gpsimage;
+
+    EditText    GPSCodeIdText;
+    ImageView GpsCodeMapID;
+    Button GPSPickButton;
+    Button deleteGPSCodeButton;
+    Button GPSCodeButton;
+    ImageView  nationalidpic;
+    Button NationalIDPickButton;
+    Button  NationalIDUploadButton;
+    Button NationalIDDeleteButton;
+
+
+
+
+
+
+
+
+
+    public SecurityCheck2ForClient() {
+        super();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(
-                (R.layout.stickynoterecycler));
-
-
-        Intent userintent = getIntent();
-        if (userintent.getExtras().getString("userID") != null) {
-            userID = userintent.getExtras().getString("userID");
-        }
-
+        setContentView(R.layout.securitycheckpoint2);
         Intent roleintent = getIntent();
         if (roleintent.getExtras().getString("role") != null) {
             role = roleintent.getExtras().getString("role");
@@ -241,31 +259,50 @@ public  class ApprovalSubmission extends AppCompatActivity
         }
 
 
-        recyclerView = findViewById(R.id.stickyheaderrecyler);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        if (recyclerView != null) {
-            recyclerView.setLayoutManager(layoutManager);
+
+
+        //  deletenationalidpicture  nationalidpicture
+        //        // gps code GpsCodeMapID,
+        //        // pick up  PickMap
+        //        // ImageViewOfGPSCodeMap (GPSCodeID)
+
+
+
+        saveinformationhere = findViewById(R.id.saveinformationhere);
+        movetonext = findViewById(R.id.movetonext);
+        homebutton = findViewById(R.id.homebutton);
+        suggestionsbutton = findViewById(R.id.suggestionsbutton);
+        services = findViewById(R.id.services);
+        expectedshipping = findViewById(R.id.expectedshipping);
+        adminprofile = findViewById(R.id.adminprofile);
+
+
+           GPSCodeIdText = (EditText) findViewById(R.id.GPSCodeIdText);
+
+        GpsCodeMapID = (ImageView)findViewById(R.id.GpsCodeMapID );
+         GPSPickButton = (Button)findViewById(R.id.GPSPickButton);
+         deleteGPSCodeButton = (Button) findViewById(R.id.deleteGPSCodeButton);
+         GPSCodeButton = (Button)findViewById(R.id.GPSCodeButton);
+
+        thegpscodeinformationstring= GPSCodeIdText.getText().toString();
+
+
+
+        mAuth = FirebaseAuth.getInstance();
+        mCurrentUser = mAuth.getCurrentUser();
+
+
+        user = mAuth.getCurrentUser();
+        if (user != null) {
+            traderID = "";
+            traderID = user.getUid();
         }
-        if (recyclerView != null) {
-            recyclerView.setHasFixedSize(true);
-
-        }
-
-
-        reasons = (EditText) findViewById(R.id.reasons);
-        reasonsstring = reasons.getText().toString();
-        submitbutton = (Button)findViewById(R.id.submitbutton);
-        back = (Button) findViewById(R.id.back);
-        next = (Button) findViewById(R.id.next);
-
-
         Paper.init(this);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.hometoolbar);
         if (toolbar != null) {
-            toolbar.setTitle("Personal Information Activity");
+            toolbar.setTitle("GPS Code Upload");
         }
-//        setSupportActionBar(toolbar);
 
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -285,7 +322,6 @@ public  class ApprovalSubmission extends AppCompatActivity
             TextView userNameTextView = headerView.findViewById(R.id.user_profile_name);
             CircleImageView profileImageView = headerView.findViewById(R.id.user_profile_image);
 
-
             // USER
 
 
@@ -304,224 +340,120 @@ public  class ApprovalSubmission extends AppCompatActivity
                 }
 
 
-                if (mAuth != null) {
-                    user = mAuth.getCurrentUser();
-                    if (user != null) {
-                        userID = user.getUid();
+                // GET FROM FOLLOWING KEY
+                // HAVE TO BUILD THE STORAGE
+                mStorage = FirebaseStorage.getInstance().getReference().child("user_images");
+                myuserfirebasedatabase = FirebaseDatabase.getInstance();
+                mAdminTraderDatabase = myuserfirebasedatabase.getReference().child("Users").child("Drivers").child(traderID);
 
-                    }
-
-                    myfirebaseDatabase = FirebaseDatabase.getInstance();
-
-                    UsersRef = myfirebaseDatabase.getReference().child("Users");
-
-                    userkey = UsersRef.getKey();
-                    // GET FROM FOLLOWING KEY
-                    fetch();
-                    recyclerView.setAdapter(feedadapter);
-                    //        setSupportActionBar(toolbar);
-
-                    GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestIdToken(getString(R.string.default_web_client_id)).requestEmail().build();
-                    if (mGoogleApiClient != null) {
-
-                        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
-                    }
-
-                    if (mGoogleApiClient != null) {
-                        mGoogleApiClient = new GoogleApiClient.Builder(this).enableAutoManage(ApprovalSubmission.this,
-                                new GoogleApiClient.OnConnectionFailedListener() {
-                                    @Override
-                                    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
-                                    }
-                                }).addApi(Auth.GOOGLE_SIGN_IN_API, gso).build();
-                    }
-                    // USER
-                    user = mAuth.getCurrentUser();
-
+                mAdminTraderDatabase.keepSynced(true);
+/*
+                if (ProductsRef.push() != null) {
+                    productRandomKey = ProductsRef.push().getKey();
 
                 }
-            }
-        }
-    }    //GETFOLLOWING WILL PULL FROM DIFFERENT DATASTORE( THE USER DATASTORE)
+*/
+                //I have to  check to ensure that gallery intent is not placed here for the other classes
+                mProgress = new ProgressDialog(this);
 
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
-        public LinearLayout root;
+                mAuth = FirebaseAuth.getInstance();
+                GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestIdToken(getString(R.string.default_web_client_id)).requestEmail().build();
+                if (mGoogleApiClient != null) {
+                    mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+                }
 
-        public  EditText reasons;
-        public Button submitbutton;
-        public Button back;
-        public Button next;
-
-
-        public ItemClickListner listner;
-
-        public ViewHolder(View itemView) {
-            super(itemView);
-
-
-            reasons = itemView.findViewById(R.id.reasons);
-
-            submitbutton = itemView.findViewById(R.id.submitbutton);
-            back = itemView.findViewById(R.id.back);
-
-            next = itemView.findViewById(R.id.next);
-
-        }
-
-
-
-        public void setItemClickListner(ItemClickListner listner) {
-            this.listner = listner;
-        }
-
-
-
-    }
-
-    ;
-
-
-    public void useValue(String yourValue) {
-
-        Log.d(TAG, "countryNameCode: " + yourValue);
-
-    }
-
-
-    private void fetch() {
-        if (mAuth != null) {
-            user = mAuth.getCurrentUser();
-            if (user != null) {
-                traderID = user.getUid();
-
-            }
-            @Nullable
-
-            Query queryhere =
-
-                    FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").orderByChild("uid").equalTo(userID);
-            if (queryhere != null) {
-
-                FirebaseRecyclerOptions<Users> options =
-                        new FirebaseRecyclerOptions.Builder<Users>()
-                                .setQuery(queryhere, new SnapshotParser<Users>() {
-
-
-                                    @Nullable
-                                    @Override
-                                    public Users parseSnapshot(@Nullable DataSnapshot snapshot) {
-
-
-                                      /*
-                                      String commentkey = snapshot.child("Comments").getKey();
-                                      String likekey = snapshot.child("Likes").getKey();*/
-                                        Log.i(TAG, "User " + snapshot);
-
-                                        if (snapshot.child("uid").getValue() != null) {
-                                            uid = snapshot.child("uid").getValue(String.class);
-                                        }
-
-                                        if (snapshot.child("name").getValue() != null) {
-                                            name = snapshot.child("name").getValue(String.class);
-                                        }
-
-                                        if (snapshot.child("image").getValue() != null) {
-                                            image = snapshot.child("image").getValue(String.class);
-                                        }
-
-                                       return new Users(uid, name, name, image);
-
-
-                                    }
-
-                                }).build();
-
-
-                feedadapter = new FirebaseRecyclerAdapter<Users, ViewHolder>(options) {
-                    @Nullable
-                    @Override
-                    public ViewHolder onCreateViewHolder(ViewGroup parent, int view) {
-
-                        @Nullable
-                        View layoutview = LayoutInflater.from(parent.getContext())
-                                .inflate(R.layout.approvalreportsubmission, parent, false);
-
-                        return new ViewHolder(layoutview);
-                    }
-
-
-                    @Override
-                    public int getItemCount() {
-                        return super.getItemCount();
-                    }
-
-                    @Override
-                    protected void onBindViewHolder(@Nullable final ViewHolder holder, int position, @Nullable Users model) {
-                        if (model != null) {
-
-
-
-
-                            if (ProfileImageofPerson != null) {
-                                Picasso.get().load(image).placeholder(R.drawable.profile).into(ProfileImageofPerson);
-                            }
-
-                            holder.submitbutton.setOnClickListener(new View.OnClickListener() {
+                if (mGoogleApiClient != null) {
+                    mGoogleApiClient = new GoogleApiClient.Builder(this).enableAutoManage(SecurityCheck2ForClient.this,
+                            new GoogleApiClient.OnConnectionFailedListener() {
                                 @Override
-                                public void onClick(View v) {
-
-                                    submitReasons(reasonsstring);
-
-                                    Toast.makeText(ApprovalSubmission.this, "Submit Button Completed", Toast.LENGTH_SHORT).show();
+                                public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
                                 }
-                            });
+                            }).addApi(com.google.android.gms.auth.api.Auth.GOOGLE_SIGN_IN_API, gso).build();
+                }
+                buildGoogleApiClient();
 
 
-                            holder.back.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-
-                                    Intent backbutton  = new Intent(ApprovalSubmission.this, SecurityCheckApprove.class);
-                                    backbutton.putExtra("role", role);
-                                    backbutton.putExtra("uid", uid);
-                                    backbutton.putExtra("traderID", traderID);
-                                    Toast.makeText(ApprovalSubmission.this, "Returning Back To Security Check Approval", Toast.LENGTH_SHORT).show();
-                                    startActivity(backbutton);
-                                }
-                            });
-
-                            // ApprovalHome Is The Same
-                            if (holder.next != null) {
-                                holder.next.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
-
-                                        Intent nextbutton = new Intent(ApprovalSubmission.this, ApprovalConfirmationPage.class);
-                                        nextbutton.putExtra("role", role);
-                                        nextbutton.putExtra("uid", uid);
-                                        nextbutton.putExtra("traderID", traderID);
-                                        Toast.makeText(ApprovalSubmission.this, "Going To Approval Confirmation Status", Toast.LENGTH_SHORT).show();
-                                        startActivity(nextbutton);
-
-
-                                    }
-                                });
-                            }
-
-                       }
-                    }
-                };
             }
-//            if (recyclerView != null) {
-            //              recyclerView.setAdapter(feedadapter);
-            //        }
+        }}
+
+    protected synchronized void buildGoogleApiClient() {
+        if (mGoogleApiClient != null) {
+            mGoogleApiClient = new GoogleApiClient.Builder(this)
+                    .addConnectionCallbacks(SecurityCheck2ForClient.this)
+                    .addOnConnectionFailedListener(SecurityCheck2ForClient.this)
+                    .addApi(LocationServices.API)
+                    .build();
+            mGoogleApiClient.connect();
         }
-    }
+
+
+
+        // PICK UP MAP LOCATION IN ALBUMS
+        GPSPickButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent galleryIntent = new Intent(Intent.ACTION_GET_CONTENT);
+                galleryIntent.setType("image/*");
+                startActivityForResult(galleryIntent, GALLERY_REQUEST);
+            }
+        });
+
+        // UPLOAD ID CARD
+        GpsCodeMapID.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startPosting();
+            }
+
+        });
+
+        //DELETE ID CARD
+
+        deleteGPSCodeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                deletePosting();
+            }
+
+        });
+
+
+
+
+
+
+
+
+            if (movetonext != null) {
+                movetonext.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(SecurityCheck2ForClient.this, VerificationPendingPage.class);
+                        if (intent != null) {
+                            intent.putExtra("role", role);
+                            intent.putExtra("traderID", traderID);
+                            startActivity(intent);
+                            finish();
+                        }
+                    }
+                });
+            }
+
+
+        }
+
+
+
+
     // Post Info
-    private void submitReasons(String reasonsstringtext) {
+    public void startPosting() {
+
+        // GET THE INFORMATION FROM THE TEXT BOX
+
+
+        thegpscodeinformationstring= GPSCodeIdText.getText().toString();
 
         user = mAuth.getCurrentUser();
 
@@ -538,48 +470,208 @@ public  class ApprovalSubmission extends AppCompatActivity
 
             }
 
-            if (reasonsstringtext != null) {
-                mProgress.setMessage("Making +" + reasonsstringtext + "for this current user");
+
+            if (!TextUtils.isEmpty(thegpscodeinformationstring)  && mImageUri != null) {
+                mProgress.setMessage("Adding your GPS Check information");
 
                 mProgress.show();
 
+                // CHECK STORAGE FOR IMAGE AND PASS IMAGES GOTTEN THERE
+                StorageReference filepath = mStorage.child(mImageUri.getLastPathSegment());
+
+                filepath.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        gpscode = thegpscodeinformationstring;
 
 
 
-                // PICK UP THE SPECIAL PRODUCT INFO AND LOADING THEM INTO THE DATABASE
-                Users submitreasonforuser =     new Users(uid, name, reasonsstringtext);
-                UsersRef.child(userID).setValue(submitreasonforuser, new
-                        DatabaseReference.CompletionListener() {
-                            @Override
-                            public void onComplete(DatabaseError databaseError, DatabaseReference
-                                    databaseReference) {
-                                Toast.makeText(getApplicationContext(), "Reasons and instructions submitted "  +reasonsstringtext, Toast.LENGTH_SHORT).show();
-                                Intent approvalsubmissionstayintent = new Intent(ApprovalSubmission.this, ApprovalSubmission.class);
+                        final Uri downloadUrl = taskSnapshot.getUploadSessionUri();
 
-                                startActivity(approvalsubmissionstayintent);
+                        traderID = user.getUid();
+                        tradername = user.getDisplayName();
+                        gpsimage = downloadUrl.toString();
 
-                            }
-                        });
+                        Uri myphoto = user.getPhotoUrl();
+                        traderimage = myphoto.toString();
 
+
+
+                        mAdminTraderDatabase = myuserfirebasedatabase.getReference().child("Users").child("Drivers").child(traderID);
+
+                        mAdminTraderDatabase.keepSynced(true);
+
+                        // PICK UP THE SPECIAL PRODUCT INFO AND LOADING THEM INTO THE DATABASE
+                        Users userstobesent = new Users (gpscode,idimage);
+
+                        mAdminTraderDatabase.setValue(userstobesent, new
+                                DatabaseReference.CompletionListener() {
+                                    @Override
+                                    public void onComplete(DatabaseError databaseError, DatabaseReference
+                                            databaseReference) {
+                                        Toast.makeText(getApplicationContext(), "Add GPS Code Information Added", Toast.LENGTH_SHORT).show();
+                                        Intent addgpscodeinformationintent = new Intent(SecurityCheck2ForClient.this, SecurityCheck2ForClient.class);
+
+                                        startActivity(addgpscodeinformationintent);
+
+                                    }
+                                });
+
+
+                    }
+
+                });
+
+
+                mProgress.dismiss();
 
             }
 
-        };
+
+        }}
 
 
-        mProgress.dismiss();
+
+    // Post Info
+    public void deletePosting() {
+
+        // GET THE INFORMATION FROM THE TEXT BOX
+
+
+        thegpscodeinformationstring= GPSCodeIdText.getText().toString();
+
+        user = mAuth.getCurrentUser();
+
+        // GET DATES FOR PRODUCTS
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat currentDate = new SimpleDateFormat("MMM dd, yyyy");
+
+        if (currentDate != null) {
+            date = currentDate.format(calendar.getTime()).toString();
+
+            SimpleDateFormat currentTime = new SimpleDateFormat("HH:mm:ss a");
+            if (currentTime != null) {
+                time = currentTime.format(calendar.getTime());
+
+            }
+
+
+            if (!TextUtils.isEmpty(thegpscodeinformationstring)  && mImageUri != null) {
+                mProgress.setMessage("Adding your GPS security check information");
+
+                mProgress.show();
+
+                // CHECK STORAGE FOR IMAGE AND PASS IMAGES GOTTEN THERE
+                StorageReference filepath = mStorage.child(mImageUri.getLastPathSegment());
+
+                filepath.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        gpscode = "";
+                        final Uri downloadUrl = taskSnapshot.getUploadSessionUri();
+
+                        traderID = user.getUid();
+                        tradername = user.getDisplayName();
+                        gpsimage ="";
+
+
+
+
+                        Uri myphoto = user.getPhotoUrl();
+                        traderimage = myphoto.toString();
+
+
+
+                        mAdminTraderDatabase = myuserfirebasedatabase.getReference().child("Users").child("Customers").child(traderID);
+
+                        mAdminTraderDatabase.keepSynced(true);
+
+                        // PICK UP THE SPECIAL PRODUCT INFO AND LOADING THEM INTO THE DATABASE
+                        Users userstobesent = new Users (gpscode,gpsimage);
+
+                        mAdminTraderDatabase.setValue(userstobesent, new
+                                DatabaseReference.CompletionListener() {
+                                    @Override
+                                    public void onComplete(DatabaseError databaseError, DatabaseReference
+                                            databaseReference) {
+                                        Toast.makeText(getApplicationContext(), "GPS Security Information Deleted, Reuplod Info", Toast.LENGTH_SHORT).show();
+                                        Intent addadminproductactivity = new Intent(SecurityCheck2ForClient.this, SecurityCheck2ForClient.class);
+
+                                        startActivity(addadminproductactivity);
+
+                                    }
+                                });
+
+
+                    }
+
+                });
+
+
+                mProgress.dismiss();
+
+            }
+
+
+        }}
+
+
+    // You get the information here and send it to the top
+    // OnActivity result is lacking behind, I have to get the URi from it
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        // PICK NATIONAL ID INFORMATION
+        if (requestCode == GALLERY_REQUEST && resultCode == RESULT_OK) {
+
+            Uri imageUri = data.getData();
+
+            CropImage.activity(imageUri).setGuidelines(CropImageView.Guidelines.ON).setAspectRatio(1, 1).start(this);
+
+
+        }
+
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+            if (resultCode == RESULT_OK) {
+
+                mImageUri = result.getUri();
+
+                GpsCodeMapID.setImageURI(mImageUri);
+
+
+            } else if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+
+                Exception error = result.getError();
+            }
+
+        }
+
 
     }
+
+
+
+
+
+
+
+
+
+
+    @Override
     public void onConnected(@Nullable Bundle bundle) {
 
     }
 
+    @Override
     public void onConnectionSuspended(int i) {
         if (mGoogleApiClient != null) {
             mGoogleApiClient.connect();
         }
     }
 
+    @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
     }
@@ -662,7 +754,7 @@ public  class ApprovalSubmission extends AppCompatActivity
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(ApprovalSubmission.this, NotTraderActivity.class);
+                        Intent intent = new Intent(SecurityCheck2ForClient.this, NotTraderActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderID);
                             intent.putExtra("role", role);
@@ -678,7 +770,7 @@ public  class ApprovalSubmission extends AppCompatActivity
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(ApprovalSubmission.this, AdminAllCustomers.class);
+                        Intent intent = new Intent(SecurityCheck2ForClient.this, AdminAllCustomers.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderID);
                             intent.putExtra("role", role);
@@ -700,7 +792,7 @@ public  class ApprovalSubmission extends AppCompatActivity
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(ApprovalSubmission.this, NotTraderActivity.class);
+                        Intent intent = new Intent(SecurityCheck2ForClient.this, NotTraderActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderID);
                             intent.putExtra("role", role);
@@ -716,7 +808,7 @@ public  class ApprovalSubmission extends AppCompatActivity
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(ApprovalSubmission.this, ViewAllCarts.class);
+                        Intent intent = new Intent(SecurityCheck2ForClient.this, ViewAllCarts.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderID);
                             intent.putExtra("role", role);
@@ -737,7 +829,7 @@ public  class ApprovalSubmission extends AppCompatActivity
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(ApprovalSubmission.this, NotTraderActivity.class);
+                        Intent intent = new Intent(SecurityCheck2ForClient.this, NotTraderActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderID);
                             intent.putExtra("role", role);
@@ -753,7 +845,7 @@ public  class ApprovalSubmission extends AppCompatActivity
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(ApprovalSubmission.this, AdminAddNewProductActivityII.class);
+                        Intent intent = new Intent(SecurityCheck2ForClient.this, AdminAddNewProductActivityII.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderID);
                             intent.putExtra("role", role);
@@ -772,7 +864,7 @@ public  class ApprovalSubmission extends AppCompatActivity
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(ApprovalSubmission.this, NotTraderActivity.class);
+                        Intent intent = new Intent(SecurityCheck2ForClient.this, NotTraderActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderID);
                             intent.putExtra("role", role);
@@ -788,7 +880,7 @@ public  class ApprovalSubmission extends AppCompatActivity
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(ApprovalSubmission.this, AdminAllProducts.class);
+                        Intent intent = new Intent(SecurityCheck2ForClient.this, AdminAllProducts.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderID);
                             intent.putExtra("role", role);
@@ -804,7 +896,7 @@ public  class ApprovalSubmission extends AppCompatActivity
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(ApprovalSubmission.this, NotTraderActivity.class);
+                                Intent intent = new Intent(SecurityCheck2ForClient.this, NotTraderActivity.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
@@ -820,7 +912,7 @@ public  class ApprovalSubmission extends AppCompatActivity
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(ApprovalSubmission.this, AllProductsPurchased.class);
+                                Intent intent = new Intent(SecurityCheck2ForClient.this, AllProductsPurchased.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
@@ -840,7 +932,7 @@ public  class ApprovalSubmission extends AppCompatActivity
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(ApprovalSubmission.this, NotTraderActivity.class);
+                                Intent intent = new Intent(SecurityCheck2ForClient.this, NotTraderActivity.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
@@ -856,7 +948,7 @@ public  class ApprovalSubmission extends AppCompatActivity
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(ApprovalSubmission.this, ViewAllCustomers.class);
+                                Intent intent = new Intent(SecurityCheck2ForClient.this, ViewAllCustomers.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
@@ -875,7 +967,7 @@ public  class ApprovalSubmission extends AppCompatActivity
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(ApprovalSubmission.this, NotTraderActivity.class);
+                                Intent intent = new Intent(SecurityCheck2ForClient.this, NotTraderActivity.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
@@ -891,7 +983,7 @@ public  class ApprovalSubmission extends AppCompatActivity
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(ApprovalSubmission.this, TradersFollowing.class);
+                                Intent intent = new Intent(SecurityCheck2ForClient.this, TradersFollowing.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
@@ -912,7 +1004,7 @@ public  class ApprovalSubmission extends AppCompatActivity
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(ApprovalSubmission.this, NotTraderActivity.class);
+                                Intent intent = new Intent(SecurityCheck2ForClient.this, NotTraderActivity.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
@@ -928,7 +1020,7 @@ public  class ApprovalSubmission extends AppCompatActivity
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(ApprovalSubmission.this, AdminNewOrdersActivity.class);
+                                Intent intent = new Intent(SecurityCheck2ForClient.this, AdminNewOrdersActivity.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
@@ -949,7 +1041,7 @@ public  class ApprovalSubmission extends AppCompatActivity
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(ApprovalSubmission.this, NotTraderActivity.class);
+                                Intent intent = new Intent(SecurityCheck2ForClient.this, NotTraderActivity.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
@@ -965,7 +1057,7 @@ public  class ApprovalSubmission extends AppCompatActivity
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(ApprovalSubmission.this, AdminCustomerServed.class);
+                                Intent intent = new Intent(SecurityCheck2ForClient.this, AdminCustomerServed.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
@@ -985,7 +1077,7 @@ public  class ApprovalSubmission extends AppCompatActivity
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(ApprovalSubmission.this, NotTraderActivity.class);
+                                Intent intent = new Intent(SecurityCheck2ForClient.this, NotTraderActivity.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
@@ -1001,7 +1093,7 @@ public  class ApprovalSubmission extends AppCompatActivity
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(ApprovalSubmission.this, AdminAllOrderHistory.class);
+                                Intent intent = new Intent(SecurityCheck2ForClient.this, AdminAllOrderHistory.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
@@ -1030,7 +1122,7 @@ public  class ApprovalSubmission extends AppCompatActivity
         if (id == R.id.viewmap) {
             if (!role.equals("Trader")) {
 
-                Intent intent = new Intent(ApprovalSubmission.this, NotTraderActivity.class);
+                Intent intent = new Intent(SecurityCheck2ForClient.this, NotTraderActivity.class);
                 if (intent != null) {
                     intent.putExtra("traderorcustomer", traderID);
                     intent.putExtra("role", role);
@@ -1039,7 +1131,7 @@ public  class ApprovalSubmission extends AppCompatActivity
                 }
             } else {
 
-                Intent intent = new Intent(ApprovalSubmission.this, DriverMapActivity.class);
+                Intent intent = new Intent(SecurityCheck2ForClient.this, DriverMapActivity.class);
                 if (intent != null) {
                     intent.putExtra("traderorcustomer", traderID);
                     intent.putExtra("role", role);
@@ -1060,7 +1152,7 @@ public  class ApprovalSubmission extends AppCompatActivity
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(ApprovalSubmission.this, NotTraderActivity.class);
+                        Intent intent = new Intent(SecurityCheck2ForClient.this, NotTraderActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderID);
                             intent.putExtra("role", role);
@@ -1076,7 +1168,7 @@ public  class ApprovalSubmission extends AppCompatActivity
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(ApprovalSubmission.this, CartActivity.class);
+                        Intent intent = new Intent(SecurityCheck2ForClient.this, CartActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderID);
                             intent.putExtra("role", role);
@@ -1096,7 +1188,7 @@ public  class ApprovalSubmission extends AppCompatActivity
                             String cusomerId = "";
 
                             cusomerId = user.getUid();
-                            Intent intent = new Intent(ApprovalSubmission.this, NotTraderActivity.class);
+                            Intent intent = new Intent(SecurityCheck2ForClient.this, NotTraderActivity.class);
                             if (intent != null) {
                                 intent.putExtra("traderorcustomer", traderID);
                                 intent.putExtra("role", role);
@@ -1112,7 +1204,7 @@ public  class ApprovalSubmission extends AppCompatActivity
                             String cusomerId = "";
                             cusomerId = user.getUid();
 
-                            Intent intent = new Intent(ApprovalSubmission.this, InstagramHomeActivity.class);
+                            Intent intent = new Intent(SecurityCheck2ForClient.this, InstagramHomeActivity.class);
                             if (intent != null) {
                                 intent.putExtra("traderorcustomer", traderID);
                                 intent.putExtra("role", role);
@@ -1132,7 +1224,7 @@ public  class ApprovalSubmission extends AppCompatActivity
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(ApprovalSubmission.this, NotTraderActivity.class);
+                                Intent intent = new Intent(SecurityCheck2ForClient.this, NotTraderActivity.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
@@ -1148,7 +1240,7 @@ public  class ApprovalSubmission extends AppCompatActivity
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(ApprovalSubmission.this, AdminAllProducts.class);
+                                Intent intent = new Intent(SecurityCheck2ForClient.this, AdminAllProducts.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
@@ -1165,7 +1257,7 @@ public  class ApprovalSubmission extends AppCompatActivity
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(ApprovalSubmission.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(SecurityCheck2ForClient.this, NotTraderActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1181,7 +1273,7 @@ public  class ApprovalSubmission extends AppCompatActivity
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(ApprovalSubmission.this, SearchForAdminProductsActivity.class);
+                                        Intent intent = new Intent(SecurityCheck2ForClient.this, SearchForAdminProductsActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1197,7 +1289,7 @@ public  class ApprovalSubmission extends AppCompatActivity
                             if (FirebaseAuth.getInstance() != null) {
                                 FirebaseAuth.getInstance().signOut();
                                 if (mGoogleApiClient != null) {
-                                    mGoogleSignInClient.signOut().addOnCompleteListener(ApprovalSubmission.this,
+                                    mGoogleSignInClient.signOut().addOnCompleteListener(SecurityCheck2ForClient.this,
                                             new OnCompleteListener<Void>() {
                                                 @Override
                                                 public void onComplete(@NonNull Task<Void> task) {
@@ -1206,7 +1298,7 @@ public  class ApprovalSubmission extends AppCompatActivity
                                             });
                                 }
                             }
-                            Intent intent = new Intent(ApprovalSubmission.this, com.simcoder.bimbo.MainActivity.class);
+                            Intent intent = new Intent(SecurityCheck2ForClient.this, com.simcoder.bimbo.MainActivity.class);
                             if (intent != null) {
                                 startActivity(intent);
                                 finish();
@@ -1221,7 +1313,7 @@ public  class ApprovalSubmission extends AppCompatActivity
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(ApprovalSubmission.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(SecurityCheck2ForClient.this, NotTraderActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1237,7 +1329,7 @@ public  class ApprovalSubmission extends AppCompatActivity
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(ApprovalSubmission.this, com.simcoder.bimbo.WorkActivities.SettinsActivity.class);
+                                        Intent intent = new Intent(SecurityCheck2ForClient.this, com.simcoder.bimbo.WorkActivities.SettinsActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1255,7 +1347,7 @@ public  class ApprovalSubmission extends AppCompatActivity
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(ApprovalSubmission.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(SecurityCheck2ForClient.this, NotTraderActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1271,7 +1363,7 @@ public  class ApprovalSubmission extends AppCompatActivity
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(ApprovalSubmission.this, HistoryActivity.class);
+                                        Intent intent = new Intent(SecurityCheck2ForClient.this, HistoryActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1291,7 +1383,7 @@ public  class ApprovalSubmission extends AppCompatActivity
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(ApprovalSubmission.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(SecurityCheck2ForClient.this, NotTraderActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1307,7 +1399,7 @@ public  class ApprovalSubmission extends AppCompatActivity
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(ApprovalSubmission.this, TraderProfile.class);
+                                        Intent intent = new Intent(SecurityCheck2ForClient.this, TraderProfile.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1327,7 +1419,7 @@ public  class ApprovalSubmission extends AppCompatActivity
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(ApprovalSubmission.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(SecurityCheck2ForClient.this, NotTraderActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1343,7 +1435,7 @@ public  class ApprovalSubmission extends AppCompatActivity
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(ApprovalSubmission.this, AdminAllCustomers.class);
+                                        Intent intent = new Intent(SecurityCheck2ForClient.this, AdminAllCustomers.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1364,7 +1456,7 @@ public  class ApprovalSubmission extends AppCompatActivity
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(ApprovalSubmission.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(SecurityCheck2ForClient.this, NotTraderActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1380,7 +1472,7 @@ public  class ApprovalSubmission extends AppCompatActivity
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(ApprovalSubmission.this, AdminAddNewProductActivityII.class);
+                                        Intent intent = new Intent(SecurityCheck2ForClient.this, AdminAddNewProductActivityII.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1400,7 +1492,7 @@ public  class ApprovalSubmission extends AppCompatActivity
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(ApprovalSubmission.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(SecurityCheck2ForClient.this, NotTraderActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1416,7 +1508,7 @@ public  class ApprovalSubmission extends AppCompatActivity
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(ApprovalSubmission.this, AllGoodsBought.class);
+                                        Intent intent = new Intent(SecurityCheck2ForClient.this, AllGoodsBought.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1436,7 +1528,7 @@ public  class ApprovalSubmission extends AppCompatActivity
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(ApprovalSubmission.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(SecurityCheck2ForClient.this, NotTraderActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1452,7 +1544,7 @@ public  class ApprovalSubmission extends AppCompatActivity
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(ApprovalSubmission.this, AdminPaymentHere.class);
+                                        Intent intent = new Intent(SecurityCheck2ForClient.this, AdminPaymentHere.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1472,7 +1564,7 @@ public  class ApprovalSubmission extends AppCompatActivity
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(ApprovalSubmission.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(SecurityCheck2ForClient.this, NotTraderActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1488,7 +1580,7 @@ public  class ApprovalSubmission extends AppCompatActivity
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(ApprovalSubmission.this, AdminSettings.class);
+                                        Intent intent = new Intent(SecurityCheck2ForClient.this, AdminSettings.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1512,12 +1604,13 @@ public  class ApprovalSubmission extends AppCompatActivity
         return true;
     }
 
+    @Override
+    public void onPointerCaptureChanged(boolean hasCapture) {
+
+    }
 
 }
 
-
-
-// #BuiltByGOD
 
 
 
