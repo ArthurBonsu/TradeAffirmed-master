@@ -198,6 +198,8 @@ public  class SecurityCheckApproveForTrader extends AppCompatActivity
         ImageView nationalidimageview;
         ImageView gpsimageview;
          TextView gpscodetextpull;
+         String approverID;
+         String approvalID;
 
     String securitycheckapprove = "securityinfoapproveact";
     @Override
@@ -207,21 +209,26 @@ public  class SecurityCheckApproveForTrader extends AppCompatActivity
                 (R.layout.stickynoterecycler));
 
 
-        Intent userintent = getIntent();
-        if (userintent.getExtras().getString("userID") != null) {
-            userID = userintent.getExtras().getString("userID");
-        }
-
         Intent roleintent = getIntent();
         if (roleintent.getExtras().getString("role") != null) {
             role = roleintent.getExtras().getString("role");
         }
 
-        Intent traderIDintent = getIntent();
-        if (traderIDintent.getExtras().getString("traderID") != null) {
-            traderID = traderIDintent.getExtras().getString("traderID");
+        Intent approverIDintent = getIntent();
+        if (approverIDintent.getExtras().getString("approverID") != null) {
+            approverID= approverIDintent.getExtras().getString("approverID");
+        }
+        Intent userIDIntent = getIntent();
+        if (userIDIntent.getExtras().getString("userID") != null) {
+            userID= userIDIntent.getExtras().getString("userID");
         }
 
+
+
+        Intent approvalIDintent = getIntent();
+        if (approvalIDintent.getExtras().getString("approvalID") != null) {
+            approvalID= approvalIDintent.getExtras().getString("approvalID");
+        }
 
         recyclerView = findViewById(R.id.stickyheaderrecyler);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
@@ -613,7 +620,11 @@ public  class SecurityCheckApproveForTrader extends AppCompatActivity
                                     Intent approvalintent = new Intent(SecurityCheckApproveForTrader.this, BackgroundInfoApproveForCustomer.class);
                                     approvalintent.putExtra("role", role);
                                     approvalintent.putExtra("uid", uid);
-                                    approvalintent.putExtra("traderID", traderID);
+                                    approvalintent.putExtra("approverID", approverID);
+                                    approvalintent.putExtra("approvalID", approvalID);
+                                    approvalintent.putExtra("userID", userID);
+
+
                                     Toast.makeText(SecurityCheckApproveForTrader.this, "Background has been approved", Toast.LENGTH_SHORT).show();
                                     startActivity(approvalintent);
                                 }
@@ -628,7 +639,11 @@ public  class SecurityCheckApproveForTrader extends AppCompatActivity
                                         Intent rejectintent = new Intent(SecurityCheckApproveForTrader.this, BackgroundInfoApproveForCustomer.class);
                                         rejectintent.putExtra("role", role);
                                         rejectintent.putExtra("uid", uid);
-                                        rejectintent.putExtra("traderID", traderID);
+                                        rejectintent.putExtra("approverID", approverID);
+                                        rejectintent.putExtra("approvalID", approvalID);
+                                        rejectintent.putExtra("userID", userID);
+
+
                                         Toast.makeText(SecurityCheckApproveForTrader.this, "BackgroundInfo has been rejected", Toast.LENGTH_SHORT).show();
                                         startActivity(rejectintent);
 
@@ -647,7 +662,10 @@ public  class SecurityCheckApproveForTrader extends AppCompatActivity
                                         Intent pausebuttonintent = new Intent(SecurityCheckApproveForTrader.this, BackgroundInfoApproveForCustomer.class);
                                         pausebuttonintent.putExtra("role", role);
                                         pausebuttonintent.putExtra("uid", uid);
-                                        pausebuttonintent.putExtra("tid", tid);
+                                        pausebuttonintent.putExtra("approverID", approverID);
+                                        pausebuttonintent.putExtra("approvalID", approvalID);
+                                        pausebuttonintent.putExtra("userID", userID);
+
 
                                         Toast.makeText(SecurityCheckApproveForTrader.this, "BackgroundInfo has been paused", Toast.LENGTH_SHORT).show();
                                         startActivity(pausebuttonintent);
@@ -665,7 +683,9 @@ public  class SecurityCheckApproveForTrader extends AppCompatActivity
                                         Intent candidatebackbutton  = new Intent(SecurityCheckApproveForTrader.this, PersonalInfoApproveForClient.class);
                                         candidatebackbutton.putExtra("role", role);
                                         candidatebackbutton.putExtra("uid", uid);
-
+                                        candidatebackbutton.putExtra("approverID", approverID);
+                                        candidatebackbutton.putExtra("approvalID", approvalID);
+                                        candidatebackbutton.putExtra("userID", userID);
                                         /// Controllers
                                         candidatebackbutton.putExtra("traderID", traderID);
 

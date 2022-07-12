@@ -180,6 +180,8 @@ public  class PersonalInfoApproveForTrader extends AppCompatActivity
     private DatabaseReference mDatabase;
     private DatabaseReference mDatabaseCHURCHCHOSEN;
     private ProgressDialog mProgress;
+    String  approverID;
+    String approvalID;
     String personalinfoapproveactivity = "personalinfoapproveact";
 
     @Override
@@ -189,19 +191,25 @@ public  class PersonalInfoApproveForTrader extends AppCompatActivity
                 (R.layout.stickynoterecycler));
 
 
-        Intent userintent = getIntent();
-        if (userintent.getExtras().getString("userID") != null) {
-            userID = userintent.getExtras().getString("userID");
-        }
-
         Intent roleintent = getIntent();
         if (roleintent.getExtras().getString("role") != null) {
             role = roleintent.getExtras().getString("role");
         }
 
-        Intent traderIDintent = getIntent();
-        if (traderIDintent.getExtras().getString("traderID") != null) {
-            traderID = traderIDintent.getExtras().getString("traderID");
+        Intent approverIDintent = getIntent();
+        if (approverIDintent.getExtras().getString("approverID") != null) {
+            approverID= approverIDintent.getExtras().getString("approverID");
+        }
+        Intent userIDIntent = getIntent();
+        if (userIDIntent.getExtras().getString("userID") != null) {
+            userID= userIDIntent.getExtras().getString("userID");
+        }
+
+
+
+        Intent approvalIDintent = getIntent();
+        if (approvalIDintent.getExtras().getString("approvalID") != null) {
+            approvalID= approvalIDintent.getExtras().getString("approvalID");
         }
 
 
@@ -536,6 +544,9 @@ public  class PersonalInfoApproveForTrader extends AppCompatActivity
                                     Intent approvalintent = new Intent(PersonalInfoApproveForTrader.this, PersonalInfoApproveForTrader.class);
                                     approvalintent.putExtra("role", role);
                                     approvalintent.putExtra("uid", uid);
+                                    approvalintent.putExtra("approverID", approverID);
+                                    approvalintent.putExtra("approvalID", approvalID);
+                                    approvalintent.putExtra("userID", userID);
                                     approvalintent.putExtra("traderID", traderID);
                                     Toast.makeText(PersonalInfoApproveForTrader.this, "Candidate has been approved", Toast.LENGTH_SHORT).show();
                                     startActivity(approvalintent);
@@ -553,7 +564,10 @@ public  class PersonalInfoApproveForTrader extends AppCompatActivity
                                         Intent rejectintent = new Intent(PersonalInfoApproveForTrader.this, PersonalInfoApproveForTrader.class);
                                         rejectintent.putExtra("role", role);
                                         rejectintent.putExtra("uid", uid);
-                                        rejectintent.putExtra("traderID", traderID);
+                                        rejectintent.putExtra("approverID", approverID);
+                                        rejectintent.putExtra("approvalID", approvalID);
+                                        rejectintent.putExtra("userID", userID);
+
                                         Toast.makeText(PersonalInfoApproveForTrader.this, "Candidate has been rejected", Toast.LENGTH_SHORT).show();
                                         startActivity(rejectintent);
 
@@ -572,7 +586,10 @@ public  class PersonalInfoApproveForTrader extends AppCompatActivity
                                         Intent pausebuttonintent = new Intent(PersonalInfoApproveForTrader.this, PersonalInfoApproveForTrader.class);
                                         pausebuttonintent.putExtra("role", role);
                                         pausebuttonintent.putExtra("uid", uid);
-                                        pausebuttonintent.putExtra("traderID", traderID);
+                                        pausebuttonintent.putExtra("approverID", approverID);
+                                        pausebuttonintent.putExtra("approvalID", approvalID);
+                                        pausebuttonintent.putExtra("userID", userID);
+
                                         Toast.makeText(PersonalInfoApproveForTrader.this, "Candidate has been paused", Toast.LENGTH_SHORT).show();
                                         startActivity(pausebuttonintent);
 
@@ -592,9 +609,9 @@ public  class PersonalInfoApproveForTrader extends AppCompatActivity
                                         Intent candidatebackbutton  = new Intent(PersonalInfoApproveForTrader.this, AllCandidates.class);
                                         candidatebackbutton.putExtra("role", role);
                                         candidatebackbutton.putExtra("uid", uid);
-
-                                        /// Controllers
-                                        candidatebackbutton.putExtra("traderID", traderID);
+                                        candidatebackbutton.putExtra("approverID", approverID);
+                                        candidatebackbutton.putExtra("approvalID", approvalID);
+                                        candidatebackbutton.putExtra("userID", userID);
 
                                         Toast.makeText(PersonalInfoApproveForTrader.this, "Back to candidate list", Toast.LENGTH_SHORT).show();
                                         startActivity(candidatebackbutton);
@@ -613,7 +630,11 @@ public  class PersonalInfoApproveForTrader extends AppCompatActivity
                                         Intent caandidateapprovenextbutton = new Intent(PersonalInfoApproveForTrader.this, ResidentialInfoApproveForClient.class);
                                         caandidateapprovenextbutton.putExtra("role", role);
                                         caandidateapprovenextbutton.putExtra("uid", uid);
-                                        caandidateapprovenextbutton.putExtra("traderID", traderID);
+                                        caandidateapprovenextbutton.putExtra("approverID", approverID);
+                                        caandidateapprovenextbutton.putExtra("approvalID", approvalID);
+                                        caandidateapprovenextbutton.putExtra("userID", userID);
+
+
                                         Toast.makeText(PersonalInfoApproveForTrader.this, "To Residential Page", Toast.LENGTH_SHORT).show();
 
                                         startActivity(caandidateapprovenextbutton);
@@ -713,8 +734,8 @@ public  class PersonalInfoApproveForTrader extends AppCompatActivity
 
                 FirebaseUser user = mAuth.getCurrentUser();
                 if (user != null) {
-                    traderID = "";
-                    traderID = user.getUid();
+                    approverID = "";
+                    approverID = user.getUid();
                 }
 
                 // I HAVE TO TRY TO GET THE SETUP INFORMATION , IF THEY ARE ALREADY PROVIDED WE TAKE TO THE NEXT STAGE

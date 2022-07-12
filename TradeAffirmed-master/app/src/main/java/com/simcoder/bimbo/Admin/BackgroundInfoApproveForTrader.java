@@ -194,6 +194,8 @@ public  class BackgroundInfoApproveForTrader extends AppCompatActivity
 
     ImageButton candidateapprovebackbutton;
     ImageButton candidateapprovenextbutton;
+    String approverID;
+    String approvalID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -202,19 +204,25 @@ public  class BackgroundInfoApproveForTrader extends AppCompatActivity
                 (R.layout.stickynoterecycler));
 
 
-        Intent userintent = getIntent();
-        if (userintent.getExtras().getString("userID") != null) {
-            userID = userintent.getExtras().getString("userID");
-        }
-
         Intent roleintent = getIntent();
         if (roleintent.getExtras().getString("role") != null) {
             role = roleintent.getExtras().getString("role");
         }
 
-        Intent traderIDintent = getIntent();
-        if (traderIDintent.getExtras().getString("traderID") != null) {
-            traderID = traderIDintent.getExtras().getString("traderID");
+        Intent approverIDintent = getIntent();
+        if (approverIDintent.getExtras().getString("approverID") != null) {
+            approverID= approverIDintent.getExtras().getString("approverID");
+        }
+        Intent userIDIntent = getIntent();
+        if (userIDIntent.getExtras().getString("userID") != null) {
+            userID= userIDIntent.getExtras().getString("userID");
+        }
+
+
+
+        Intent approvalIDintent = getIntent();
+        if (approvalIDintent.getExtras().getString("approvalID") != null) {
+            approvalID= approvalIDintent.getExtras().getString("approvalID");
         }
 
 
@@ -351,12 +359,6 @@ public  class BackgroundInfoApproveForTrader extends AppCompatActivity
 
         public ImageButton candidateapprovebackbutton;
         public ImageButton candidateapprovenextbutton;
-
-
-
-
-
-
 
         public TextView NameofPerson;
         public  TextView candidateuserid;
@@ -591,7 +593,10 @@ public  class BackgroundInfoApproveForTrader extends AppCompatActivity
                                     Intent approvalintent = new Intent(BackgroundInfoApproveForTrader.this, BackgroundInfoApproveForTrader.class);
                                     approvalintent.putExtra("role", role);
                                     approvalintent.putExtra("uid", uid);
-                                    approvalintent.putExtra("traderID", traderID);
+                                    approvalintent.putExtra("approverID", approverID);
+                                    approvalintent.putExtra("approvalID", approvalID);
+                                    approvalintent.putExtra("userID", userID);
+
                                     Toast.makeText(BackgroundInfoApproveForTrader.this, "Background has been approved", Toast.LENGTH_SHORT).show();
                                     startActivity(approvalintent);
                                 }
@@ -606,7 +611,10 @@ public  class BackgroundInfoApproveForTrader extends AppCompatActivity
                                         Intent rejectintent = new Intent(BackgroundInfoApproveForTrader.this, BackgroundInfoApproveForTrader.class);
                                         rejectintent.putExtra("role", role);
                                         rejectintent.putExtra("uid", uid);
-                                        rejectintent.putExtra("traderID", traderID);
+                                        rejectintent.putExtra("approverID", approverID);
+                                        rejectintent.putExtra("approvalID", approvalID);
+                                        rejectintent.putExtra("userID", userID);
+
                                         Toast.makeText(BackgroundInfoApproveForTrader.this, "BackgroundInfo has been rejected", Toast.LENGTH_SHORT).show();
                                         startActivity(rejectintent);
 
@@ -625,7 +633,10 @@ public  class BackgroundInfoApproveForTrader extends AppCompatActivity
                                         Intent pausebuttonintent = new Intent(BackgroundInfoApproveForTrader.this, BackgroundInfoApproveForTrader.class);
                                         pausebuttonintent.putExtra("role", role);
                                         pausebuttonintent.putExtra("uid", uid);
-                                        pausebuttonintent.putExtra("tid", tid);
+                                        pausebuttonintent.putExtra("approverID", approverID);
+                                        pausebuttonintent.putExtra("approvalID", approvalID);
+                                        pausebuttonintent.putExtra("userID", userID);
+
 
                                         Toast.makeText(BackgroundInfoApproveForTrader.this, "BackgroundInfo has been paused", Toast.LENGTH_SHORT).show();
                                         startActivity(pausebuttonintent);
@@ -643,11 +654,11 @@ public  class BackgroundInfoApproveForTrader extends AppCompatActivity
                                         Intent candidatebackbutton  = new Intent(BackgroundInfoApproveForTrader.this, PersonalInfoApproveForClient.class);
                                         candidatebackbutton.putExtra("role", role);
                                         candidatebackbutton.putExtra("uid", uid);
+                                        candidatebackbutton.putExtra("approverID", approverID);
+                                        candidatebackbutton.putExtra("approvalID", approvalID);
+                                        candidatebackbutton.putExtra("userID", userID);
 
-                                        /// Controllers
-                                        candidatebackbutton.putExtra("traderID", traderID);
-
-                                        Toast.makeText(BackgroundInfoApproveForTrader.this, "Back to Residence Approval List", Toast.LENGTH_SHORT).show();
+                                         Toast.makeText(BackgroundInfoApproveForTrader.this, "Back to Residence Approval List", Toast.LENGTH_SHORT).show();
                                         startActivity(candidatebackbutton);
 
                                     }
@@ -664,7 +675,10 @@ public  class BackgroundInfoApproveForTrader extends AppCompatActivity
                                         Intent caandidateapprovenextbutton = new Intent(BackgroundInfoApproveForTrader.this, BackgroundInfoApproveForTrader.class);
                                         caandidateapprovenextbutton.putExtra("role", role);
                                         caandidateapprovenextbutton.putExtra("uid", uid);
-                                        caandidateapprovenextbutton.putExtra("traderID", traderID);
+                                        caandidateapprovenextbutton.putExtra("approverID", approverID);
+                                        caandidateapprovenextbutton.putExtra("approvalID", approvalID);
+                                        caandidateapprovenextbutton.putExtra("userID", userID);
+
                                         Toast.makeText(BackgroundInfoApproveForTrader.this, "To Security Check Page", Toast.LENGTH_SHORT).show();
 
                                         startActivity(caandidateapprovenextbutton);
@@ -767,8 +781,8 @@ public  class BackgroundInfoApproveForTrader extends AppCompatActivity
 
                 FirebaseUser user = mAuth.getCurrentUser();
                 if (user != null) {
-                    traderID = "";
-                    traderID = user.getUid();
+                    approverID = "";
+                    approverID = user.getUid();
                 }
 
                 // I HAVE TO TRY TO GET THE SETUP INFORMATION , IF THEY ARE ALREADY PROVIDED WE TAKE TO THE NEXT STAGE

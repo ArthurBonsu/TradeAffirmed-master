@@ -203,20 +203,25 @@ public  class BackgroundInfoApproveForCustomer extends AppCompatActivity
         setContentView(
                 (R.layout.stickynoterecycler));
 
-
-        Intent userintent = getIntent();
-        if (userintent.getExtras().getString("userID") != null) {
-            userID = userintent.getExtras().getString("userID");
-        }
-
         Intent roleintent = getIntent();
         if (roleintent.getExtras().getString("role") != null) {
             role = roleintent.getExtras().getString("role");
         }
 
-        Intent traderIDintent = getIntent();
-        if (traderIDintent.getExtras().getString("traderID") != null) {
-            traderID = traderIDintent.getExtras().getString("traderID");
+        Intent approverIDintent = getIntent();
+        if (approverIDintent.getExtras().getString("approverID") != null) {
+            approverID= approverIDintent.getExtras().getString("approverID");
+        }
+        Intent userIDIntent = getIntent();
+        if (userIDIntent.getExtras().getString("userID") != null) {
+            userID= userIDIntent.getExtras().getString("userID");
+        }
+
+
+
+        Intent approvalIDintent = getIntent();
+        if (approvalIDintent.getExtras().getString("approvalID") != null) {
+            approvalID= approvalIDintent.getExtras().getString("approvalID");
         }
 
 
@@ -610,7 +615,10 @@ public  class BackgroundInfoApproveForCustomer extends AppCompatActivity
                                         Intent rejectintent = new Intent(BackgroundInfoApproveForCustomer.this, BackgroundInfoApproveForCustomer.class);
                                         rejectintent.putExtra("role", role);
                                         rejectintent.putExtra("uid", uid);
-                                        rejectintent.putExtra("traderID", traderID);
+                                        rejectintent.putExtra("approverID", approverID);
+                                        rejectintent.putExtra("approvalID", approvalID);
+                                        rejectintent.putExtra("userID", userID);
+
                                         Toast.makeText(BackgroundInfoApproveForCustomer.this, "BackgroundInfo has been rejected", Toast.LENGTH_SHORT).show();
                                         startActivity(rejectintent);
 
@@ -629,7 +637,10 @@ public  class BackgroundInfoApproveForCustomer extends AppCompatActivity
                                         Intent pausebuttonintent = new Intent(BackgroundInfoApproveForCustomer.this, BackgroundInfoApproveForCustomer.class);
                                         pausebuttonintent.putExtra("role", role);
                                         pausebuttonintent.putExtra("uid", uid);
-                                        pausebuttonintent.putExtra("tid", tid);
+                                        pausebuttonintent.putExtra("approverID", approverID);
+                                        pausebuttonintent.putExtra("approvalID", approvalID);
+                                        pausebuttonintent.putExtra("userID", userID);
+
 
                                         Toast.makeText(BackgroundInfoApproveForCustomer.this, "BackgroundInfo has been paused", Toast.LENGTH_SHORT).show();
                                         startActivity(pausebuttonintent);
@@ -647,9 +658,9 @@ public  class BackgroundInfoApproveForCustomer extends AppCompatActivity
                                         Intent candidatebackbutton  = new Intent(BackgroundInfoApproveForCustomer.this, PersonalInfoApproveForClient.class);
                                         candidatebackbutton.putExtra("role", role);
                                         candidatebackbutton.putExtra("uid", uid);
-
-                                        /// Controllers
-                                        candidatebackbutton.putExtra("traderID", traderID);
+                                        candidatebackbutton.putExtra("approverID", approverID);
+                                        candidatebackbutton.putExtra("approvalID", approvalID);
+                                        candidatebackbutton.putExtra("userID", userID);
 
                                         Toast.makeText(BackgroundInfoApproveForCustomer.this, "Back to Residence Approval List", Toast.LENGTH_SHORT).show();
                                         startActivity(candidatebackbutton);
@@ -668,7 +679,10 @@ public  class BackgroundInfoApproveForCustomer extends AppCompatActivity
                                         Intent caandidateapprovenextbutton = new Intent(BackgroundInfoApproveForCustomer.this, BackgroundInfoApproveForCustomer.class);
                                         caandidateapprovenextbutton.putExtra("role", role);
                                         caandidateapprovenextbutton.putExtra("uid", uid);
-                                        caandidateapprovenextbutton.putExtra("traderID", traderID);
+                                        caandidateapprovenextbutton.putExtra("approverID", approverID);
+                                        caandidateapprovenextbutton.putExtra("approvalID", approvalID);
+                                        caandidateapprovenextbutton.putExtra("userID", userID);
+
                                         Toast.makeText(BackgroundInfoApproveForCustomer.this, "To Security Check Page", Toast.LENGTH_SHORT).show();
 
                                         startActivity(caandidateapprovenextbutton);
@@ -771,8 +785,8 @@ public  class BackgroundInfoApproveForCustomer extends AppCompatActivity
 
                 FirebaseUser user = mAuth.getCurrentUser();
                 if (user != null) {
-                    traderID = "";
-                    traderID = user.getUid();
+                    approverID = "";
+                    approverID = user.getUid();
                 }
 
                 // I HAVE TO TRY TO GET THE SETUP INFORMATION , IF THEY ARE ALREADY PROVIDED WE TAKE TO THE NEXT STAGE

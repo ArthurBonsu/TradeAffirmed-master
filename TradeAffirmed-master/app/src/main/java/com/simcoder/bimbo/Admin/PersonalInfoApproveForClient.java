@@ -181,6 +181,8 @@ public  class PersonalInfoApproveForClient extends AppCompatActivity
     private DatabaseReference mDatabase;
     private DatabaseReference mDatabaseCHURCHCHOSEN;
     private ProgressDialog mProgress;
+    String approverID;
+    String approvalID;
     String personalinfoapproveactivity = "personalinfoapproveact";
 
     @Override
@@ -190,19 +192,25 @@ public  class PersonalInfoApproveForClient extends AppCompatActivity
                 (R.layout.stickynoterecycler));
 
 
-        Intent userintent = getIntent();
-        if (userintent.getExtras().getString("userID") != null) {
-            userID = userintent.getExtras().getString("userID");
-        }
-
         Intent roleintent = getIntent();
         if (roleintent.getExtras().getString("role") != null) {
             role = roleintent.getExtras().getString("role");
         }
 
-        Intent traderIDintent = getIntent();
-        if (traderIDintent.getExtras().getString("traderID") != null) {
-            traderID = traderIDintent.getExtras().getString("traderID");
+        Intent approverIDintent = getIntent();
+        if (approverIDintent.getExtras().getString("approverID") != null) {
+            approverID= approverIDintent.getExtras().getString("approverID");
+        }
+        Intent userIDIntent = getIntent();
+        if (userIDIntent.getExtras().getString("userID") != null) {
+            userID= userIDIntent.getExtras().getString("userID");
+        }
+
+
+
+        Intent approvalIDintent = getIntent();
+        if (approvalIDintent.getExtras().getString("approvalID") != null) {
+            approvalID= approvalIDintent.getExtras().getString("approvalID");
         }
 
 
@@ -438,7 +446,7 @@ public  class PersonalInfoApproveForClient extends AppCompatActivity
 
             Query queryhere =
 
-                    FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").orderByChild("uid").equalTo(userID);
+                    FirebaseDatabase.getInstance().getReference().child("Users").child("Drivers").orderByChild("tid").equalTo(userID);
             if (queryhere != null) {
 
                 FirebaseRecyclerOptions<Users> options =
@@ -537,7 +545,10 @@ public  class PersonalInfoApproveForClient extends AppCompatActivity
                                     Intent approvalintent = new Intent(PersonalInfoApproveForClient.this, PersonalInfoApproveForClient.class);
                                     approvalintent.putExtra("role", role);
                                     approvalintent.putExtra("uid", uid);
-                                    approvalintent.putExtra("traderID", traderID);
+                                    approvalintent.putExtra("approverID", approverID);
+                                    approvalintent.putExtra("approvalID", approvalID);
+                                    approvalintent.putExtra("userID", userID);
+
                                     Toast.makeText(PersonalInfoApproveForClient.this, "Candidate has been approved", Toast.LENGTH_SHORT).show();
                                     startActivity(approvalintent);
                                 }
@@ -554,7 +565,10 @@ public  class PersonalInfoApproveForClient extends AppCompatActivity
                                         Intent rejectintent = new Intent(PersonalInfoApproveForClient.this, PersonalInfoApproveForClient.class);
                                         rejectintent.putExtra("role", role);
                                         rejectintent.putExtra("uid", uid);
-                                        rejectintent.putExtra("traderID", traderID);
+                                        rejectintent.putExtra("approverID", approverID);
+                                        rejectintent.putExtra("approvalID", approvalID);
+                                        rejectintent.putExtra("userID", userID);
+
                                         Toast.makeText(PersonalInfoApproveForClient.this, "Candidate has been rejected", Toast.LENGTH_SHORT).show();
                                         startActivity(rejectintent);
 
@@ -573,7 +587,11 @@ public  class PersonalInfoApproveForClient extends AppCompatActivity
                                         Intent pausebuttonintent = new Intent(PersonalInfoApproveForClient.this, PersonalInfoApproveForClient.class);
                                         pausebuttonintent.putExtra("role", role);
                                         pausebuttonintent.putExtra("uid", uid);
-                                        pausebuttonintent.putExtra("traderID", traderID);
+                                        pausebuttonintent.putExtra("approverID", approverID);
+                                        pausebuttonintent.putExtra("approvalID", approvalID);
+                                        pausebuttonintent.putExtra("userID", userID);
+
+
                                         Toast.makeText(PersonalInfoApproveForClient.this, "Candidate has been paused", Toast.LENGTH_SHORT).show();
                                         startActivity(pausebuttonintent);
 
@@ -593,9 +611,10 @@ public  class PersonalInfoApproveForClient extends AppCompatActivity
                                         Intent candidatebackbutton  = new Intent(PersonalInfoApproveForClient.this, AllCandidates.class);
                                         candidatebackbutton.putExtra("role", role);
                                         candidatebackbutton.putExtra("uid", uid);
+                                        candidatebackbutton.putExtra("approverID", approverID);
+                                        candidatebackbutton.putExtra("approvalID", approvalID);
+                                        candidatebackbutton.putExtra("userID", userID);
 
-                                        /// Controllers
-                                        candidatebackbutton.putExtra("traderID", traderID);
 
                                         Toast.makeText(PersonalInfoApproveForClient.this, "Back to candidate list", Toast.LENGTH_SHORT).show();
                                         startActivity(candidatebackbutton);
@@ -614,7 +633,10 @@ public  class PersonalInfoApproveForClient extends AppCompatActivity
                                         Intent caandidateapprovenextbutton = new Intent(PersonalInfoApproveForClient.this, ResidentialInfoApproveForClient.class);
                                         caandidateapprovenextbutton.putExtra("role", role);
                                         caandidateapprovenextbutton.putExtra("uid", uid);
-                                        caandidateapprovenextbutton.putExtra("traderID", traderID);
+                                        caandidateapprovenextbutton.putExtra("approverID", approverID);
+                                        caandidateapprovenextbutton.putExtra("approvalID", approvalID);
+                                        caandidateapprovenextbutton.putExtra("userID", userID);
+
                                         Toast.makeText(PersonalInfoApproveForClient.this, "To Residential Page", Toast.LENGTH_SHORT).show();
 
                                         startActivity(caandidateapprovenextbutton);

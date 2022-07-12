@@ -91,6 +91,8 @@ public class PersonalInformationFormForClient extends AppCompatActivity {
      ImageButton       services;
      ImageButton  expectedshipping;
      ImageButton       adminprofile;
+    String approverID;
+    String approvalID;
 
 
 
@@ -103,12 +105,24 @@ public class PersonalInformationFormForClient extends AppCompatActivity {
             role = roleintent.getExtras().getString("role");
         }
 
-        Intent traderIDintent = getIntent();
-        if (traderIDintent.getExtras().getString("traderID") != null) {
-            traderID = traderIDintent.getExtras().getString("traderID");
+        Intent approverIDintent = getIntent();
+        if (approverIDintent.getExtras().getString("approverID") != null) {
+            approverID= approverIDintent.getExtras().getString("approverID");
+        }
+        Intent userIDIntent = getIntent();
+        if (userIDIntent.getExtras().getString("userID") != null) {
+            userID= userIDIntent.getExtras().getString("userID");
         }
 
-         NameofPerson = findViewById(R.id.NameofPerson);
+
+
+        Intent approvalIDintent = getIntent();
+        if (approvalIDintent.getExtras().getString("approvalID") != null) {
+            approvalID= approvalIDintent.getExtras().getString("approvalID");
+        }
+
+
+        NameofPerson = findViewById(R.id.NameofPerson);
           PhoneNumberOfPerson = findViewById(R.id.PhoneNumberOfPerson);
          PersonEmail = findViewById(R.id.PersonEmail);
 
@@ -141,11 +155,11 @@ public class PersonalInformationFormForClient extends AppCompatActivity {
 
         FirebaseUser user = mAuth.getCurrentUser();
         if (user != null) {
-            traderID = "";
-            traderID = user.getUid();
+            approverID = "";
+            approverID = user.getUid();
 
 
-            mAdminTraderDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child(traderID);
+            mAdminTraderDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child(userID);
             getUserInfo();
                  // SET THE AGE ADAPTER
             ArrayAdapter<String> myAdapter = new ArrayAdapter<String>(PersonalInformationFormForClient.this,

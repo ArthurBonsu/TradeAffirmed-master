@@ -199,6 +199,8 @@ public  class SecurityCheckApproveForCustomer extends AppCompatActivity
         ImageView nationalidimageview;
         ImageView gpsimageview;
          TextView gpscodetextpull;
+         String approverID;
+         String approvalID;
 
     String securitycheckapprove = "securityinfoapproveact";
     @Override
@@ -207,22 +209,26 @@ public  class SecurityCheckApproveForCustomer extends AppCompatActivity
         setContentView(
                 (R.layout.stickynoterecycler));
 
-
-        Intent userintent = getIntent();
-        if (userintent.getExtras().getString("userID") != null) {
-            userID = userintent.getExtras().getString("userID");
-        }
-
         Intent roleintent = getIntent();
         if (roleintent.getExtras().getString("role") != null) {
             role = roleintent.getExtras().getString("role");
         }
 
-        Intent traderIDintent = getIntent();
-        if (traderIDintent.getExtras().getString("traderID") != null) {
-            traderID = traderIDintent.getExtras().getString("traderID");
+        Intent approverIDintent = getIntent();
+        if (approverIDintent.getExtras().getString("approverID") != null) {
+            approverID= approverIDintent.getExtras().getString("approverID");
+        }
+        Intent userIDIntent = getIntent();
+        if (userIDIntent.getExtras().getString("userID") != null) {
+            userID= userIDIntent.getExtras().getString("userID");
         }
 
+
+
+        Intent approvalIDintent = getIntent();
+        if (approvalIDintent.getExtras().getString("approvalID") != null) {
+            approvalID= approvalIDintent.getExtras().getString("approvalID");
+        }
 
         recyclerView = findViewById(R.id.stickyheaderrecyler);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
@@ -666,6 +672,10 @@ public  class SecurityCheckApproveForCustomer extends AppCompatActivity
                                         Intent candidatebackbutton  = new Intent(SecurityCheckApproveForCustomer.this, PersonalInfoApproveForClient.class);
                                         candidatebackbutton.putExtra("role", role);
                                         candidatebackbutton.putExtra("uid", uid);
+                                        candidatebackbutton.putExtra("approverID", approverID);
+                                        candidatebackbutton.putExtra("approvalID", approvalID);
+                                        candidatebackbutton.putExtra("userID", userID);
+
 
                                         /// Controllers
                                         candidatebackbutton.putExtra("traderID", traderID);
@@ -688,7 +698,11 @@ public  class SecurityCheckApproveForCustomer extends AppCompatActivity
                                             Intent approvalsubmissionpage = new Intent(SecurityCheckApproveForCustomer.this, SecurityCheckApproveForCustomer.class);
                                             approvalsubmissionpage.putExtra("role", role);
                                             approvalsubmissionpage.putExtra("uid", uid);
-                                            approvalsubmissionpage.putExtra("traderID", traderID);
+                                            approvalsubmissionpage.putExtra("approverID", approverID);
+                                            approvalsubmissionpage.putExtra("approvalID", approvalID);
+                                            approvalsubmissionpage.putExtra("userID", userID);
+
+
                                             Toast.makeText(SecurityCheckApproveForCustomer.this, "Write Approval Report", Toast.LENGTH_SHORT).show();
 
                                             startActivity(approvalsubmissionpage);
@@ -697,7 +711,10 @@ public  class SecurityCheckApproveForCustomer extends AppCompatActivity
                                             Intent approvalconfirmationpage = new Intent(SecurityCheckApproveForCustomer.this, SecurityCheckApproveForCustomer.class);
                                             approvalconfirmationpage.putExtra("role", role);
                                             approvalconfirmationpage.putExtra("uid", uid);
-                                            approvalconfirmationpage.putExtra("traderID", traderID);
+                                            approvalconfirmationpage.putExtra("approverID", approverID);
+                                            approvalconfirmationpage.putExtra("approvalID", approvalID);
+                                            approvalconfirmationpage.putExtra("userID", userID);
+
                                             Toast.makeText(SecurityCheckApproveForCustomer.this, "Write Approval Report", Toast.LENGTH_SHORT).show();
 
                                             startActivity(approvalconfirmationpage);
@@ -800,8 +817,8 @@ public  class SecurityCheckApproveForCustomer extends AppCompatActivity
 
                 FirebaseUser user = mAuth.getCurrentUser();
                 if (user != null) {
-                    traderID = "";
-                    traderID = user.getUid();
+                    approverID = "";
+                    approverID = user.getUid();
                 }
 
                 // I HAVE TO TRY TO GET THE SETUP INFORMATION , IF THEY ARE ALREADY PROVIDED WE TAKE TO THE NEXT STAGE
