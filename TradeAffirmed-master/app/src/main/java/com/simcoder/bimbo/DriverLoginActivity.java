@@ -29,7 +29,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import com.google.firebase.auth.FirebaseUser;
-
+import com.simcoder.bimbo.WorkActivities.MainHall;
 
 
 public class DriverLoginActivity extends AppCompatActivity {
@@ -46,6 +46,10 @@ public class DriverLoginActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener firebaseAuthListener;
+    Button   MainHallButton;;
+    String traderID;
+    String role;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,7 +88,15 @@ public class DriverLoginActivity extends AppCompatActivity {
 
 
         mAuth = FirebaseAuth.getInstance();
+        Intent roleintent = getIntent();
+        if (roleintent.getExtras().getString("role") != null) {
+            role = roleintent.getExtras().getString("role");
+        }
 
+        Intent traderIDintent = getIntent();
+        if (traderIDintent.getExtras().getString("userID") != null) {
+            traderID = traderIDintent.getExtras().getString("userID");
+        }
         firebaseAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -92,10 +104,10 @@ public class DriverLoginActivity extends AppCompatActivity {
 
                 if(user!=null  ) {
 
-                    String uid = "";
-                    uid = user.getUid();
+                    traderID = "";
+                    traderID = user.getUid();
 
-                    if (FirebaseDatabase.getInstance().getReference().child("Users").child("Drivers").child(uid) != null) {
+                    if (FirebaseDatabase.getInstance().getReference().child("Users").child("Drivers").child(traderID) != null) {
 
 
                         Intent intent = new Intent(DriverLoginActivity.this, DriverMapActivity.class);
@@ -127,7 +139,7 @@ public class DriverLoginActivity extends AppCompatActivity {
 
         mLogin = findViewById(R.id.login);
         mRegistration = findViewById(R.id.registration);
-
+        MainHallButton = (Button)findViewById(R.id.mainhall_button);
 
         mRegistration.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -144,9 +156,9 @@ public class DriverLoginActivity extends AppCompatActivity {
                         if(task.isSuccessful()){
 
                             Log.d(TAG, "createUserWithEmail:success");
-                            String user_id = mAuth.getCurrentUser().getUid();
+                            traderID = mAuth.getCurrentUser().getUid();
                             mProgress.show();
-                            DatabaseReference current_user_db = FirebaseDatabase.getInstance().getReference().child("Users").child("Drivers").child(user_id).child("name");
+                            DatabaseReference current_user_db = FirebaseDatabase.getInstance().getReference().child("Users").child("Drivers").child(traderID).child("name");
                             current_user_db.setValue(email);
                             mProgress.hide();
                             Toast.makeText(DriverLoginActivity.this, "REGISTERD!", Toast.LENGTH_SHORT).show();
@@ -167,7 +179,15 @@ public class DriverLoginActivity extends AppCompatActivity {
             }
         });
 
+        MainHallButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent mainhallintent = new Intent(DriverLoginActivity.this, MainHall.class);
 
+                mainhallintent.putExtra("userID", traderID);
+                startActivity(mainhallintent);
+            }
+        });
          // SET THE VALUE T O FIREBASE
         //SET THE STATUS OR ROLE TYPE TO CUSTOMER
 
@@ -185,7 +205,7 @@ public class DriverLoginActivity extends AppCompatActivity {
 
                         if(task.isSuccessful()) {
                             Log.d(TAG, "signInWithEmail:success");
-                            String user_id = mAuth.getCurrentUser().getUid();
+                            traderID = mAuth.getCurrentUser().getUid();
                             mProgress.show();
                             Intent intent = new Intent(DriverLoginActivity.this, DriverMapActivity.class);
                             startActivity(intent);

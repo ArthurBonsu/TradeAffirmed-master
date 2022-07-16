@@ -71,7 +71,7 @@ public class AdminSettings extends AppCompatActivity {
 
         mNameField = findViewById(R.id.name);
         mPhoneField = findViewById(R.id.phone);
-        mEmaField = findViewById(R.id.car);
+        mCarField = findViewById(R.id.car);
 
         mProfileImage = findViewById(R.id.profileImage);
 

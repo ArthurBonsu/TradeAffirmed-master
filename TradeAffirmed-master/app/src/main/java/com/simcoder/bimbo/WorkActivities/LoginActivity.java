@@ -40,6 +40,7 @@ import com.simcoder.bimbo.Admin.AdminMainPage;
 import com.simcoder.bimbo.Admin.AdminRegister;
 import com.simcoder.bimbo.Admin.AdminResetPasswordEmail;
 import com.simcoder.bimbo.Admin.SessionManager;
+import com.simcoder.bimbo.Approver.ApprovalLogin;
 import com.simcoder.bimbo.Model.Users;
 import com.simcoder.bimbo.Prevalent.Prevalent;
 import com.google.firebase.database.DataSnapshot;
@@ -87,6 +88,7 @@ public class LoginActivity extends AppCompatActivity
     Button SignupButton;
     TextView IamTrader;
     Button TryVerificationCode;
+    Button MainHallButton;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -108,6 +110,8 @@ public class LoginActivity extends AppCompatActivity
 
         LoginButton = (Button) findViewById(R.id.login_btn);
         SignupButton = (Button)findViewById(R.id.signup);
+        MainHallButton =(Button)findViewById(R.id.mainhall_button);
+
         // InputPhoneNumber = (EditText) findViewById(R.id.login_phone_number_input);
 
         IamTrader = (TextView) findViewById(R.id.iamtrader);
@@ -214,7 +218,15 @@ public class LoginActivity extends AppCompatActivity
 
             }
         });
+        MainHallButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent mainhallintent = new Intent(LoginActivity.this, MainHall.class);
 
+                mainhallintent.putExtra("userID", userID);
+                startActivity(mainhallintent);
+            }
+        });
     }
 
 

@@ -36,9 +36,6 @@
         android:textColorHint="@color/colorPrimary"
         android:textSize="19sp" />
 
-
-
-
     <EditText
         android:id="@+id/login_password_input"
         android:layout_width="match_parent"
@@ -145,6 +142,20 @@
         android:background="@drawable/buttons"
         android:padding="17dp"
         android:text=" Sign Up"
+        android:textAllCaps="false"
+        android:textColor="@android:color/white"
+        android:textSize="18sp" />
+    <Button
+        android:id="@+id/mainhall_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/linear_layout_1"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginRight="15dp"
+        android:background="@drawable/buttons"
+        android:padding="17dp"
+        android:text=" Back To Main Hall"
         android:textAllCaps="false"
         android:textColor="@android:color/white"
         android:textSize="18sp" />

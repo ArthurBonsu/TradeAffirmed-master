@@ -180,16 +180,7 @@ public class ClientMainPage extends AppCompatActivity implements GoogleApiClient
     String thenationalidstring;
     String thegpscodeinformationstring;
 
-    EditText NationalID = findViewById(R.id.NationalID);
-    Button        ChoseIDFile = findViewById(R.id.ChoseIDFile);
-    ImageView ImageViewOfID = findViewById(R.id.ImageViewOfID);
 
-    Button deletenationalidpicture = findViewById(R.id.deletenationalidpicture);
-    EditText       GpsCodeMapID= findViewById(R.id.GpsCodeMapID);
-    Button PickMap = findViewById(R.id.PickMap);
-    ImageView       ImageViewOfGPSCodeMap = findViewById(R.id.ImageViewOfGPSCodeMap);
-
-    Button       deleteselectedGPSCodeMapmap = findViewById(R.id.deleteselectedGPSCodeMapmap);
 
     private ImageButton mEventImage;
     private EditText mEventtitle;

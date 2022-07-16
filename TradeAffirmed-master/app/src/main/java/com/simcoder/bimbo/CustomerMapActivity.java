@@ -195,6 +195,7 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
     Marker currentMarker;
     boolean zoomin = false;
     boolean hasclicked = true;
+    String userID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -204,27 +205,16 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
 
 
-        Intent roleintenthere = getIntent();
-        if (roleintenthere.getExtras().getString("roledhomeactivitytocustomermapactivity") != null) {
-            role = roleintenthere.getExtras().getString("roledhomeactivitytocustomermapactivity");
-
+        Intent roleintent = getIntent();
+        if (roleintent.getExtras().getString("role") != null) {
+            role = roleintent.getExtras().getString("role");
         }
-  /*     {
-                    if (getIntent().getExtras().get("roledhomeactivitytocustomermapactivity") != null) {
-                        role = getIntent().getExtras().get("roledhomeactivitytocustomermapactivity").toString();
-                    }
-                }
-    */
-        Intent customeridintent = getIntent();
-        if (customeridintent.getExtras().getString("fromhomeactivitytocustomermapactivity") != null) {
-            customerId = customeridintent.getExtras().getString("fromhomeactivitytocustomermapactivity");
 
+        Intent traderIDintent = getIntent();
+        if (traderIDintent.getExtras().getString("userID") != null) {
+            userID = traderIDintent.getExtras().getString("userID");
         }
-            /*
-                if (getIntent() != null) {
-                    customerId = getIntent().getStringExtra("fromhomeactivitytocustomermapactivity");
-                }
-                */
+
 
 
         Intent rideintent = getIntent();

@@ -1,33 +1,33 @@
-package com.simcoder.bimbo.Admin;
+package com.simcoder.bimbo.Approver;
 
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.View;
+
+import com.google.android.material.navigation.NavigationView;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import com.firebase.ui.database.FirebaseRecyclerAdapter;
-import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.firebase.ui.database.SnapshotParser;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -38,23 +38,39 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.storage.StorageReference;
 import com.rey.material.widget.ImageView;
+import com.simcoder.bimbo.Admin.AdminAddNewProductActivityII;
+import com.simcoder.bimbo.Admin.AdminAllCustomers;
+import com.simcoder.bimbo.Admin.AdminAllOrderHistory;
+import com.simcoder.bimbo.Admin.AdminAllProducts;
+import com.simcoder.bimbo.Admin.AdminCustomerServed;
+import com.simcoder.bimbo.Admin.AdminNewOrdersActivity;
+import com.simcoder.bimbo.Admin.AdminPaymentHere;
+import com.simcoder.bimbo.Admin.AdminSettings;
+import com.simcoder.bimbo.Admin.AllGoodsBought;
+import com.simcoder.bimbo.Admin.AllProductsPurchased;
+import com.simcoder.bimbo.Admin.NotTraderActivity;
+import com.simcoder.bimbo.Admin.SearchForAdminProductsActivity;
+import com.simcoder.bimbo.Admin.TradersFollowing;
+import com.simcoder.bimbo.Admin.ViewAllCarts;
+import com.simcoder.bimbo.Admin.ViewAllCustomers;
+import com.simcoder.bimbo.Model.Users;
+import com.simcoder.bimbo.WorkActivities.CartActivity;
+import com.simcoder.bimbo.WorkActivities.HomeActivity;
 import com.simcoder.bimbo.DriverMapActivity;
 import com.simcoder.bimbo.HistoryActivity;
 import com.simcoder.bimbo.Interface.ItemClickListner;
-import com.simcoder.bimbo.Model.Users;
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.simcoder.bimbo.R;
-import com.simcoder.bimbo.WorkActivities.CartActivity;
-import com.simcoder.bimbo.WorkActivities.HomeActivity;
 import com.simcoder.bimbo.WorkActivities.TraderProfile;
 import com.simcoder.bimbo.instagram.Home.InstagramHomeActivity;
 import com.squareup.picasso.Callback;
@@ -68,7 +84,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import io.paperdb.Paper;
 
 
-public  class ResidentialInfoApproveForTrader extends AppCompatActivity
+public  class ResidentialInfoApproveForClient extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     DatabaseReference ProductsRef;
     private DatabaseReference Userdetails;
@@ -308,7 +324,7 @@ public  class ResidentialInfoApproveForTrader extends AppCompatActivity
                     }
 
                     if (mGoogleApiClient != null) {
-                        mGoogleApiClient = new GoogleApiClient.Builder(this).enableAutoManage(ResidentialInfoApproveForTrader.this,
+                        mGoogleApiClient = new GoogleApiClient.Builder(this).enableAutoManage(ResidentialInfoApproveForClient.this,
                                 new GoogleApiClient.OnConnectionFailedListener() {
                                     @Override
                                     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
@@ -450,7 +466,7 @@ public  class ResidentialInfoApproveForTrader extends AppCompatActivity
 
             Query queryhere =
 
-                    FirebaseDatabase.getInstance().getReference().child("Users").child("Drivers").orderByChild("tid").equalTo(userID);
+                    FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").orderByChild("uid").equalTo(userID);
             if (queryhere != null) {
 
                 FirebaseRecyclerOptions<Users> options =
@@ -548,11 +564,11 @@ public  class ResidentialInfoApproveForTrader extends AppCompatActivity
                                 public void onClick(View v) {
                                     response = "approve";
                                     setDecision(response);
-                                    Intent approvalintent = new Intent(ResidentialInfoApproveForTrader.this, ResidentialInfoApproveForTrader.class);
+                                    Intent approvalintent = new Intent(ResidentialInfoApproveForClient.this, ResidentialInfoApproveForClient.class);
                                     approvalintent.putExtra("role", role);
                                     approvalintent.putExtra("uid", uid);
                                     approvalintent.putExtra("traderID", traderID);
-                                    Toast.makeText(ResidentialInfoApproveForTrader.this, "Candidate has been approved", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(ResidentialInfoApproveForClient.this, "Candidate has been approved", Toast.LENGTH_SHORT).show();
                                     startActivity(approvalintent);
                                 }
                             });
@@ -563,11 +579,11 @@ public  class ResidentialInfoApproveForTrader extends AppCompatActivity
                                     public void onClick(View view) {
                                         response = "reject";
                                         setDecision(response);
-                                        Intent rejectintent = new Intent(ResidentialInfoApproveForTrader.this, ResidentialInfoApproveForTrader.class);
+                                        Intent rejectintent = new Intent(ResidentialInfoApproveForClient.this, ResidentialInfoApproveForClient.class);
                                         rejectintent.putExtra("role", role);
                                         rejectintent.putExtra("uid", uid);
                                         rejectintent.putExtra("traderID", traderID);
-                                        Toast.makeText(ResidentialInfoApproveForTrader.this, "Candidate has been rejected", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(ResidentialInfoApproveForClient.this, "Candidate has been rejected", Toast.LENGTH_SHORT).show();
                                         startActivity(rejectintent);
 
 
@@ -582,12 +598,12 @@ public  class ResidentialInfoApproveForTrader extends AppCompatActivity
                                     public void onClick(View view) {
                                         response = "pause";
                                         setDecision(response);
-                                        Intent pausebuttonintent = new Intent(ResidentialInfoApproveForTrader.this, ResidentialInfoApproveForTrader.class);
+                                        Intent pausebuttonintent = new Intent(ResidentialInfoApproveForClient.this, ResidentialInfoApproveForClient.class);
                                         pausebuttonintent.putExtra("role", role);
                                         pausebuttonintent.putExtra("uid", uid);
                                         pausebuttonintent.putExtra("tid", tid);
 
-                                        Toast.makeText(ResidentialInfoApproveForTrader.this, "Candidate has been paused", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(ResidentialInfoApproveForClient.this, "Candidate has been paused", Toast.LENGTH_SHORT).show();
                                         startActivity(pausebuttonintent);
 
                                     }
@@ -600,14 +616,14 @@ public  class ResidentialInfoApproveForTrader extends AppCompatActivity
                                     @Override
                                     public void onClick(View view) {
 
-                                        Intent candidatebackbutton  = new Intent(ResidentialInfoApproveForTrader.this, PersonalInfoApproveForClient.class);
+                                        Intent candidatebackbutton  = new Intent(ResidentialInfoApproveForClient.this, PersonalInfoApproveForClient.class);
                                         candidatebackbutton.putExtra("role", role);
                                         candidatebackbutton.putExtra("uid", uid);
 
                                         /// Controllers
                                         candidatebackbutton.putExtra("traderID", traderID);
 
-                                        Toast.makeText(ResidentialInfoApproveForTrader.this, "Back to candidate list", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(ResidentialInfoApproveForClient.this, "Back to candidate list", Toast.LENGTH_SHORT).show();
                                         startActivity(candidatebackbutton);
 
                                     }
@@ -621,11 +637,11 @@ public  class ResidentialInfoApproveForTrader extends AppCompatActivity
                                     @Override
                                     public void onClick(View view) {
 
-                                        Intent caandidateapprovenextbutton = new Intent(ResidentialInfoApproveForTrader.this, BackgroundInfoApproveForCustomer.class);
+                                        Intent caandidateapprovenextbutton = new Intent(ResidentialInfoApproveForClient.this, BackgroundInfoApproveForCustomer.class);
                                         caandidateapprovenextbutton.putExtra("role", role);
                                         caandidateapprovenextbutton.putExtra("uid", uid);
                                         caandidateapprovenextbutton.putExtra("traderID", traderID);
-                                        Toast.makeText(ResidentialInfoApproveForTrader.this, "To BackgroundCheckPage", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(ResidentialInfoApproveForClient.this, "To BackgroundCheckPage", Toast.LENGTH_SHORT).show();
 
                                         startActivity(caandidateapprovenextbutton);
 
@@ -681,7 +697,7 @@ public  class ResidentialInfoApproveForTrader extends AppCompatActivity
                             public void onComplete(DatabaseError databaseError, DatabaseReference
                                     databaseReference) {
                                 Toast.makeText(getApplicationContext(), "User Decision Taken as "  +response, Toast.LENGTH_SHORT).show();
-                                Intent personapprovalloginfointent = new Intent(ResidentialInfoApproveForTrader.this, HomeActivity.class);
+                                Intent personapprovalloginfointent = new Intent(ResidentialInfoApproveForClient.this, HomeActivity.class);
 
                                 startActivity(personapprovalloginfointent);
 
@@ -794,7 +810,7 @@ public  class ResidentialInfoApproveForTrader extends AppCompatActivity
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(ResidentialInfoApproveForTrader.this, NotTraderActivity.class);
+                        Intent intent = new Intent(ResidentialInfoApproveForClient.this, NotTraderActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderoruser);
                             intent.putExtra("role", type);
@@ -810,7 +826,7 @@ public  class ResidentialInfoApproveForTrader extends AppCompatActivity
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(ResidentialInfoApproveForTrader.this, AdminAllCustomers.class);
+                        Intent intent = new Intent(ResidentialInfoApproveForClient.this, AdminAllCustomers.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderoruser);
                             intent.putExtra("role", type);
@@ -832,7 +848,7 @@ public  class ResidentialInfoApproveForTrader extends AppCompatActivity
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(ResidentialInfoApproveForTrader.this, NotTraderActivity.class);
+                        Intent intent = new Intent(ResidentialInfoApproveForClient.this, NotTraderActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderoruser);
                             intent.putExtra("role", type);
@@ -848,7 +864,7 @@ public  class ResidentialInfoApproveForTrader extends AppCompatActivity
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(ResidentialInfoApproveForTrader.this, ViewAllCarts.class);
+                        Intent intent = new Intent(ResidentialInfoApproveForClient.this, ViewAllCarts.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderoruser);
                             intent.putExtra("role", type);
@@ -869,7 +885,7 @@ public  class ResidentialInfoApproveForTrader extends AppCompatActivity
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(ResidentialInfoApproveForTrader.this, NotTraderActivity.class);
+                        Intent intent = new Intent(ResidentialInfoApproveForClient.this, NotTraderActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderoruser);
                             intent.putExtra("role", type);
@@ -885,7 +901,7 @@ public  class ResidentialInfoApproveForTrader extends AppCompatActivity
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(ResidentialInfoApproveForTrader.this, AdminAddNewProductActivityII.class);
+                        Intent intent = new Intent(ResidentialInfoApproveForClient.this, AdminAddNewProductActivityII.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderoruser);
                             intent.putExtra("role", type);
@@ -904,7 +920,7 @@ public  class ResidentialInfoApproveForTrader extends AppCompatActivity
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(ResidentialInfoApproveForTrader.this, NotTraderActivity.class);
+                        Intent intent = new Intent(ResidentialInfoApproveForClient.this, NotTraderActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderoruser);
                             intent.putExtra("role", type);
@@ -920,7 +936,7 @@ public  class ResidentialInfoApproveForTrader extends AppCompatActivity
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(ResidentialInfoApproveForTrader.this, AdminAllProducts.class);
+                        Intent intent = new Intent(ResidentialInfoApproveForClient.this, AdminAllProducts.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderoruser);
                             intent.putExtra("role", type);
@@ -936,7 +952,7 @@ public  class ResidentialInfoApproveForTrader extends AppCompatActivity
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(ResidentialInfoApproveForTrader.this, NotTraderActivity.class);
+                                Intent intent = new Intent(ResidentialInfoApproveForClient.this, NotTraderActivity.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderoruser);
                                     intent.putExtra("role", type);
@@ -952,7 +968,7 @@ public  class ResidentialInfoApproveForTrader extends AppCompatActivity
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(ResidentialInfoApproveForTrader.this, AllProductsPurchased.class);
+                                Intent intent = new Intent(ResidentialInfoApproveForClient.this, AllProductsPurchased.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderoruser);
                                     intent.putExtra("role", type);
@@ -972,7 +988,7 @@ public  class ResidentialInfoApproveForTrader extends AppCompatActivity
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(ResidentialInfoApproveForTrader.this, NotTraderActivity.class);
+                                Intent intent = new Intent(ResidentialInfoApproveForClient.this, NotTraderActivity.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderoruser);
                                     intent.putExtra("role", type);
@@ -988,7 +1004,7 @@ public  class ResidentialInfoApproveForTrader extends AppCompatActivity
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(ResidentialInfoApproveForTrader.this, ViewAllCustomers.class);
+                                Intent intent = new Intent(ResidentialInfoApproveForClient.this, ViewAllCustomers.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderoruser);
                                     intent.putExtra("role", type);
@@ -1007,7 +1023,7 @@ public  class ResidentialInfoApproveForTrader extends AppCompatActivity
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(ResidentialInfoApproveForTrader.this, NotTraderActivity.class);
+                                Intent intent = new Intent(ResidentialInfoApproveForClient.this, NotTraderActivity.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderoruser);
                                     intent.putExtra("role", type);
@@ -1023,7 +1039,7 @@ public  class ResidentialInfoApproveForTrader extends AppCompatActivity
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(ResidentialInfoApproveForTrader.this, TradersFollowing.class);
+                                Intent intent = new Intent(ResidentialInfoApproveForClient.this, TradersFollowing.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderoruser);
                                     intent.putExtra("role", type);
@@ -1044,7 +1060,7 @@ public  class ResidentialInfoApproveForTrader extends AppCompatActivity
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(ResidentialInfoApproveForTrader.this, NotTraderActivity.class);
+                                Intent intent = new Intent(ResidentialInfoApproveForClient.this, NotTraderActivity.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderoruser);
                                     intent.putExtra("role", type);
@@ -1060,7 +1076,7 @@ public  class ResidentialInfoApproveForTrader extends AppCompatActivity
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(ResidentialInfoApproveForTrader.this, AdminNewOrdersActivity.class);
+                                Intent intent = new Intent(ResidentialInfoApproveForClient.this, AdminNewOrdersActivity.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderoruser);
                                     intent.putExtra("role", type);
@@ -1081,7 +1097,7 @@ public  class ResidentialInfoApproveForTrader extends AppCompatActivity
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(ResidentialInfoApproveForTrader.this, NotTraderActivity.class);
+                                Intent intent = new Intent(ResidentialInfoApproveForClient.this, NotTraderActivity.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderoruser);
                                     intent.putExtra("role", type);
@@ -1097,7 +1113,7 @@ public  class ResidentialInfoApproveForTrader extends AppCompatActivity
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(ResidentialInfoApproveForTrader.this, AdminCustomerServed.class);
+                                Intent intent = new Intent(ResidentialInfoApproveForClient.this, AdminCustomerServed.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderoruser);
                                     intent.putExtra("role", type);
@@ -1117,7 +1133,7 @@ public  class ResidentialInfoApproveForTrader extends AppCompatActivity
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(ResidentialInfoApproveForTrader.this, NotTraderActivity.class);
+                                Intent intent = new Intent(ResidentialInfoApproveForClient.this, NotTraderActivity.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderoruser);
                                     intent.putExtra("role", type);
@@ -1133,7 +1149,7 @@ public  class ResidentialInfoApproveForTrader extends AppCompatActivity
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(ResidentialInfoApproveForTrader.this, AdminAllOrderHistory.class);
+                                Intent intent = new Intent(ResidentialInfoApproveForClient.this, AdminAllOrderHistory.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderoruser);
                                     intent.putExtra("role", type);
@@ -1162,7 +1178,7 @@ public  class ResidentialInfoApproveForTrader extends AppCompatActivity
         if (id == R.id.viewmap) {
             if (!type.equals("Trader")) {
 
-                Intent intent = new Intent(ResidentialInfoApproveForTrader.this, NotTraderActivity.class);
+                Intent intent = new Intent(ResidentialInfoApproveForClient.this, NotTraderActivity.class);
                 if (intent != null) {
                     intent.putExtra("traderorcustomer", traderoruser);
                     intent.putExtra("role", type);
@@ -1171,7 +1187,7 @@ public  class ResidentialInfoApproveForTrader extends AppCompatActivity
                 }
             } else {
 
-                Intent intent = new Intent(ResidentialInfoApproveForTrader.this, DriverMapActivity.class);
+                Intent intent = new Intent(ResidentialInfoApproveForClient.this, DriverMapActivity.class);
                 if (intent != null) {
                     intent.putExtra("traderorcustomer", traderoruser);
                     intent.putExtra("role", type);
@@ -1192,7 +1208,7 @@ public  class ResidentialInfoApproveForTrader extends AppCompatActivity
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(ResidentialInfoApproveForTrader.this, NotTraderActivity.class);
+                        Intent intent = new Intent(ResidentialInfoApproveForClient.this, NotTraderActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderoruser);
                             intent.putExtra("role", type);
@@ -1208,7 +1224,7 @@ public  class ResidentialInfoApproveForTrader extends AppCompatActivity
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(ResidentialInfoApproveForTrader.this, CartActivity.class);
+                        Intent intent = new Intent(ResidentialInfoApproveForClient.this, CartActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderoruser);
                             intent.putExtra("role", type);
@@ -1228,7 +1244,7 @@ public  class ResidentialInfoApproveForTrader extends AppCompatActivity
                             String cusomerId = "";
 
                             cusomerId = user.getUid();
-                            Intent intent = new Intent(ResidentialInfoApproveForTrader.this, NotTraderActivity.class);
+                            Intent intent = new Intent(ResidentialInfoApproveForClient.this, NotTraderActivity.class);
                             if (intent != null) {
                                 intent.putExtra("traderorcustomer", traderoruser);
                                 intent.putExtra("role", type);
@@ -1244,7 +1260,7 @@ public  class ResidentialInfoApproveForTrader extends AppCompatActivity
                             String cusomerId = "";
                             cusomerId = user.getUid();
 
-                            Intent intent = new Intent(ResidentialInfoApproveForTrader.this, InstagramHomeActivity.class);
+                            Intent intent = new Intent(ResidentialInfoApproveForClient.this, InstagramHomeActivity.class);
                             if (intent != null) {
                                 intent.putExtra("traderorcustomer", traderoruser);
                                 intent.putExtra("role", type);
@@ -1264,7 +1280,7 @@ public  class ResidentialInfoApproveForTrader extends AppCompatActivity
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(ResidentialInfoApproveForTrader.this, NotTraderActivity.class);
+                                Intent intent = new Intent(ResidentialInfoApproveForClient.this, NotTraderActivity.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderoruser);
                                     intent.putExtra("role", type);
@@ -1280,7 +1296,7 @@ public  class ResidentialInfoApproveForTrader extends AppCompatActivity
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(ResidentialInfoApproveForTrader.this, AdminAllProducts.class);
+                                Intent intent = new Intent(ResidentialInfoApproveForClient.this, AdminAllProducts.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderoruser);
                                     intent.putExtra("role", type);
@@ -1297,7 +1313,7 @@ public  class ResidentialInfoApproveForTrader extends AppCompatActivity
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(ResidentialInfoApproveForTrader.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(ResidentialInfoApproveForClient.this, NotTraderActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderoruser);
                                             intent.putExtra("role", type);
@@ -1313,7 +1329,7 @@ public  class ResidentialInfoApproveForTrader extends AppCompatActivity
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(ResidentialInfoApproveForTrader.this, SearchForAdminProductsActivity.class);
+                                        Intent intent = new Intent(ResidentialInfoApproveForClient.this, SearchForAdminProductsActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderoruser);
                                             intent.putExtra("role", type);
@@ -1329,7 +1345,7 @@ public  class ResidentialInfoApproveForTrader extends AppCompatActivity
                             if (FirebaseAuth.getInstance() != null) {
                                 FirebaseAuth.getInstance().signOut();
                                 if (mGoogleApiClient != null) {
-                                    mGoogleSignInClient.signOut().addOnCompleteListener(ResidentialInfoApproveForTrader.this,
+                                    mGoogleSignInClient.signOut().addOnCompleteListener(ResidentialInfoApproveForClient.this,
                                             new OnCompleteListener<Void>() {
                                                 @Override
                                                 public void onComplete(@NonNull Task<Void> task) {
@@ -1338,7 +1354,7 @@ public  class ResidentialInfoApproveForTrader extends AppCompatActivity
                                             });
                                 }
                             }
-                            Intent intent = new Intent(ResidentialInfoApproveForTrader.this, com.simcoder.bimbo.MainActivity.class);
+                            Intent intent = new Intent(ResidentialInfoApproveForClient.this, com.simcoder.bimbo.MainActivity.class);
                             if (intent != null) {
                                 startActivity(intent);
                                 finish();
@@ -1353,7 +1369,7 @@ public  class ResidentialInfoApproveForTrader extends AppCompatActivity
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(ResidentialInfoApproveForTrader.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(ResidentialInfoApproveForClient.this, NotTraderActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderoruser);
                                             intent.putExtra("role", type);
@@ -1369,7 +1385,7 @@ public  class ResidentialInfoApproveForTrader extends AppCompatActivity
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(ResidentialInfoApproveForTrader.this, com.simcoder.bimbo.WorkActivities.SettinsActivity.class);
+                                        Intent intent = new Intent(ResidentialInfoApproveForClient.this, com.simcoder.bimbo.WorkActivities.SettinsActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderoruser);
                                             intent.putExtra("role", type);
@@ -1387,7 +1403,7 @@ public  class ResidentialInfoApproveForTrader extends AppCompatActivity
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(ResidentialInfoApproveForTrader.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(ResidentialInfoApproveForClient.this, NotTraderActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderoruser);
                                             intent.putExtra("role", type);
@@ -1403,7 +1419,7 @@ public  class ResidentialInfoApproveForTrader extends AppCompatActivity
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(ResidentialInfoApproveForTrader.this, HistoryActivity.class);
+                                        Intent intent = new Intent(ResidentialInfoApproveForClient.this, HistoryActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderoruser);
                                             intent.putExtra("role", type);
@@ -1423,7 +1439,7 @@ public  class ResidentialInfoApproveForTrader extends AppCompatActivity
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(ResidentialInfoApproveForTrader.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(ResidentialInfoApproveForClient.this, NotTraderActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderoruser);
                                             intent.putExtra("role", type);
@@ -1439,7 +1455,7 @@ public  class ResidentialInfoApproveForTrader extends AppCompatActivity
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(ResidentialInfoApproveForTrader.this, TraderProfile.class);
+                                        Intent intent = new Intent(ResidentialInfoApproveForClient.this, TraderProfile.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderoruser);
                                             intent.putExtra("role", type);
@@ -1459,7 +1475,7 @@ public  class ResidentialInfoApproveForTrader extends AppCompatActivity
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(ResidentialInfoApproveForTrader.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(ResidentialInfoApproveForClient.this, NotTraderActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderoruser);
                                             intent.putExtra("role", type);
@@ -1475,7 +1491,7 @@ public  class ResidentialInfoApproveForTrader extends AppCompatActivity
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(ResidentialInfoApproveForTrader.this, AdminAllCustomers.class);
+                                        Intent intent = new Intent(ResidentialInfoApproveForClient.this, AdminAllCustomers.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderoruser);
                                             intent.putExtra("role", type);
@@ -1496,7 +1512,7 @@ public  class ResidentialInfoApproveForTrader extends AppCompatActivity
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(ResidentialInfoApproveForTrader.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(ResidentialInfoApproveForClient.this, NotTraderActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderoruser);
                                             intent.putExtra("role", type);
@@ -1512,7 +1528,7 @@ public  class ResidentialInfoApproveForTrader extends AppCompatActivity
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(ResidentialInfoApproveForTrader.this, AdminAddNewProductActivityII.class);
+                                        Intent intent = new Intent(ResidentialInfoApproveForClient.this, AdminAddNewProductActivityII.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderoruser);
                                             intent.putExtra("role", type);
@@ -1532,7 +1548,7 @@ public  class ResidentialInfoApproveForTrader extends AppCompatActivity
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(ResidentialInfoApproveForTrader.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(ResidentialInfoApproveForClient.this, NotTraderActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderoruser);
                                             intent.putExtra("role", type);
@@ -1548,7 +1564,7 @@ public  class ResidentialInfoApproveForTrader extends AppCompatActivity
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(ResidentialInfoApproveForTrader.this, AllGoodsBought.class);
+                                        Intent intent = new Intent(ResidentialInfoApproveForClient.this, AllGoodsBought.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderoruser);
                                             intent.putExtra("role", type);
@@ -1568,7 +1584,7 @@ public  class ResidentialInfoApproveForTrader extends AppCompatActivity
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(ResidentialInfoApproveForTrader.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(ResidentialInfoApproveForClient.this, NotTraderActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderoruser);
                                             intent.putExtra("role", type);
@@ -1584,7 +1600,7 @@ public  class ResidentialInfoApproveForTrader extends AppCompatActivity
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(ResidentialInfoApproveForTrader.this, AdminPaymentHere.class);
+                                        Intent intent = new Intent(ResidentialInfoApproveForClient.this, AdminPaymentHere.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderoruser);
                                             intent.putExtra("role", type);
@@ -1604,7 +1620,7 @@ public  class ResidentialInfoApproveForTrader extends AppCompatActivity
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(ResidentialInfoApproveForTrader.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(ResidentialInfoApproveForClient.this, NotTraderActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderoruser);
                                             intent.putExtra("role", type);
@@ -1620,7 +1636,7 @@ public  class ResidentialInfoApproveForTrader extends AppCompatActivity
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(ResidentialInfoApproveForTrader.this, AdminSettings.class);
+                                        Intent intent = new Intent(ResidentialInfoApproveForClient.this, AdminSettings.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderoruser);
                                             intent.putExtra("role", type);

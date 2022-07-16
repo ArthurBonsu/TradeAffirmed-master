@@ -168,7 +168,19 @@
         android:textAllCaps="false"
         android:textColor="@android:color/white"
         android:textSize="18sp" />
-
+    <Button
+        android:id="@+id/mainhall_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginRight="15dp"
+        android:background="@drawable/buttons"
+        android:padding="17dp"
+        android:text=" Go To MainHall"
+        android:textAllCaps="false"
+        android:textColor="@android:color/white"
+        android:textSize="18sp" />
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
@@ -212,4 +224,6 @@
         android:textSize="20sp"
         android:textStyle="bold"
         android:visibility="invisible" />
+
+
 </LinearLayout>

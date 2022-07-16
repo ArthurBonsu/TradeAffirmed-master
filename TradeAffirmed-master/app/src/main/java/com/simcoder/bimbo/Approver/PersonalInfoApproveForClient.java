@@ -1,31 +1,33 @@
-package com.simcoder.bimbo.Admin;
+package com.simcoder.bimbo.Approver;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.View;
+
+import com.google.android.material.navigation.NavigationView;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import com.firebase.ui.database.FirebaseRecyclerAdapter;
-import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.firebase.ui.database.SnapshotParser;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -36,24 +38,44 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.google.firebase.storage.StorageReference;
 import com.rey.material.widget.ImageView;
+import com.simcoder.bimbo.Admin.AdminAddNewProductActivityII;
+import com.simcoder.bimbo.Admin.AdminAllCustomers;
+import com.simcoder.bimbo.Admin.AdminAllOrderHistory;
+import com.simcoder.bimbo.Admin.AdminAllProducts;
+import com.simcoder.bimbo.Admin.AdminCustomerServed;
+import com.simcoder.bimbo.Admin.AdminNewOrdersActivity;
+import com.simcoder.bimbo.Admin.AdminPaymentHere;
+import com.simcoder.bimbo.Admin.AdminSettings;
+import com.simcoder.bimbo.Admin.AllCandidates;
+import com.simcoder.bimbo.Admin.AllGoodsBought;
+import com.simcoder.bimbo.Admin.AllProductsPurchased;
+import com.simcoder.bimbo.Admin.NotTraderActivity;
+import com.simcoder.bimbo.Admin.SearchForAdminProductsActivity;
+import com.simcoder.bimbo.Admin.TradersFollowing;
+import com.simcoder.bimbo.Admin.ViewAllCarts;
+import com.simcoder.bimbo.Admin.ViewAllCustomers;
+import com.simcoder.bimbo.Model.Users;
+import com.simcoder.bimbo.WorkActivities.CartActivity;
+import com.simcoder.bimbo.WorkActivities.HomeActivity;
 import com.simcoder.bimbo.DriverMapActivity;
 import com.simcoder.bimbo.HistoryActivity;
 import com.simcoder.bimbo.Interface.ItemClickListner;
-import com.simcoder.bimbo.Model.Users;
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.simcoder.bimbo.R;
-import com.simcoder.bimbo.WorkActivities.CartActivity;
-import com.simcoder.bimbo.WorkActivities.HomeActivity;
 import com.simcoder.bimbo.WorkActivities.TraderProfile;
 import com.simcoder.bimbo.instagram.Home.InstagramHomeActivity;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
@@ -62,28 +84,27 @@ import java.util.Calendar;
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.paperdb.Paper;
 
-public  class ApprovalDirectRejectOrReviewForCustomer extends AppCompatActivity
+
+public  class PersonalInfoApproveForClient extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     DatabaseReference ProductsRef;
     private DatabaseReference Userdetails;
     private DatabaseReference ProductsRefwithproduct;
-    private DatabaseReference UsersRef;
     private RecyclerView recyclerView;
     RecyclerView.LayoutManager layoutManager;
-
-    DatabaseReference AllOrderDatabaseRef;
+    DatabaseReference UsersRef;
     DatabaseReference FollowerDatabaseReference;
     String productkey;
     String traderkeyhere;
-    private String role = "";
-    String traderID = "";
+    private String type = "";
+    String traderoruser = "";
     private static final int RC_SIGN_IN = 1;
     private FirebaseAuth.AuthStateListener firebaseAuthListener;
     String ProductID;
     FirebaseDatabase myfirebaseDatabase;
     FirebaseDatabase FollowerDatabase;
-
-    public ApprovalDirectRejectOrReviewViewHolders holders;
+    String gender;
+    public ViewHolder holders;
 
     public FirebaseRecyclerAdapter feedadapter;
 
@@ -123,50 +144,69 @@ public  class ApprovalDirectRejectOrReviewForCustomer extends AppCompatActivity
     String shippingcost;
     String state;
     String thecustomersjob;
-    String orderkey;
 
-    Getmyfollowings getmyfollowingsagain;
     String userkey;
-    TextView orderid;
-    TextView customername;
-    TextView thetradername;
-    TextView orderedtime;
-    TextView ordereddate;
-    String newornot;
-    String aid;
-    String approvername;
-    String approvalID;
-    String userID;
-    DatabaseReference ApprovalRef;
 
-/*
-    addnewproducthere
-            allproductshere
-    allproductspurchased
-            viewallcustomershere
-    tradersfollowing
-            Maintainnewordershere
-    AdminNewOrders
-            allcustomersincart
-    allcustomersserved
-            allorders
-  */
+    private RecyclerView productsList;
+    private DatabaseReference cartListRef;
+    private Query mQueryTraderandUserCart;
+    private String userID = "";
+    String traderID = "";
+    Query QueryUser;
+    String role;
+    String cartkey;
+    String photoid;
+    String getimage;
+    DatabaseReference myreferencetoimage;
+    String productID;
 
+    ImageButton ApprovalButtton;
+    ImageButton RejectButton;
+    ImageButton PauseButton;
 
-    TextView immediateeapprovaldate;
-    TextView uidimmediateapprovalvalue;
-    TextView nameforimmediateapprovalvalue;
-    Button rejectimmediately;
-    Button reviewimmediately;
-    String approverID;
-    String status, approverimage;
+    ImageView ProfileImageofPerson;
+    TextView NameofPerson;
+    TextView PhoneNumberofPerson;
+    TextView PersonEmail;
+    TextView Gender;
+    TextView Age;
+    String email;
+    String age;
+    TextView candidateuserid;
+    String personalinforesponse = "approved";
+    //
+    //AUTHENTICATORS
+    android.widget.ImageView admincartimageofproduct;
+    TextView admincartproductid;
+    TextView admincarttitlehere;
+    TextView admincartquantity;
+    TextView admincart_price;
+    TextView admincarttime;
+
+    ImageView admincartimageofuser;
+    TextView admincartusername;
+    ImageButton candidateapprovebackbutton;
+    ImageButton candidateapprovenextbutton;
+
+    ImageView admincartimageofprouct;
+    String traderuser;
+    String trader;
+    private Uri mImageUri = null;
+    private static final int GALLERY_REQUEST = 1;
+    private StorageReference mStorage;
+    private DatabaseReference mDatabase;
+    private DatabaseReference mDatabaseCHURCHCHOSEN;
     private ProgressDialog mProgress;
+    String approverID;
+    String approvalID;
+    String personalinfoapproveactivity = "personalinfoapproveact";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(
-                (R.layout.activityhomeforadmin));
+                (R.layout.stickynoterecycler));
+
 
         Intent roleintent = getIntent();
         if (roleintent.getExtras().getString("role") != null) {
@@ -175,49 +215,52 @@ public  class ApprovalDirectRejectOrReviewForCustomer extends AppCompatActivity
 
         Intent approverIDintent = getIntent();
         if (approverIDintent.getExtras().getString("approverID") != null) {
-            approverID = approverIDintent.getExtras().getString("approverID");
+            approverID= approverIDintent.getExtras().getString("approverID");
         }
         Intent userIDIntent = getIntent();
         if (userIDIntent.getExtras().getString("userID") != null) {
-            userID = userIDIntent.getExtras().getString("userID");
+            userID= userIDIntent.getExtras().getString("userID");
         }
 
 
 
         Intent approvalIDintent = getIntent();
         if (approvalIDintent.getExtras().getString("approvalID") != null) {
-            approvalID = approvalIDintent.getExtras().getString("approvalID");
+            approvalID= approvalIDintent.getExtras().getString("approvalID");
         }
 
 
-        recyclerView = findViewById(R.id.recycler_menu);
-
-
+        recyclerView = findViewById(R.id.stickyheaderrecyler);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        layoutManager.setReverseLayout(true);
-        layoutManager.setStackFromEnd(true);
         if (recyclerView != null) {
             recyclerView.setLayoutManager(layoutManager);
         }
-     /*  if (recyclerView != null) {
+        if (recyclerView != null) {
             recyclerView.setHasFixedSize(true);
 
         }
-*/
 
-        immediateeapprovaldate = (TextView) findViewById(R.id.immediateeapprovaldate);
-        uidimmediateapprovalvalue = (TextView) findViewById(R.id.nameforimmediateapprovalvalue);
-        nameforimmediateapprovalvalue = (TextView) findViewById(R.id.nameforimmediateapprovalvalue);
-        rejectimmediately = (Button) findViewById(R.id.rejectimmediately);
-        reviewimmediately = (Button) findViewById(R.id.reviewimmediately);
+        ApprovalButtton = (ImageButton) findViewById(R.id.approve);
+        RejectButton = (ImageButton) findViewById(R.id.reject);
+        PauseButton = (ImageButton) findViewById(R.id.pauseapproval);
 
+        ProfileImageofPerson = (ImageView) findViewById(R.id.candidateprofileimage);
+        NameofPerson = (TextView) findViewById(R.id.candidatename);
+        PhoneNumberofPerson = (TextView) findViewById(R.id.candidatephonenumber);
+        PersonEmail = (TextView) findViewById(R.id.candidateemail);
+        Gender = (TextView) findViewById(R.id.candidategender);
+        Age = (TextView) findViewById(R.id.candidateage);
+        candidateuserid = (TextView) findViewById(R.id.candidateuserid);
+        candidateapprovebackbutton =  (ImageButton) findViewById(R.id.candidateapproveback);
+                candidateapprovenextbutton = (ImageButton) findViewById(R.id.candidateapprovenext);
 
         Paper.init(this);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.hometoolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         if (toolbar != null) {
-            toolbar.setTitle("Approval View Pending");
+            toolbar.setTitle("Personal Information Activity");
         }
+//        setSupportActionBar(toolbar);
 
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -237,6 +280,7 @@ public  class ApprovalDirectRejectOrReviewForCustomer extends AppCompatActivity
             TextView userNameTextView = headerView.findViewById(R.id.user_profile_name);
             CircleImageView profileImageView = headerView.findViewById(R.id.user_profile_image);
 
+
             // USER
 
 
@@ -255,28 +299,22 @@ public  class ApprovalDirectRejectOrReviewForCustomer extends AppCompatActivity
                 }
 
 
-                myfirebaseDatabase = FirebaseDatabase.getInstance();
-
-                UsersRef = myfirebaseDatabase.getReference().child("Users");
-
-
-                userkey = UsersRef.getKey();
-                // GET FROM FOLLOWING KEY
-
-
-                fetch();
-                recyclerView.setAdapter(feedadapter);
-
-
                 if (mAuth != null) {
                     user = mAuth.getCurrentUser();
                     if (user != null) {
-                        approverID = user.getUid();
+                        userID = user.getUid();
 
                     }
 
+                    myfirebaseDatabase = FirebaseDatabase.getInstance();
 
-//        setSupportActionBar(toolbar);
+                    UsersRef = myfirebaseDatabase.getReference().child("Users");
+
+                    userkey = UsersRef.getKey();
+                    // GET FROM FOLLOWING KEY
+                    fetch();
+                    recyclerView.setAdapter(feedadapter);
+                    //        setSupportActionBar(toolbar);
 
                     GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestIdToken(getString(R.string.default_web_client_id)).requestEmail().build();
                     if (mGoogleApiClient != null) {
@@ -285,7 +323,7 @@ public  class ApprovalDirectRejectOrReviewForCustomer extends AppCompatActivity
                     }
 
                     if (mGoogleApiClient != null) {
-                        mGoogleApiClient = new GoogleApiClient.Builder(this).enableAutoManage(ApprovalDirectRejectOrReviewForCustomer.this,
+                        mGoogleApiClient = new GoogleApiClient.Builder(this).enableAutoManage(PersonalInfoApproveForClient.this,
                                 new GoogleApiClient.OnConnectionFailedListener() {
                                     @Override
                                     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
@@ -293,8 +331,6 @@ public  class ApprovalDirectRejectOrReviewForCustomer extends AppCompatActivity
                                     }
                                 }).addApi(Auth.GOOGLE_SIGN_IN_API, gso).build();
                     }
-
-
                     // USER
                     user = mAuth.getCurrentUser();
 
@@ -302,43 +338,49 @@ public  class ApprovalDirectRejectOrReviewForCustomer extends AppCompatActivity
                 }
             }
         }
-    }
+    }    //GETFOLLOWING WILL PULL FROM DIFFERENT DATASTORE( THE USER DATASTORE)
 
 
-    public interface Getmyfollowings {
-
-        void onCallback(String followingid, String followingname, String followingimage);
-
-
-    }
-
-
-    //GETFOLLOWING WILL PULL FROM DIFFERENT DATASTORE( THE USER DATASTORE)
-
-
-    public class ApprovalDirectRejectOrReviewViewHolders extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder {
         public LinearLayout root;
 
-        public TextView immediateeapprovaldate;
-        public TextView uidimmediateapprovalvalue;
-        public TextView nameforimmediateapprovalvalue;
-        public Button rejectimmediately;
-        public Button reviewimmediately;
+        public ImageButton ApprovalButtton;
+        public ImageButton RejectButton;
+        public ImageButton PauseButton;
+        public TextView NameofPerson;
+
+        public TextView PhoneNumberofPerson;
+        public TextView PersonEmail;
+        public TextView Gender;
+        public TextView Age;
+        public TextView candidateuserid;
+        public android.widget.ImageView ProfileImageofPerson;
+
+        public ImageButton candidateapprovebackbutton;
+        public ImageButton candidateapprovenextbutton;
 
 
-        public android.widget.ImageView theapproverhomepic;
         public ItemClickListner listner;
 
-        public ApprovalDirectRejectOrReviewViewHolders(View itemView) {
+        public ViewHolder(View itemView) {
             super(itemView);
 
-            immediateeapprovaldate = itemView.findViewById(R.id.immediateeapprovaldate);
-            uidimmediateapprovalvalue = itemView.findViewById(R.id.uidimmediateapprovalvalue);
-            nameforimmediateapprovalvalue = itemView.findViewById(R.id.nameforimmediateapprovalvalue);
 
-            rejectimmediately = itemView.findViewById(R.id.rejectimmediately);
-            reviewimmediately = itemView.findViewById(R.id.reviewimmediately);
+            ApprovalButtton = itemView.findViewById(R.id.approve);
+            RejectButton = itemView.findViewById(R.id.reject);
+            PauseButton = itemView.findViewById(R.id.pauseapproval);
 
+            ProfileImageofPerson = itemView.findViewById(R.id.candidateprofileimage);
+
+            NameofPerson = itemView.findViewById(R.id.candidatename);
+            PhoneNumberofPerson = itemView.findViewById(R.id.candidatephonenumber);
+            PersonEmail = itemView.findViewById(R.id.candidateemail);
+            Gender = itemView.findViewById(R.id.candidategender);
+            Age = itemView.findViewById(R.id.candidateage);
+            candidateuserid = itemView.findViewById((R.id.candidateuserid));
+
+            candidateapprovebackbutton = itemView.findViewById(R.id.candidateapproveback );
+            candidateapprovenextbutton = itemView.findViewById(R.id.candidateapprovenext);
 
         }
 
@@ -346,22 +388,56 @@ public  class ApprovalDirectRejectOrReviewForCustomer extends AppCompatActivity
             this.listner = listner;
         }
 
+        public void setnameofcandidateid(String ourfcandidateid) {
 
-        public void setimmediateapprovaldate(String _immediateeapprovaldate) {
-
-            immediateeapprovaldate.setText(_immediateeapprovaldate);
+            candidateuserid.setText(ourfcandidateid);
         }
 
-        public void setimmediateapprovalvalue(String _immediateapprovalvalue) {
+        public void setnameofcandidate(String nameofcandidate) {
 
-            uidimmediateapprovalvalue.setText(_immediateapprovalvalue);
+            NameofPerson.setText(nameofcandidate);
         }
 
-        public void set(String _theuiditselftext) {
+        public void setphonenumberofcandidate(String phonenumberofcadidate) {
 
-            nameforimmediateapprovalvalue.setText(_theuiditselftext);
+            PhoneNumberofPerson.setText(phonenumberofcadidate);
         }
 
+        public void setpersonemail(String personemailinfo) {
+
+            PersonEmail.setText(personemailinfo);
+        }
+
+        public void setgenderifo(String genderifo) {
+
+            Gender.setText(genderifo);
+        }
+
+        public void setageinfohere(String ageinfo) {
+
+            Age.setText(ageinfo);
+        }
+
+
+        public void setcandidateprofileimage(final Context ctx, final String image) {
+            final android.widget.ImageView candidateprofileimage = (android.widget.ImageView) itemView.findViewById(R.id.candidateprofileimage);
+
+            Picasso.get().load(image).resize(400, 0).networkPolicy(NetworkPolicy.OFFLINE).into(candidateprofileimage, new Callback() {
+
+
+                @Override
+                public void onSuccess() {
+
+                }
+
+                @Override
+                public void onError(Exception e) {
+                    Picasso.get().load(image).resize(100, 0).into(candidateprofileimage);
+                }
+
+
+            });
+        }
 
     }
 
@@ -379,15 +455,14 @@ public  class ApprovalDirectRejectOrReviewForCustomer extends AppCompatActivity
         if (mAuth != null) {
             user = mAuth.getCurrentUser();
             if (user != null) {
-                approverID = user.getUid();
+                traderID = user.getUid();
 
             }
-
             @Nullable
 
             Query queryhere =
 
-                    FirebaseDatabase.getInstance().getReference().child("Approval").orderByChild("statusidentifier").equalTo("pendingCustomer");
+                    FirebaseDatabase.getInstance().getReference().child("Users").child("Drivers").orderByChild("tid").equalTo(userID);
             if (queryhere != null) {
 
                 FirebaseRecyclerOptions<Users> options =
@@ -398,58 +473,57 @@ public  class ApprovalDirectRejectOrReviewForCustomer extends AppCompatActivity
                                     @Nullable
                                     @Override
                                     public Users parseSnapshot(@Nullable DataSnapshot snapshot) {
-                                        /*
+
+
+                                      /*
                                       String commentkey = snapshot.child("Comments").getKey();
-                                      String likekey = snapshot.child("Likes").getKey();
-*/
-                                        Log.i(TAG, "Approval Direct Reject For Customer " + snapshot);
+                                      String likekey = snapshot.child("Likes").getKey();*/
+                                        Log.i(TAG, "User " + snapshot);
 
-
-                                        if (snapshot.child("uid").getValue(String.class) != null) {
+                                        if (snapshot.child("uid").getValue() != null) {
                                             uid = snapshot.child("uid").getValue(String.class);
                                         }
 
-                                        if (snapshot.child("status").getValue(String.class) != null) {
-                                            status = snapshot.child("status").getValue(String.class);
+                                        if (snapshot.child("name").getValue() != null) {
+                                            name = snapshot.child("name").getValue(String.class);
                                         }
 
-                                        if (snapshot.child("approverimage").getValue(String.class) != null) {
-                                            approverimage = snapshot.child("approverimage").getValue(String.class);
-                                        }
-                                        if (snapshot.child("aid").getValue(String.class) != null) {
-                                            aid = snapshot.child("aid").getValue(String.class);
-                                        }
-                                        if (snapshot.child("approvalID").getValue(String.class) != null) {
-                                            approvalID = snapshot.child("approvalID").getValue(String.class);
-                                        }
-                                        if (snapshot.child("approvername").getValue(String.class) != null) {
-                                            approvername = snapshot.child("approvername").getValue(String.class);
-                                        }
-                                        if (snapshot.child("tid").getValue(String.class) != null) {
-                                            tid = snapshot.child("tid").getValue(String.class);
-                                        }
-                                        if (snapshot.child("date").getValue(String.class) != null) {
-                                            date = snapshot.child("date").getValue(String.class);
-                                        }
-                                        if (snapshot.child("time").getValue(String.class) != null) {
-                                            time = snapshot.child("time").getValue(String.class);
+                                        if (snapshot.child("image").getValue() != null) {
+                                            image = snapshot.child("image").getValue(String.class);
                                         }
 
-                                        return new Users(aid, uid, status, date, approvalID);
+
+                                        if (snapshot.child("phone").getValue() != null) {
+                                            phone = snapshot.child("phone").getValue(String.class);
+                                        }
+                                        if (snapshot.child("email").getValue() != null) {
+                                            email = snapshot.child("email").getValue(String.class);
+                                        }
+                                        if (snapshot.child("gender").getValue() != null) {
+                                            gender = snapshot.child("gender").getValue(String.class);
+                                        }
+                                        if (snapshot.child("age").getValue() != null) {
+                                            age = snapshot.child("age").getValue(String.class);
+                                        }
+
+                                        return new Users(uid, name, image, phone, email, gender, age);
+
+
                                     }
+
                                 }).build();
 
 
-                feedadapter = new FirebaseRecyclerAdapter<Users, ApprovalDirectRejectOrReviewForCustomer.ApprovalDirectRejectOrReviewViewHolders>(options) {
+                feedadapter = new FirebaseRecyclerAdapter<Users, ViewHolder>(options) {
                     @Nullable
                     @Override
-                    public ApprovalDirectRejectOrReviewViewHolders onCreateViewHolder(ViewGroup parent, int viewrole) {
+                    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
                         @Nullable
                         View view = LayoutInflater.from(parent.getContext())
-                                .inflate(R.layout.approvaldirectrejectorreview, parent, false);
+                                .inflate(R.layout.personalinfoapprove, parent, false);
 
-                        return new ApprovalDirectRejectOrReviewViewHolders(view);
+                        return new ViewHolder(view);
                     }
 
 
@@ -458,74 +532,151 @@ public  class ApprovalDirectRejectOrReviewForCustomer extends AppCompatActivity
                         return super.getItemCount();
                     }
 
-
                     @Override
-                    protected void onBindViewHolder(@Nullable final ApprovalDirectRejectOrReviewForCustomer.ApprovalDirectRejectOrReviewViewHolders holder, int position, @Nullable Users model) {
+                    protected void onBindViewHolder(@Nullable final ViewHolder holder, int position, @Nullable Users model) {
                         if (model != null) {
-                            holders = holder;
-
-                            holder.immediateeapprovaldate.setText(date);
-                            holder.nameforimmediateapprovalvalue.setText(uid);
-                            holder.uidimmediateapprovalvalue.setText(approvername);
-
-                            Log.d(TAG, "The Pending Review List for Traders Here  " + date + approvername);
 
 
-                            if (holder.reviewimmediately != null) {
-                                holder.reviewimmediately.setOnClickListener(new View.OnClickListener() {
+                            holder.NameofPerson.setText( name);
+                            holder.PhoneNumberofPerson.setText(phone);
+                            holder.PersonEmail.setText(email);
+                            holder.Gender.setText(gender);
+                            holder.Age.setText(age);
+                            holder.candidateuserid.setText(uid);
+
+                            Log.d(TAG, "Personal Approval Info" + name);
+                            holder.setcandidateprofileimage(getApplicationContext(), image);
+
+
+                            if (ProfileImageofPerson != null) {
+                                Picasso.get().load(image).placeholder(R.drawable.profile).into(ProfileImageofPerson);
+                            }
+
+
+                            holder.ApprovalButtton.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    personalinforesponse = "approve";
+                                    setDecision(personalinforesponse);
+                                    Intent approvalintent = new Intent(PersonalInfoApproveForClient.this, PersonalInfoApproveForClient.class);
+                                    approvalintent.putExtra("role", role);
+                                    approvalintent.putExtra("uid", uid);
+                                    approvalintent.putExtra("approverID", approverID);
+                                    approvalintent.putExtra("approvalID", approvalID);
+                                    approvalintent.putExtra("userID", userID);
+
+                                    Toast.makeText(PersonalInfoApproveForClient.this, "Candidate has been approved", Toast.LENGTH_SHORT).show();
+                                    startActivity(approvalintent);
+                                }
+                            });
+
+                            if (holder.RejectButton != null) {
+                                holder.RejectButton.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View view) {
 
+                                          /// Dialog Box
+                                        personalinforesponse = "reject";
+                                        setDecision(personalinforesponse);
+                                        Intent rejectintent = new Intent(PersonalInfoApproveForClient.this, PersonalInfoApproveForClient.class);
+                                        rejectintent.putExtra("role", role);
+                                        rejectintent.putExtra("uid", uid);
+                                        rejectintent.putExtra("approverID", approverID);
+                                        rejectintent.putExtra("approvalID", approvalID);
+                                        rejectintent.putExtra("userID", userID);
 
-                                        Intent approvalpendingbuttonintent = new Intent(ApprovalDirectRejectOrReviewForCustomer.this, ApprovalPagelForCustomerAndTrader.class);
-                                        approvalpendingbuttonintent.putExtra("role", role);
-                                        approvalpendingbuttonintent.putExtra("uid", uid);
-                                        approvalpendingbuttonintent.putExtra("approverID", approverID);
-                                        approvalpendingbuttonintent.putExtra("approvalID", approvalID);
-                                        approvalpendingbuttonintent.putExtra("userID", userID);
+                                        Toast.makeText(PersonalInfoApproveForClient.this, "Candidate has been rejected", Toast.LENGTH_SHORT).show();
+                                        startActivity(rejectintent);
 
-                                        startActivity(approvalpendingbuttonintent);
 
                                     }
                                 });
                             }
-                            if (holder.rejectimmediately != null) {
-                                holder.rejectimmediately.setOnClickListener(new View.OnClickListener() {
+
+                            // Product Details
+                            if (holder.PauseButton != null) {
+                                holder.PauseButton.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View view) {
-                                           status = "reject";
-                                        setnewstatus(status);
-                                        Toast.makeText(getApplicationContext(), "The User has been rejected ", Toast.LENGTH_SHORT).show();
-                                        Intent reviewimmediatelyintent = new Intent(ApprovalDirectRejectOrReviewForCustomer.this, ApproveHome.class);
+                                        personalinforesponse = "pause";
+                                        setDecision(personalinforesponse);
+                                        Intent pausebuttonintent = new Intent(PersonalInfoApproveForClient.this, PersonalInfoApproveForClient.class);
+                                        pausebuttonintent.putExtra("role", role);
+                                        pausebuttonintent.putExtra("uid", uid);
+                                        pausebuttonintent.putExtra("approverID", approverID);
+                                        pausebuttonintent.putExtra("approvalID", approvalID);
+                                        pausebuttonintent.putExtra("userID", userID);
 
-                                        startActivity(reviewimmediatelyintent);
+
+                                        Toast.makeText(PersonalInfoApproveForClient.this, "Candidate has been paused", Toast.LENGTH_SHORT).show();
+                                        startActivity(pausebuttonintent);
 
                                     }
                                 });
                             }
 
+////
+
+
+                            // Product Details
+                            if (holder.candidateapprovebackbutton != null) {
+                                holder.candidateapprovebackbutton.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+
+                                        Intent candidatebackbutton  = new Intent(PersonalInfoApproveForClient.this, AllCandidates.class);
+                                        candidatebackbutton.putExtra("role", role);
+                                        candidatebackbutton.putExtra("uid", uid);
+                                        candidatebackbutton.putExtra("approverID", approverID);
+                                        candidatebackbutton.putExtra("approvalID", approvalID);
+                                        candidatebackbutton.putExtra("userID", userID);
+
+
+                                        Toast.makeText(PersonalInfoApproveForClient.this, "Back to candidate list", Toast.LENGTH_SHORT).show();
+                                        startActivity(candidatebackbutton);
+
+                                    }
+                                });
+                            }
+
+
+                            // Product Details
+                            if (holder.candidateapprovenextbutton != null) {
+                                holder.candidateapprovenextbutton.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+
+                                        Intent caandidateapprovenextbutton = new Intent(PersonalInfoApproveForClient.this, ResidentialInfoApproveForClient.class);
+                                        caandidateapprovenextbutton.putExtra("role", role);
+                                        caandidateapprovenextbutton.putExtra("uid", uid);
+                                        caandidateapprovenextbutton.putExtra("approverID", approverID);
+                                        caandidateapprovenextbutton.putExtra("approvalID", approvalID);
+                                        caandidateapprovenextbutton.putExtra("userID", userID);
+
+                                        Toast.makeText(PersonalInfoApproveForClient.this, "To Residential Page", Toast.LENGTH_SHORT).show();
+
+                                        startActivity(caandidateapprovenextbutton);
+
+                                    }
+                                });
+                            }
 
                         }
                     }
-
-
                 };
-
-
             }
-
-
-            if (recyclerView != null) {
-                recyclerView.setAdapter(feedadapter);
-            }
-
+//            if (recyclerView != null) {
+            //              recyclerView.setAdapter(feedadapter);
+            //        }
         }
-
     }
 
+
     // Post Info
-    private void setnewstatus(String rejectorapprovestatus) {
-        ApprovalRef = FirebaseDatabase.getInstance().getReference().child("Product");
+    private void setDecision(String personalinforesponse) {
+
+        user = mAuth.getCurrentUser();
+
         // GET DATES FOR PRODUCTS
         Calendar calendar = Calendar.getInstance();
         SimpleDateFormat currentDate = new SimpleDateFormat("MMM dd, yyyy");
@@ -539,34 +690,46 @@ public  class ApprovalDirectRejectOrReviewForCustomer extends AppCompatActivity
 
             }
 
-            status = rejectorapprovestatus;
-            mProgress.setMessage("Setting status as " + rejectorapprovestatus);
+            if (personalinforesponse != null) {
+                mProgress.setMessage("Making +" + personalinforesponse + "for this current user");
 
-            mProgress.show();
+                mProgress.show();
 
-            // PICK UP THE SPECIAL PRODUCT INFO AND LOADING THEM INTO THE DATABASE
-            Users approvalstobesent = new Users(aid, tid, status, date, approvalID);
 
-            ApprovalRef.child(aid).setValue(approvalstobesent, new
-                    DatabaseReference.CompletionListener() {
-                        @Override
-                        public void onComplete(DatabaseError databaseError, DatabaseReference
-                                databaseReference) {
-                            Toast.makeText(getApplicationContext(), "The User has been rejected directly", Toast.LENGTH_SHORT).show();
-                            Intent approvaldirectreject = new Intent(ApprovalDirectRejectOrReviewForCustomer.this, HomeActivity.class);
 
-                            startActivity(approvaldirectreject);
 
-                        }
-                    });
-        }
-    }
+                        // PICK UP THE SPECIAL PRODUCT INFO AND LOADING THEM INTO THE DATABASE
+
+                        Users newuserapprovalinfo =     new Users(uid, name, image, phone, email, gender, age,personalinforesponse,personalinfoapproveactivity);
+                        UsersRef.child(userID).setValue(newuserapprovalinfo, new
+                                DatabaseReference.CompletionListener() {
+                                    @Override
+                                    public void onComplete(DatabaseError databaseError, DatabaseReference
+                                            databaseReference) {
+                                        Toast.makeText(getApplicationContext(), "User Decision Taken as "  +personalinforesponse, Toast.LENGTH_SHORT).show();
+                                        Intent personapprovalloginfointent = new Intent(PersonalInfoApproveForClient.this, HomeActivity.class);
+
+                                        startActivity(personapprovalloginfointent);
+
+                                    }
+                                });
+
+
+                    }
+
+                };
+
+
+                mProgress.dismiss();
+
+            }
+
+
 
 
     public void onConnected(@Nullable Bundle bundle) {
 
     }
-
 
     public void onConnectionSuspended(int i) {
         if (mGoogleApiClient != null) {
@@ -589,8 +752,8 @@ public  class ApprovalDirectRejectOrReviewForCustomer extends AppCompatActivity
 
                 FirebaseUser user = mAuth.getCurrentUser();
                 if (user != null) {
-                    approverID = "";
-                    approverID = user.getUid();
+                    traderID = "";
+                    traderID = user.getUid();
                 }
 
                 // I HAVE TO TRY TO GET THE SETUP INFORMATION , IF THEY ARE ALREADY PROVIDED WE TAKE TO THE NEXT STAGE
@@ -650,17 +813,17 @@ public  class ApprovalDirectRejectOrReviewForCustomer extends AppCompatActivity
 
 
         if (id == R.id.viewallcustomershere) {
-            if (!role.equals("Trader")) {
+            if (!type.equals("Trader")) {
                 if (FirebaseAuth.getInstance() != null) {
                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                     if (user != null) {
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(ApprovalDirectRejectOrReviewForCustomer.this, NotTraderActivity.class);
+                        Intent intent = new Intent(PersonalInfoApproveForClient.this, NotTraderActivity.class);
                         if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderID);
-                            intent.putExtra("role", role);
+                            intent.putExtra("traderorcustomer", traderoruser);
+                            intent.putExtra("role", type);
                             startActivity(intent);
                         }
                     }
@@ -673,10 +836,10 @@ public  class ApprovalDirectRejectOrReviewForCustomer extends AppCompatActivity
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(ApprovalDirectRejectOrReviewForCustomer.this, AdminAllCustomers.class);
+                        Intent intent = new Intent(PersonalInfoApproveForClient.this, AdminAllCustomers.class);
                         if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderID);
-                            intent.putExtra("role", role);
+                            intent.putExtra("traderorcustomer", traderoruser);
+                            intent.putExtra("role", type);
                             startActivity(intent);
                         }
                     }
@@ -688,17 +851,17 @@ public  class ApprovalDirectRejectOrReviewForCustomer extends AppCompatActivity
 
         if (id == R.id. allcustomersincart) {
 
-            if (!role.equals("Trader")) {
+            if (!type.equals("Trader")) {
                 if (FirebaseAuth.getInstance() != null) {
                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                     if (user != null) {
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(ApprovalDirectRejectOrReviewForCustomer.this, NotTraderActivity.class);
+                        Intent intent = new Intent(PersonalInfoApproveForClient.this, NotTraderActivity.class);
                         if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderID);
-                            intent.putExtra("role", role);
+                            intent.putExtra("traderorcustomer", traderoruser);
+                            intent.putExtra("role", type);
                             startActivity(intent);
                         }
                     }
@@ -711,10 +874,10 @@ public  class ApprovalDirectRejectOrReviewForCustomer extends AppCompatActivity
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(ApprovalDirectRejectOrReviewForCustomer.this, ViewAllCarts.class);
+                        Intent intent = new Intent(PersonalInfoApproveForClient.this, ViewAllCarts.class);
                         if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderID);
-                            intent.putExtra("role", role);
+                            intent.putExtra("traderorcustomer", traderoruser);
+                            intent.putExtra("role", type);
                             startActivity(intent);
                         }
                     }
@@ -725,17 +888,17 @@ public  class ApprovalDirectRejectOrReviewForCustomer extends AppCompatActivity
 
 
         if (id == R.id.addnewproducthere) {
-            if (!role.equals("Trader")) {
+            if (!type.equals("Trader")) {
                 if (FirebaseAuth.getInstance() != null) {
                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                     if (user != null) {
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(ApprovalDirectRejectOrReviewForCustomer.this, NotTraderActivity.class);
+                        Intent intent = new Intent(PersonalInfoApproveForClient.this, NotTraderActivity.class);
                         if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderID);
-                            intent.putExtra("role", role);
+                            intent.putExtra("traderorcustomer", traderoruser);
+                            intent.putExtra("role", type);
                             startActivity(intent);
                         }
                     }
@@ -748,10 +911,10 @@ public  class ApprovalDirectRejectOrReviewForCustomer extends AppCompatActivity
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(ApprovalDirectRejectOrReviewForCustomer.this, AdminAddNewProductActivityII.class);
+                        Intent intent = new Intent(PersonalInfoApproveForClient.this, AdminAddNewProductActivityII.class);
                         if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderID);
-                            intent.putExtra("role", role);
+                            intent.putExtra("traderorcustomer", traderoruser);
+                            intent.putExtra("role", type);
                             startActivity(intent);
                         }
                     }
@@ -760,17 +923,17 @@ public  class ApprovalDirectRejectOrReviewForCustomer extends AppCompatActivity
         }
 
         if (id == R.id.allproductshere) {
-            if (!role.equals("Trader")) {
+            if (!type.equals("Trader")) {
                 if (FirebaseAuth.getInstance() != null) {
                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                     if (user != null) {
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(ApprovalDirectRejectOrReviewForCustomer.this, NotTraderActivity.class);
+                        Intent intent = new Intent(PersonalInfoApproveForClient.this, NotTraderActivity.class);
                         if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderID);
-                            intent.putExtra("role", role);
+                            intent.putExtra("traderorcustomer", traderoruser);
+                            intent.putExtra("role", type);
                             startActivity(intent);
                         }
                     }
@@ -783,26 +946,26 @@ public  class ApprovalDirectRejectOrReviewForCustomer extends AppCompatActivity
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(ApprovalDirectRejectOrReviewForCustomer.this, AdminAllProducts.class);
+                        Intent intent = new Intent(PersonalInfoApproveForClient.this, AdminAllProducts.class);
                         if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderID);
-                            intent.putExtra("role", role);
+                            intent.putExtra("traderorcustomer", traderoruser);
+                            intent.putExtra("role", type);
                             startActivity(intent);
                         }
                     }}
 
                 if (id == R.id.allproductspurchased) {
-                    if (!role.equals("Trader")) {
+                    if (!type.equals("Trader")) {
                         if (FirebaseAuth.getInstance() != null) {
                             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                             if (user != null) {
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(ApprovalDirectRejectOrReviewForCustomer.this, NotTraderActivity.class);
+                                Intent intent = new Intent(PersonalInfoApproveForClient.this, NotTraderActivity.class);
                                 if (intent != null) {
-                                    intent.putExtra("traderorcustomer", traderID);
-                                    intent.putExtra("role", role);
+                                    intent.putExtra("traderorcustomer", traderoruser);
+                                    intent.putExtra("role", type);
                                     startActivity(intent);
                                 }
                             }
@@ -815,10 +978,10 @@ public  class ApprovalDirectRejectOrReviewForCustomer extends AppCompatActivity
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(ApprovalDirectRejectOrReviewForCustomer.this, AllProductsPurchased.class);
+                                Intent intent = new Intent(PersonalInfoApproveForClient.this, AllProductsPurchased.class);
                                 if (intent != null) {
-                                    intent.putExtra("traderorcustomer", traderID);
-                                    intent.putExtra("role", role);
+                                    intent.putExtra("traderorcustomer", traderoruser);
+                                    intent.putExtra("role", type);
                                     startActivity(intent);
                                 }
                             }
@@ -828,17 +991,17 @@ public  class ApprovalDirectRejectOrReviewForCustomer extends AppCompatActivity
 
 
                 if (id == R.id. viewallcustomershere) {
-                    if (!role.equals("Trader")) {
+                    if (!type.equals("Trader")) {
                         if (FirebaseAuth.getInstance() != null) {
                             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                             if (user != null) {
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(ApprovalDirectRejectOrReviewForCustomer.this, NotTraderActivity.class);
+                                Intent intent = new Intent(PersonalInfoApproveForClient.this, NotTraderActivity.class);
                                 if (intent != null) {
-                                    intent.putExtra("traderorcustomer", traderID);
-                                    intent.putExtra("role", role);
+                                    intent.putExtra("traderorcustomer", traderoruser);
+                                    intent.putExtra("role", type);
                                     startActivity(intent);
                                 }
                             }
@@ -851,10 +1014,10 @@ public  class ApprovalDirectRejectOrReviewForCustomer extends AppCompatActivity
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(ApprovalDirectRejectOrReviewForCustomer.this, ViewAllCustomers.class);
+                                Intent intent = new Intent(PersonalInfoApproveForClient.this, ViewAllCustomers.class);
                                 if (intent != null) {
-                                    intent.putExtra("traderorcustomer", traderID);
-                                    intent.putExtra("role", role);
+                                    intent.putExtra("traderorcustomer", traderoruser);
+                                    intent.putExtra("role", type);
                                     startActivity(intent);
                                 }
                             }
@@ -863,17 +1026,17 @@ public  class ApprovalDirectRejectOrReviewForCustomer extends AppCompatActivity
                 }
 
                 if (id == R.id.tradersfollowing) {
-                    if (!role.equals("Trader")) {
+                    if (!type.equals("Trader")) {
                         if (FirebaseAuth.getInstance() != null) {
                             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                             if (user != null) {
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(ApprovalDirectRejectOrReviewForCustomer.this, NotTraderActivity.class);
+                                Intent intent = new Intent(PersonalInfoApproveForClient.this, NotTraderActivity.class);
                                 if (intent != null) {
-                                    intent.putExtra("traderorcustomer", traderID);
-                                    intent.putExtra("role", role);
+                                    intent.putExtra("traderorcustomer", traderoruser);
+                                    intent.putExtra("role", type);
                                     startActivity(intent);
                                 }
                             }
@@ -886,10 +1049,10 @@ public  class ApprovalDirectRejectOrReviewForCustomer extends AppCompatActivity
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(ApprovalDirectRejectOrReviewForCustomer.this, TradersFollowing.class);
+                                Intent intent = new Intent(PersonalInfoApproveForClient.this, TradersFollowing.class);
                                 if (intent != null) {
-                                    intent.putExtra("traderorcustomer", traderID);
-                                    intent.putExtra("role", role);
+                                    intent.putExtra("traderorcustomer", traderoruser);
+                                    intent.putExtra("role", type);
                                     startActivity(intent);
                                 }
                             }
@@ -900,17 +1063,17 @@ public  class ApprovalDirectRejectOrReviewForCustomer extends AppCompatActivity
 
                 if (id == R.id.AdminNewOrders) {
 
-                    if (!role.equals("Trader")) {
+                    if (!type.equals("Trader")) {
                         if (FirebaseAuth.getInstance() != null) {
                             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                             if (user != null) {
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(ApprovalDirectRejectOrReviewForCustomer.this, NotTraderActivity.class);
+                                Intent intent = new Intent(PersonalInfoApproveForClient.this, NotTraderActivity.class);
                                 if (intent != null) {
-                                    intent.putExtra("traderorcustomer", traderID);
-                                    intent.putExtra("role", role);
+                                    intent.putExtra("traderorcustomer", traderoruser);
+                                    intent.putExtra("role", type);
                                     startActivity(intent);
                                 }
                             }
@@ -923,10 +1086,10 @@ public  class ApprovalDirectRejectOrReviewForCustomer extends AppCompatActivity
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(ApprovalDirectRejectOrReviewForCustomer.this, AdminNewOrdersActivity.class);
+                                Intent intent = new Intent(PersonalInfoApproveForClient.this, AdminNewOrdersActivity.class);
                                 if (intent != null) {
-                                    intent.putExtra("traderorcustomer", traderID);
-                                    intent.putExtra("role", role);
+                                    intent.putExtra("traderorcustomer", traderoruser);
+                                    intent.putExtra("role", type);
                                     startActivity(intent);
                                 }
                             }
@@ -937,17 +1100,17 @@ public  class ApprovalDirectRejectOrReviewForCustomer extends AppCompatActivity
 
                 if (id == R.id.allcustomersserved) {
 
-                    if (!role.equals("Trader")) {
+                    if (!type.equals("Trader")) {
                         if (FirebaseAuth.getInstance() != null) {
                             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                             if (user != null) {
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(ApprovalDirectRejectOrReviewForCustomer.this, NotTraderActivity.class);
+                                Intent intent = new Intent(PersonalInfoApproveForClient.this, NotTraderActivity.class);
                                 if (intent != null) {
-                                    intent.putExtra("traderorcustomer", traderID);
-                                    intent.putExtra("role", role);
+                                    intent.putExtra("traderorcustomer", traderoruser);
+                                    intent.putExtra("role", type);
                                     startActivity(intent);
                                 }
                             }
@@ -960,10 +1123,10 @@ public  class ApprovalDirectRejectOrReviewForCustomer extends AppCompatActivity
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(ApprovalDirectRejectOrReviewForCustomer.this, AdminCustomerServed.class);
+                                Intent intent = new Intent(PersonalInfoApproveForClient.this, AdminCustomerServed.class);
                                 if (intent != null) {
-                                    intent.putExtra("traderorcustomer", traderID);
-                                    intent.putExtra("role", role);
+                                    intent.putExtra("traderorcustomer", traderoruser);
+                                    intent.putExtra("role", type);
                                     startActivity(intent);
                                 }
                             }
@@ -973,17 +1136,17 @@ public  class ApprovalDirectRejectOrReviewForCustomer extends AppCompatActivity
 
                 if (id == R.id.allordershistory) {
 
-                    if (!role.equals("Trader")) {
+                    if (!type.equals("Trader")) {
                         if (FirebaseAuth.getInstance() != null) {
                             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                             if (user != null) {
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(ApprovalDirectRejectOrReviewForCustomer.this, NotTraderActivity.class);
+                                Intent intent = new Intent(PersonalInfoApproveForClient.this, NotTraderActivity.class);
                                 if (intent != null) {
-                                    intent.putExtra("traderorcustomer", traderID);
-                                    intent.putExtra("role", role);
+                                    intent.putExtra("traderorcustomer", traderoruser);
+                                    intent.putExtra("role", type);
                                     startActivity(intent);
                                 }
                             }
@@ -996,10 +1159,10 @@ public  class ApprovalDirectRejectOrReviewForCustomer extends AppCompatActivity
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(ApprovalDirectRejectOrReviewForCustomer.this, AdminAllOrderHistory.class);
+                                Intent intent = new Intent(PersonalInfoApproveForClient.this, AdminAllOrderHistory.class);
                                 if (intent != null) {
-                                    intent.putExtra("traderorcustomer", traderID);
-                                    intent.putExtra("role", role);
+                                    intent.putExtra("traderorcustomer", traderoruser);
+                                    intent.putExtra("role", type);
                                     startActivity(intent);
                                 }
                             }
@@ -1023,21 +1186,21 @@ public  class ApprovalDirectRejectOrReviewForCustomer extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.viewmap) {
-            if (!role.equals("Trader")) {
+            if (!type.equals("Trader")) {
 
-                Intent intent = new Intent(ApprovalDirectRejectOrReviewForCustomer.this, NotTraderActivity.class);
+                Intent intent = new Intent(PersonalInfoApproveForClient.this, NotTraderActivity.class);
                 if (intent != null) {
-                    intent.putExtra("traderorcustomer", traderID);
-                    intent.putExtra("role", role);
+                    intent.putExtra("traderorcustomer", traderoruser);
+                    intent.putExtra("role", type);
                     startActivity(intent);
                     finish();
                 }
             } else {
 
-                Intent intent = new Intent(ApprovalDirectRejectOrReviewForCustomer.this, DriverMapActivity.class);
+                Intent intent = new Intent(PersonalInfoApproveForClient.this, DriverMapActivity.class);
                 if (intent != null) {
-                    intent.putExtra("traderorcustomer", traderID);
-                    intent.putExtra("role", role);
+                    intent.putExtra("traderorcustomer", traderoruser);
+                    intent.putExtra("role", type);
                     startActivity(intent);
                     finish();
                 }
@@ -1048,17 +1211,17 @@ public  class ApprovalDirectRejectOrReviewForCustomer extends AppCompatActivity
 
 
         if (id == R.id.nav_cart) {
-            if (!role.equals("Trader")) {
+            if (!type.equals("Trader")) {
                 if (FirebaseAuth.getInstance() != null) {
                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                     if (user != null) {
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(ApprovalDirectRejectOrReviewForCustomer.this, NotTraderActivity.class);
+                        Intent intent = new Intent(PersonalInfoApproveForClient.this, NotTraderActivity.class);
                         if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderID);
-                            intent.putExtra("role", role);
+                            intent.putExtra("traderorcustomer", traderoruser);
+                            intent.putExtra("role", type);
                             startActivity(intent);
                         }
                     }
@@ -1071,10 +1234,10 @@ public  class ApprovalDirectRejectOrReviewForCustomer extends AppCompatActivity
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(ApprovalDirectRejectOrReviewForCustomer.this, CartActivity.class);
+                        Intent intent = new Intent(PersonalInfoApproveForClient.this, CartActivity.class);
                         if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderID);
-                            intent.putExtra("role", role);
+                            intent.putExtra("traderorcustomer", traderoruser);
+                            intent.putExtra("role", type);
                             startActivity(intent);
                         }
                     }
@@ -1084,17 +1247,17 @@ public  class ApprovalDirectRejectOrReviewForCustomer extends AppCompatActivity
 
 
             if (id == R.id.nav_social_media) {
-                if (!role.equals("Trader")) {
+                if (!type.equals("Trader")) {
                     if (FirebaseAuth.getInstance() != null) {
                         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                         if (user != null) {
                             String cusomerId = "";
 
                             cusomerId = user.getUid();
-                            Intent intent = new Intent(ApprovalDirectRejectOrReviewForCustomer.this, NotTraderActivity.class);
+                            Intent intent = new Intent(PersonalInfoApproveForClient.this, NotTraderActivity.class);
                             if (intent != null) {
-                                intent.putExtra("traderorcustomer", traderID);
-                                intent.putExtra("role", role);
+                                intent.putExtra("traderorcustomer", traderoruser);
+                                intent.putExtra("role", type);
                                 startActivity(intent);
                             }
                         }
@@ -1107,10 +1270,10 @@ public  class ApprovalDirectRejectOrReviewForCustomer extends AppCompatActivity
                             String cusomerId = "";
                             cusomerId = user.getUid();
 
-                            Intent intent = new Intent(ApprovalDirectRejectOrReviewForCustomer.this, InstagramHomeActivity.class);
+                            Intent intent = new Intent(PersonalInfoApproveForClient.this, InstagramHomeActivity.class);
                             if (intent != null) {
-                                intent.putExtra("traderorcustomer", traderID);
-                                intent.putExtra("role", role);
+                                intent.putExtra("traderorcustomer", traderoruser);
+                                intent.putExtra("role", type);
                                 startActivity(intent);
                             }
                         }
@@ -1120,17 +1283,17 @@ public  class ApprovalDirectRejectOrReviewForCustomer extends AppCompatActivity
 
 
                 if (id == R.id.viewproducts) {
-                    if (!role.equals("Trader")) {
+                    if (!type.equals("Trader")) {
                         if (FirebaseAuth.getInstance() != null) {
                             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                             if (user != null) {
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(ApprovalDirectRejectOrReviewForCustomer.this, NotTraderActivity.class);
+                                Intent intent = new Intent(PersonalInfoApproveForClient.this, NotTraderActivity.class);
                                 if (intent != null) {
-                                    intent.putExtra("traderorcustomer", traderID);
-                                    intent.putExtra("role", role);
+                                    intent.putExtra("traderorcustomer", traderoruser);
+                                    intent.putExtra("role", type);
                                     startActivity(intent);
                                 }
                             }
@@ -1143,27 +1306,27 @@ public  class ApprovalDirectRejectOrReviewForCustomer extends AppCompatActivity
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(ApprovalDirectRejectOrReviewForCustomer.this, AdminAllProducts.class);
+                                Intent intent = new Intent(PersonalInfoApproveForClient.this, AdminAllProducts.class);
                                 if (intent != null) {
-                                    intent.putExtra("traderorcustomer", traderID);
-                                    intent.putExtra("role", role);
+                                    intent.putExtra("traderorcustomer", traderoruser);
+                                    intent.putExtra("role", type);
                                     startActivity(intent);
                                 }
                             }
                         }
 
                         if (id == R.id.nav_searchforproducts) {
-                            if (!role.equals("Trader")) {
+                            if (!type.equals("Trader")) {
                                 if (FirebaseAuth.getInstance() != null) {
                                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                                     if (user != null) {
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(ApprovalDirectRejectOrReviewForCustomer.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(PersonalInfoApproveForClient.this, NotTraderActivity.class);
                                         if (intent != null) {
-                                            intent.putExtra("traderorcustomer", traderID);
-                                            intent.putExtra("role", role);
+                                            intent.putExtra("traderorcustomer", traderoruser);
+                                            intent.putExtra("role", type);
                                             startActivity(intent);
                                         }
                                     }
@@ -1176,10 +1339,10 @@ public  class ApprovalDirectRejectOrReviewForCustomer extends AppCompatActivity
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(ApprovalDirectRejectOrReviewForCustomer.this, SearchForAdminProductsActivity.class);
+                                        Intent intent = new Intent(PersonalInfoApproveForClient.this, SearchForAdminProductsActivity.class);
                                         if (intent != null) {
-                                            intent.putExtra("traderorcustomer", traderID);
-                                            intent.putExtra("role", role);
+                                            intent.putExtra("traderorcustomer", traderoruser);
+                                            intent.putExtra("role", type);
                                             startActivity(intent);
                                         }
                                     }
@@ -1192,7 +1355,7 @@ public  class ApprovalDirectRejectOrReviewForCustomer extends AppCompatActivity
                             if (FirebaseAuth.getInstance() != null) {
                                 FirebaseAuth.getInstance().signOut();
                                 if (mGoogleApiClient != null) {
-                                    mGoogleSignInClient.signOut().addOnCompleteListener(ApprovalDirectRejectOrReviewForCustomer.this,
+                                    mGoogleSignInClient.signOut().addOnCompleteListener(PersonalInfoApproveForClient.this,
                                             new OnCompleteListener<Void>() {
                                                 @Override
                                                 public void onComplete(@NonNull Task<Void> task) {
@@ -1201,7 +1364,7 @@ public  class ApprovalDirectRejectOrReviewForCustomer extends AppCompatActivity
                                             });
                                 }
                             }
-                            Intent intent = new Intent(ApprovalDirectRejectOrReviewForCustomer.this, com.simcoder.bimbo.MainActivity.class);
+                            Intent intent = new Intent(PersonalInfoApproveForClient.this, com.simcoder.bimbo.MainActivity.class);
                             if (intent != null) {
                                 startActivity(intent);
                                 finish();
@@ -1209,17 +1372,17 @@ public  class ApprovalDirectRejectOrReviewForCustomer extends AppCompatActivity
                         }
 
                         if (id == R.id.nav_settings) {
-                            if (!role.equals("Trader")) {
+                            if (!type.equals("Trader")) {
                                 if (FirebaseAuth.getInstance() != null) {
                                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                                     if (user != null) {
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(ApprovalDirectRejectOrReviewForCustomer.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(PersonalInfoApproveForClient.this, NotTraderActivity.class);
                                         if (intent != null) {
-                                            intent.putExtra("traderorcustomer", traderID);
-                                            intent.putExtra("role", role);
+                                            intent.putExtra("traderorcustomer", traderoruser);
+                                            intent.putExtra("role", type);
                                             startActivity(intent);
                                         }
                                     }
@@ -1232,10 +1395,10 @@ public  class ApprovalDirectRejectOrReviewForCustomer extends AppCompatActivity
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(ApprovalDirectRejectOrReviewForCustomer.this, com.simcoder.bimbo.WorkActivities.SettinsActivity.class);
+                                        Intent intent = new Intent(PersonalInfoApproveForClient.this, com.simcoder.bimbo.WorkActivities.SettinsActivity.class);
                                         if (intent != null) {
-                                            intent.putExtra("traderorcustomer", traderID);
-                                            intent.putExtra("role", role);
+                                            intent.putExtra("traderorcustomer", traderoruser);
+                                            intent.putExtra("role", type);
                                             startActivity(intent);
                                         }
                                     }
@@ -1243,17 +1406,17 @@ public  class ApprovalDirectRejectOrReviewForCustomer extends AppCompatActivity
                             }
                         }
                         if (id == R.id.nav_history) {
-                            if (!role.equals("Trader")) {
+                            if (!type.equals("Trader")) {
                                 if (FirebaseAuth.getInstance() != null) {
                                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                                     if (user != null) {
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(ApprovalDirectRejectOrReviewForCustomer.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(PersonalInfoApproveForClient.this, NotTraderActivity.class);
                                         if (intent != null) {
-                                            intent.putExtra("traderorcustomer", traderID);
-                                            intent.putExtra("role", role);
+                                            intent.putExtra("traderorcustomer", traderoruser);
+                                            intent.putExtra("role", type);
                                             startActivity(intent);
                                         }
                                     }
@@ -1266,10 +1429,10 @@ public  class ApprovalDirectRejectOrReviewForCustomer extends AppCompatActivity
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(ApprovalDirectRejectOrReviewForCustomer.this, HistoryActivity.class);
+                                        Intent intent = new Intent(PersonalInfoApproveForClient.this, HistoryActivity.class);
                                         if (intent != null) {
-                                            intent.putExtra("traderorcustomer", traderID);
-                                            intent.putExtra("role", role);
+                                            intent.putExtra("traderorcustomer", traderoruser);
+                                            intent.putExtra("role", type);
                                             startActivity(intent);
                                         }
                                     }
@@ -1279,17 +1442,17 @@ public  class ApprovalDirectRejectOrReviewForCustomer extends AppCompatActivity
 
 
                         if (id == R.id.nav_viewprofilehome) {
-                            if (!role.equals("Trader")) {
+                            if (!type.equals("Trader")) {
                                 if (FirebaseAuth.getInstance() != null) {
                                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                                     if (user != null) {
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(ApprovalDirectRejectOrReviewForCustomer.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(PersonalInfoApproveForClient.this, NotTraderActivity.class);
                                         if (intent != null) {
-                                            intent.putExtra("traderorcustomer", traderID);
-                                            intent.putExtra("role", role);
+                                            intent.putExtra("traderorcustomer", traderoruser);
+                                            intent.putExtra("role", type);
                                             startActivity(intent);
                                         }
                                     }
@@ -1302,10 +1465,10 @@ public  class ApprovalDirectRejectOrReviewForCustomer extends AppCompatActivity
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(ApprovalDirectRejectOrReviewForCustomer.this, TraderProfile.class);
+                                        Intent intent = new Intent(PersonalInfoApproveForClient.this, TraderProfile.class);
                                         if (intent != null) {
-                                            intent.putExtra("traderorcustomer", traderID);
-                                            intent.putExtra("role", role);
+                                            intent.putExtra("traderorcustomer", traderoruser);
+                                            intent.putExtra("role", type);
                                             startActivity(intent);
                                         }
                                     }
@@ -1315,17 +1478,17 @@ public  class ApprovalDirectRejectOrReviewForCustomer extends AppCompatActivity
 
 
                         if (id == R.id.viewallcustomershere) {
-                            if (!role.equals("Trader")) {
+                            if (!type.equals("Trader")) {
                                 if (FirebaseAuth.getInstance() != null) {
                                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                                     if (user != null) {
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(ApprovalDirectRejectOrReviewForCustomer.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(PersonalInfoApproveForClient.this, NotTraderActivity.class);
                                         if (intent != null) {
-                                            intent.putExtra("traderorcustomer", traderID);
-                                            intent.putExtra("role", role);
+                                            intent.putExtra("traderorcustomer", traderoruser);
+                                            intent.putExtra("role", type);
                                             startActivity(intent);
                                         }
                                     }
@@ -1338,10 +1501,10 @@ public  class ApprovalDirectRejectOrReviewForCustomer extends AppCompatActivity
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(ApprovalDirectRejectOrReviewForCustomer.this, AdminAllCustomers.class);
+                                        Intent intent = new Intent(PersonalInfoApproveForClient.this, AdminAllCustomers.class);
                                         if (intent != null) {
-                                            intent.putExtra("traderorcustomer", traderID);
-                                            intent.putExtra("role", role);
+                                            intent.putExtra("traderorcustomer", traderoruser);
+                                            intent.putExtra("role", type);
                                             startActivity(intent);
                                         }
                                     }
@@ -1352,17 +1515,17 @@ public  class ApprovalDirectRejectOrReviewForCustomer extends AppCompatActivity
 
                         if (id == R.id.addnewproducthere) {
 
-                            if (!role.equals("Trader")) {
+                            if (!type.equals("Trader")) {
                                 if (FirebaseAuth.getInstance() != null) {
                                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                                     if (user != null) {
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(ApprovalDirectRejectOrReviewForCustomer.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(PersonalInfoApproveForClient.this, NotTraderActivity.class);
                                         if (intent != null) {
-                                            intent.putExtra("traderorcustomer", traderID);
-                                            intent.putExtra("role", role);
+                                            intent.putExtra("traderorcustomer", traderoruser);
+                                            intent.putExtra("role", type);
                                             startActivity(intent);
                                         }
                                     }
@@ -1375,10 +1538,10 @@ public  class ApprovalDirectRejectOrReviewForCustomer extends AppCompatActivity
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(ApprovalDirectRejectOrReviewForCustomer.this, AdminAddNewProductActivityII.class);
+                                        Intent intent = new Intent(PersonalInfoApproveForClient.this, AdminAddNewProductActivityII.class);
                                         if (intent != null) {
-                                            intent.putExtra("traderorcustomer", traderID);
-                                            intent.putExtra("role", role);
+                                            intent.putExtra("traderorcustomer", traderoruser);
+                                            intent.putExtra("role", type);
                                             startActivity(intent);
                                         }
                                     }
@@ -1388,17 +1551,17 @@ public  class ApprovalDirectRejectOrReviewForCustomer extends AppCompatActivity
 
 
                         if (id == R.id.goodsbought) {
-                            if (!role.equals("Trader")) {
+                            if (!type.equals("Trader")) {
                                 if (FirebaseAuth.getInstance() != null) {
                                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                                     if (user != null) {
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(ApprovalDirectRejectOrReviewForCustomer.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(PersonalInfoApproveForClient.this, NotTraderActivity.class);
                                         if (intent != null) {
-                                            intent.putExtra("traderorcustomer", traderID);
-                                            intent.putExtra("role", role);
+                                            intent.putExtra("traderorcustomer", traderoruser);
+                                            intent.putExtra("role", type);
                                             startActivity(intent);
                                         }
                                     }
@@ -1411,10 +1574,10 @@ public  class ApprovalDirectRejectOrReviewForCustomer extends AppCompatActivity
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(ApprovalDirectRejectOrReviewForCustomer.this, AllGoodsBought.class);
+                                        Intent intent = new Intent(PersonalInfoApproveForClient.this, AllGoodsBought.class);
                                         if (intent != null) {
-                                            intent.putExtra("traderorcustomer", traderID);
-                                            intent.putExtra("role", role);
+                                            intent.putExtra("traderorcustomer", traderoruser);
+                                            intent.putExtra("role", type);
                                             startActivity(intent);
                                         }
                                     }
@@ -1424,17 +1587,17 @@ public  class ApprovalDirectRejectOrReviewForCustomer extends AppCompatActivity
 
 
                         if (id == R.id.nav_paymenthome) {
-                            if (!role.equals("Trader")) {
+                            if (!type.equals("Trader")) {
                                 if (FirebaseAuth.getInstance() != null) {
                                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                                     if (user != null) {
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(ApprovalDirectRejectOrReviewForCustomer.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(PersonalInfoApproveForClient.this, NotTraderActivity.class);
                                         if (intent != null) {
-                                            intent.putExtra("traderorcustomer", traderID);
-                                            intent.putExtra("role", role);
+                                            intent.putExtra("traderorcustomer", traderoruser);
+                                            intent.putExtra("role", type);
                                             startActivity(intent);
                                         }
                                     }
@@ -1447,10 +1610,10 @@ public  class ApprovalDirectRejectOrReviewForCustomer extends AppCompatActivity
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(ApprovalDirectRejectOrReviewForCustomer.this, AdminPaymentHere.class);
+                                        Intent intent = new Intent(PersonalInfoApproveForClient.this, AdminPaymentHere.class);
                                         if (intent != null) {
-                                            intent.putExtra("traderorcustomer", traderID);
-                                            intent.putExtra("role", role);
+                                            intent.putExtra("traderorcustomer", traderoruser);
+                                            intent.putExtra("role", type);
                                             startActivity(intent);
                                         }
                                     }
@@ -1460,17 +1623,17 @@ public  class ApprovalDirectRejectOrReviewForCustomer extends AppCompatActivity
 
 
                         if (id == R.id.nav_settings) {
-                            if (!role.equals("Trader")) {
+                            if (!type.equals("Trader")) {
                                 if (FirebaseAuth.getInstance() != null) {
                                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                                     if (user != null) {
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(ApprovalDirectRejectOrReviewForCustomer.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(PersonalInfoApproveForClient.this, NotTraderActivity.class);
                                         if (intent != null) {
-                                            intent.putExtra("traderorcustomer", traderID);
-                                            intent.putExtra("role", role);
+                                            intent.putExtra("traderorcustomer", traderoruser);
+                                            intent.putExtra("role", type);
                                             startActivity(intent);
                                         }
                                     }
@@ -1483,10 +1646,10 @@ public  class ApprovalDirectRejectOrReviewForCustomer extends AppCompatActivity
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(ApprovalDirectRejectOrReviewForCustomer.this, AdminSettings.class);
+                                        Intent intent = new Intent(PersonalInfoApproveForClient.this, AdminSettings.class);
                                         if (intent != null) {
-                                            intent.putExtra("traderorcustomer", traderID);
-                                            intent.putExtra("role", role);
+                                            intent.putExtra("traderorcustomer", traderoruser);
+                                            intent.putExtra("role", type);
                                             startActivity(intent);
                                         }
                                     }
@@ -1498,10 +1661,21 @@ public  class ApprovalDirectRejectOrReviewForCustomer extends AppCompatActivity
                     }
                 }
 
+
+                return true;
             }
 
+            return true;
         }
-        return false;
-    }}
+        return true;
+    }
+
+
+}
+
+
+
+// #BuiltByGOD
+
 
 

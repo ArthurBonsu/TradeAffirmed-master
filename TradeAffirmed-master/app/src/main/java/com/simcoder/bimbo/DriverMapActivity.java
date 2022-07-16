@@ -135,6 +135,7 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
     String phone;
     String image;
       ImageButton serchbutton;
+      String traderID;
 
     private GoogleSignInClient mGoogleSignInClient;
     private ImageView mCustomerProfileImage;
@@ -148,6 +149,17 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
 
 
         setContentView(R.layout.activity_driver_map);
+
+
+        Intent roleintent = getIntent();
+        if (roleintent.getExtras().getString("role") != null) {
+            role = roleintent.getExtras().getString("role");
+        }
+
+        Intent traderIDintent = getIntent();
+        if (traderIDintent.getExtras().getString("traderID") != null) {
+            traderID = traderIDintent.getExtras().getString("traderID");
+        }
         mSettings = (Button) findViewById(R.id.settings);
         mLogout = (Button) findViewById(R.id.logout);
         mRideStatus = (Button) findViewById(R.id.rideStatus);
@@ -199,12 +211,13 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
          });
 
         if (user != null) {
-            driverId = "";
-            driverId = user.getUid();
+            traderID = "";
+            traderID = user.getUid();
         }
         Intent intent = new Intent(DriverMapActivity.this, com.simcoder.bimbo.WorkActivities.HomeActivity.class);
         if (intent != null) {
-            intent.putExtra("ecommerceuserkey", driverId);
+            intent.putExtra("traderID",traderID );
+            intent.putExtra("role",role );
         }
         if (mWorkingSwitch != null) {
             mWorkingSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -292,7 +305,7 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
             });
 
         }
-        DatabaseReference myrolereference = FirebaseDatabase.getInstance().getReference().child("Users").child("Drivers").child(driverId);
+        DatabaseReference myrolereference = FirebaseDatabase.getInstance().getReference().child("Users").child("Drivers").child(traderID);
           myrolereference.keepSynced(true);
         if (myrolereference != null) {
             myrolereference.addValueEventListener(new ValueEventListener() {
@@ -355,16 +368,7 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
         View headerView = navigationView.getHeaderView(0);
         TextView userNameTextView = headerView.findViewById(R.id.user_profile_name);
         CircleImageView profileImageView = headerView.findViewById(R.id.user_profile_image);
-        if (getIntent() != null) {
-            {
-                if (getIntent().getExtras().get("rolefromhomeactivitytodrivermapactivity") != null) {
-                    role = getIntent().getExtras().get("rolefromhomeactivitytodrivermapactivity").toString();
-                }
-            }
-            if (driverId != null) {
-                if (getIntent() != null) {
-                    driverId = getIntent().getStringExtra("fromhomeactivitytodrivermapactivity");
-                }
+
 
                 if (mydrivernavigations != null) {
 
@@ -375,8 +379,8 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
                         }
                     });
                 }
-            }
-        }
+
+
         if (mHistory != null) {
             mHistory.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -399,10 +403,10 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
     private void getAssignedCustomer() {
         FirebaseUser driver = FirebaseAuth.getInstance().getCurrentUser();
         if (driver != null) {
-            String driverId = "";
-            driverId = driver.getUid();
+            traderID = "";
+            traderID = driver.getUid();
             // HERE WE GET THE CUSTOMER RIDE ID AND WE ESTABLISH FOR THAT CUSTOMER
-            DatabaseReference assignedCustomerRef = FirebaseDatabase.getInstance().getReference().child("Users").child("Drivers").child(driverId).child("customerRequest");
+            DatabaseReference assignedCustomerRef = FirebaseDatabase.getInstance().getReference().child("Users").child("Drivers").child(traderID).child("customerRequest");
             assignedCustomerRef.keepSynced(true);
             if (assignedCustomerRef != null) {
                 assignedCustomerRef.addValueEventListener(new ValueEventListener() {
@@ -562,9 +566,9 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
     private void getAssignedCustomerDestination() {
         FirebaseUser driver = FirebaseAuth.getInstance().getCurrentUser();
         if (driver != null) {
-            String driverId = "";
-            driverId = driver.getUid();
-            DatabaseReference assignedCustomerRef = FirebaseDatabase.getInstance().getReference().child("Users").child("Drivers").child(driverId).child("customerRequest");
+            traderID = "";
+            traderID = driver.getUid();
+            DatabaseReference assignedCustomerRef = FirebaseDatabase.getInstance().getReference().child("Users").child("Drivers").child(traderID).child("customerRequest");
             if (assignedCustomerRef != null) {
                 assignedCustomerRef.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -1128,15 +1132,15 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
 
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
             if (user != null){
-                driverId = "";
-                driverId = user.getUid();
-                if (FirebaseDatabase.getInstance().getReference().child("Users").child("Drivers").child(driverId) != null) {
+                traderID = "";
+                traderID = user.getUid();
+                if (FirebaseDatabase.getInstance().getReference().child("Users").child("Drivers").child(traderID) != null) {
 
 
                     Intent intent = new Intent(DriverMapActivity.this, com.simcoder.bimbo.WorkActivities.HomeActivity.class);
                     if (intent != null) {
-                        intent.putExtra("roledrivermapactivitytohomeactivity", role);
-                        intent.putExtra("fromdrivermapactivitytohomeactivity", driverId);
+                        intent.putExtra("traderID",traderID );
+                        intent.putExtra("role",role );
                         startActivity(intent);
 
                     }
@@ -1173,8 +1177,8 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
                 }
                 Intent intent = new Intent(DriverMapActivity.this, TraderProfile.class);
                 if (intent != null) {
-                    intent.putExtra("fromdrivermapttotraderprofilehere", driverId);
-                    intent.putExtra("rolefromdrivermaptotraderprofilehere", role);
+                    intent.putExtra("traderID",traderID );
+                    intent.putExtra("role",role );
                     startActivity(intent);
                 } }
 
@@ -1225,6 +1229,8 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
                 // WE PASS THE CUSTOMER OR DRIVER CODE TO THE HISTORY ACTIVITY TO SEE ALL THE HISTORY ACTIVITES
                 if (intent != null) {
                     intent.putExtra("customerOrDriver", "Drivers");
+                    intent.putExtra("traderID",traderID );
+                    intent.putExtra("role",role );
                     startActivity(intent);
                 }
             }
@@ -1252,8 +1258,8 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
                 }
                 Intent intent = new Intent(DriverMapActivity.this, TraderProfile.class);
                 if (intent != null){
-                    intent.putExtra("traderorcustomer", driverId);
-                    intent.putExtra("role", role);
+                    intent.putExtra("traderID",traderID );
+                    intent.putExtra("role",role );
                     startActivity(intent);
                 }
             }}
@@ -1269,8 +1275,8 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
                 }
                 Intent intent = new Intent(DriverMapActivity.this, TraderProfile.class);
                 if (intent != null){
-                    intent.putExtra("fromdrivermapttotraderprofilehere", driverId);
-                    intent.putExtra("rolefromdrivermaptotraderprofilehere", role);
+                    intent.putExtra("traderID",traderID );
+                    intent.putExtra("role",role );
                     startActivity(intent);
                 }
             }}

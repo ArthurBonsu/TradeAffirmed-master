@@ -1,7 +1,9 @@
-package com.simcoder.bimbo.Admin;
+package com.simcoder.bimbo.Approver;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -9,9 +11,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -39,47 +42,67 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.google.firebase.storage.StorageReference;
 import com.rey.material.widget.ImageView;
+import com.simcoder.bimbo.Admin.AdminAddNewProductActivityII;
+import com.simcoder.bimbo.Admin.AdminAllCustomers;
+import com.simcoder.bimbo.Admin.AdminAllOrderHistory;
+import com.simcoder.bimbo.Admin.AdminAllProducts;
+import com.simcoder.bimbo.Admin.AdminCustomerServed;
+import com.simcoder.bimbo.Admin.AdminNewOrdersActivity;
+import com.simcoder.bimbo.Admin.AdminPaymentHere;
+import com.simcoder.bimbo.Admin.AdminSettings;
+import com.simcoder.bimbo.Admin.AllGoodsBought;
+import com.simcoder.bimbo.Admin.AllProductsPurchased;
+import com.simcoder.bimbo.Admin.NotTraderActivity;
+import com.simcoder.bimbo.Admin.SearchForAdminProductsActivity;
+import com.simcoder.bimbo.Admin.TradersFollowing;
+import com.simcoder.bimbo.Admin.ViewAllCarts;
+import com.simcoder.bimbo.Admin.ViewAllCustomers;
 import com.simcoder.bimbo.DriverMapActivity;
 import com.simcoder.bimbo.HistoryActivity;
 import com.simcoder.bimbo.Interface.ItemClickListner;
-import com.simcoder.bimbo.Model.AdminOrders;
+import com.simcoder.bimbo.Model.Users;
 import com.simcoder.bimbo.R;
 import com.simcoder.bimbo.WorkActivities.CartActivity;
+import com.simcoder.bimbo.WorkActivities.HomeActivity;
 import com.simcoder.bimbo.WorkActivities.TraderProfile;
 import com.simcoder.bimbo.instagram.Home.InstagramHomeActivity;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.paperdb.Paper;
 
-public  class ApprovalViewPendingForClient extends AppCompatActivity
+
+public  class BackgroundInfoApproveForTrader extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     DatabaseReference ProductsRef;
     private DatabaseReference Userdetails;
     private DatabaseReference ProductsRefwithproduct;
-    private  DatabaseReference UsersRef;
     private RecyclerView recyclerView;
     RecyclerView.LayoutManager layoutManager;
-
-    DatabaseReference AllOrderDatabaseRef;
+    DatabaseReference UsersRef;
     DatabaseReference FollowerDatabaseReference;
     String productkey;
     String traderkeyhere;
-    private String role = "";
-    String traderID = "";
+    private String type = "";
+    String traderoruser = "";
     private static final int RC_SIGN_IN = 1;
     private FirebaseAuth.AuthStateListener firebaseAuthListener;
     String ProductID;
     FirebaseDatabase myfirebaseDatabase;
     FirebaseDatabase FollowerDatabase;
-
-    public ApprovalViewViewHolder holders;
+    String gender;
+    public ViewHolder holders;
 
     public FirebaseRecyclerAdapter feedadapter;
 
@@ -101,16 +124,16 @@ public  class ApprovalViewPendingForClient extends AppCompatActivity
     String tradename;
     String traderimage;
     FirebaseUser user;
+    String uid, name, address, street, gpscode, country;
 
-
-    String categoryname, date, desc, discount, time, pid, pimage, pname, price, image, name, size, tradername, tid;
+    String categoryname, date, desc, discount, time, pid, pimage, pname, price, image,  size, tradername, tid;
     String thetraderimage;
-    String address;
+
     String amount;
     String city;
     String delivered;
     String distance;
-    String uid;
+
     String mode;
 
     String number;
@@ -119,50 +142,82 @@ public  class ApprovalViewPendingForClient extends AppCompatActivity
     String shippingcost;
     String state;
     String thecustomersjob;
-    String orderkey;
 
-    Getmyfollowings getmyfollowingsagain;
     String userkey;
-    TextView  orderid;
-    TextView customername;
-    TextView thetradername;
-    TextView orderedtime;
-    TextView ordereddate;
-    String newornot;
-    String   aid;
-    String  approvername;
+
+    private RecyclerView productsList;
+    private DatabaseReference cartListRef;
+    private Query mQueryTraderandUserCart;
+    private String userID = "";
+    String traderID = "";
+    Query QueryUser;
+    String role;
+    String cartkey;
+    String photoid;
+    String getimage;
+    DatabaseReference myreferencetoimage;
+    String productID;
+
+    ImageButton ApprovalButtton;
+    ImageButton RejectButton;
+    ImageButton PauseButton;
+
+    ImageView ProfileImageofPerson;
+    TextView NameofPerson;
+    TextView PhoneNumberofPerson;
+    TextView PersonEmail;
+    TextView Gender;
+    TextView Age;
+    String email;
+    String age;
+    TextView candidateuserid;
+    String backgroundinforesponse;
+    String backgroundinfoactivity = "backgroundinfoapproveact";
+    String  auxname,auxemail,auxcountry,auxid,auxidtype, auxphone;
+    //
+    //AUTHENTICATORS
+    android.widget.ImageView admincartimageofproduct;
+    TextView admincartproductid;
+    TextView admincarttitlehere;
+    TextView admincartquantity;
+    TextView admincart_price;
+    TextView admincarttime;
+
+    ImageView admincartimageofuser;
+    TextView admincartusername;
+
+    ImageView admincartimageofprouct;
+    String traderuser;
+    String trader;
+    private Uri mImageUri = null;
+    private static final int GALLERY_REQUEST = 1;
+    private StorageReference mStorage;
+    private DatabaseReference mDatabase;
+    private DatabaseReference mDatabaseCHURCHCHOSEN;
+    private ProgressDialog mProgress;
+    TextView CadidateId;
+    TextView CandidateStreet;
+    TextView CandidateGPSCode;
+    TextView CandidateCountry;
+
+    TextView EmergencyPersonName;
+    TextView EmergencyPersonPhone;
+    TextView EmergencyPersonEmail;
+    TextView EmergencyPersonID;
+    TextView EmergencyPersonCountry;
+    TextView EmergencyPersonType;
+
+    ImageButton candidateapprovebackbutton;
+    ImageButton candidateapprovenextbutton;
+    String approverID;
     String approvalID;
-    String userID;
-
-/*
-    addnewproducthere
-            allproductshere
-    allproductspurchased
-            viewallcustomershere
-    tradersfollowing
-            Maintainnewordershere
-    AdminNewOrders
-            allcustomersincart
-    allcustomersserved
-            allorders
-  */
-
-TextView    theuserstatus;
- ImageView   theapproverhomepic;
- TextView   theuiditself;
- TextView theapprovername;
-  Button   theapprovalpendingstatusdetails;
- Button   nextoftheprofile;
-  Button  backoftheprofile;
-String approverID;
-String  status, approverimage;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(
-                (R.layout.activityhomeforadmin));
+                (R.layout.stickynoterecycler));
+
 
         Intent roleintent = getIntent();
         if (roleintent.getExtras().getString("role") != null) {
@@ -171,53 +226,64 @@ String  status, approverimage;
 
         Intent approverIDintent = getIntent();
         if (approverIDintent.getExtras().getString("approverID") != null) {
-            approverID = approverIDintent.getExtras().getString("approverID");
+            approverID= approverIDintent.getExtras().getString("approverID");
         }
         Intent userIDIntent = getIntent();
         if (userIDIntent.getExtras().getString("userID") != null) {
-            userID = userIDIntent.getExtras().getString("userID");
+            userID= userIDIntent.getExtras().getString("userID");
         }
 
 
 
         Intent approvalIDintent = getIntent();
         if (approvalIDintent.getExtras().getString("approvalID") != null) {
-            approvalID = approvalIDintent.getExtras().getString("approvalID");
+            approvalID= approvalIDintent.getExtras().getString("approvalID");
         }
 
 
-
-        recyclerView = findViewById(R.id.recycler_menu);
-
-
+        recyclerView = findViewById(R.id.stickyheaderrecyler);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        layoutManager.setReverseLayout(true);
-        layoutManager.setStackFromEnd(true);
         if (recyclerView != null) {
             recyclerView.setLayoutManager(layoutManager);
         }
-     /*  if (recyclerView != null) {
+        if (recyclerView != null) {
             recyclerView.setHasFixedSize(true);
 
         }
-*/
 
-         theuserstatus = (TextView)findViewById(R.id.theuserstatus);
-         theapproverhomepic = (ImageView)findViewById(R.id.theapproverhomepic);
-        theapprovername = (TextView)findViewById(R.id.theapprovername);
-        theuiditself = (TextView)findViewById(R.id.theuiditself);
-        theapprovalpendingstatusdetails = (Button)findViewById(R.id.theapprovalpendingstatusdetails);
-        nextoftheprofile = (Button) findViewById(R.id.nextoftheprofile);
-        backoftheprofile = (Button)findViewById(R.id.backoftheprofile);
-        theapprovername = (TextView)findViewById(R.id.theapprovername);
+        ApprovalButtton = (ImageButton) findViewById(R.id.approve);
+        RejectButton = (ImageButton) findViewById(R.id.reject);
+        PauseButton = (ImageButton) findViewById(R.id.pauseapproval);
+
+        ProfileImageofPerson = (ImageView) findViewById(R.id.candidateprofileimage);
+        EmergencyPersonName = (TextView) findViewById(R.id.emergencypersonname);
+
+        NameofPerson = (TextView) findViewById(R.id.candidatename);
+        candidateuserid = (TextView) findViewById(R.id.candidateuserid);
+        EmergencyPersonName = (TextView) findViewById(R.id.emergencypersonname);
+        EmergencyPersonPhone = (TextView) findViewById(R.id.emergencypersonphone);
+        EmergencyPersonEmail = (TextView) findViewById(R.id.emergencypersonemail);
+        EmergencyPersonCountry = (TextView) findViewById(R.id.emergencypersoncountry);
+        EmergencyPersonID = (TextView) findViewById(R.id.emergencypersonID);
+        EmergencyPersonType = (TextView) findViewById(R.id.emergencypersonidtype);
+
+
+
+
+        candidateapprovebackbutton =  (ImageButton) findViewById(R.id.candidateapproveback);
+        candidateapprovenextbutton = (ImageButton) findViewById(R.id.candidateapprovenext);
+
+
+
 
 
         Paper.init(this);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.hometoolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         if (toolbar != null) {
-            toolbar.setTitle("Approval View Pending For Client");
+            toolbar.setTitle("Background Information Activity");
         }
+//        setSupportActionBar(toolbar);
 
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -237,6 +303,7 @@ String  status, approverimage;
             TextView userNameTextView = headerView.findViewById(R.id.user_profile_name);
             CircleImageView profileImageView = headerView.findViewById(R.id.user_profile_image);
 
+
             // USER
 
 
@@ -255,28 +322,22 @@ String  status, approverimage;
                 }
 
 
-                myfirebaseDatabase = FirebaseDatabase.getInstance();
-
-                UsersRef = myfirebaseDatabase.getReference().child("Users");
-
-
-                userkey = UsersRef.getKey();
-                // GET FROM FOLLOWING KEY
-
-
-                fetch();
-                recyclerView.setAdapter(feedadapter);
-
-
                 if (mAuth != null) {
                     user = mAuth.getCurrentUser();
                     if (user != null) {
-                        approverID= user.getUid();
+                        userID = user.getUid();
 
                     }
 
+                    myfirebaseDatabase = FirebaseDatabase.getInstance();
 
-//        setSupportActionBar(toolbar);
+                    UsersRef = myfirebaseDatabase.getReference().child("Users");
+
+                    userkey = UsersRef.getKey();
+                    // GET FROM FOLLOWING KEY
+                    fetch();
+                    recyclerView.setAdapter(feedadapter);
+                    //        setSupportActionBar(toolbar);
 
                     GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestIdToken(getString(R.string.default_web_client_id)).requestEmail().build();
                     if (mGoogleApiClient != null) {
@@ -285,7 +346,7 @@ String  status, approverimage;
                     }
 
                     if (mGoogleApiClient != null) {
-                        mGoogleApiClient = new GoogleApiClient.Builder(this).enableAutoManage(ApprovalViewPendingForClient.this,
+                        mGoogleApiClient = new GoogleApiClient.Builder(this).enableAutoManage(BackgroundInfoApproveForTrader.this,
                                 new GoogleApiClient.OnConnectionFailedListener() {
                                     @Override
                                     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
@@ -293,8 +354,6 @@ String  status, approverimage;
                                     }
                                 }).addApi(Auth.GOOGLE_SIGN_IN_API, gso).build();
                     }
-
-
                     // USER
                     user = mAuth.getCurrentUser();
 
@@ -302,72 +361,99 @@ String  status, approverimage;
                 }
             }
         }
-    }
+    }    //GETFOLLOWING WILL PULL FROM DIFFERENT DATASTORE( THE USER DATASTORE)
 
 
-    public interface Getmyfollowings {
-
-        void onCallback(String followingid, String followingname, String followingimage);
-
-
-    }
-
-
-
-
-
-    //GETFOLLOWING WILL PULL FROM DIFFERENT DATASTORE( THE USER DATASTORE)
-
-
-    public class ApprovalViewViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder {
         public LinearLayout root;
 
-        public TextView theuserstatus;
-        public TextView theuiditself;
-        public  TextView theapprovername;
-        public Button theapprovalpendingstatusdetails;
-        public Button nextoftheprofile;
-        public Button backoftheprofile;
+        public ImageButton ApprovalButtton;
+        public ImageButton RejectButton;
+        public ImageButton PauseButton;
 
-        public android.widget.ImageView theapproverhomepic;
+
+        public ImageButton candidateapprovebackbutton;
+        public ImageButton candidateapprovenextbutton;
+
+        public TextView NameofPerson;
+        public  TextView candidateuserid;
+        public  TextView EmergencyPersonName;
+        public TextView  EmergencyPersonPhone;
+        public TextView EmergencyPersonEmail;
+        public  TextView  EmergencyPersonCountry;
+        public  TextView  EmergencyPersonID;
+        public  TextView EmergencyPersonType;
+        public android.widget.ImageView ProfileImageofPerson;
+
+
         public ItemClickListner listner;
 
-        public ApprovalViewViewHolder(View itemView) {
+        public ViewHolder(View itemView) {
             super(itemView);
 
-            theuserstatus = itemView.findViewById(R.id.theuserstatus);
-            theapproverhomepic = itemView.findViewById(R.id.theapproverhomepic);
-            theuiditself = itemView.findViewById(R.id.theuiditself);
-            theapprovalpendingstatusdetails = itemView.findViewById(R.id.theapprovalpendingstatusdetails);
-            nextoftheprofile = itemView.findViewById(R.id.nextoftheprofile);
-            backoftheprofile = itemView.findViewById(R.id.backoftheprofile);
-            theapprovername = itemView.findViewById(R.id.theapprovername);
 
-        }
+            ApprovalButtton = itemView.findViewById(R.id.approve);
+            RejectButton = itemView.findViewById(R.id.reject);
+            PauseButton = itemView.findViewById(R.id.pauseapproval);
+
+            ProfileImageofPerson = itemView.findViewById(R.id.candidateprofileimage);
+
+            NameofPerson = itemView. findViewById(R.id.candidatename);
+            candidateuserid = itemView. findViewById(R.id.candidateuserid);
+            EmergencyPersonName = itemView. findViewById(R.id.emergencypersonname);
+            EmergencyPersonPhone = itemView. findViewById(R.id.emergencypersonphone);
+            EmergencyPersonEmail = itemView. findViewById(R.id.emergencypersonemail);
+            EmergencyPersonCountry = itemView.findViewById(R.id.emergencypersoncountry);
+            EmergencyPersonID = itemView. findViewById(R.id.emergencypersonID);
+            EmergencyPersonType =itemView. findViewById(R.id.emergencypersonidtype);
+                 }
 
         public void setItemClickListner(ItemClickListner listner) {
             this.listner = listner;
         }
 
+        public void setnameofcandidateid(String ourfcandidateid) {
 
-        public void settheuserstatus(String theuserstatushere) {
-
-            theuserstatus.setText(theuserstatushere);
+            candidateuserid.setText(ourfcandidateid);
         }
 
-        public void settheuiditself(String theuiditselftext) {
+        public void setnameofcandidate(String nameofcandidate) {
 
-            theuiditself.setText(theuiditselftext);
+            NameofPerson.setText(nameofcandidate);
         }
 
+        public void setemergencypersonname(String emergencyperson) {
 
+            EmergencyPersonName.setText(emergencyperson);
+        }
 
+        public void setemergencypersonphone(String emergencypersonphone) {
 
+            EmergencyPersonPhone.setText(emergencypersonphone);
+        }
 
-        public void setapproverhomepic(final Context ctx, final String image) {
-            final android.widget.ImageView approverhomepic = (android.widget.ImageView) itemView.findViewById(R.id.theapproverhomepic);
+        public void set(String emergencypersonemail) {
 
-            Picasso.get().load(image).resize(400, 0).networkPolicy(NetworkPolicy.OFFLINE).into(approverhomepic, new Callback() {
+            EmergencyPersonEmail.setText(emergencypersonemail);
+        }
+        public void setemergencypersonID(String emergencypersonID) {
+
+            EmergencyPersonID.setText(emergencypersonID);
+        }
+
+        public void setemergencypersoncountry(String emergencypersoncountry) {
+
+            EmergencyPersonCountry.setText(emergencypersoncountry);
+        }
+        public void setemergencypersontype(String emergencypersontype) {
+
+            EmergencyPersonType.setText(emergencypersontype);
+        }
+
+        public void setcandidateprofileimage(final Context ctx, final String image) {
+            final android.widget.ImageView candidateprofileimage = (android.widget.ImageView) itemView.findViewById(R.id.candidateprofileimage);
+
+            Picasso.get().load(image).resize(400, 0).networkPolicy(NetworkPolicy.OFFLINE).into(candidateprofileimage, new Callback() {
 
 
                 @Override
@@ -377,20 +463,19 @@ String  status, approverimage;
 
                 @Override
                 public void onError(Exception e) {
-                    Picasso.get().load(image).resize(100, 0).into(approverhomepic);
+                    Picasso.get().load(image).resize(100, 0).into(candidateprofileimage);
                 }
 
 
             });
         }
 
+    }
+
+    ;
 
 
-
-    };
-
-
-    public void useValue (String yourValue){
+    public void useValue(String yourValue) {
 
         Log.d(TAG, "countryNameCode: " + yourValue);
 
@@ -401,78 +486,82 @@ String  status, approverimage;
         if (mAuth != null) {
             user = mAuth.getCurrentUser();
             if (user != null) {
-                approverID = user.getUid();
+                traderID = user.getUid();
 
             }
-
             @Nullable
 
             Query queryhere =
 
-                    FirebaseDatabase.getInstance().getReference().child("Approval").child(approvalID).orderByChild("statusidentifier").equalTo("pendingCustomer");
+                    FirebaseDatabase.getInstance().getReference().child("Users").child("Drivers").orderByChild("tid").equalTo(userID);
             if (queryhere != null) {
 
-                FirebaseRecyclerOptions<AdminOrders> options =
-                        new FirebaseRecyclerOptions.Builder<AdminOrders>()
-                                .setQuery(queryhere, new SnapshotParser<AdminOrders>() {
+                FirebaseRecyclerOptions<Users> options =
+                        new FirebaseRecyclerOptions.Builder<Users>()
+                                .setQuery(queryhere, new SnapshotParser<Users>() {
 
 
                                     @Nullable
                                     @Override
-                                    public AdminOrders parseSnapshot(@Nullable DataSnapshot snapshot) {
+                                    public Users parseSnapshot(@Nullable DataSnapshot snapshot) {
 
 
                                       /*
                                       String commentkey = snapshot.child("Comments").getKey();
-                                      String likekey = snapshot.child("Likes").getKey();
-*/
+                                      String likekey = snapshot.child("Likes").getKey();*/
+                                        Log.i(TAG, "User " + snapshot);
 
-
-                                        Log.i(TAG, "Approval View Pending For Client" + snapshot);
-
-
-                                        if (snapshot.child("uid").getValue(String.class) != null) {
-                                            uid = snapshot.child("uid").getValue(String.class);
-                                        }
-
-                                        if (snapshot.child("status").getValue(String.class) != null) {
-                                            status = snapshot.child("status").getValue(String.class);
-                                        }
-
-                                        if (snapshot.child("approverimage").getValue(String.class) != null) {
-                                            approverimage = snapshot.child("approverimage").getValue(String.class);
-                                        }
-                                        if (snapshot.child("aid").getValue(String.class) != null) {
-                                            aid = snapshot.child("aid").getValue(String.class);
-                                        }
-                                        if (snapshot.child("approvername").getValue(String.class) != null) {
-                                            approvername = snapshot.child("approvername").getValue(String.class);
-                                        }
-                                        if (snapshot.child("tid").getValue(String.class) != null) {
+                                        if (snapshot.child("tid").getValue() != null) {
                                             tid = snapshot.child("tid").getValue(String.class);
                                         }
-                                        if (snapshot.child("date").getValue(String.class) != null) {
-                                            date = snapshot.child("date").getValue(String.class);
-                                        }
-                                        if (snapshot.child("time").getValue(String.class) != null) {
-                                            time = snapshot.child("time").getValue(String.class);
+
+                                        if (snapshot.child("name").getValue() != null) {
+                                            name = snapshot.child("name").getValue(String.class);
                                         }
 
-                                        return new AdminOrders(uid, status, approverimage);
+                                        if (snapshot.child("auxname").getValue() != null) {
+                                            auxname = snapshot.child("auxname").getValue(String.class);
+                                        }
+
+
+                                        if (snapshot.child("auxphone").getValue() != null) {
+                                            auxphone = snapshot.child("auxphone").getValue(String.class);
+                                        }
+                                        if (snapshot.child("auxemail").getValue() != null) {
+                                            auxemail = snapshot.child("auxemail").getValue(String.class);
+                                        }
+
+                                        if (snapshot.child("auxid").getValue() != null) {
+                                            auxid = snapshot.child("auxid").getValue(String.class);
+                                        }
+
+                                        if (snapshot.child("auxidtype").getValue() != null) {
+                                            auxidtype = snapshot.child("auxidtype").getValue(String.class);
+                                        }
+
+                                        if (snapshot.child("auxcountry").getValue() != null) {
+                                            auxcountry = snapshot.child("auxcountry").getValue(String.class);
+                                        }
+                                        return new Users(uid, name, address, street, gpscode, country);
+
+
                                     }
+
                                 }).build();
 
 
-                feedadapter = new FirebaseRecyclerAdapter<AdminOrders, ApprovalViewPendingForClient.ApprovalViewViewHolder>(options) {
+
+
+                feedadapter = new FirebaseRecyclerAdapter<Users, ViewHolder>(options) {
                     @Nullable
                     @Override
-                    public ApprovalViewViewHolder onCreateViewHolder(ViewGroup parent, int viewrole) {
+                    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
                         @Nullable
                         View view = LayoutInflater.from(parent.getContext())
-                                .inflate(R.layout.approvalviewpending, parent, false);
+                                .inflate(R.layout.backgroundinfoapprove, parent, false);
 
-                        return new ApprovalViewViewHolder(view);
+                        return new ViewHolder(view);
                     }
 
 
@@ -481,143 +570,255 @@ String  status, approverimage;
                         return super.getItemCount();
                     }
 
-
-
                     @Override
-                    protected void onBindViewHolder(@Nullable final ApprovalViewPendingForClient.ApprovalViewViewHolder holder, int position, @Nullable AdminOrders model) {
+                    protected void onBindViewHolder(@Nullable final ViewHolder holder, int position, @Nullable Users model) {
                         if (model != null) {
-                            holders = holder;
-
-
-                            holder.theuserstatus.setText(status);
-                            holder.theapprovername.setText(approvername);
-                            holder.theuiditself.setText(uid);
 
 
 
-                            Log.d(TAG, "The Approvers Here  " + status + approvername );
-                            holder.setapproverhomepic(getApplicationContext(), approverimage);
+                            holder.NameofPerson.setText( name);
+                            holder.candidateuserid.setText(uid);
+
+
+                            holder.EmergencyPersonName.setText(auxname);
+                            holder.EmergencyPersonPhone.setText(auxphone);
+                            holder.EmergencyPersonEmail.setText(auxemail);
+                            holder.EmergencyPersonType.setText(auxidtype);
+                            holder.EmergencyPersonID.setText(auxid);
+                            holder.EmergencyPersonCountry.setText(auxcountry);
+
+                            Log.d(TAG, "Residential Approval Info" + name);
+                            holder.setcandidateprofileimage(getApplicationContext(), image);
+
+
+                            if (ProfileImageofPerson != null) {
+                                Picasso.get().load(image).placeholder(R.drawable.profile).into(ProfileImageofPerson);
+                            }
 
 
 
-                            Log.d(TAG, "The UID here " + uid + status );
-                            holder.setapproverhomepic(getApplicationContext(), approverimage);
 
 
 
-                            if (holder.theapprovalpendingstatusdetails != null) {
-                                holder.theapprovalpendingstatusdetails.setOnClickListener(new View.OnClickListener() {
+                            holder.ApprovalButtton.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    backgroundinforesponse = "approve";
+                                    setDecision(backgroundinforesponse);
+                                    Intent approvalintent = new Intent(BackgroundInfoApproveForTrader.this, BackgroundInfoApproveForTrader.class);
+                                    approvalintent.putExtra("role", role);
+                                    approvalintent.putExtra("tid", tid);
+                                    approvalintent.putExtra("approverID", approverID);
+                                    approvalintent.putExtra("approvalID", approvalID);
+                                    approvalintent.putExtra("userID", userID);
+
+                                    Toast.makeText(BackgroundInfoApproveForTrader.this, "Background has been approved", Toast.LENGTH_SHORT).show();
+                                    startActivity(approvalintent);
+                                }
+                            });
+
+                            if (holder.RejectButton != null) {
+                                holder.RejectButton.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View view) {
-                                        Intent approvalpendingbuttonintent = new Intent(ApprovalViewPendingForClient.this, PersonalInfoApproveForClient.class);
-                                        approvalpendingbuttonintent.putExtra("role", role);
-                                        approvalpendingbuttonintent.putExtra("uid", uid);
-                                        approvalpendingbuttonintent.putExtra("approverID", approverID);
-                                        approvalpendingbuttonintent.putExtra("approvalID", approvalID);
-                                        approvalpendingbuttonintent.putExtra("userID", userID);
+                                        backgroundinforesponse = "reject";
+                                        setDecision(backgroundinforesponse);
+                                        Intent rejectintent = new Intent(BackgroundInfoApproveForTrader.this, BackgroundInfoApproveForTrader.class);
+                                        rejectintent.putExtra("role", role);
+                                        rejectintent.putExtra("tid", tid);
+                                        rejectintent.putExtra("approverID", approverID);
+                                        rejectintent.putExtra("approvalID", approvalID);
+                                        rejectintent.putExtra("userID", userID);
 
-                                        startActivity(approvalpendingbuttonintent);
+                                        Toast.makeText(BackgroundInfoApproveForTrader.this, "BackgroundInfo has been rejected", Toast.LENGTH_SHORT).show();
+                                        startActivity(rejectintent);
+
 
                                     }
                                 });
                             }
-                            if (holder.backoftheprofile != null) {
-                                holder.backoftheprofile.setOnClickListener(new View.OnClickListener() {
+
+                            // Product Details
+                            if (holder.PauseButton != null) {
+                                holder.PauseButton.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View view) {
-                                        Intent backtoapprovehomeintent = new Intent(ApprovalViewPendingForClient.this, ApprovalDirectRejectOrReviewForCustomer.class);
+                                        backgroundinforesponse = "pause";
+                                        setDecision(backgroundinforesponse);
+                                        Intent pausebuttonintent = new Intent(BackgroundInfoApproveForTrader.this, BackgroundInfoApproveForTrader.class);
+                                        pausebuttonintent.putExtra("role", role);
+                                        pausebuttonintent.putExtra("tid", tid);
+                                        pausebuttonintent.putExtra("approverID", approverID);
+                                        pausebuttonintent.putExtra("approvalID", approvalID);
+                                        pausebuttonintent.putExtra("userID", userID);
 
-                                        startActivity(backtoapprovehomeintent);
+
+                                        Toast.makeText(BackgroundInfoApproveForTrader.this, "BackgroundInfo has been paused", Toast.LENGTH_SHORT).show();
+                                        startActivity(pausebuttonintent);
 
                                     }
                                 });
                             }
 
-                            if (holder.nextoftheprofile != null) {
-                                holder.nextoftheprofile.setOnClickListener(new View.OnClickListener() {
+                            // Product Details
+                            if (holder.candidateapprovebackbutton != null) {
+                                holder.candidateapprovebackbutton.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View view) {
-                                        Intent nexttopersonalinfoapproveforclient = new Intent(ApprovalViewPendingForClient.this, PersonalInfoApproveForClient.class);
-                                        nexttopersonalinfoapproveforclient.putExtra("role", role);
-                                        nexttopersonalinfoapproveforclient.putExtra("uid", uid);
-                                        nexttopersonalinfoapproveforclient.putExtra("approverID", approverID);
-                                        nexttopersonalinfoapproveforclient.putExtra("approvalID", approvalID);
-                                        nexttopersonalinfoapproveforclient.putExtra("userID", userID);
 
-                                        startActivity(nexttopersonalinfoapproveforclient);
+                                        Intent candidatebackbutton  = new Intent(BackgroundInfoApproveForTrader.this, PersonalInfoApproveForClient.class);
+                                        candidatebackbutton.putExtra("role", role);
+                                        candidatebackbutton.putExtra("tid", tid);
+                                        candidatebackbutton.putExtra("approverID", approverID);
+                                        candidatebackbutton.putExtra("approvalID", approvalID);
+                                        candidatebackbutton.putExtra("userID", userID);
+
+                                         Toast.makeText(BackgroundInfoApproveForTrader.this, "Back to Residence Approval List", Toast.LENGTH_SHORT).show();
+                                        startActivity(candidatebackbutton);
 
                                     }
                                 });
                             }
+
+
+                            // Product Details
+                            if (holder.candidateapprovenextbutton != null) {
+                                holder.candidateapprovenextbutton.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+
+                                        Intent caandidateapprovenextbutton = new Intent(BackgroundInfoApproveForTrader.this, BackgroundInfoApproveForTrader.class);
+                                        caandidateapprovenextbutton.putExtra("role", role);
+                                        caandidateapprovenextbutton.putExtra("tid", tid);
+                                        caandidateapprovenextbutton.putExtra("approverID", approverID);
+                                        caandidateapprovenextbutton.putExtra("approvalID", approvalID);
+                                        caandidateapprovenextbutton.putExtra("userID", userID);
+
+                                        Toast.makeText(BackgroundInfoApproveForTrader.this, "To Security Check Page", Toast.LENGTH_SHORT).show();
+
+                                        startActivity(caandidateapprovenextbutton);
+
+                                    }
+                                });
+                            }
+
+
 
 
                         }
                     }
-
-
                 };
-
-
-
             }
-
-
-
-
-            if (recyclerView != null) {
-                recyclerView.setAdapter(feedadapter);
-            }
-
+//            if (recyclerView != null) {
+            //              recyclerView.setAdapter(feedadapter);
+            //        }
         }
+    }
+
+
+    // Post Info
+    private void setDecision(String backgroundinforesponse) {
+
+        user = mAuth.getCurrentUser();
+
+        // GET DATES FOR PRODUCTS
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat currentDate = new SimpleDateFormat("MMM dd, yyyy");
+
+        if (currentDate != null) {
+            date = currentDate.format(calendar.getTime()).toString();
+
+            SimpleDateFormat currentTime = new SimpleDateFormat("HH:mm:ss a");
+            if (currentTime != null) {
+                time = currentTime.format(calendar.getTime());
+
+            }
+
+            if (backgroundinforesponse != null) {
+                mProgress.setMessage("Making +" + backgroundinforesponse + "for this current user");
+
+                mProgress.show();
+
+
+
+
+                // PICK UP THE SPECIAL PRODUCT INFO AND LOADING THEM INTO THE DATABASE
+
+                Users newuserapprovalinfo = new Users(uid,name, address, street, gpscode, country,backgroundinforesponse,backgroundinfoactivity);
+                UsersRef.child(userID).setValue(newuserapprovalinfo, new
+                        DatabaseReference.CompletionListener() {
+                            @Override
+                            public void onComplete(DatabaseError databaseError, DatabaseReference
+                                    databaseReference) {
+                                Toast.makeText(getApplicationContext(), "User Decision Taken as "  +backgroundinforesponse, Toast.LENGTH_SHORT).show();
+                                Intent personapprovalloginfointent = new Intent(BackgroundInfoApproveForTrader.this, HomeActivity.class);
+
+                                startActivity(personapprovalloginfointent);
+
+                            }
+                        });
+
+
+            }
+
+        };
+
+
+        mProgress.dismiss();
 
     }
-    @Nullable
-    @Override
-    public void onStart() {
-        super.onStart();
-        if (feedadapter != null) {
-            feedadapter.startListening();
+
+
+
+
+    public void onConnected(@Nullable Bundle bundle) {
+
+    }
+
+    public void onConnectionSuspended(int i) {
+        if (mGoogleApiClient != null) {
+            mGoogleApiClient.connect();
         }
+    }
+
+
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
 
         firebaseAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
 
-                user = mAuth.getCurrentUser();
-                if (mAuth != null) {
-                    if (user != null) {
-
-                        approverID = user.getUid();
-                    }
-
-                    // I HAVE TO TRY TO GET THE SETUP INFORMATION , IF THEY ARE ALREADY PROVIDED WE TAKE TO THE NEXT STAGE
-                    // WHICH IS CUSTOMER TO BE ADDED.
-                    // PULLING DATABASE REFERENCE IS NULL, WE CHANGE BACK TO THE SETUP PAGE ELSE WE GO STRAIGHT TO MAP PAGE
+                FirebaseUser user = mAuth.getCurrentUser();
+                if (user != null) {
+                    approverID = "";
+                    approverID = user.getUid();
                 }
-            }    };
+
+                // I HAVE TO TRY TO GET THE SETUP INFORMATION , IF THEY ARE ALREADY PROVIDED WE TAKE TO THE NEXT STAGE
+                // WHICH IS CUSTOMER TO BE ADDED.
+                // PULLING DATABASE REFERENCE IS NULL, WE CHANGE BACK TO THE SETUP PAGE ELSE WE GO STRAIGHT TO MAP PAGE
+            }
+        };
+
 
 
         if (mAuth != null) {
             mAuth.addAuthStateListener(firebaseAuthListener);
         }
-
-
-
     }
-
-
     @Override
-    public void onStop () {
+    protected void onStop() {
         super.onStop();
-        if (feedadapter != null) {
-            feedadapter.stopListening();
-        }
-        //     mProgress.hide();
-        if (mAuth != null) {
+        if (mAuth !=null) {
             mAuth.removeAuthStateListener(firebaseAuthListener);
         }
     }
-
 
 
     @Override
@@ -656,17 +857,17 @@ String  status, approverimage;
 
 
         if (id == R.id.viewallcustomershere) {
-            if (!role.equals("Trader")) {
+            if (!type.equals("Trader")) {
                 if (FirebaseAuth.getInstance() != null) {
                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                     if (user != null) {
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(ApprovalViewPendingForClient.this, NotTraderActivity.class);
+                        Intent intent = new Intent(BackgroundInfoApproveForTrader.this, NotTraderActivity.class);
                         if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderID);
-                            intent.putExtra("role", role);
+                            intent.putExtra("traderorcustomer", traderoruser);
+                            intent.putExtra("role", type);
                             startActivity(intent);
                         }
                     }
@@ -679,10 +880,10 @@ String  status, approverimage;
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(ApprovalViewPendingForClient.this, AdminAllCustomers.class);
+                        Intent intent = new Intent(BackgroundInfoApproveForTrader.this, AdminAllCustomers.class);
                         if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderID);
-                            intent.putExtra("role", role);
+                            intent.putExtra("traderorcustomer", traderoruser);
+                            intent.putExtra("role", type);
                             startActivity(intent);
                         }
                     }
@@ -694,17 +895,17 @@ String  status, approverimage;
 
         if (id == R.id. allcustomersincart) {
 
-            if (!role.equals("Trader")) {
+            if (!type.equals("Trader")) {
                 if (FirebaseAuth.getInstance() != null) {
                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                     if (user != null) {
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(ApprovalViewPendingForClient.this, NotTraderActivity.class);
+                        Intent intent = new Intent(BackgroundInfoApproveForTrader.this, NotTraderActivity.class);
                         if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderID);
-                            intent.putExtra("role", role);
+                            intent.putExtra("traderorcustomer", traderoruser);
+                            intent.putExtra("role", type);
                             startActivity(intent);
                         }
                     }
@@ -717,10 +918,10 @@ String  status, approverimage;
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(ApprovalViewPendingForClient.this, ViewAllCarts.class);
+                        Intent intent = new Intent(BackgroundInfoApproveForTrader.this, ViewAllCarts.class);
                         if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderID);
-                            intent.putExtra("role", role);
+                            intent.putExtra("traderorcustomer", traderoruser);
+                            intent.putExtra("role", type);
                             startActivity(intent);
                         }
                     }
@@ -731,17 +932,17 @@ String  status, approverimage;
 
 
         if (id == R.id.addnewproducthere) {
-            if (!role.equals("Trader")) {
+            if (!type.equals("Trader")) {
                 if (FirebaseAuth.getInstance() != null) {
                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                     if (user != null) {
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(ApprovalViewPendingForClient.this, NotTraderActivity.class);
+                        Intent intent = new Intent(BackgroundInfoApproveForTrader.this, NotTraderActivity.class);
                         if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderID);
-                            intent.putExtra("role", role);
+                            intent.putExtra("traderorcustomer", traderoruser);
+                            intent.putExtra("role", type);
                             startActivity(intent);
                         }
                     }
@@ -754,10 +955,10 @@ String  status, approverimage;
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(ApprovalViewPendingForClient.this, AdminAddNewProductActivityII.class);
+                        Intent intent = new Intent(BackgroundInfoApproveForTrader.this, AdminAddNewProductActivityII.class);
                         if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderID);
-                            intent.putExtra("role", role);
+                            intent.putExtra("traderorcustomer", traderoruser);
+                            intent.putExtra("role", type);
                             startActivity(intent);
                         }
                     }
@@ -766,17 +967,17 @@ String  status, approverimage;
         }
 
         if (id == R.id.allproductshere) {
-            if (!role.equals("Trader")) {
+            if (!type.equals("Trader")) {
                 if (FirebaseAuth.getInstance() != null) {
                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                     if (user != null) {
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(ApprovalViewPendingForClient.this, NotTraderActivity.class);
+                        Intent intent = new Intent(BackgroundInfoApproveForTrader.this, NotTraderActivity.class);
                         if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderID);
-                            intent.putExtra("role", role);
+                            intent.putExtra("traderorcustomer", traderoruser);
+                            intent.putExtra("role", type);
                             startActivity(intent);
                         }
                     }
@@ -789,26 +990,26 @@ String  status, approverimage;
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(ApprovalViewPendingForClient.this, AdminAllProducts.class);
+                        Intent intent = new Intent(BackgroundInfoApproveForTrader.this, AdminAllProducts.class);
                         if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderID);
-                            intent.putExtra("role", role);
+                            intent.putExtra("traderorcustomer", traderoruser);
+                            intent.putExtra("role", type);
                             startActivity(intent);
                         }
                     }}
 
                 if (id == R.id.allproductspurchased) {
-                    if (!role.equals("Trader")) {
+                    if (!type.equals("Trader")) {
                         if (FirebaseAuth.getInstance() != null) {
                             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                             if (user != null) {
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(ApprovalViewPendingForClient.this, NotTraderActivity.class);
+                                Intent intent = new Intent(BackgroundInfoApproveForTrader.this, NotTraderActivity.class);
                                 if (intent != null) {
-                                    intent.putExtra("traderorcustomer", traderID);
-                                    intent.putExtra("role", role);
+                                    intent.putExtra("traderorcustomer", traderoruser);
+                                    intent.putExtra("role", type);
                                     startActivity(intent);
                                 }
                             }
@@ -821,10 +1022,10 @@ String  status, approverimage;
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(ApprovalViewPendingForClient.this, AllProductsPurchased.class);
+                                Intent intent = new Intent(BackgroundInfoApproveForTrader.this, AllProductsPurchased.class);
                                 if (intent != null) {
-                                    intent.putExtra("traderorcustomer", traderID);
-                                    intent.putExtra("role", role);
+                                    intent.putExtra("traderorcustomer", traderoruser);
+                                    intent.putExtra("role", type);
                                     startActivity(intent);
                                 }
                             }
@@ -834,17 +1035,17 @@ String  status, approverimage;
 
 
                 if (id == R.id. viewallcustomershere) {
-                    if (!role.equals("Trader")) {
+                    if (!type.equals("Trader")) {
                         if (FirebaseAuth.getInstance() != null) {
                             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                             if (user != null) {
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(ApprovalViewPendingForClient.this, NotTraderActivity.class);
+                                Intent intent = new Intent(BackgroundInfoApproveForTrader.this, NotTraderActivity.class);
                                 if (intent != null) {
-                                    intent.putExtra("traderorcustomer", traderID);
-                                    intent.putExtra("role", role);
+                                    intent.putExtra("traderorcustomer", traderoruser);
+                                    intent.putExtra("role", type);
                                     startActivity(intent);
                                 }
                             }
@@ -857,10 +1058,10 @@ String  status, approverimage;
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(ApprovalViewPendingForClient.this, ViewAllCustomers.class);
+                                Intent intent = new Intent(BackgroundInfoApproveForTrader.this, ViewAllCustomers.class);
                                 if (intent != null) {
-                                    intent.putExtra("traderorcustomer", traderID);
-                                    intent.putExtra("role", role);
+                                    intent.putExtra("traderorcustomer", traderoruser);
+                                    intent.putExtra("role", type);
                                     startActivity(intent);
                                 }
                             }
@@ -869,17 +1070,17 @@ String  status, approverimage;
                 }
 
                 if (id == R.id.tradersfollowing) {
-                    if (!role.equals("Trader")) {
+                    if (!type.equals("Trader")) {
                         if (FirebaseAuth.getInstance() != null) {
                             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                             if (user != null) {
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(ApprovalViewPendingForClient.this, NotTraderActivity.class);
+                                Intent intent = new Intent(BackgroundInfoApproveForTrader.this, NotTraderActivity.class);
                                 if (intent != null) {
-                                    intent.putExtra("traderorcustomer", traderID);
-                                    intent.putExtra("role", role);
+                                    intent.putExtra("traderorcustomer", traderoruser);
+                                    intent.putExtra("role", type);
                                     startActivity(intent);
                                 }
                             }
@@ -892,10 +1093,10 @@ String  status, approverimage;
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(ApprovalViewPendingForClient.this, TradersFollowing.class);
+                                Intent intent = new Intent(BackgroundInfoApproveForTrader.this, TradersFollowing.class);
                                 if (intent != null) {
-                                    intent.putExtra("traderorcustomer", traderID);
-                                    intent.putExtra("role", role);
+                                    intent.putExtra("traderorcustomer", traderoruser);
+                                    intent.putExtra("role", type);
                                     startActivity(intent);
                                 }
                             }
@@ -906,17 +1107,17 @@ String  status, approverimage;
 
                 if (id == R.id.AdminNewOrders) {
 
-                    if (!role.equals("Trader")) {
+                    if (!type.equals("Trader")) {
                         if (FirebaseAuth.getInstance() != null) {
                             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                             if (user != null) {
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(ApprovalViewPendingForClient.this, NotTraderActivity.class);
+                                Intent intent = new Intent(BackgroundInfoApproveForTrader.this, NotTraderActivity.class);
                                 if (intent != null) {
-                                    intent.putExtra("traderorcustomer", traderID);
-                                    intent.putExtra("role", role);
+                                    intent.putExtra("traderorcustomer", traderoruser);
+                                    intent.putExtra("role", type);
                                     startActivity(intent);
                                 }
                             }
@@ -929,10 +1130,10 @@ String  status, approverimage;
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(ApprovalViewPendingForClient.this, AdminNewOrdersActivity.class);
+                                Intent intent = new Intent(BackgroundInfoApproveForTrader.this, AdminNewOrdersActivity.class);
                                 if (intent != null) {
-                                    intent.putExtra("traderorcustomer", traderID);
-                                    intent.putExtra("role", role);
+                                    intent.putExtra("traderorcustomer", traderoruser);
+                                    intent.putExtra("role", type);
                                     startActivity(intent);
                                 }
                             }
@@ -943,17 +1144,17 @@ String  status, approverimage;
 
                 if (id == R.id.allcustomersserved) {
 
-                    if (!role.equals("Trader")) {
+                    if (!type.equals("Trader")) {
                         if (FirebaseAuth.getInstance() != null) {
                             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                             if (user != null) {
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(ApprovalViewPendingForClient.this, NotTraderActivity.class);
+                                Intent intent = new Intent(BackgroundInfoApproveForTrader.this, NotTraderActivity.class);
                                 if (intent != null) {
-                                    intent.putExtra("traderorcustomer", traderID);
-                                    intent.putExtra("role", role);
+                                    intent.putExtra("traderorcustomer", traderoruser);
+                                    intent.putExtra("role", type);
                                     startActivity(intent);
                                 }
                             }
@@ -966,10 +1167,10 @@ String  status, approverimage;
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(ApprovalViewPendingForClient.this, AdminCustomerServed.class);
+                                Intent intent = new Intent(BackgroundInfoApproveForTrader.this, AdminCustomerServed.class);
                                 if (intent != null) {
-                                    intent.putExtra("traderorcustomer", traderID);
-                                    intent.putExtra("role", role);
+                                    intent.putExtra("traderorcustomer", traderoruser);
+                                    intent.putExtra("role", type);
                                     startActivity(intent);
                                 }
                             }
@@ -979,17 +1180,17 @@ String  status, approverimage;
 
                 if (id == R.id.allordershistory) {
 
-                    if (!role.equals("Trader")) {
+                    if (!type.equals("Trader")) {
                         if (FirebaseAuth.getInstance() != null) {
                             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                             if (user != null) {
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(ApprovalViewPendingForClient.this, NotTraderActivity.class);
+                                Intent intent = new Intent(BackgroundInfoApproveForTrader.this, NotTraderActivity.class);
                                 if (intent != null) {
-                                    intent.putExtra("traderorcustomer", traderID);
-                                    intent.putExtra("role", role);
+                                    intent.putExtra("traderorcustomer", traderoruser);
+                                    intent.putExtra("role", type);
                                     startActivity(intent);
                                 }
                             }
@@ -1002,10 +1203,10 @@ String  status, approverimage;
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(ApprovalViewPendingForClient.this, AdminAllOrderHistory.class);
+                                Intent intent = new Intent(BackgroundInfoApproveForTrader.this, AdminAllOrderHistory.class);
                                 if (intent != null) {
-                                    intent.putExtra("traderorcustomer", traderID);
-                                    intent.putExtra("role", role);
+                                    intent.putExtra("traderorcustomer", traderoruser);
+                                    intent.putExtra("role", type);
                                     startActivity(intent);
                                 }
                             }
@@ -1029,21 +1230,21 @@ String  status, approverimage;
         int id = item.getItemId();
 
         if (id == R.id.viewmap) {
-            if (!role.equals("Trader")) {
+            if (!type.equals("Trader")) {
 
-                Intent intent = new Intent(ApprovalViewPendingForClient.this, NotTraderActivity.class);
+                Intent intent = new Intent(BackgroundInfoApproveForTrader.this, NotTraderActivity.class);
                 if (intent != null) {
-                    intent.putExtra("traderorcustomer", traderID);
-                    intent.putExtra("role", role);
+                    intent.putExtra("traderorcustomer", traderoruser);
+                    intent.putExtra("role", type);
                     startActivity(intent);
                     finish();
                 }
             } else {
 
-                Intent intent = new Intent(ApprovalViewPendingForClient.this, DriverMapActivity.class);
+                Intent intent = new Intent(BackgroundInfoApproveForTrader.this, DriverMapActivity.class);
                 if (intent != null) {
-                    intent.putExtra("traderorcustomer", traderID);
-                    intent.putExtra("role", role);
+                    intent.putExtra("traderorcustomer", traderoruser);
+                    intent.putExtra("role", type);
                     startActivity(intent);
                     finish();
                 }
@@ -1054,17 +1255,17 @@ String  status, approverimage;
 
 
         if (id == R.id.nav_cart) {
-            if (!role.equals("Trader")) {
+            if (!type.equals("Trader")) {
                 if (FirebaseAuth.getInstance() != null) {
                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                     if (user != null) {
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(ApprovalViewPendingForClient.this, NotTraderActivity.class);
+                        Intent intent = new Intent(BackgroundInfoApproveForTrader.this, NotTraderActivity.class);
                         if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderID);
-                            intent.putExtra("role", role);
+                            intent.putExtra("traderorcustomer", traderoruser);
+                            intent.putExtra("role", type);
                             startActivity(intent);
                         }
                     }
@@ -1077,10 +1278,10 @@ String  status, approverimage;
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(ApprovalViewPendingForClient.this, CartActivity.class);
+                        Intent intent = new Intent(BackgroundInfoApproveForTrader.this, CartActivity.class);
                         if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderID);
-                            intent.putExtra("role", role);
+                            intent.putExtra("traderorcustomer", traderoruser);
+                            intent.putExtra("role", type);
                             startActivity(intent);
                         }
                     }
@@ -1090,17 +1291,17 @@ String  status, approverimage;
 
 
             if (id == R.id.nav_social_media) {
-                if (!role.equals("Trader")) {
+                if (!type.equals("Trader")) {
                     if (FirebaseAuth.getInstance() != null) {
                         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                         if (user != null) {
                             String cusomerId = "";
 
                             cusomerId = user.getUid();
-                            Intent intent = new Intent(ApprovalViewPendingForClient.this, NotTraderActivity.class);
+                            Intent intent = new Intent(BackgroundInfoApproveForTrader.this, NotTraderActivity.class);
                             if (intent != null) {
-                                intent.putExtra("traderorcustomer", traderID);
-                                intent.putExtra("role", role);
+                                intent.putExtra("traderorcustomer", traderoruser);
+                                intent.putExtra("role", type);
                                 startActivity(intent);
                             }
                         }
@@ -1113,10 +1314,10 @@ String  status, approverimage;
                             String cusomerId = "";
                             cusomerId = user.getUid();
 
-                            Intent intent = new Intent(ApprovalViewPendingForClient.this, InstagramHomeActivity.class);
+                            Intent intent = new Intent(BackgroundInfoApproveForTrader.this, InstagramHomeActivity.class);
                             if (intent != null) {
-                                intent.putExtra("traderorcustomer", traderID);
-                                intent.putExtra("role", role);
+                                intent.putExtra("traderorcustomer", traderoruser);
+                                intent.putExtra("role", type);
                                 startActivity(intent);
                             }
                         }
@@ -1126,17 +1327,17 @@ String  status, approverimage;
 
 
                 if (id == R.id.viewproducts) {
-                    if (!role.equals("Trader")) {
+                    if (!type.equals("Trader")) {
                         if (FirebaseAuth.getInstance() != null) {
                             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                             if (user != null) {
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(ApprovalViewPendingForClient.this, NotTraderActivity.class);
+                                Intent intent = new Intent(BackgroundInfoApproveForTrader.this, NotTraderActivity.class);
                                 if (intent != null) {
-                                    intent.putExtra("traderorcustomer", traderID);
-                                    intent.putExtra("role", role);
+                                    intent.putExtra("traderorcustomer", traderoruser);
+                                    intent.putExtra("role", type);
                                     startActivity(intent);
                                 }
                             }
@@ -1149,27 +1350,27 @@ String  status, approverimage;
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(ApprovalViewPendingForClient.this, AdminAllProducts.class);
+                                Intent intent = new Intent(BackgroundInfoApproveForTrader.this, AdminAllProducts.class);
                                 if (intent != null) {
-                                    intent.putExtra("traderorcustomer", traderID);
-                                    intent.putExtra("role", role);
+                                    intent.putExtra("traderorcustomer", traderoruser);
+                                    intent.putExtra("role", type);
                                     startActivity(intent);
                                 }
                             }
                         }
 
                         if (id == R.id.nav_searchforproducts) {
-                            if (!role.equals("Trader")) {
+                            if (!type.equals("Trader")) {
                                 if (FirebaseAuth.getInstance() != null) {
                                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                                     if (user != null) {
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(ApprovalViewPendingForClient.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(BackgroundInfoApproveForTrader.this, NotTraderActivity.class);
                                         if (intent != null) {
-                                            intent.putExtra("traderorcustomer", traderID);
-                                            intent.putExtra("role", role);
+                                            intent.putExtra("traderorcustomer", traderoruser);
+                                            intent.putExtra("role", type);
                                             startActivity(intent);
                                         }
                                     }
@@ -1182,10 +1383,10 @@ String  status, approverimage;
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(ApprovalViewPendingForClient.this, SearchForAdminProductsActivity.class);
+                                        Intent intent = new Intent(BackgroundInfoApproveForTrader.this, SearchForAdminProductsActivity.class);
                                         if (intent != null) {
-                                            intent.putExtra("traderorcustomer", traderID);
-                                            intent.putExtra("role", role);
+                                            intent.putExtra("traderorcustomer", traderoruser);
+                                            intent.putExtra("role", type);
                                             startActivity(intent);
                                         }
                                     }
@@ -1198,7 +1399,7 @@ String  status, approverimage;
                             if (FirebaseAuth.getInstance() != null) {
                                 FirebaseAuth.getInstance().signOut();
                                 if (mGoogleApiClient != null) {
-                                    mGoogleSignInClient.signOut().addOnCompleteListener(ApprovalViewPendingForClient.this,
+                                    mGoogleSignInClient.signOut().addOnCompleteListener(BackgroundInfoApproveForTrader.this,
                                             new OnCompleteListener<Void>() {
                                                 @Override
                                                 public void onComplete(@NonNull Task<Void> task) {
@@ -1207,7 +1408,7 @@ String  status, approverimage;
                                             });
                                 }
                             }
-                            Intent intent = new Intent(ApprovalViewPendingForClient.this, com.simcoder.bimbo.MainActivity.class);
+                            Intent intent = new Intent(BackgroundInfoApproveForTrader.this, com.simcoder.bimbo.MainActivity.class);
                             if (intent != null) {
                                 startActivity(intent);
                                 finish();
@@ -1215,17 +1416,17 @@ String  status, approverimage;
                         }
 
                         if (id == R.id.nav_settings) {
-                            if (!role.equals("Trader")) {
+                            if (!type.equals("Trader")) {
                                 if (FirebaseAuth.getInstance() != null) {
                                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                                     if (user != null) {
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(ApprovalViewPendingForClient.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(BackgroundInfoApproveForTrader.this, NotTraderActivity.class);
                                         if (intent != null) {
-                                            intent.putExtra("traderorcustomer", traderID);
-                                            intent.putExtra("role", role);
+                                            intent.putExtra("traderorcustomer", traderoruser);
+                                            intent.putExtra("role", type);
                                             startActivity(intent);
                                         }
                                     }
@@ -1238,10 +1439,10 @@ String  status, approverimage;
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(ApprovalViewPendingForClient.this, com.simcoder.bimbo.WorkActivities.SettinsActivity.class);
+                                        Intent intent = new Intent(BackgroundInfoApproveForTrader.this, com.simcoder.bimbo.WorkActivities.SettinsActivity.class);
                                         if (intent != null) {
-                                            intent.putExtra("traderorcustomer", traderID);
-                                            intent.putExtra("role", role);
+                                            intent.putExtra("traderorcustomer", traderoruser);
+                                            intent.putExtra("role", type);
                                             startActivity(intent);
                                         }
                                     }
@@ -1249,17 +1450,17 @@ String  status, approverimage;
                             }
                         }
                         if (id == R.id.nav_history) {
-                            if (!role.equals("Trader")) {
+                            if (!type.equals("Trader")) {
                                 if (FirebaseAuth.getInstance() != null) {
                                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                                     if (user != null) {
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(ApprovalViewPendingForClient.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(BackgroundInfoApproveForTrader.this, NotTraderActivity.class);
                                         if (intent != null) {
-                                            intent.putExtra("traderorcustomer", traderID);
-                                            intent.putExtra("role", role);
+                                            intent.putExtra("traderorcustomer", traderoruser);
+                                            intent.putExtra("role", type);
                                             startActivity(intent);
                                         }
                                     }
@@ -1272,10 +1473,10 @@ String  status, approverimage;
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(ApprovalViewPendingForClient.this, HistoryActivity.class);
+                                        Intent intent = new Intent(BackgroundInfoApproveForTrader.this, HistoryActivity.class);
                                         if (intent != null) {
-                                            intent.putExtra("traderorcustomer", traderID);
-                                            intent.putExtra("role", role);
+                                            intent.putExtra("traderorcustomer", traderoruser);
+                                            intent.putExtra("role", type);
                                             startActivity(intent);
                                         }
                                     }
@@ -1285,17 +1486,17 @@ String  status, approverimage;
 
 
                         if (id == R.id.nav_viewprofilehome) {
-                            if (!role.equals("Trader")) {
+                            if (!type.equals("Trader")) {
                                 if (FirebaseAuth.getInstance() != null) {
                                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                                     if (user != null) {
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(ApprovalViewPendingForClient.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(BackgroundInfoApproveForTrader.this, NotTraderActivity.class);
                                         if (intent != null) {
-                                            intent.putExtra("traderorcustomer", traderID);
-                                            intent.putExtra("role", role);
+                                            intent.putExtra("traderorcustomer", traderoruser);
+                                            intent.putExtra("role", type);
                                             startActivity(intent);
                                         }
                                     }
@@ -1308,10 +1509,10 @@ String  status, approverimage;
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(ApprovalViewPendingForClient.this, TraderProfile.class);
+                                        Intent intent = new Intent(BackgroundInfoApproveForTrader.this, TraderProfile.class);
                                         if (intent != null) {
-                                            intent.putExtra("traderorcustomer", traderID);
-                                            intent.putExtra("role", role);
+                                            intent.putExtra("traderorcustomer", traderoruser);
+                                            intent.putExtra("role", type);
                                             startActivity(intent);
                                         }
                                     }
@@ -1321,17 +1522,17 @@ String  status, approverimage;
 
 
                         if (id == R.id.viewallcustomershere) {
-                            if (!role.equals("Trader")) {
+                            if (!type.equals("Trader")) {
                                 if (FirebaseAuth.getInstance() != null) {
                                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                                     if (user != null) {
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(ApprovalViewPendingForClient.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(BackgroundInfoApproveForTrader.this, NotTraderActivity.class);
                                         if (intent != null) {
-                                            intent.putExtra("traderorcustomer", traderID);
-                                            intent.putExtra("role", role);
+                                            intent.putExtra("traderorcustomer", traderoruser);
+                                            intent.putExtra("role", type);
                                             startActivity(intent);
                                         }
                                     }
@@ -1344,10 +1545,10 @@ String  status, approverimage;
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(ApprovalViewPendingForClient.this, AdminAllCustomers.class);
+                                        Intent intent = new Intent(BackgroundInfoApproveForTrader.this, AdminAllCustomers.class);
                                         if (intent != null) {
-                                            intent.putExtra("traderorcustomer", traderID);
-                                            intent.putExtra("role", role);
+                                            intent.putExtra("traderorcustomer", traderoruser);
+                                            intent.putExtra("role", type);
                                             startActivity(intent);
                                         }
                                     }
@@ -1358,17 +1559,17 @@ String  status, approverimage;
 
                         if (id == R.id.addnewproducthere) {
 
-                            if (!role.equals("Trader")) {
+                            if (!type.equals("Trader")) {
                                 if (FirebaseAuth.getInstance() != null) {
                                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                                     if (user != null) {
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(ApprovalViewPendingForClient.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(BackgroundInfoApproveForTrader.this, NotTraderActivity.class);
                                         if (intent != null) {
-                                            intent.putExtra("traderorcustomer", traderID);
-                                            intent.putExtra("role", role);
+                                            intent.putExtra("traderorcustomer", traderoruser);
+                                            intent.putExtra("role", type);
                                             startActivity(intent);
                                         }
                                     }
@@ -1381,10 +1582,10 @@ String  status, approverimage;
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(ApprovalViewPendingForClient.this, AdminAddNewProductActivityII.class);
+                                        Intent intent = new Intent(BackgroundInfoApproveForTrader.this, AdminAddNewProductActivityII.class);
                                         if (intent != null) {
-                                            intent.putExtra("traderorcustomer", traderID);
-                                            intent.putExtra("role", role);
+                                            intent.putExtra("traderorcustomer", traderoruser);
+                                            intent.putExtra("role", type);
                                             startActivity(intent);
                                         }
                                     }
@@ -1394,17 +1595,17 @@ String  status, approverimage;
 
 
                         if (id == R.id.goodsbought) {
-                            if (!role.equals("Trader")) {
+                            if (!type.equals("Trader")) {
                                 if (FirebaseAuth.getInstance() != null) {
                                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                                     if (user != null) {
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(ApprovalViewPendingForClient.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(BackgroundInfoApproveForTrader.this, NotTraderActivity.class);
                                         if (intent != null) {
-                                            intent.putExtra("traderorcustomer", traderID);
-                                            intent.putExtra("role", role);
+                                            intent.putExtra("traderorcustomer", traderoruser);
+                                            intent.putExtra("role", type);
                                             startActivity(intent);
                                         }
                                     }
@@ -1417,10 +1618,10 @@ String  status, approverimage;
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(ApprovalViewPendingForClient.this, AllGoodsBought.class);
+                                        Intent intent = new Intent(BackgroundInfoApproveForTrader.this, AllGoodsBought.class);
                                         if (intent != null) {
-                                            intent.putExtra("traderorcustomer", traderID);
-                                            intent.putExtra("role", role);
+                                            intent.putExtra("traderorcustomer", traderoruser);
+                                            intent.putExtra("role", type);
                                             startActivity(intent);
                                         }
                                     }
@@ -1430,17 +1631,17 @@ String  status, approverimage;
 
 
                         if (id == R.id.nav_paymenthome) {
-                            if (!role.equals("Trader")) {
+                            if (!type.equals("Trader")) {
                                 if (FirebaseAuth.getInstance() != null) {
                                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                                     if (user != null) {
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(ApprovalViewPendingForClient.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(BackgroundInfoApproveForTrader.this, NotTraderActivity.class);
                                         if (intent != null) {
-                                            intent.putExtra("traderorcustomer", traderID);
-                                            intent.putExtra("role", role);
+                                            intent.putExtra("traderorcustomer", traderoruser);
+                                            intent.putExtra("role", type);
                                             startActivity(intent);
                                         }
                                     }
@@ -1453,10 +1654,10 @@ String  status, approverimage;
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(ApprovalViewPendingForClient.this, AdminPaymentHere.class);
+                                        Intent intent = new Intent(BackgroundInfoApproveForTrader.this, AdminPaymentHere.class);
                                         if (intent != null) {
-                                            intent.putExtra("traderorcustomer", traderID);
-                                            intent.putExtra("role", role);
+                                            intent.putExtra("traderorcustomer", traderoruser);
+                                            intent.putExtra("role", type);
                                             startActivity(intent);
                                         }
                                     }
@@ -1466,17 +1667,17 @@ String  status, approverimage;
 
 
                         if (id == R.id.nav_settings) {
-                            if (!role.equals("Trader")) {
+                            if (!type.equals("Trader")) {
                                 if (FirebaseAuth.getInstance() != null) {
                                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                                     if (user != null) {
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(ApprovalViewPendingForClient.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(BackgroundInfoApproveForTrader.this, NotTraderActivity.class);
                                         if (intent != null) {
-                                            intent.putExtra("traderorcustomer", traderID);
-                                            intent.putExtra("role", role);
+                                            intent.putExtra("traderorcustomer", traderoruser);
+                                            intent.putExtra("role", type);
                                             startActivity(intent);
                                         }
                                     }
@@ -1489,10 +1690,10 @@ String  status, approverimage;
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(ApprovalViewPendingForClient.this, AdminSettings.class);
+                                        Intent intent = new Intent(BackgroundInfoApproveForTrader.this, AdminSettings.class);
                                         if (intent != null) {
-                                            intent.putExtra("traderorcustomer", traderID);
-                                            intent.putExtra("role", role);
+                                            intent.putExtra("traderorcustomer", traderoruser);
+                                            intent.putExtra("role", type);
                                             startActivity(intent);
                                         }
                                     }
@@ -1504,10 +1705,21 @@ String  status, approverimage;
                     }
                 }
 
+
+                return true;
             }
 
+            return true;
         }
-        return false;
-    }}
+        return true;
+    }
+
+
+}
+
+
+
+// #BuiltByGOD
+
 
 

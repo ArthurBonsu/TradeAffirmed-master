@@ -174,7 +174,6 @@ public class ClientVerificationPendingPage extends AppCompatActivity implements 
     EditText       GpsCodeMapID= findViewById(R.id.GpsCodeMapID);
     Button PickMap = findViewById(R.id.PickMap);
     ImageView       ImageViewOfGPSCodeMap = findViewById(R.id.ImageViewOfGPSCodeMap);
-
     Button       deleteselectedGPSCodeMapmap = findViewById(R.id.deleteselectedGPSCodeMapmap);
 
     private ImageButton mEventImage;

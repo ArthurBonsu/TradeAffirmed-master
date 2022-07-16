@@ -45,7 +45,8 @@ public class CustomerLoginActivity extends AppCompatActivity {
     private FirebaseAuth.AuthStateListener firebaseAuthListener;
     private static final String TAG = "Google Activity";
     private ProgressDialog mProgress;
-
+    String  userID;
+    String role;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,6 +63,15 @@ public class CustomerLoginActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
 
 
+        Intent roleintent = getIntent();
+        if (roleintent.getExtras().getString("role") != null) {
+            role = roleintent.getExtras().getString("role");
+        }
+
+        Intent traderIDintent = getIntent();
+        if (traderIDintent.getExtras().getString("userID") != null) {
+            userID = traderIDintent.getExtras().getString("userID");
+        }
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestIdToken(getString(R.string.default_web_client_id)).requestEmail().build();
 
@@ -97,9 +107,9 @@ public class CustomerLoginActivity extends AppCompatActivity {
                 if (user != null) {
 
 
-                            String uid = "";
-                            uid = user.getUid();
-                            if (FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child(uid) != null) {
+                             userID = "";
+                             userID = user.getUid();
+                            if (FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child(userID) != null) {
                             Intent intent = new Intent(CustomerLoginActivity.this, CustomerMapActivity.class);
                             startActivity(intent);
                             finish();
@@ -137,10 +147,10 @@ public class CustomerLoginActivity extends AppCompatActivity {
                         if(task.isSuccessful()){
 
                             Log.d(TAG, "createUserWithEmail:success");
-                            String user_id = mAuth.getCurrentUser().getUid();
+                            userID = mAuth.getCurrentUser().getUid();
                             mProgress.show();
 
-                            DatabaseReference current_user_db = FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child(user_id).child("name");
+                            DatabaseReference current_user_db = FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child(userID).child("name");
                             current_user_db.setValue(email);
                             mProgress.hide();
                             Toast.makeText(CustomerLoginActivity.this, "REGISTERD!", Toast.LENGTH_SHORT).show();
@@ -181,7 +191,7 @@ public class CustomerLoginActivity extends AppCompatActivity {
 
                         if(task.isSuccessful()) {
                             Log.d(TAG, "signInWithEmail:success");
-                            String user_id = mAuth.getCurrentUser().getUid();
+                            userID = mAuth.getCurrentUser().getUid();
                             mProgress.show();
                             Intent intent = new Intent(CustomerLoginActivity.this, CustomerMapActivity.class);
                             startActivity(intent);
