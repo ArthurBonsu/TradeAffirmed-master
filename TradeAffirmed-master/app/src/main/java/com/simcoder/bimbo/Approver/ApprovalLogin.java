@@ -97,7 +97,7 @@ public class ApprovalLogin extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        setContentView(R.layout.approvallogin);
 
 
         Intent roleintent = getIntent();
@@ -302,7 +302,7 @@ public class ApprovalLogin extends AppCompatActivity
 
                                                                            @Override
                                                                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                                                               if (dataSnapshot.child("Customers").child(userID).exists()) {
+                                                                               if (dataSnapshot.child("Approvers").child(userID).exists()) {
                                                                                    //    Users usersData = dataSnapshot.child(parentDbName).child(phone).getValue(Users.class);
 
                                                                                    // GETTING THE TYPE OF TRADER
@@ -319,7 +319,7 @@ public class ApprovalLogin extends AppCompatActivity
                                                                                                approverID = "";
                                                                                                approverID = user.getUid();
 
-                                                                                               if (FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child(userID) != null && role.equals("Customer")) {
+                                                                                               if (FirebaseDatabase.getInstance().getReference().child("Users").child("Approvers").child(approverID) != null && role.equals("Approver")) {
                                                                                                    Toast.makeText(ApprovalLogin.this, "logged in Successfully...", Toast.LENGTH_SHORT).show();
                                                                                                    loadingBar.dismiss();
 
@@ -334,7 +334,7 @@ public class ApprovalLogin extends AppCompatActivity
                                                                                            } else {
 
                                                                                                loadingBar.dismiss();
-                                                                                               Toast.makeText(ApprovalLogin.this, "User " + acct.getDisplayName() + "does does not exist", Toast.LENGTH_SHORT).show();
+                                                                                               Toast.makeText(ApprovalLogin.this, "Approver " + acct.getDisplayName() + "does does not exist", Toast.LENGTH_SHORT).show();
 
                                                                                            }
 
@@ -496,12 +496,12 @@ public class ApprovalLogin extends AppCompatActivity
 
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    if (dataSnapshot.child("Customers").child(approverID).exists()) {
+                    if (dataSnapshot.child("Approvers").child(approverID).exists()) {
                         dataSnapshot.getValue(Users.class);
                         //    Users usersData = dataSnapshot.child(parentDbName).child(phone).getValue(Users.class);
 
                         // GETTING THE TYPE OF TRADER
-                        role = dataSnapshot.child("Customers").child(approverID).child("role").getValue(String.class);
+                        role = dataSnapshot.child("Approvers").child(approverID).child("role").getValue(String.class);
 
                         //  if (usersData.getPhone().equals(phone))
                         {
@@ -521,7 +521,7 @@ public class ApprovalLogin extends AppCompatActivity
                                             approverID= user.getUid();
 
 
-                                            if (FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child(approverID) != null && role.equals("Customer")) {
+                                            if (FirebaseDatabase.getInstance().getReference().child("Users").child("Approvers").child(approverID) != null && role.equals("Approver")) {
 
                                                 mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(ApprovalLogin.this, new OnCompleteListener<AuthResult>() {
                                                     @Override

@@ -245,6 +245,7 @@ public  class SecurityCheckApproveForTrader extends AppCompatActivity
             approvalID= approvalIDintent.getExtras().getString("approvalID");
         }
 
+
         recyclerView = findViewById(R.id.stickyheaderrecyler);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         if (recyclerView != null) {

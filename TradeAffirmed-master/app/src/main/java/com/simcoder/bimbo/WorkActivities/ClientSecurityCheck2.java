@@ -186,10 +186,12 @@ public class ClientSecurityCheck2 extends AppCompatActivity implements GoogleApi
     private StorageReference mStorage;
     private DatabaseReference mDatabase;
     private DatabaseReference mDatabaseCHURCHCHOSEN;
+    private  DatabaseReference mApprovalDatabaseFull;
     private ProgressDialog mProgress;
     private FirebaseAuth Auth;
     private FirebaseUser mCurrentUser;
     private DatabaseReference mDatabaseUser;
+    private DatabaseReference mApprovalDatabase;
 
     private String CategoryName, Description, Price, Pname, saveCurrentDate, saveCurrentTime;
     private Button AddNewProductButton;
@@ -255,6 +257,7 @@ public class ClientSecurityCheck2 extends AppCompatActivity implements GoogleApi
     Button  NationalIDUploadButton;
     Button NationalIDDeleteButton;
 
+    String approvalkey;
 
 
 
@@ -521,9 +524,10 @@ public class ClientSecurityCheck2 extends AppCompatActivity implements GoogleApi
 
 
                         mCustomerUserDatabase = myuserfirebasedatabase.getReference().child("Users").child("Customers").child(userID);
-
+                        mApprovalDatabaseFull = myuserfirebasedatabase.getReference().child("Approval");
                         mAdminTraderDatabase.keepSynced(true);
-
+                        approvalkey = mApprovalDatabaseFull.push().getKey();
+                        mApprovalDatabase.keepSynced(true);
                         // PICK UP THE SPECIAL PRODUCT INFO AND LOADING THEM INTO THE DATABASE
                         Users userstobesent = new Users (gpscode,idimage);
 
@@ -541,17 +545,35 @@ public class ClientSecurityCheck2 extends AppCompatActivity implements GoogleApi
                                 });
 
 
+
+
+
+
+                mApprovalDatabase.setValue(userstobesent, new
+                        DatabaseReference.CompletionListener() {
+                            @Override
+                            public void onComplete(DatabaseError databaseError, DatabaseReference
+                                    databaseReference) {
+                                Toast.makeText(getApplicationContext(), "GPS Security Information Deleted, Reuplod Info", Toast.LENGTH_SHORT).show();
+                                Intent myapprovaldatabaseintent = new Intent(ClientSecurityCheck2.this, ClientSecurityCheck2.class);
+
+                                startActivity(myapprovaldatabaseintent);
+
+                            }
+                        });
+
+
+        mProgress.dismiss();
                     }
 
                 });
 
-
-                mProgress.dismiss();
-
             }
+        }
+    }
 
 
-        }}
+
 
 
 
@@ -607,27 +629,40 @@ public class ClientSecurityCheck2 extends AppCompatActivity implements GoogleApi
 
 
                         mCustomerUserDatabase = myuserfirebasedatabase.getReference().child("Users").child("Drivers").child(userID);
-
+                        mApprovalDatabaseFull = myuserfirebasedatabase.getReference().child("Approval");
+                        approvalkey = mApprovalDatabaseFull.push().getKey();
+                        mApprovalDatabase = myuserfirebasedatabase.getReference().child("Approval").child(approvalkey);
                         mCustomerUserDatabase.keepSynced(true);
-
+                        mApprovalDatabase.keepSynced(true);
                         // PICK UP THE SPECIAL PRODUCT INFO AND LOADING THEM INTO THE DATABASE
                         Users userstobesent = new Users (gpscode,gpsimage);
 
                         mCustomerUserDatabase.setValue(userstobesent, new
+                            DatabaseReference.CompletionListener() {
+                        @Override
+                        public void onComplete(DatabaseError databaseError, DatabaseReference
+                        databaseReference) {
+                            Toast.makeText(getApplicationContext(), "GPS Security Information Deleted, Reupload Info", Toast.LENGTH_SHORT).show();
+                            Intent addadminproductactivity = new Intent(ClientSecurityCheck2.this, ClientSecurityCheck2.class);
+
+                            startActivity(addadminproductactivity);
+
+                        }
+                    });
+
+                        mApprovalDatabase.setValue(userstobesent, new
                                 DatabaseReference.CompletionListener() {
                                     @Override
                                     public void onComplete(DatabaseError databaseError, DatabaseReference
                                             databaseReference) {
                                         Toast.makeText(getApplicationContext(), "GPS Security Information Deleted, Reuplod Info", Toast.LENGTH_SHORT).show();
-                                        Intent addadminproductactivity = new Intent(ClientSecurityCheck2.this, ClientSecurityCheck2.class);
+                                        Intent myapprovaldatabaseintent = new Intent(ClientSecurityCheck2.this, ClientSecurityCheck2.class);
 
-                                        startActivity(addadminproductactivity);
+                                        startActivity(myapprovaldatabaseintent);
 
                                     }
                                 });
-
-
-                    }
+                }
 
                 });
 

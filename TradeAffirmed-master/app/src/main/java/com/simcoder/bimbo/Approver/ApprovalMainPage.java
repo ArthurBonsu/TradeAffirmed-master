@@ -296,7 +296,7 @@ public class ApprovalMainPage extends AppCompatActivity implements GoogleApiClie
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.hometoolbar);
         if (toolbar != null) {
-            toolbar.setTitle("Admin Main Page");
+            toolbar.setTitle("Approval Main Page");
         }
 
 

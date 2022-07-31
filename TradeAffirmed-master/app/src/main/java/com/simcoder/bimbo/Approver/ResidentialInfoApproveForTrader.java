@@ -210,19 +210,25 @@ public  class ResidentialInfoApproveForTrader extends AppCompatActivity
                 (R.layout.stickynoterecycler));
 
 
-        Intent userintent = getIntent();
-        if (userintent.getExtras().getString("userID") != null) {
-            userID = userintent.getExtras().getString("userID");
-        }
-
         Intent roleintent = getIntent();
         if (roleintent.getExtras().getString("role") != null) {
             role = roleintent.getExtras().getString("role");
         }
 
-        Intent traderIDintent = getIntent();
-        if (traderIDintent.getExtras().getString("traderID") != null) {
-            traderID = traderIDintent.getExtras().getString("traderID");
+        Intent approverIDintent = getIntent();
+        if (approverIDintent.getExtras().getString("approverID") != null) {
+            approverID= approverIDintent.getExtras().getString("approverID");
+        }
+        Intent userIDIntent = getIntent();
+        if (userIDIntent.getExtras().getString("userID") != null) {
+            userID= userIDIntent.getExtras().getString("userID");
+        }
+
+
+
+        Intent approvalIDintent = getIntent();
+        if (approvalIDintent.getExtras().getString("approvalID") != null) {
+            approvalID= approvalIDintent.getExtras().getString("approvalID");
         }
 
 
