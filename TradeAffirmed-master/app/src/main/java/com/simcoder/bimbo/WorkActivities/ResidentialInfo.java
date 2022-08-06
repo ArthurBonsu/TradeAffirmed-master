@@ -2,6 +2,7 @@ package com.simcoder.bimbo.WorkActivities;
 
 import com.google.firebase.auth.FirebaseUser;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 
@@ -17,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -24,10 +26,15 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.simcoder.bimbo.Admin.SecurityCheck;
 import com.simcoder.bimbo.Model.HashMaps;
+import com.simcoder.bimbo.Model.PersonalInfoSubmitModel;
+import com.simcoder.bimbo.Model.ResidentialInfoSubmitModel;
 import com.simcoder.bimbo.R;
 
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -41,7 +48,8 @@ public class ResidentialInfo extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
     private DatabaseReference mUserDatabase;
-
+    private DatabaseReference mApprovalOrig;
+    private DatabaseReference mApproval;
     private String userID;
     private String mName;
     private String mPhone;
@@ -102,6 +110,12 @@ public class ResidentialInfo extends AppCompatActivity {
     String  themailingaddressstring;
     String  thegpscodestring;
     String thestreetaddressstring;
+    String approvalID;
+    ProgressDialog mProgressDialog;
+    String date;
+    String time;
+    ProgressDialog mProgress;
+    String residenceinfoapprove;
 
 
     @Override
@@ -115,9 +129,12 @@ public class ResidentialInfo extends AppCompatActivity {
 
         Intent userIDintent = getIntent();
         if (userIDintent.getExtras().getString("userID") != null) {
-            traderID = userIDintent.getExtras().getString("userID");
+            userID = userIDintent.getExtras().getString("userID");
         }
-
+        Intent approvalIDIntent = getIntent();
+        if (approvalIDIntent.getExtras().getString("approvalID") != null) {
+            approvalID = approvalIDIntent.getExtras().getString("approvalID");
+        }
         MailingAddress = findViewById(R.id.MailingAddress);
         GpsCode = findViewById(R.id.GpsCode);
         StreetAddress = findViewById(R.id.StreetAddress);
@@ -146,6 +163,11 @@ public class ResidentialInfo extends AppCompatActivity {
 
 
             mUserDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child(userID);
+            mApprovalOrig = FirebaseDatabase.getInstance().getReference().child("Approval");
+            approvalID =  mApprovalOrig.push().getKey();
+            mApproval = FirebaseDatabase.getInstance().getReference().child("Approval").child(approvalID);
+            mUserDatabase.keepSynced(true);
+            mApproval.keepSynced(true);
             getUserInfo();
             // SET THE AGE ADAPTER
 
@@ -189,6 +211,7 @@ public class ResidentialInfo extends AppCompatActivity {
                             if (intent != null) {
                                 intent.putExtra("role", role);
                                 intent.putExtra("userID", userID);
+                                intent.putExtra("approvalID", approvalID);
                                 startActivity(intent);
                                 finish();
                             }
@@ -242,25 +265,88 @@ public class ResidentialInfo extends AppCompatActivity {
     //AFTER FIRST TIME OF CREATING INFO HE CAN HAVE NO ABILITY TO ALTER UNLESS PROVIDED BY ADMINISTRATOR
     // PERSONAL INFORMATION COULD BE CROSS-CHECKED FOR SECURITY
     // IT IS THE PAYMENT THAT MAKES IT DECENTRALIZED
-
+    //AFTER FIRST TIME OF CREATING INFO HE CAN HAVE NO ABILITY TO ALTER UNLESS PROVIDED BY ADMINISTRATOR
+    // PERSONAL INFORMATION COULD BE CROSS-CHECKED FOR SECURITY
+    // IT IS THE PAYMENT THAT MAKES IT DECENTRALIZED
+// Post Info
     public void saveUserInformation() {
-
         themailingaddressstring = MailingAddress.getText().toString();
         thegpscodestring = GpsCode.getText().toString();
-        thestreetaddressstring = StreetAddress.getText().toString();
+        thestreetaddressstring = StreetAddress.getText().toString(); // GET THE INFORMATION FROM THE TEXT BOX
 
-        if (themailingaddressstring != null && thegpscodestring != null && thestreetaddressstring != null) {
+        residenceinfoapprove = "false";
 
-            Map userInfo = new HashMap();
-            userInfo.put("address", themailingaddressstring);
-            userInfo.put("street", thestreetaddressstring);
-            userInfo.put("gpscode", thegpscodestring);
-            userInfo.put("country",countrytext);
-            mUserDatabase.updateChildren(userInfo);
+
+
+        // GET DATES FOR PRODUCTS
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat currentDate = new SimpleDateFormat("MMM dd, yyyy");
+
+        if (currentDate != null) {
+            date = currentDate.format(calendar.getTime()).toString();
+
+            SimpleDateFormat currentTime = new SimpleDateFormat("HH:mm:ss a");
+            if (currentTime != null) {
+                time = currentTime.format(calendar.getTime());
+
+            }
+
+
+            if (themailingaddressstring != null && thegpscodestring != null && thestreetaddressstring != null) {
+
+
+                    mProgress.setMessage("Adding your Residence Information  To UserInfo And ApprovalInfo");
+
+                    mProgress.show();
+
+
+
+
+                    // PICK UP THE SPECIAL PRODUCT INFO AND LOADING THEM INTO THE DATABASE
+                    ResidentialInfoSubmitModel residentialinfotobesent = new ResidentialInfoSubmitModel( themailingaddressstring , thegpscodestring, thestreetaddressstring,residenceinfoapprove);
+
+                    mApproval.setValue(residentialinfotobesent, new
+                            DatabaseReference.CompletionListener() {
+                                @Override
+                                public void onComplete(DatabaseError databaseError, DatabaseReference
+                                        databaseReference) {
+                                    Toast.makeText(getApplicationContext(), "Add Residence Info Code Information To Approval", Toast.LENGTH_SHORT).show();
+                                    Intent residentialinofoapprove = new Intent(ResidentialInfo.this, ResidentialInfo.class);
+
+                                    startActivity(residentialinofoapprove);
+
+                                }
+                            });
+
+                    mUserDatabase.setValue(residentialinfotobesent, new
+                            DatabaseReference.CompletionListener() {
+                                @Override
+                                public void onComplete(DatabaseError databaseError, DatabaseReference
+                                        databaseReference) {
+                                    Toast.makeText(getApplicationContext(), "Add Residence Info Code Information To Approval", Toast.LENGTH_SHORT).show();
+                                    Intent residentialinofoapprove = new Intent(ResidentialInfo.this, SecurityInfo.class);
+                                    residentialinofoapprove.putExtra("userID", userID);
+                                    residentialinofoapprove.putExtra("approvalID", approvalID);
+                                    residentialinofoapprove.putExtra("role", role);
+                                    startActivity(residentialinofoapprove);
+
+                                }
+                            });
+
+
+
+
+                    mProgress.dismiss();
+                }
+
+            };
 
         }
 
-    }
+
+
+
+
 
 }
 

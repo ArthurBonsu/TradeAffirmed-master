@@ -1,12 +1,15 @@
 package com.simcoder.bimbo.WorkActivities;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseUser;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -25,10 +28,17 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+import com.simcoder.bimbo.Model.BackgroundInfoSubmitModel;
 import com.simcoder.bimbo.Model.HashMaps;
+import com.simcoder.bimbo.Model.Users;
 import com.simcoder.bimbo.R;
 
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -42,7 +52,7 @@ public class BackgroundInfo extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
     private DatabaseReference mUserDatabase;
-
+    private DatabaseReference mApproval;
     private String userID;
     private String mName;
     private String mPhone;
@@ -91,7 +101,7 @@ public class BackgroundInfo extends AppCompatActivity {
     ImageButton       services;
     ImageButton  expectedshipping;
     ImageButton       adminprofile;
-
+    String backgroundapprove;
 
 
     EditText MailingAddress;
@@ -116,6 +126,13 @@ public class BackgroundInfo extends AppCompatActivity {
     String theemergencypersonemailstring;
     String emergencypersonidstring;
     String typeofidtext;
+    FirebaseUser user;
+    String date;
+    String time;
+    private ProgressDialog mProgress;
+    private StorageReference mStorage;
+    String approvalID;
+    String emnamestring, emphonestring, ememailstring, empersonid, emidtype , emcountry;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -129,6 +146,12 @@ public class BackgroundInfo extends AppCompatActivity {
         if (userIDintent.getExtras().getString("userID") != null) {
             userID = userIDintent.getExtras().getString("userID");
         }
+
+        Intent approvalidintent = getIntent();
+        if (approvalidintent.getExtras().getString("approvalID") != null) {
+            approvalID = userIDintent.getExtras().getString("approvalID");
+        }
+
 
 
         EmergencyPersonName = findViewById(R.id.EmergencyPersonName);
@@ -147,10 +170,10 @@ public class BackgroundInfo extends AppCompatActivity {
         adminprofile =findViewById(R.id.adminprofile);
 
 
-        theemergencypersonnamestring = EmergencyPersonName.getText().toString();
-        theemergencypersonphonestring= EmergencyPersonPhoneNumber.getText().toString();
-        theemergencypersonemailstring = EmergencyPersonEmail.getText().toString();
-        emergencypersonidstring = YourEmergencypersonID.getText().toString();
+        emnamestring = EmergencyPersonName.getText().toString();
+        emphonestring= EmergencyPersonPhoneNumber.getText().toString();
+        ememailstring = EmergencyPersonEmail.getText().toString();
+        empersonid = YourEmergencypersonID.getText().toString();
 
 
         mAuth = FirebaseAuth.getInstance();
@@ -161,10 +184,25 @@ public class BackgroundInfo extends AppCompatActivity {
             userID = user.getUid();
 
 
+            // GET FROM FOLLOWING KEY
+            // HAVE TO BUILD THE STORAGE
+            mStorage = FirebaseStorage.getInstance().getReference().child("user_images");
+
+/*
+                if (ProductsRef.push() != null) {
+                    productRandomKey = ProductsRef.push().getKey();
+
+                }
+*/
+            //I have to  check to ensure that gallery intent is not placed here for the other classes
+
+            mProgress = new ProgressDialog(this);
+
             mUserDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child(userID);
-
+            mApproval = FirebaseDatabase.getInstance().getReference().child("Approval").child(approvalID);
+            mUserDatabase.keepSynced(true);
+            mApproval.keepSynced(true);
             // SET THE AGE ADAPTER
-
 
             // SET THE COUNTRY ADAPTER
             mycountryAdapter = new ArrayAdapter<String>(BackgroundInfo.this,
@@ -177,7 +215,7 @@ public class BackgroundInfo extends AppCompatActivity {
 
                 @Override
                 public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                    countrytext = countryspinner.getSelectedItem().toString();
+                    emcountry = countryspinner.getSelectedItem().toString();
 
                 }
 
@@ -197,7 +235,7 @@ public class BackgroundInfo extends AppCompatActivity {
 
                 @Override
                 public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                    typeofidtext = NationalIDofEmergencyPerson.getSelectedItem().toString();
+                    emidtype = NationalIDofEmergencyPerson.getSelectedItem().toString();
 
                 }
 
@@ -226,6 +264,7 @@ public class BackgroundInfo extends AppCompatActivity {
                             if (intent != null) {
                                 intent.putExtra("role", role);
                                 intent.putExtra("userID", userID);
+                                intent.putExtra("approvalID", approvalID);
                                 startActivity(intent);
                                 finish();
                             }
@@ -244,29 +283,93 @@ public class BackgroundInfo extends AppCompatActivity {
     // PERSONAL INFORMATION COULD BE CROSS-CHECKED FOR SECURITY
     // IT IS THE PAYMENT THAT MAKES IT DECENTRALIZED
 
+
+    // Post Info
     public void saveUserInformation() {
-        theemergencypersonnamestring = EmergencyPersonName.getText().toString();
-        theemergencypersonphonestring= EmergencyPersonPhoneNumber.getText().toString();
-        theemergencypersonemailstring = EmergencyPersonEmail.getText().toString();
-        emergencypersonidstring = YourEmergencypersonID.getText().toString();
+        emnamestring = EmergencyPersonName.getText().toString();
+        emphonestring= EmergencyPersonPhoneNumber.getText().toString();
+        ememailstring = EmergencyPersonEmail.getText().toString();
+        empersonid = YourEmergencypersonID.getText().toString();
+        // GET THE INFORMATION FROM THE TEXT BOX
 
-        if (theemergencypersonnamestring != null && theemergencypersonphonestring != null && theemergencypersonemailstring != null && emergencypersonidstring !=null) {
+        backgroundapprove = "false";
 
 
 
-                //WE WILL USE FULL NAME TO STORE VALUE TO PREVENT USERNAME
 
-                    Map userInfo = new HashMap();
-                    userInfo.put("auxname", theemergencypersonnamestring);
-                    userInfo.put("auxphone", theemergencypersonphonestring);
-                    userInfo.put("auxemail", theemergencypersonemailstring);
-                    userInfo.put("auxid", emergencypersonidstring);
-                    userInfo.put("typeofid", typeofidtext);
-                    userInfo.put("auxid", emergencypersonidstring);
-                    userInfo.put("auxcountry", countrytext);
-                    mUserDatabase.updateChildren(userInfo);
 
-                }}}
+        // GET DATES FOR PRODUCTS
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat currentDate = new SimpleDateFormat("MMM dd, yyyy");
+
+        if (currentDate != null) {
+            date = currentDate.format(calendar.getTime()).toString();
+
+            SimpleDateFormat currentTime = new SimpleDateFormat("HH:mm:ss a");
+            if (currentTime != null) {
+                time = currentTime.format(calendar.getTime());
+
+            }
+
+
+            if (emnamestring != null && emphonestring != null && ememailstring != null && empersonid !=null && emidtype !=null && emcountry !=null ) {
+
+                mProgress.setMessage("Adding your Background Person Information To UserInfo And ApprovalInfo");
+
+                mProgress.show();
+
+
+
+
+                        // PICK UP THE SPECIAL PRODUCT INFO AND LOADING THEM INTO THE DATABASE
+                BackgroundInfoSubmitModel backgroundinfotobesent = new BackgroundInfoSubmitModel( emnamestring, emphonestring,   ememailstring , empersonid , emidtype, emcountry,backgroundapprove);
+
+                mApproval.setValue(backgroundinfotobesent, new
+                                DatabaseReference.CompletionListener() {
+                                    @Override
+                                    public void onComplete(DatabaseError databaseError, DatabaseReference
+                                            databaseReference) {
+                                        Toast.makeText(getApplicationContext(), "Add BackgroundInfo Code Information To Approval", Toast.LENGTH_SHORT).show();
+                                        Intent addbackgroundinformationtosapproval = new Intent(BackgroundInfo.this, BackgroundInfo.class);
+
+                                        startActivity(addbackgroundinformationtosapproval);
+
+                                    }
+                                });
+
+                mUserDatabase.setValue(backgroundinfotobesent, new
+                        DatabaseReference.CompletionListener() {
+                            @Override
+                            public void onComplete(DatabaseError databaseError, DatabaseReference
+                                    databaseReference) {
+                                Toast.makeText(getApplicationContext(), "Add BackgroundInfo Code Information To User", Toast.LENGTH_SHORT).show();
+                                Intent userbackgroundinformationaddintent = new Intent(BackgroundInfo.this, SecurityInfo.class);
+                                userbackgroundinformationaddintent.putExtra("userID",  userID);
+                                userbackgroundinformationaddintent.putExtra("role", role);
+                                userbackgroundinformationaddintent.putExtra("approvalID", approvalID);
+                                startActivity(userbackgroundinformationaddintent);
+
+                            }
+                        });
+
+
+
+
+                        mProgress.dismiss();
+                    }
+
+                };
+
+            }
+        }
+
+
+
+
+
+
+
+
 
 
 

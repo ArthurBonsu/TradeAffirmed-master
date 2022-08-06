@@ -166,16 +166,7 @@ public class ClientVerificationAcceptancePage extends AppCompatActivity implemen
     String thenationalidstring;
     String thegpscodeinformationstring;
 
-    EditText NationalID = findViewById(R.id.NationalID);
-    Button        ChoseIDFile = findViewById(R.id.ChoseIDFile);
-    ImageView ImageViewOfID = findViewById(R.id.ImageViewOfID);
 
-    Button deletenationalidpicture = findViewById(R.id.deletenationalidpicture);
-    EditText       GpsCodeMapID= findViewById(R.id.GpsCodeMapID);
-    Button PickMap = findViewById(R.id.PickMap);
-    ImageView       ImageViewOfGPSCodeMap = findViewById(R.id.ImageViewOfGPSCodeMap);
-
-    Button       deleteselectedGPSCodeMapmap = findViewById(R.id.deleteselectedGPSCodeMapmap);
 
     private ImageButton mEventImage;
     private EditText mEventtitle;
@@ -339,7 +330,7 @@ public class ClientVerificationAcceptancePage extends AppCompatActivity implemen
                 mProgress = new ProgressDialog(this);
 
 
-                mAuth = FirebaseAuth.getInstance();
+
                 GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestIdToken(getString(R.string.default_web_client_id)).requestEmail().build();
                 if (mGoogleApiClient != null) {
                     mGoogleSignInClient = GoogleSignIn.getClient(this, gso);

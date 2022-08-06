@@ -12,13 +12,10 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseUser;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.media.Image;
 import android.net.Uri;
-import android.provider.MediaStore;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -32,7 +29,6 @@ import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -44,15 +40,11 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -66,30 +58,22 @@ import com.simcoder.bimbo.Admin.ViewSpecificUsersCart;
 import com.simcoder.bimbo.Admin.ViewYourPersonalProduct;
 import com.simcoder.bimbo.DriverMapActivity;
 import com.simcoder.bimbo.HistoryActivity;
-import com.simcoder.bimbo.Model.HashMaps;
-import com.simcoder.bimbo.Model.Products;
+import com.simcoder.bimbo.Model.SecurityInfoSubmitModel;
 import com.simcoder.bimbo.Model.Users;
 import com.simcoder.bimbo.R;
-import com.simcoder.bimbo.WorkActivities.CartActivity;
-import com.simcoder.bimbo.WorkActivities.HomeActivity;
-import com.simcoder.bimbo.WorkActivities.TraderProfile;
 import com.simcoder.bimbo.instagram.Home.InstagramHomeActivity;
 import com.squareup.picasso.Picasso;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.paperdb.Paper;
 
-public class ClientSecurityCheck2 extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, NavigationView.OnNavigationItemSelectedListener {
+public class SecurityInfo extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, NavigationView.OnNavigationItemSelectedListener {
     private static final int GALLERY_REQUEST2 = 2;
     private EditText   Nameinfo, Emailinfo, Phoneinfo;
 
@@ -123,6 +107,8 @@ public class ClientSecurityCheck2 extends AppCompatActivity implements GoogleApi
     RadioButton MaleRadioButton;
     String role;
     DatabaseReference mCustomerUserDatabase;
+    DatabaseReference mApprovalOrig;
+    DatabaseReference mApproval;
     RadioButton radioButtonforgender;
     String radiotext;
 
@@ -258,6 +244,9 @@ public class ClientSecurityCheck2 extends AppCompatActivity implements GoogleApi
     Button NationalIDDeleteButton;
 
     String approvalkey;
+    String approvalID;
+    String username;
+    String securityapprovalapprove;
 
 
 
@@ -266,7 +255,7 @@ public class ClientSecurityCheck2 extends AppCompatActivity implements GoogleApi
 
 
 
-    public ClientSecurityCheck2 () {
+    public SecurityInfo() {
         super();
     }
 
@@ -283,7 +272,10 @@ public class ClientSecurityCheck2 extends AppCompatActivity implements GoogleApi
         if (userIDintent.getExtras().getString("userID") != null) {
             userID = userIDintent.getExtras().getString("userID");
         }
-
+        Intent approvalIDIntent = getIntent();
+        if (approvalIDIntent.getExtras().getString("approvalID") != null) {
+            approvalID = approvalIDIntent.getExtras().getString("approvalID");
+        }
 
 
 
@@ -370,9 +362,15 @@ public class ClientSecurityCheck2 extends AppCompatActivity implements GoogleApi
                 // HAVE TO BUILD THE STORAGE
                 mStorage = FirebaseStorage.getInstance().getReference().child("user_images");
                 myuserfirebasedatabase = FirebaseDatabase.getInstance();
-                mCustomerUserDatabase = myuserfirebasedatabase.getReference().child("Users").child("Customers").child(userID);
 
+
+                mCustomerUserDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child(userID);
+                mApprovalOrig = FirebaseDatabase.getInstance().getReference().child("Approval");
+                approvalID =  mApprovalOrig.push().getKey();
+                mApproval = FirebaseDatabase.getInstance().getReference().child("Approval").child(approvalID);
                 mCustomerUserDatabase.keepSynced(true);
+                mApproval.keepSynced(true);
+
 /*
                 if (ProductsRef.push() != null) {
                     productRandomKey = ProductsRef.push().getKey();
@@ -390,7 +388,7 @@ public class ClientSecurityCheck2 extends AppCompatActivity implements GoogleApi
                 }
 
                 if (mGoogleApiClient != null) {
-                    mGoogleApiClient = new GoogleApiClient.Builder(this).enableAutoManage(ClientSecurityCheck2.this,
+                    mGoogleApiClient = new GoogleApiClient.Builder(this).enableAutoManage(SecurityInfo.this,
                             new GoogleApiClient.OnConnectionFailedListener() {
                                 @Override
                                 public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
@@ -407,8 +405,8 @@ public class ClientSecurityCheck2 extends AppCompatActivity implements GoogleApi
     protected synchronized void buildGoogleApiClient() {
         if (mGoogleApiClient != null) {
             mGoogleApiClient = new GoogleApiClient.Builder(this)
-                    .addConnectionCallbacks(ClientSecurityCheck2.this)
-                    .addOnConnectionFailedListener(ClientSecurityCheck2.this)
+                    .addConnectionCallbacks(SecurityInfo.this)
+                    .addOnConnectionFailedListener(SecurityInfo.this)
                     .addApi(LocationServices.API)
                     .build();
             mGoogleApiClient.connect();
@@ -456,10 +454,11 @@ public class ClientSecurityCheck2 extends AppCompatActivity implements GoogleApi
             movetonext.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(ClientSecurityCheck2.this, ClientVerificationPendingPage.class);
+                    Intent intent = new Intent(SecurityInfo.this, ClientVerificationPendingPage.class);
                     if (intent != null) {
                         intent.putExtra("role", role);
                         intent.putExtra("userID", userID);
+                        intent.putExtra("approvalID", approvalID);
                         startActivity(intent);
                         finish();
                     }
@@ -480,6 +479,7 @@ public class ClientSecurityCheck2 extends AppCompatActivity implements GoogleApi
 
 
         thegpscodeinformationstring= GPSCodeIdText.getText().toString();
+        securityapprovalapprove = "false";
 
         user = mAuth.getCurrentUser();
 
@@ -523,21 +523,16 @@ public class ClientSecurityCheck2 extends AppCompatActivity implements GoogleApi
 
 
 
-                        mCustomerUserDatabase = myuserfirebasedatabase.getReference().child("Users").child("Customers").child(userID);
-                        mApprovalDatabaseFull = myuserfirebasedatabase.getReference().child("Approval");
-                        mAdminTraderDatabase.keepSynced(true);
-                        approvalkey = mApprovalDatabaseFull.push().getKey();
-                        mApprovalDatabase.keepSynced(true);
                         // PICK UP THE SPECIAL PRODUCT INFO AND LOADING THEM INTO THE DATABASE
-                        Users userstobesent = new Users (gpscode,idimage);
+                        SecurityInfoSubmitModel securityinfosubmit = new SecurityInfoSubmitModel (gpscode,gpsimage,securityapprovalapprove);
 
-                        mAdminTraderDatabase.setValue(userstobesent, new
+                        mCustomerUserDatabase.setValue(securityinfosubmit, new
                                 DatabaseReference.CompletionListener() {
                                     @Override
                                     public void onComplete(DatabaseError databaseError, DatabaseReference
                                             databaseReference) {
                                         Toast.makeText(getApplicationContext(), "Add GPS Code Information Added", Toast.LENGTH_SHORT).show();
-                                        Intent addgpscodeinformationintent = new Intent(ClientSecurityCheck2.this, ClientSecurityCheck2.class);
+                                        Intent addgpscodeinformationintent = new Intent(SecurityInfo.this, SecurityInfo.class);
 
                                         startActivity(addgpscodeinformationintent);
 
@@ -549,14 +544,16 @@ public class ClientSecurityCheck2 extends AppCompatActivity implements GoogleApi
 
 
 
-                mApprovalDatabase.setValue(userstobesent, new
+                mApprovalDatabase.setValue(securityinfosubmit, new
                         DatabaseReference.CompletionListener() {
                             @Override
                             public void onComplete(DatabaseError databaseError, DatabaseReference
                                     databaseReference) {
                                 Toast.makeText(getApplicationContext(), "GPS Security Information Deleted, Reuplod Info", Toast.LENGTH_SHORT).show();
-                                Intent myapprovaldatabaseintent = new Intent(ClientSecurityCheck2.this, ClientSecurityCheck2.class);
-
+                                Intent myapprovaldatabaseintent = new Intent(SecurityInfo.this, ClientVerificationPendingPage.class);
+                                  myapprovaldatabaseintent.putExtra("userID", userID);
+                                myapprovaldatabaseintent.putExtra("role", role);
+                                myapprovaldatabaseintent.putExtra("approvalID", approvalID);
                                 startActivity(myapprovaldatabaseintent);
 
                             }
@@ -616,7 +613,7 @@ public class ClientSecurityCheck2 extends AppCompatActivity implements GoogleApi
                         final Uri downloadUrl = taskSnapshot.getUploadSessionUri();
 
                         userID = user.getUid();
-                        tradername = user.getDisplayName();
+                        username = user.getDisplayName();
                         gpsimage ="";
 
 
@@ -628,37 +625,39 @@ public class ClientSecurityCheck2 extends AppCompatActivity implements GoogleApi
 
 
 
-                        mCustomerUserDatabase = myuserfirebasedatabase.getReference().child("Users").child("Drivers").child(userID);
+                        mCustomerUserDatabase = myuserfirebasedatabase.getReference().child("Users").child("Customers").child(userID);
                         mApprovalDatabaseFull = myuserfirebasedatabase.getReference().child("Approval");
                         approvalkey = mApprovalDatabaseFull.push().getKey();
                         mApprovalDatabase = myuserfirebasedatabase.getReference().child("Approval").child(approvalkey);
                         mCustomerUserDatabase.keepSynced(true);
                         mApprovalDatabase.keepSynced(true);
                         // PICK UP THE SPECIAL PRODUCT INFO AND LOADING THEM INTO THE DATABASE
-                        Users userstobesent = new Users (gpscode,gpsimage);
+                        SecurityInfoSubmitModel securityinfotobesent = new SecurityInfoSubmitModel (gpscode,gpsimage, securityapprovalapprove);
 
-                        mCustomerUserDatabase.setValue(userstobesent, new
+                        mCustomerUserDatabase.setValue(securityinfotobesent, new
                             DatabaseReference.CompletionListener() {
                         @Override
                         public void onComplete(DatabaseError databaseError, DatabaseReference
                         databaseReference) {
                             Toast.makeText(getApplicationContext(), "GPS Security Information Deleted, Reupload Info", Toast.LENGTH_SHORT).show();
-                            Intent addadminproductactivity = new Intent(ClientSecurityCheck2.this, ClientSecurityCheck2.class);
+                            Intent securityinfotobesentapproval = new Intent(SecurityInfo.this, SecurityInfo.class);
 
-                            startActivity(addadminproductactivity);
+                            startActivity(securityinfotobesentapproval);
 
                         }
                     });
 
-                        mApprovalDatabase.setValue(userstobesent, new
+                        mApprovalDatabase.setValue(securityinfotobesent, new
                                 DatabaseReference.CompletionListener() {
                                     @Override
                                     public void onComplete(DatabaseError databaseError, DatabaseReference
                                             databaseReference) {
                                         Toast.makeText(getApplicationContext(), "GPS Security Information Deleted, Reuplod Info", Toast.LENGTH_SHORT).show();
-                                        Intent myapprovaldatabaseintent = new Intent(ClientSecurityCheck2.this, ClientSecurityCheck2.class);
-
-                                        startActivity(myapprovaldatabaseintent);
+                                        Intent securityapprovaldatabaseinfointent = new Intent(SecurityInfo.this, SecurityInfo.class);
+                                        securityapprovaldatabaseinfointent.putExtra("userID", userID);
+                                        securityapprovaldatabaseinfointent.putExtra("role", role);
+                                        securityapprovaldatabaseinfointent.putExtra("approvalID", approvalID);
+                                        startActivity(securityapprovaldatabaseinfointent);
 
                                     }
                                 });
@@ -810,7 +809,7 @@ public class ClientSecurityCheck2 extends AppCompatActivity implements GoogleApi
                         String userID = "";
 
                         userID = user.getUid();
-                        Intent intent = new Intent(ClientSecurityCheck2.this, AdminAllCustomers.class);
+                        Intent intent = new Intent(SecurityInfo.this, AdminAllCustomers.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", role);
@@ -826,7 +825,7 @@ public class ClientSecurityCheck2 extends AppCompatActivity implements GoogleApi
                         String userID = "";
                         userID = user.getUid();
 
-                        Intent intent = new Intent(ClientSecurityCheck2.this, AdminAllCustomers.class);
+                        Intent intent = new Intent(SecurityInfo.this, AdminAllCustomers.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", role);
@@ -847,7 +846,7 @@ public class ClientSecurityCheck2 extends AppCompatActivity implements GoogleApi
                         String userID = "";
 
                         userID = user.getUid();
-                        Intent intent = new Intent(ClientSecurityCheck2.this, AdminAddNewProductActivity.class);
+                        Intent intent = new Intent(SecurityInfo.this, AdminAddNewProductActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", role);
@@ -863,7 +862,7 @@ public class ClientSecurityCheck2 extends AppCompatActivity implements GoogleApi
                         String userID = "";
                         userID = user.getUid();
 
-                        Intent intent = new Intent(ClientSecurityCheck2.this, AdminAddNewProductActivity.class);
+                        Intent intent = new Intent(SecurityInfo.this, AdminAddNewProductActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", role);
@@ -884,7 +883,7 @@ public class ClientSecurityCheck2 extends AppCompatActivity implements GoogleApi
                         String userID = "";
 
                         userID = user.getUid();
-                        Intent intent = new Intent(ClientSecurityCheck2.this, ViewYourPersonalProduct.class);
+                        Intent intent = new Intent(SecurityInfo.this, ViewYourPersonalProduct.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", role);
@@ -900,7 +899,7 @@ public class ClientSecurityCheck2 extends AppCompatActivity implements GoogleApi
                         String userID = "";
                         userID = user.getUid();
 
-                        Intent intent = new Intent(ClientSecurityCheck2.this, ViewYourPersonalProduct.class);
+                        Intent intent = new Intent(SecurityInfo.this, ViewYourPersonalProduct.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", role);
@@ -921,7 +920,7 @@ public class ClientSecurityCheck2 extends AppCompatActivity implements GoogleApi
                         String userID = "";
 
                         userID = user.getUid();
-                        Intent intent = new Intent(ClientSecurityCheck2.this, ViewSpecificUsersCart.class);
+                        Intent intent = new Intent(SecurityInfo.this, ViewSpecificUsersCart.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", role);
@@ -937,7 +936,7 @@ public class ClientSecurityCheck2 extends AppCompatActivity implements GoogleApi
                         String userID = "";
                         userID = user.getUid();
 
-                        Intent intent = new Intent(ClientSecurityCheck2.this, ViewSpecificUsersCart.class);
+                        Intent intent = new Intent(SecurityInfo.this, ViewSpecificUsersCart.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", role);
@@ -958,7 +957,7 @@ public class ClientSecurityCheck2 extends AppCompatActivity implements GoogleApi
                         String userID = "";
 
                         userID = user.getUid();
-                        Intent intent = new Intent(ClientSecurityCheck2.this, ViewAllCarts.class);
+                        Intent intent = new Intent(SecurityInfo.this, ViewAllCarts.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", role);
@@ -974,7 +973,7 @@ public class ClientSecurityCheck2 extends AppCompatActivity implements GoogleApi
                         String userID = "";
                         userID = user.getUid();
 
-                        Intent intent = new Intent(ClientSecurityCheck2.this, ViewAllCarts.class);
+                        Intent intent = new Intent(SecurityInfo.this, ViewAllCarts.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", role);
@@ -994,7 +993,7 @@ public class ClientSecurityCheck2 extends AppCompatActivity implements GoogleApi
                         String userID = "";
 
                         userID = user.getUid();
-                        Intent intent = new Intent(ClientSecurityCheck2.this, AdminProductDetails.class);
+                        Intent intent = new Intent(SecurityInfo.this, AdminProductDetails.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", role);
@@ -1010,7 +1009,7 @@ public class ClientSecurityCheck2 extends AppCompatActivity implements GoogleApi
                         String userID = "";
                         userID = user.getUid();
 
-                        Intent intent = new Intent(ClientSecurityCheck2.this, AdminProductDetails.class);
+                        Intent intent = new Intent(SecurityInfo.this, AdminProductDetails.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", role);
@@ -1030,7 +1029,7 @@ public class ClientSecurityCheck2 extends AppCompatActivity implements GoogleApi
                         String userID = "";
 
                         userID = user.getUid();
-                        Intent intent = new Intent(ClientSecurityCheck2.this, AdminMaintainProductsActivity.class);
+                        Intent intent = new Intent(SecurityInfo.this, AdminMaintainProductsActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", role);
@@ -1046,7 +1045,7 @@ public class ClientSecurityCheck2 extends AppCompatActivity implements GoogleApi
                         String userID = "";
                         userID = user.getUid();
 
-                        Intent intent = new Intent(ClientSecurityCheck2.this, AdminMaintainProductsActivity.class);
+                        Intent intent = new Intent(SecurityInfo.this, AdminMaintainProductsActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", role);
@@ -1067,7 +1066,7 @@ public class ClientSecurityCheck2 extends AppCompatActivity implements GoogleApi
                         String userID = "";
 
                         userID = user.getUid();
-                        Intent intent = new Intent(ClientSecurityCheck2.this, AdminCategoryActivity.class);
+                        Intent intent = new Intent(SecurityInfo.this, AdminCategoryActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", role);
@@ -1083,7 +1082,7 @@ public class ClientSecurityCheck2 extends AppCompatActivity implements GoogleApi
                         String userID = "";
                         userID = user.getUid();
 
-                        Intent intent = new Intent(ClientSecurityCheck2.this, AdminCategoryActivity.class);
+                        Intent intent = new Intent(SecurityInfo.this, AdminCategoryActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", role);
@@ -1103,7 +1102,7 @@ public class ClientSecurityCheck2 extends AppCompatActivity implements GoogleApi
                         String userID = "";
 
                         userID = user.getUid();
-                        Intent intent = new Intent(ClientSecurityCheck2.this, AdminAllCustomers.class);
+                        Intent intent = new Intent(SecurityInfo.this, AdminAllCustomers.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", role);
@@ -1119,7 +1118,7 @@ public class ClientSecurityCheck2 extends AppCompatActivity implements GoogleApi
                         String userID = "";
                         userID = user.getUid();
 
-                        Intent intent = new Intent(ClientSecurityCheck2.this, AdminAllCustomers.class);
+                        Intent intent = new Intent(SecurityInfo.this, AdminAllCustomers.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", role);
@@ -1141,7 +1140,7 @@ public class ClientSecurityCheck2 extends AppCompatActivity implements GoogleApi
         if (id == R.id.viewmap) {
             if (!role.equals("Trader")) {
 
-                Intent intent = new Intent(ClientSecurityCheck2.this, com.simcoder.bimbo.CustomerMapActivity.class);
+                Intent intent = new Intent(SecurityInfo.this, com.simcoder.bimbo.CustomerMapActivity.class);
                 if (intent != null) {
                     intent.putExtra("roledhomeactivitytocustomermapactivity", role);
                     intent.putExtra("fromhomeactivitytocustomermapactivity", userID);
@@ -1150,7 +1149,7 @@ public class ClientSecurityCheck2 extends AppCompatActivity implements GoogleApi
                 }
             } else {
 
-                Intent intent = new Intent(ClientSecurityCheck2.this, DriverMapActivity.class);
+                Intent intent = new Intent(SecurityInfo.this, DriverMapActivity.class);
                 if (intent != null) {
                     intent.putExtra("rolefromhomeactivitytodrivermapactivity", role);
                     intent.putExtra("fromhomeactivitytodrivermapactivity", userID);
@@ -1166,7 +1165,7 @@ public class ClientSecurityCheck2 extends AppCompatActivity implements GoogleApi
         if (id == R.id.nav_social_media) {
             if (!role.equals("Trader")) {
 
-                Intent intent = new Intent(ClientSecurityCheck2.this, InstagramHomeActivity.class);
+                Intent intent = new Intent(SecurityInfo.this, InstagramHomeActivity.class);
                 if (intent != null) {
                     intent.putExtra("roledhomeactivitytocustomermapactivity", role);
                     intent.putExtra("fromhomeactivitytocustomermapactivity", userID);
@@ -1175,7 +1174,7 @@ public class ClientSecurityCheck2 extends AppCompatActivity implements GoogleApi
                 }
             } else {
 
-                Intent intent = new Intent(ClientSecurityCheck2.this, InstagramHomeActivity.class);
+                Intent intent = new Intent(SecurityInfo.this, InstagramHomeActivity.class);
                 if (intent != null) {
                     intent.putExtra("rolefromhomeactivitytodrivermapactivity", role);
                     intent.putExtra("fromhomeactivitytodrivermapactivity", userID);
@@ -1188,7 +1187,7 @@ public class ClientSecurityCheck2 extends AppCompatActivity implements GoogleApi
         }
         if (id == R.id.nav_cart) {
             if (!role.equals("Trader")) {
-                Intent intent = new Intent(ClientSecurityCheck2.this, CartActivity.class);
+                Intent intent = new Intent(SecurityInfo.this, CartActivity.class);
                 if (intent != null) {
                     startActivity(intent);
                 }
@@ -1199,7 +1198,7 @@ public class ClientSecurityCheck2 extends AppCompatActivity implements GoogleApi
 
         if (id == R.id.viewproducts) {
             if (!role.equals("Trader")) {
-                Intent intent = new Intent(ClientSecurityCheck2.this, HomeActivity.class);
+                Intent intent = new Intent(SecurityInfo.this, HomeActivity.class);
                 if (intent != null) {
                     startActivity(intent);
                 }
@@ -1209,7 +1208,7 @@ public class ClientSecurityCheck2 extends AppCompatActivity implements GoogleApi
         }
         if (id == R.id.nav_search) {
             if (!role.equals("Trader")) {
-                Intent intent = new Intent(ClientSecurityCheck2.this, SearchProductsActivity.class);
+                Intent intent = new Intent(SecurityInfo.this, SearchProductsActivity.class);
                 if (intent != null) {
                     startActivity(intent);
                 }
@@ -1222,7 +1221,7 @@ public class ClientSecurityCheck2 extends AppCompatActivity implements GoogleApi
             if (FirebaseAuth.getInstance() != null) {
                 FirebaseAuth.getInstance().signOut();
                 if (mGoogleApiClient != null) {
-                    mGoogleSignInClient.signOut().addOnCompleteListener(ClientSecurityCheck2.this,
+                    mGoogleSignInClient.signOut().addOnCompleteListener(SecurityInfo.this,
                             new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
@@ -1231,7 +1230,7 @@ public class ClientSecurityCheck2 extends AppCompatActivity implements GoogleApi
                             });
                 }
             }
-            Intent intent = new Intent(ClientSecurityCheck2.this, com.simcoder.bimbo.MainActivity.class);
+            Intent intent = new Intent(SecurityInfo.this, com.simcoder.bimbo.MainActivity.class);
             if (intent != null) {
                 startActivity(intent);
                 finish();
@@ -1240,7 +1239,7 @@ public class ClientSecurityCheck2 extends AppCompatActivity implements GoogleApi
 
         if (id == R.id.nav_settings) {
             if (!role.equals("Trader")) {
-                Intent intent = new Intent(ClientSecurityCheck2.this, com.simcoder.bimbo.WorkActivities.SettinsActivity.class);
+                Intent intent = new Intent(SecurityInfo.this, com.simcoder.bimbo.WorkActivities.SettinsActivity.class);
                 if (intent != null) {
                     startActivity(intent);
                 }
@@ -1249,7 +1248,7 @@ public class ClientSecurityCheck2 extends AppCompatActivity implements GoogleApi
         }
         if (id == R.id.nav_history) {
             if (!role.equals("Trader")) {
-                Intent intent = new Intent(ClientSecurityCheck2.this, HistoryActivity.class);
+                Intent intent = new Intent(SecurityInfo.this, HistoryActivity.class);
                 if (intent != null) {
                     startActivity(intent);
                 }
@@ -1267,7 +1266,7 @@ public class ClientSecurityCheck2 extends AppCompatActivity implements GoogleApi
                         String userID = "";
 
                         userID = user.getUid();
-                        Intent intent = new Intent(ClientSecurityCheck2.this, CustomerProfile.class);
+                        Intent intent = new Intent(SecurityInfo.this, CustomerProfile.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", role);
@@ -1283,7 +1282,7 @@ public class ClientSecurityCheck2 extends AppCompatActivity implements GoogleApi
                         String userID = "";
                         userID = user.getUid();
 
-                        Intent intent = new Intent(ClientSecurityCheck2.this, TraderProfile.class);
+                        Intent intent = new Intent(SecurityInfo.this, TraderProfile.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", role);
@@ -1301,7 +1300,7 @@ public class ClientSecurityCheck2 extends AppCompatActivity implements GoogleApi
                         String userID = "";
 
                         userID = user.getUid();
-                        Intent intent = new Intent(ClientSecurityCheck2.this, HomeActivity.class);
+                        Intent intent = new Intent(SecurityInfo.this, HomeActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", role);
@@ -1317,7 +1316,7 @@ public class ClientSecurityCheck2 extends AppCompatActivity implements GoogleApi
                         String userID = "";
                         userID = user.getUid();
 
-                        Intent intent = new Intent(ClientSecurityCheck2.this, AdminAllCustomers.class);
+                        Intent intent = new Intent(SecurityInfo.this, AdminAllCustomers.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", role);
@@ -1338,7 +1337,7 @@ public class ClientSecurityCheck2 extends AppCompatActivity implements GoogleApi
                         String userID = "";
 
                         userID = user.getUid();
-                        Intent intent = new Intent(ClientSecurityCheck2.this, HomeActivity.class);
+                        Intent intent = new Intent(SecurityInfo.this, HomeActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", role);
@@ -1354,7 +1353,7 @@ public class ClientSecurityCheck2 extends AppCompatActivity implements GoogleApi
                         String userID = "";
                         userID = user.getUid();
 
-                        Intent intent = new Intent(ClientSecurityCheck2.this, AdminAddNewProductActivity.class);
+                        Intent intent = new Intent(SecurityInfo.this, AdminAddNewProductActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", role);
@@ -1375,7 +1374,7 @@ public class ClientSecurityCheck2 extends AppCompatActivity implements GoogleApi
                         String userID = "";
 
                         userID = user.getUid();
-                        Intent intent = new Intent(ClientSecurityCheck2.this, HomeActivity.class);
+                        Intent intent = new Intent(SecurityInfo.this, HomeActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", role);
@@ -1391,7 +1390,7 @@ public class ClientSecurityCheck2 extends AppCompatActivity implements GoogleApi
                         String userID = "";
                         userID = user.getUid();
 
-                        Intent intent = new Intent(ClientSecurityCheck2.this, ViewYourPersonalProduct.class);
+                        Intent intent = new Intent(SecurityInfo.this, ViewYourPersonalProduct.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", role);
@@ -1412,7 +1411,7 @@ public class ClientSecurityCheck2 extends AppCompatActivity implements GoogleApi
                         String userID = "";
 
                         userID = user.getUid();
-                        Intent intent = new Intent(ClientSecurityCheck2.this, HomeActivity.class);
+                        Intent intent = new Intent(SecurityInfo.this, HomeActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", role);
@@ -1428,7 +1427,7 @@ public class ClientSecurityCheck2 extends AppCompatActivity implements GoogleApi
                         String userID = "";
                         userID = user.getUid();
 
-                        Intent intent = new Intent(ClientSecurityCheck2.this, ViewSpecificUsersCart.class);
+                        Intent intent = new Intent(SecurityInfo.this, ViewSpecificUsersCart.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", role);
@@ -1449,7 +1448,7 @@ public class ClientSecurityCheck2 extends AppCompatActivity implements GoogleApi
                         String userID = "";
 
                         userID = user.getUid();
-                        Intent intent = new Intent(ClientSecurityCheck2.this, HomeActivity.class);
+                        Intent intent = new Intent(SecurityInfo.this, HomeActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", role);
@@ -1465,7 +1464,7 @@ public class ClientSecurityCheck2 extends AppCompatActivity implements GoogleApi
                         String userID = "";
                         userID = user.getUid();
 
-                        Intent intent = new Intent(ClientSecurityCheck2.this, ViewAllCarts.class);
+                        Intent intent = new Intent(SecurityInfo.this, ViewAllCarts.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", role);
@@ -1485,7 +1484,7 @@ public class ClientSecurityCheck2 extends AppCompatActivity implements GoogleApi
                         String userID = "";
 
                         userID = user.getUid();
-                        Intent intent = new Intent(ClientSecurityCheck2.this, HomeActivity.class);
+                        Intent intent = new Intent(SecurityInfo.this, HomeActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", role);
@@ -1501,7 +1500,7 @@ public class ClientSecurityCheck2 extends AppCompatActivity implements GoogleApi
                         String userID = "";
                         userID = user.getUid();
 
-                        Intent intent = new Intent(ClientSecurityCheck2.this, AdminProductDetails.class);
+                        Intent intent = new Intent(SecurityInfo.this, AdminProductDetails.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", role);
@@ -1521,7 +1520,7 @@ public class ClientSecurityCheck2 extends AppCompatActivity implements GoogleApi
                         String userID = "";
 
                         userID = user.getUid();
-                        Intent intent = new Intent(ClientSecurityCheck2.this, HomeActivity.class);
+                        Intent intent = new Intent(SecurityInfo.this, HomeActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", role);
@@ -1537,7 +1536,7 @@ public class ClientSecurityCheck2 extends AppCompatActivity implements GoogleApi
                         String userID = "";
                         userID = user.getUid();
 
-                        Intent intent = new Intent(ClientSecurityCheck2.this, AdminMaintainProductsActivity.class);
+                        Intent intent = new Intent(SecurityInfo.this, AdminMaintainProductsActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", role);
@@ -1558,7 +1557,7 @@ public class ClientSecurityCheck2 extends AppCompatActivity implements GoogleApi
                         String userID = "";
 
                         userID = user.getUid();
-                        Intent intent = new Intent(ClientSecurityCheck2.this, HomeActivity.class);
+                        Intent intent = new Intent(SecurityInfo.this, HomeActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", role);
@@ -1574,7 +1573,7 @@ public class ClientSecurityCheck2 extends AppCompatActivity implements GoogleApi
                         String userID = "";
                         userID = user.getUid();
 
-                        Intent intent = new Intent(ClientSecurityCheck2.this, AdminCategoryActivity.class);
+                        Intent intent = new Intent(SecurityInfo.this, AdminCategoryActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", role);
@@ -1594,7 +1593,7 @@ public class ClientSecurityCheck2 extends AppCompatActivity implements GoogleApi
                         String userID = "";
 
                         userID = user.getUid();
-                        Intent intent = new Intent(ClientSecurityCheck2.this, HomeActivity.class);
+                        Intent intent = new Intent(SecurityInfo.this, HomeActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", role);
@@ -1610,7 +1609,7 @@ public class ClientSecurityCheck2 extends AppCompatActivity implements GoogleApi
                         String userID = "";
                         userID = user.getUid();
 
-                        Intent intent = new Intent(ClientSecurityCheck2.this, AdminAllCustomers.class);
+                        Intent intent = new Intent(SecurityInfo.this, AdminAllCustomers.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", userID);
                             intent.putExtra("role", role);

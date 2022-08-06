@@ -4,6 +4,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseUser;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.media.Image;
@@ -36,12 +37,16 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.simcoder.bimbo.Model.BackgroundInfoSubmitModel;
 import com.simcoder.bimbo.Model.HashMaps;
+import com.simcoder.bimbo.Model.PersonalInfoSubmitModel;
 import com.simcoder.bimbo.R;
 
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -55,7 +60,8 @@ public class PersonalInfo extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
     private DatabaseReference mUserDatabase;
-
+    private DatabaseReference mApproval;
+    private DatabaseReference mApprovalOrig;
     private String userID;
     private String mName;
     private String mPhone;
@@ -79,7 +85,7 @@ public class PersonalInfo extends AppCompatActivity {
     String role;
     String traderID;
     RadioButton radioButtonforgender;
-    String radiotext;
+    String gendertext;
 
     String thenameinfostring;
     String theemailinfostring;
@@ -104,7 +110,10 @@ public class PersonalInfo extends AppCompatActivity {
     ImageButton       services;
     ImageButton  expectedshipping;
     ImageButton       adminprofile;
-
+    String time, date;
+    String approvalID;
+    String personalinfoapprove;
+    ProgressDialog mProgress;
 
 
     @Override
@@ -162,6 +171,12 @@ public class PersonalInfo extends AppCompatActivity {
 
 
             mUserDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child(userID);
+             mApprovalOrig = FirebaseDatabase.getInstance().getReference().child("Approval");
+            approvalID =  mApprovalOrig.push().getKey();
+            mApproval = FirebaseDatabase.getInstance().getReference().child("Approval").child(approvalID);
+            mUserDatabase.keepSynced(true);
+            mApproval.keepSynced(true);
+
             getUserInfo();
             // SET THE AGE ADAPTER
             ArrayAdapter<String> myAdapter = new ArrayAdapter<String>(PersonalInfo.this,
@@ -225,6 +240,7 @@ public class PersonalInfo extends AppCompatActivity {
                         if (intent != null) {
                             intent.putExtra("role", role);
                             intent.putExtra("userID", userID);
+                            intent.putExtra("approvalID", approvalID);
                             startActivity(intent);
                             finish();
                         }
@@ -271,41 +287,99 @@ public class PersonalInfo extends AppCompatActivity {
     //AFTER FIRST TIME OF CREATING INFO HE CAN HAVE NO ABILITY TO ALTER UNLESS PROVIDED BY ADMINISTRATOR
     // PERSONAL INFORMATION COULD BE CROSS-CHECKED FOR SECURITY
     // IT IS THE PAYMENT THAT MAKES IT DECENTRALIZED
-
+// Post Info
     public void saveUserInformation() {
         thenameinfostring = NameofPerson.getText().toString();
         theemailinfostring = PersonEmail.getText().toString();
         thephoneinfostring = PhoneNumberOfPerson.getText().toString();
+        // GET THE INFORMATION FROM THE TEXT BOX
 
-        if (thenameinfostring != null && theemailinfostring != null && thephoneinfostring != null) {
-
-            int selectedId = mRadioGroup.getCheckedRadioButtonId();
-
-            // find the radiobutton by returned id
-            radioButtonforgender = (RadioButton) findViewById(selectedId);
-            radiotext = radioButtonforgender.getText().toString();
-            Toast.makeText(PersonalInfo.this,
-                    radioButtonforgender.getText(), Toast.LENGTH_SHORT).show();
+        personalinfoapprove = "false";
 
 
 
-            if (radioButtonforgender != null) {
-                if (radioButtonforgender.getText() == null) {
-                    return;
-                }
 
-                //WE WILL USE FULL NAME TO STORE VALUE TO PREVENT USERNAME
-                if (radiotext != null) {
-                    Map userInfo = new HashMap();
-                    userInfo.put("fullname", thenameinfostring);
-                    userInfo.put("phone", thephoneinfostring);
-                    userInfo.put("email", theemailinfostring);
-                    userInfo.put("gender", radiotext);
-                    userInfo.put("age", agetext);
-                    userInfo.put("country",countrytext);
-                    mUserDatabase.updateChildren(userInfo);
 
-                }}}}
+        // GET DATES FOR PRODUCTS
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat currentDate = new SimpleDateFormat("MMM dd, yyyy");
+
+        if (currentDate != null) {
+            date = currentDate.format(calendar.getTime()).toString();
+
+            SimpleDateFormat currentTime = new SimpleDateFormat("HH:mm:ss a");
+            if (currentTime != null) {
+                time = currentTime.format(calendar.getTime());
+
+            }
+
+
+            if (thenameinfostring != null && theemailinfostring != null && thephoneinfostring != null) {
+
+                int selectedId = mRadioGroup.getCheckedRadioButtonId();
+
+                // find the radiobutton by returned id
+                radioButtonforgender = (RadioButton) findViewById(selectedId);
+                gendertext = radioButtonforgender.getText().toString();
+                Toast.makeText(PersonalInfo.this,
+                        radioButtonforgender.getText(), Toast.LENGTH_SHORT).show();
+
+
+
+                if (radioButtonforgender != null) {
+                    if (radioButtonforgender.getText() == null) {
+                        return;
+                    }
+                mProgress.setMessage("Adding your Personal Information  To UserInfo And ApprovalInfo");
+
+                mProgress.show();
+
+
+
+
+                // PICK UP THE SPECIAL PRODUCT INFO AND LOADING THEM INTO THE DATABASE
+                PersonalInfoSubmitModel personalinfotobesent = new PersonalInfoSubmitModel( userID, thenameinfostring, thephoneinfostring, theemailinfostring, gendertext, agetext,countrytext,personalinfoapprove);
+
+                mApproval.setValue(personalinfotobesent, new
+                        DatabaseReference.CompletionListener() {
+                            @Override
+                            public void onComplete(DatabaseError databaseError, DatabaseReference
+                                    databaseReference) {
+                                Toast.makeText(getApplicationContext(), "Add PersonalInfo Code Information To Approval", Toast.LENGTH_SHORT).show();
+                                Intent personalinfoapprovaltobesenttoapproval = new Intent(PersonalInfo.this, PersonalInfo.class);
+
+                                startActivity(personalinfoapprovaltobesenttoapproval);
+
+                            }
+                        });
+
+                mUserDatabase.setValue(personalinfotobesent, new
+                        DatabaseReference.CompletionListener() {
+                            @Override
+                            public void onComplete(DatabaseError databaseError, DatabaseReference
+                                    databaseReference) {
+                                Toast.makeText(getApplicationContext(), "Add PersonalInfo Code Information To User", Toast.LENGTH_SHORT).show();
+                                Intent userbackgroundinformationtouser = new Intent(PersonalInfo.this, ResidentialInfo.class);
+                                userbackgroundinformationtouser.putExtra("userID", userID);
+                                userbackgroundinformationtouser.putExtra("approvalID", approvalID);
+                                userbackgroundinformationtouser.putExtra("role", role);
+                                startActivity(userbackgroundinformationtouser);
+
+                            }
+                        });
+
+
+
+
+                mProgress.dismiss();
+            }
+
+        };
+
+    }
+
+
+        }
 
 
 
