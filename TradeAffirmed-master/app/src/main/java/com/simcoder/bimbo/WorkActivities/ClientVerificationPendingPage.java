@@ -166,15 +166,7 @@ public class ClientVerificationPendingPage extends AppCompatActivity implements 
     String thenationalidstring;
     String thegpscodeinformationstring;
 
-    EditText NationalID = findViewById(R.id.NationalID);
-    Button        ChoseIDFile = findViewById(R.id.ChoseIDFile);
-    ImageView ImageViewOfID = findViewById(R.id.ImageViewOfID);
 
-    Button deletenationalidpicture = findViewById(R.id.deletenationalidpicture);
-    EditText       GpsCodeMapID= findViewById(R.id.GpsCodeMapID);
-    Button PickMap = findViewById(R.id.PickMap);
-    ImageView       ImageViewOfGPSCodeMap = findViewById(R.id.ImageViewOfGPSCodeMap);
-    Button       deleteselectedGPSCodeMapmap = findViewById(R.id.deleteselectedGPSCodeMapmap);
 
     private ImageButton mEventImage;
     private EditText mEventtitle;
@@ -247,6 +239,7 @@ public class ClientVerificationPendingPage extends AppCompatActivity implements 
     String gpscode;
     String gpsimage;
     Button movetohome;
+    String approvalID;
 
     public ClientVerificationPendingPage() {
         super();
@@ -266,7 +259,10 @@ public class ClientVerificationPendingPage extends AppCompatActivity implements 
             userID = userIDintent.getExtras().getString("userID");
         }
 
-
+        Intent approvalIDIntent = getIntent();
+        if (approvalIDIntent.getExtras().getString("approvalID") != null) {
+            approvalID = approvalIDIntent.getExtras().getString("approvalID");
+        }
 
         movetohome = findViewById(R.id.movetohome);
         mAuth = FirebaseAuth.getInstance();
@@ -385,6 +381,7 @@ public class ClientVerificationPendingPage extends AppCompatActivity implements 
                     if (intent != null) {
                         intent.putExtra("role", role);
                         intent.putExtra("userID", userID);
+
                         startActivity(intent);
                         finish();
                     }

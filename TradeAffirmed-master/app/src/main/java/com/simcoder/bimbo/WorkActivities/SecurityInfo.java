@@ -247,6 +247,8 @@ public class SecurityInfo extends AppCompatActivity implements GoogleApiClient.C
     String approvalID;
     String username;
     String securityapprovalapprove;
+    String userimage;
+    String status;
 
 
 
@@ -454,6 +456,7 @@ public class SecurityInfo extends AppCompatActivity implements GoogleApiClient.C
             movetonext.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    // if pending == true or if registration == true
                     Intent intent = new Intent(SecurityInfo.this, ClientVerificationPendingPage.class);
                     if (intent != null) {
                         intent.putExtra("role", role);
@@ -479,7 +482,7 @@ public class SecurityInfo extends AppCompatActivity implements GoogleApiClient.C
 
 
         thegpscodeinformationstring= GPSCodeIdText.getText().toString();
-        securityapprovalapprove = "false";
+
 
         user = mAuth.getCurrentUser();
 
@@ -515,17 +518,17 @@ public class SecurityInfo extends AppCompatActivity implements GoogleApiClient.C
                         final Uri downloadUrl = taskSnapshot.getUploadSessionUri();
 
                         userID = user.getUid();
-                        tradername = user.getDisplayName();
+                       username = user.getDisplayName();
                         gpsimage = downloadUrl.toString();
 
                         Uri myphoto = user.getPhotoUrl();
-                        traderimage = myphoto.toString();
-
-
+                       userimage = myphoto.toString();
+                        status = "pending";
+                        securityapprovalapprove = "false";
 
                         // PICK UP THE SPECIAL PRODUCT INFO AND LOADING THEM INTO THE DATABASE
-                        SecurityInfoSubmitModel securityinfosubmit = new SecurityInfoSubmitModel (gpscode,gpsimage,securityapprovalapprove);
-
+                        SecurityInfoSubmitModel securityinfosubmit = new SecurityInfoSubmitModel (gpscode,gpsimage,approvalID, securityapprovalapprove, status);
+                         /*
                         mCustomerUserDatabase.setValue(securityinfosubmit, new
                                 DatabaseReference.CompletionListener() {
                                     @Override
@@ -538,13 +541,8 @@ public class SecurityInfo extends AppCompatActivity implements GoogleApiClient.C
 
                                     }
                                 });
-
-
-
-
-
-
-                mApprovalDatabase.setValue(securityinfosubmit, new
+*/
+                        mApprovalDatabase.setValue(securityinfosubmit, new
                         DatabaseReference.CompletionListener() {
                             @Override
                             public void onComplete(DatabaseError databaseError, DatabaseReference
@@ -615,6 +613,8 @@ public class SecurityInfo extends AppCompatActivity implements GoogleApiClient.C
                         userID = user.getUid();
                         username = user.getDisplayName();
                         gpsimage ="";
+                        status ="";
+                        securityapprovalapprove= "";
 
 
 
@@ -625,15 +625,14 @@ public class SecurityInfo extends AppCompatActivity implements GoogleApiClient.C
 
 
 
-                        mCustomerUserDatabase = myuserfirebasedatabase.getReference().child("Users").child("Customers").child(userID);
+
                         mApprovalDatabaseFull = myuserfirebasedatabase.getReference().child("Approval");
-                        approvalkey = mApprovalDatabaseFull.push().getKey();
-                        mApprovalDatabase = myuserfirebasedatabase.getReference().child("Approval").child(approvalkey);
-                        mCustomerUserDatabase.keepSynced(true);
+
+                        mApprovalDatabase = myuserfirebasedatabase.getReference().child("Approval").child(approvalID);
+
                         mApprovalDatabase.keepSynced(true);
                         // PICK UP THE SPECIAL PRODUCT INFO AND LOADING THEM INTO THE DATABASE
-                        SecurityInfoSubmitModel securityinfotobesent = new SecurityInfoSubmitModel (gpscode,gpsimage, securityapprovalapprove);
-
+                        /*
                         mCustomerUserDatabase.setValue(securityinfotobesent, new
                             DatabaseReference.CompletionListener() {
                         @Override
@@ -646,6 +645,9 @@ public class SecurityInfo extends AppCompatActivity implements GoogleApiClient.C
 
                         }
                     });
+*/
+
+                        SecurityInfoSubmitModel securityinfotobesent = new SecurityInfoSubmitModel (gpscode,gpsimage,approvalID, securityapprovalapprove, status);
 
                         mApprovalDatabase.setValue(securityinfotobesent, new
                                 DatabaseReference.CompletionListener() {

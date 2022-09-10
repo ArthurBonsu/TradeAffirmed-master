@@ -171,7 +171,7 @@ public class PersonalInfo extends AppCompatActivity {
 
 
             mUserDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child(userID);
-             mApprovalOrig = FirebaseDatabase.getInstance().getReference().child("Approval");
+            mApprovalOrig = FirebaseDatabase.getInstance().getReference().child("Approval");
             approvalID =  mApprovalOrig.push().getKey();
             mApproval = FirebaseDatabase.getInstance().getReference().child("Approval").child(approvalID);
             mUserDatabase.keepSynced(true);
@@ -330,12 +330,14 @@ public class PersonalInfo extends AppCompatActivity {
                     if (radioButtonforgender.getText() == null) {
                         return;
                     }
-                mProgress.setMessage("Adding your Personal Information  To UserInfo And ApprovalInfo");
+                mProgress.setMessage("Setting your information provided");
 
                 mProgress.show();
 
 
+                    mApproval = FirebaseDatabase.getInstance().getReference().child("Approval").child(approvalID);
 
+                    mApproval.keepSynced(true);
 
                 // PICK UP THE SPECIAL PRODUCT INFO AND LOADING THEM INTO THE DATABASE
                 PersonalInfoSubmitModel personalinfotobesent = new PersonalInfoSubmitModel( userID, thenameinfostring, thephoneinfostring, theemailinfostring, gendertext, agetext,countrytext,personalinfoapprove);
@@ -347,12 +349,12 @@ public class PersonalInfo extends AppCompatActivity {
                                     databaseReference) {
                                 Toast.makeText(getApplicationContext(), "Add PersonalInfo Code Information To Approval", Toast.LENGTH_SHORT).show();
                                 Intent personalinfoapprovaltobesenttoapproval = new Intent(PersonalInfo.this, PersonalInfo.class);
-
+                                 personalinfoapprovaltobesenttoapproval.putExtra("approvalID", approvalID);
                                 startActivity(personalinfoapprovaltobesenttoapproval);
 
                             }
                         });
-
+                  /*
                 mUserDatabase.setValue(personalinfotobesent, new
                         DatabaseReference.CompletionListener() {
                             @Override
@@ -367,8 +369,7 @@ public class PersonalInfo extends AppCompatActivity {
 
                             }
                         });
-
-
+*/
 
 
                 mProgress.dismiss();

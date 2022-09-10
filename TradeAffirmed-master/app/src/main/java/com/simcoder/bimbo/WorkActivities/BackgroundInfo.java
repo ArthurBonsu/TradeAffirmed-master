@@ -260,7 +260,7 @@ public class BackgroundInfo extends AppCompatActivity {
                     movetonext.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            Intent intent = new Intent(BackgroundInfo.this, ClientSecurityCheck.class);
+                            Intent intent = new Intent(BackgroundInfo.this, SecurityInfo.class);
                             if (intent != null) {
                                 intent.putExtra("role", role);
                                 intent.putExtra("userID", userID);
@@ -337,6 +337,7 @@ public class BackgroundInfo extends AppCompatActivity {
                                     }
                                 });
 
+                /*
                 mUserDatabase.setValue(backgroundinfotobesent, new
                         DatabaseReference.CompletionListener() {
                             @Override
@@ -351,7 +352,7 @@ public class BackgroundInfo extends AppCompatActivity {
 
                             }
                         });
-
+*/
 
 
 

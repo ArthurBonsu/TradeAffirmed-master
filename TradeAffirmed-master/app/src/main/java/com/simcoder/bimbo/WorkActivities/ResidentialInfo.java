@@ -295,7 +295,7 @@ public class ResidentialInfo extends AppCompatActivity {
             if (themailingaddressstring != null && thegpscodestring != null && thestreetaddressstring != null) {
 
 
-                    mProgress.setMessage("Adding your Residence Information  To UserInfo And ApprovalInfo");
+                    mProgress.setMessage("Sending Residence Information To Approval ");
 
                     mProgress.show();
 
@@ -317,7 +317,7 @@ public class ResidentialInfo extends AppCompatActivity {
 
                                 }
                             });
-
+/*
                     mUserDatabase.setValue(residentialinfotobesent, new
                             DatabaseReference.CompletionListener() {
                                 @Override
@@ -333,7 +333,7 @@ public class ResidentialInfo extends AppCompatActivity {
                                 }
                             });
 
-
+*/
 
 
                     mProgress.dismiss();
