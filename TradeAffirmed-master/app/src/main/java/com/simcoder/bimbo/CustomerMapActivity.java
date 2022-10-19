@@ -109,7 +109,8 @@ import static com.simcoder.bimbo.Model.Constants.ERROR_DIALOG_REQUEST;
 import static com.simcoder.bimbo.Model.Constants.PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION;
 import static com.simcoder.bimbo.Model.Constants.PERMISSIONS_REQUEST_ENABLE_GPS;
 
-public class CustomerMapActivity extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener, NavigationView.OnNavigationItemSelectedListener, GoogleMap.OnMarkerClickListener, GoogleMap.OnMarkerDragListener {
+public class
+CustomerMapActivity extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener, NavigationView.OnNavigationItemSelectedListener, GoogleMap.OnMarkerClickListener, GoogleMap.OnMarkerDragListener {
     // THERE HAS TO BE A SEARCH BOX TO QUERY FROM PRODUCT TABLE
     private GoogleMap mMap;
     GoogleApiClient mGoogleApiClient;

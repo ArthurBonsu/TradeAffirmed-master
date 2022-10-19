@@ -1,8 +1,17 @@
 package com.simcoder.bimbo.Approver;
-import android.app.ProgressDialog;
+
+import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -11,31 +20,29 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.TextView;
-
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.firebase.ui.database.SnapshotParser;
+import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.storage.StorageReference;
+import com.google.firebase.database.Query;
+import com.rey.material.widget.ImageView;
 import com.simcoder.bimbo.Admin.AdminAddNewProductActivityII;
 import com.simcoder.bimbo.Admin.AdminAllCustomers;
 import com.simcoder.bimbo.Admin.AdminAllOrderHistory;
@@ -53,68 +60,43 @@ import com.simcoder.bimbo.Admin.ViewAllCarts;
 import com.simcoder.bimbo.Admin.ViewAllCustomers;
 import com.simcoder.bimbo.DriverMapActivity;
 import com.simcoder.bimbo.HistoryActivity;
+import com.simcoder.bimbo.Interface.ItemClickListner;
+import com.simcoder.bimbo.Model.PersonalInfoSubmitModel;
 import com.simcoder.bimbo.R;
-
 import com.simcoder.bimbo.WorkActivities.CartActivity;
 import com.simcoder.bimbo.WorkActivities.TraderProfile;
 import com.simcoder.bimbo.instagram.Home.InstagramHomeActivity;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.paperdb.Paper;
 
-/**
- * Created by pee on 8/5/2016.
- */
+public  class PersonalCandidatesApprovedForTraders extends AppCompatActivity
+        implements NavigationView.OnNavigationItemSelectedListener {
+    DatabaseReference ProductsRef;
+    private DatabaseReference Userdetails;
+    private DatabaseReference ProductsRefwithproduct;
+    private  DatabaseReference UsersRef;
+    private RecyclerView recyclerView;
+    RecyclerView.LayoutManager layoutManager;
 
-public class ApproveHome extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, NavigationView.OnNavigationItemSelectedListener {
-    private static final int GALLERY_REQUEST2 = 2;
-    /**
-     * ATTENTION: This was auto-generated to implement the App Indexing API.
-     * See https://g.co/AppIndexing/AndroidStudio for more information.
-     */
-    private ImageButton mEventImage;
-    private EditText mEventtitle;
-    private EditText mEventDescription;
-    private EditText mEventDate;
-
-    String mPostKey;
-    String churchkey;
-    private Button msubmitButton;
-    private Uri mImageUri = null;
-    private static final int GALLERY_REQUEST = 1;
-    private StorageReference mStorage;
-    private DatabaseReference mDatabase;
-    private DatabaseReference mDatabaseCHURCHCHOSEN;
-    private ProgressDialog mProgress;
-    private FirebaseAuth Auth;
-    private FirebaseUser mCurrentUser;
-    private DatabaseReference mDatabaseUser;
-
-    private String CategoryName, Description, Price, Pname, saveCurrentDate, saveCurrentTime;
-    private Button AddNewProductButton;
-    private ImageView InputProductImage;
-    private EditText InputProductName, InputProductDescription, InputProductPrice;
-    private static final int GalleryPick = 1;
-    private Uri ImageUri;
-    private String productRandomKey, downloadImageUrl;
-    private StorageReference ProductImagesRef;
-    private DatabaseReference ProductsRef;
-    private DatabaseReference ProductsTraderRef;
-    private ProgressDialog loadingBar;
+    DatabaseReference AllOrderDatabaseRef;
+    DatabaseReference FollowerDatabaseReference;
+    String productkey;
+    String traderkeyhere;
+    private String role = "";
+    String traderID = "";
     private static final int RC_SIGN_IN = 1;
     private FirebaseAuth.AuthStateListener firebaseAuthListener;
-    String traderID;
-    String role;
-    String traderkeryhere;
-    FirebaseUser user;
-    Uri ImageStore;
-    Intent intent;
-    String date;
-    String time;
-    String userid;
-    String productkey;
-    String mytraderimage;
+    String ProductID;
+    FirebaseDatabase myfirebaseDatabase;
+    FirebaseDatabase FollowerDatabase;
+
+    public PersonalCandidatesApprovedForTradersViewHolder holders;
+
+    public FirebaseRecyclerAdapter feedadapter;
 
     //AUTHENTICATORS
 
@@ -124,76 +106,137 @@ public class ApproveHome extends AppCompatActivity implements GoogleApiClient.Co
     private FirebaseAuth mAuth;
     private GoogleSignInClient mGoogleSignInClient;
 
-    ImageView imagetobesetto;
-    ImageButton setimagebutton;
-    ImageButton AddimageButon;
 
-    FirebaseDatabase productsfirebasedatabase;
-    String titleval;
-    String descval;
-    String  price;
-    String tradername;
-    String myphotoimage;
-    String traderid;
-    String pimage;
-    String tid;
-    String pname;
-    String  desc;
-    String pid;
+    TextView allcustomersname;
+    TextView allcustomersphonenumber;
+    TextView allcustomersjob;
+    ImageView allcustomersimage;
+    String traderkey;
+    String key;
+    String tradename;
     String traderimage;
+    FirebaseUser user;
 
-    ImageView theapproverhomepic;
-    TextView approvername;
-    TextView pendingapprovals;
-    Button backoftheprofile;
-    Button nextoftheprofile;
+
+    String categoryname, date, desc, discount, time, pid, pimage, pname, price, image, name, size, tradername, tid;
+    String thetraderimage;
+    String address;
+    String amount;
+    String city;
+    String delivered;
+    String distance;
+    String uid;
+    String mode;
+
+    String number;
+    String phone;
+    String quantity;
+    String shippingcost;
+    String state;
+    String thecustomersjob;
+    String orderkey;
+
+    Getmyfollowings getmyfollowingsagain;
+    String userkey;
+    TextView  orderid;
+    TextView customername;
+    TextView thetradername;
+    TextView orderedtime;
+    TextView ordereddate;
+    String newornot;
+    String   aid;
+    String  approvername;
+    String approvalID;
+    String userID;
+    ImageView personalimageofapprovedperson;
+    TextView  textboxforapprovedpersonname;
+    TextView theUIDtextbox;
+    TextView       thestatustextbox;
+    Button backtopreviouspage;
+    Button      nextallcandidates;
+    String  email,gender, age, country, personalinfoapprovestatus;
+/*
+    addnewproducthere
+            allproductshere
+    allproductspurchased
+            viewallcustomershere
+    tradersfollowing
+            Maintainnewordershere
+    AdminNewOrders
+            allcustomersincart
+    allcustomersserved
+            allorders
+  */
+
+    TextView    theuserstatus;
+    ImageView   theapproverhomepic;
+    TextView   theuiditself;
+    TextView theapprovername;
+    Button   theapprovalpendingstatusdetails;
+    Button   nextoftheprofile;
+    Button  backoftheprofile;
     String approverID;
-    Button viewtheprofiletag;
+    String  status, approverimage;
 
-    public ApproveHome() {
-        super();
-    }
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.approverhome);
+        setContentView(
+                (R.layout.activityhomeforadmin));
 
-
-        // KEYS PASSED IN FROM ADMINCATEGORY
         Intent roleintent = getIntent();
-
         if (roleintent.getExtras().getString("role") != null) {
             role = roleintent.getExtras().getString("role");
         }
-        Intent fromaddadmincategorytrader = getIntent();
-        if (fromaddadmincategorytrader.getExtras().getString("approverID") != null){
-            approverID = fromaddadmincategorytrader.getExtras().getString("approverID");
+
+        Intent approverIDintent = getIntent();
+        if (approverIDintent.getExtras().getString("approverID") != null) {
+            approverID = approverIDintent.getExtras().getString("approverID");
+        }
+        Intent userIDIntent = getIntent();
+        if (userIDIntent.getExtras().getString("userID") != null) {
+            userID = userIDIntent.getExtras().getString("userID");
         }
 
 
-               theapproverhomepic = (ImageView) findViewById(R.id.theapproverhomepic);
-        approvername = (TextView) findViewById(R.id.approvername);
-        viewtheprofiletag = (Button)findViewById(R.id.viewtheprofiletag);
-        pendingapprovals = (TextView) findViewById(R.id.pendingapprovals);
-        backoftheprofile = (Button) findViewById(R.id.backoftheprofile);
-        nextoftheprofile = (Button) findViewById(R.id.nextoftheprofile);
 
-
-        mAuth = FirebaseAuth.getInstance();
-        mCurrentUser = mAuth.getCurrentUser();
-
-
-        user = mAuth.getCurrentUser();
-        if (user != null) {
-            approverID = "";
-            approverID = user.getUid();
+        Intent approvalIDintent = getIntent();
+        if (approvalIDintent.getExtras().getString("approvalID") != null) {
+            approvalID = approvalIDintent.getExtras().getString("approvalID");
         }
+
+
+
+        recyclerView = findViewById(R.id.recycler_menu);
+
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        layoutManager.setReverseLayout(true);
+        layoutManager.setStackFromEnd(true);
+        if (recyclerView != null) {
+            recyclerView.setLayoutManager(layoutManager);
+        }
+     /*  if (recyclerView != null) {
+            recyclerView.setHasFixedSize(true);
+
+        }
+*/
+        personalimageofapprovedperson = (ImageView)findViewById(R.id.personalimageofapprovedperson);
+        textboxforapprovedpersonname = (TextView)findViewById(R.id.textboxforapprovedpersonname);
+        theUIDtextbox = (TextView)findViewById(R.id.theUIDtextbox);
+        thestatustextbox = (TextView)findViewById(R.id.thestatustextbox);
+
+        backtopreviouspage = (Button)findViewById(R.id.backtopreviouspage);
+        nextallcandidates = (Button) findViewById(R.id.nextallcandidates);
+
+
+
         Paper.init(this);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.hometoolbar);
         if (toolbar != null) {
-            toolbar.setTitle("Approver Home Activity");
+            toolbar.setTitle("All Candidates Approved Page");
         }
 
 
@@ -232,153 +275,357 @@ public class ApproveHome extends AppCompatActivity implements GoogleApiClient.Co
                 }
 
 
+                myfirebaseDatabase = FirebaseDatabase.getInstance();
+
+                UsersRef = myfirebaseDatabase.getReference().child("Users");
+
+
+                userkey = UsersRef.getKey();
                 // GET FROM FOLLOWING KEY
 
 
+                fetch();
+                recyclerView.setAdapter(feedadapter);
 
-                //I have to  check to ensure that gallery intent is not placed here for the other classes
-                mProgress = new ProgressDialog(this);
+
+                if (mAuth != null) {
+                    user = mAuth.getCurrentUser();
+                    if (user != null) {
+                        approverID= user.getUid();
+
+                    }
 
 
-                mAuth = FirebaseAuth.getInstance();
-                GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestIdToken(getString(R.string.default_web_client_id)).requestEmail().build();
-                if (mGoogleApiClient != null) {
-                    mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+//        setSupportActionBar(toolbar);
+
+                    GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestIdToken(getString(R.string.default_web_client_id)).requestEmail().build();
+                    if (mGoogleApiClient != null) {
+
+                        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+                    }
+
+                    if (mGoogleApiClient != null) {
+                        mGoogleApiClient = new GoogleApiClient.Builder(this).enableAutoManage(PersonalCandidatesApprovedForTraders.this,
+                                new GoogleApiClient.OnConnectionFailedListener() {
+                                    @Override
+                                    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+                                    }
+                                }).addApi(Auth.GOOGLE_SIGN_IN_API, gso).build();
+                    }
+
+
+                    // USER
+                    user = mAuth.getCurrentUser();
+
+
                 }
-
-                if (mGoogleApiClient != null) {
-                    mGoogleApiClient = new GoogleApiClient.Builder(this).enableAutoManage(ApproveHome.this,
-                            new GoogleApiClient.OnConnectionFailedListener() {
-                                @Override
-                                public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
-                                }
-                            }).addApi(com.google.android.gms.auth.api.Auth.GOOGLE_SIGN_IN_API, gso).build();
-                }
-                buildGoogleApiClient();
-
-
             }
-        }}
-
-    protected synchronized void buildGoogleApiClient() {
-        if (mGoogleApiClient != null) {
-            mGoogleApiClient = new GoogleApiClient.Builder(this)
-                    .addConnectionCallbacks(ApproveHome.this)
-                    .addOnConnectionFailedListener(ApproveHome.this)
-                    .addApi(LocationServices.API)
-                    .build();
-            mGoogleApiClient.connect();
-        }
-
-
-        backoftheprofile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(ApproveHome.this, ApprovalMainPage.class);
-                intent.putExtra("approverID", approverID);
-                intent.putExtra("role", role);
-                startActivity(intent);
-            }
-        });
-
-        theapproverhomepic = (ImageView) findViewById(R.id.theapproverhomepic);
-        approvername = (TextView) findViewById(R.id.approvername);
-        viewtheprofiletag = (Button)findViewById(R.id.viewtheprofiletag);
-        pendingapprovals = (TextView) findViewById(R.id.pendingapprovals);
-        backoftheprofile = (Button) findViewById(R.id.backoftheprofile);
-        nextoftheprofile = (Button) findViewById(R.id.nextoftheprofile);
-
-// We must build the approval profile
-        viewtheprofiletag.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(ApproveHome.this, ApprovalViewProfileForCustomers.class);
-                intent.putExtra("approverID", approverID);
-                intent.putExtra("role", role);
-                startActivity(intent);
-            }
-        });
-
-        pendingapprovals.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(ApproveHome.this, ApprovalViewPendingForClient.class);
-                intent.putExtra("approverID", approverID);
-                intent.putExtra("role", role);
-                startActivity(intent);
-            }
-        });
-
-
-    }
-
-
-// getImageofApprover
-    // getName
-    // View Profile here
-    // Pending approval
-    // back
-    // next
-
-
-
-    // Post Info
-
-
-
-
-
-    @Override
-    public void onConnected(@Nullable Bundle bundle) {
-
-    }
-
-    @Override
-    public void onConnectionSuspended(int i) {
-        if (mGoogleApiClient != null) {
-            mGoogleApiClient.connect();
         }
     }
 
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+    public interface Getmyfollowings {
+
+        void onCallback(String followingid, String followingname, String followingimage);
+
 
     }
 
+
+
+
+
+    //GETFOLLOWING WILL PULL FROM DIFFERENT DATASTORE( THE USER DATASTORE)
+
+
+    public class PersonalCandidatesApprovedForTradersViewHolder extends RecyclerView.ViewHolder {
+        public LinearLayout root;
+
+        public TextView textboxforapprovedpersonname;
+        public TextView theUIDtextbox;
+        public  TextView thestatustextbox;
+        public Button backtopreviouspage;
+        public Button nextallcandidates;
+
+
+        public android.widget.ImageView personalimageofapprovedperson;
+        public ItemClickListner listner;
+
+        public PersonalCandidatesApprovedForTradersViewHolder(View itemView) {
+            super(itemView);
+
+            textboxforapprovedpersonname = itemView.findViewById(R.id.textboxforapprovedpersonname);
+            theUIDtextbox = itemView.findViewById(R.id.theUIDtextbox);
+            thestatustextbox = itemView.findViewById(R.id.thestatustextbox);
+            backtopreviouspage = itemView.findViewById(R.id.backtopreviouspage);
+            nextallcandidates = itemView.findViewById(R.id.nextallcandidates);
+            personalimageofapprovedperson = itemView.findViewById(R.id.personalimageofapprovedperson);
+
+
+        }
+
+        public void setItemClickListner(ItemClickListner listner) {
+            this.listner = listner;
+        }
+
+
+        public void settextboxforapprovedpersonname(String _textboxforapprovedpersonname) {
+
+            textboxforapprovedpersonname.setText(_textboxforapprovedpersonname);
+        }
+
+        public void settheUIDtextbox(String _theUIDtextbox) {
+
+            theUIDtextbox.setText(_theUIDtextbox);
+        }
+
+
+        public void setthestatustextbox(String _thestatustextbox) {
+
+            thestatustextbox.setText(_thestatustextbox);
+        }
+
+
+
+
+        public void setpersonalimageofapprovedperson(final Context ctx, final String image) {
+            final android.widget.ImageView personalimageofapprovedperson = (android.widget.ImageView) itemView.findViewById(R.id.personalimageofapprovedperson);
+
+            Picasso.get().load(image).resize(400, 0).networkPolicy(NetworkPolicy.OFFLINE).into(personalimageofapprovedperson, new Callback() {
+
+
+                @Override
+                public void onSuccess() {
+
+                }
+
+                @Override
+                public void onError(Exception e) {
+                    Picasso.get().load(image).resize(100, 0).into(personalimageofapprovedperson);
+                }
+
+
+            });
+        }
+
+
+
+
+    };
+
+
+    public void useValue (String yourValue){
+
+        Log.d(TAG, "countryNameCode: " + yourValue);
+
+    }
+
+
+    private void fetch() {
+        if (mAuth != null) {
+            user = mAuth.getCurrentUser();
+            if (user != null) {
+                approverID = user.getUid();
+
+            }
+
+            @Nullable
+
+            Query queryhere =
+
+                    FirebaseDatabase.getInstance().getReference().child("Approval").orderByChild("statusidentifier").equalTo("approvedTrader");
+            if (queryhere != null) {
+
+                FirebaseRecyclerOptions<PersonalInfoSubmitModel> options =
+                        new FirebaseRecyclerOptions.Builder<PersonalInfoSubmitModel>()
+                                .setQuery(queryhere, new SnapshotParser<PersonalInfoSubmitModel>() {
+
+
+                                    @Nullable
+                                    @Override
+                                    public PersonalInfoSubmitModel parseSnapshot(@Nullable DataSnapshot snapshot) {
+
+
+                                      /*
+                                      String commentkey = snapshot.child("Comments").getKey();
+                                      String likekey = snapshot.child("Likes").getKey();
+                                      */
+
+                                        Log.i(TAG, "All Candidates Approved Personal Info" + snapshot);
+
+
+                                        if (snapshot.child("tid").getValue(String.class) != null) {
+                                            tid = snapshot.child("tid").getValue(String.class);
+                                        }
+
+                                        if (snapshot.child("name").getValue(String.class) != null) {
+                                            name = snapshot.child("name").getValue(String.class);
+                                        }
+
+                                        if (snapshot.child("phone").getValue(String.class) != null) {
+                                            phone = snapshot.child("phone").getValue(String.class);
+                                        }
+                                        if (snapshot.child("email").getValue(String.class) != null) {
+                                            email = snapshot.child("email").getValue(String.class);
+                                        }
+                                        if (snapshot.child("gender").getValue(String.class) != null) {
+                                            gender = snapshot.child("gender").getValue(String.class);
+                                        }
+                                        if (snapshot.child("age").getValue(String.class) != null) {
+                                            age = snapshot.child("age").getValue(String.class);
+                                        }
+                                        if (snapshot.child("country").getValue(String.class) != null) {
+                                            country = snapshot.child("country").getValue(String.class);
+                                        }
+
+                                        if (snapshot.child("personalinfoapprovestatus").getValue(String.class) != null) {
+                                            personalinfoapprovestatus = snapshot.child("personalinfoapprovestatus").getValue(String.class);
+                                        }
+
+                                        return new PersonalInfoSubmitModel(tid, name, phone, email, gender, age, country, personalinfoapprovestatus);
+
+                                    }
+                                }).build();
+
+                feedadapter = new FirebaseRecyclerAdapter<PersonalInfoSubmitModel, PersonalCandidatesApprovedForTraders.PersonalCandidatesApprovedForTradersViewHolder>(options) {
+                    @Nullable
+                    @Override
+                    public PersonalCandidatesApprovedForTradersViewHolder onCreateViewHolder(ViewGroup parent, int viewrole) {
+
+                        @Nullable
+                        View view = LayoutInflater.from(parent.getContext())
+                                .inflate(R.layout.personalinfoapprovedfortrader, parent, false);
+
+                        return new PersonalCandidatesApprovedForTradersViewHolder(view);
+                    }
+
+
+                    @Override
+                    public int getItemCount() {
+                        return super.getItemCount();
+                    }
+
+
+
+                    @Override
+                    protected void onBindViewHolder(@Nullable final PersonalCandidatesApprovedForTraders.PersonalCandidatesApprovedForTradersViewHolder holder, int position, @Nullable PersonalInfoSubmitModel model) {
+                        if (model != null) {
+                            holders = holder;
+
+
+
+                            holder.textboxforapprovedpersonname.setText(status);
+                            holder.theUIDtextbox.setText(approvername);
+                            holder.thestatustextbox.setText(uid);
+
+                            Log.d(TAG, "All Candidate Approved For Clients " + status + approvername );
+                            holder.setpersonalimageofapprovedperson(getApplicationContext(), approverimage);
+
+
+
+
+
+
+
+                            if (holder.nextallcandidates != null) {
+                                holder.nextallcandidates.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        Intent candidatesapprovedintent = new Intent(PersonalCandidatesApprovedForTraders.this, BackgroundInfoApproveForCustomer.class);
+                                        candidatesapprovedintent.putExtra("role", role);
+                                        candidatesapprovedintent.putExtra("uid", tid);
+                                        candidatesapprovedintent.putExtra("approverID", approverID);
+                                        candidatesapprovedintent.putExtra("approvalID", approvalID);
+                                        candidatesapprovedintent.putExtra("userID", userID);
+
+                                        startActivity(candidatesapprovedintent);
+
+                                    }
+                                });
+                            }
+
+                            if (holder.backtopreviouspage != null) {
+                                holder.backtopreviouspage.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        Intent backtopreviouspageintent = new Intent(PersonalCandidatesApprovedForTraders.this, ApprovalViewPendingForClient.class);
+
+                                        startActivity(backtopreviouspageintent);
+
+                                    }
+                                });
+                            }
+
+
+
+                        }
+                    }
+
+
+                };
+
+
+
+            }
+
+
+
+
+            if (recyclerView != null) {
+                recyclerView.setAdapter(feedadapter);
+            }
+
+        }
+
+    }
+    @Nullable
     @Override
-    protected void onStart() {
+    public void onStart() {
         super.onStart();
+        if (feedadapter != null) {
+            feedadapter.startListening();
+        }
 
         firebaseAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
 
-                FirebaseUser user = mAuth.getCurrentUser();
-                if (user != null) {
-                    approverID = "";
-                    approverID = user.getUid();
+                user = mAuth.getCurrentUser();
+                if (mAuth != null) {
+                    if (user != null) {
+
+                        approverID = user.getUid();
+                    }
+
+                    // I HAVE TO TRY TO GET THE SETUP INFORMATION , IF THEY ARE ALREADY PROVIDED WE TAKE TO THE NEXT STAGE
+                    // WHICH IS CUSTOMER TO BE ADDED.
+                    // PULLING DATABASE REFERENCE IS NULL, WE CHANGE BACK TO THE SETUP PAGE ELSE WE GO STRAIGHT TO MAP PAGE
                 }
-
-                // I HAVE TO TRY TO GET THE SETUP INFORMATION , IF THEY ARE ALREADY PROVIDED WE TAKE TO THE NEXT STAGE
-                // WHICH IS CUSTOMER TO BE ADDED.
-                // PULLING DATABASE REFERENCE IS NULL, WE CHANGE BACK TO THE SETUP PAGE ELSE WE GO STRAIGHT TO MAP PAGE
-            }
-        };
-
+            }    };
 
 
         if (mAuth != null) {
             mAuth.addAuthStateListener(firebaseAuthListener);
         }
+
+
+
     }
+
+
     @Override
-    protected void onStop() {
+    public void onStop () {
         super.onStop();
-        if (mAuth !=null) {
+        if (feedadapter != null) {
+            feedadapter.stopListening();
+        }
+        //     mProgress.hide();
+        if (mAuth != null) {
             mAuth.removeAuthStateListener(firebaseAuthListener);
         }
     }
+
 
 
     @Override
@@ -424,7 +671,7 @@ public class ApproveHome extends AppCompatActivity implements GoogleApiClient.Co
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(ApproveHome.this, NotTraderActivity.class);
+                        Intent intent = new Intent(PersonalCandidatesApprovedForTraders.this, NotTraderActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderID);
                             intent.putExtra("role", role);
@@ -440,7 +687,7 @@ public class ApproveHome extends AppCompatActivity implements GoogleApiClient.Co
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(ApproveHome.this, AdminAllCustomers.class);
+                        Intent intent = new Intent(PersonalCandidatesApprovedForTraders.this, AdminAllCustomers.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderID);
                             intent.putExtra("role", role);
@@ -462,7 +709,7 @@ public class ApproveHome extends AppCompatActivity implements GoogleApiClient.Co
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(ApproveHome.this, NotTraderActivity.class);
+                        Intent intent = new Intent(PersonalCandidatesApprovedForTraders.this, NotTraderActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderID);
                             intent.putExtra("role", role);
@@ -478,7 +725,7 @@ public class ApproveHome extends AppCompatActivity implements GoogleApiClient.Co
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(ApproveHome.this, ViewAllCarts.class);
+                        Intent intent = new Intent(PersonalCandidatesApprovedForTraders.this, ViewAllCarts.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderID);
                             intent.putExtra("role", role);
@@ -499,7 +746,7 @@ public class ApproveHome extends AppCompatActivity implements GoogleApiClient.Co
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(ApproveHome.this, NotTraderActivity.class);
+                        Intent intent = new Intent(PersonalCandidatesApprovedForTraders.this, NotTraderActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderID);
                             intent.putExtra("role", role);
@@ -515,7 +762,7 @@ public class ApproveHome extends AppCompatActivity implements GoogleApiClient.Co
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(ApproveHome.this, AdminAddNewProductActivityII.class);
+                        Intent intent = new Intent(PersonalCandidatesApprovedForTraders.this, AdminAddNewProductActivityII.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderID);
                             intent.putExtra("role", role);
@@ -534,7 +781,7 @@ public class ApproveHome extends AppCompatActivity implements GoogleApiClient.Co
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(ApproveHome.this, NotTraderActivity.class);
+                        Intent intent = new Intent(PersonalCandidatesApprovedForTraders.this, NotTraderActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderID);
                             intent.putExtra("role", role);
@@ -550,7 +797,7 @@ public class ApproveHome extends AppCompatActivity implements GoogleApiClient.Co
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(ApproveHome.this, AdminAllProducts.class);
+                        Intent intent = new Intent(PersonalCandidatesApprovedForTraders.this, AdminAllCustomers.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderID);
                             intent.putExtra("role", role);
@@ -566,7 +813,7 @@ public class ApproveHome extends AppCompatActivity implements GoogleApiClient.Co
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(ApproveHome.this, NotTraderActivity.class);
+                                Intent intent = new Intent(PersonalCandidatesApprovedForTraders.this, NotTraderActivity.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
@@ -582,7 +829,7 @@ public class ApproveHome extends AppCompatActivity implements GoogleApiClient.Co
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(ApproveHome.this, AllProductsPurchased.class);
+                                Intent intent = new Intent(PersonalCandidatesApprovedForTraders.this, AllProductsPurchased.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
@@ -602,7 +849,7 @@ public class ApproveHome extends AppCompatActivity implements GoogleApiClient.Co
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(ApproveHome.this, NotTraderActivity.class);
+                                Intent intent = new Intent(PersonalCandidatesApprovedForTraders.this, NotTraderActivity.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
@@ -618,7 +865,7 @@ public class ApproveHome extends AppCompatActivity implements GoogleApiClient.Co
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(ApproveHome.this, ViewAllCustomers.class);
+                                Intent intent = new Intent(PersonalCandidatesApprovedForTraders.this, ViewAllCustomers.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
@@ -637,7 +884,7 @@ public class ApproveHome extends AppCompatActivity implements GoogleApiClient.Co
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(ApproveHome.this, NotTraderActivity.class);
+                                Intent intent = new Intent(PersonalCandidatesApprovedForTraders.this, NotTraderActivity.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
@@ -653,7 +900,7 @@ public class ApproveHome extends AppCompatActivity implements GoogleApiClient.Co
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(ApproveHome.this, TradersFollowing.class);
+                                Intent intent = new Intent(PersonalCandidatesApprovedForTraders.this, TradersFollowing.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
@@ -674,7 +921,7 @@ public class ApproveHome extends AppCompatActivity implements GoogleApiClient.Co
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(ApproveHome.this, NotTraderActivity.class);
+                                Intent intent = new Intent(PersonalCandidatesApprovedForTraders.this, NotTraderActivity.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
@@ -690,7 +937,7 @@ public class ApproveHome extends AppCompatActivity implements GoogleApiClient.Co
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(ApproveHome.this, AdminNewOrdersActivity.class);
+                                Intent intent = new Intent(PersonalCandidatesApprovedForTraders.this, AdminNewOrdersActivity.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
@@ -711,7 +958,7 @@ public class ApproveHome extends AppCompatActivity implements GoogleApiClient.Co
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(ApproveHome.this, NotTraderActivity.class);
+                                Intent intent = new Intent(PersonalCandidatesApprovedForTraders.this, NotTraderActivity.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
@@ -727,7 +974,7 @@ public class ApproveHome extends AppCompatActivity implements GoogleApiClient.Co
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(ApproveHome.this, AdminCustomerServed.class);
+                                Intent intent = new Intent(PersonalCandidatesApprovedForTraders.this, AdminCustomerServed.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
@@ -747,7 +994,7 @@ public class ApproveHome extends AppCompatActivity implements GoogleApiClient.Co
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(ApproveHome.this, NotTraderActivity.class);
+                                Intent intent = new Intent(PersonalCandidatesApprovedForTraders.this, NotTraderActivity.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
@@ -763,7 +1010,7 @@ public class ApproveHome extends AppCompatActivity implements GoogleApiClient.Co
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(ApproveHome.this, AdminAllOrderHistory.class);
+                                Intent intent = new Intent(PersonalCandidatesApprovedForTraders.this, AdminAllOrderHistory.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
@@ -792,7 +1039,7 @@ public class ApproveHome extends AppCompatActivity implements GoogleApiClient.Co
         if (id == R.id.viewmap) {
             if (!role.equals("Trader")) {
 
-                Intent intent = new Intent(ApproveHome.this, NotTraderActivity.class);
+                Intent intent = new Intent(PersonalCandidatesApprovedForTraders.this, NotTraderActivity.class);
                 if (intent != null) {
                     intent.putExtra("traderorcustomer", traderID);
                     intent.putExtra("role", role);
@@ -801,7 +1048,7 @@ public class ApproveHome extends AppCompatActivity implements GoogleApiClient.Co
                 }
             } else {
 
-                Intent intent = new Intent(ApproveHome.this, DriverMapActivity.class);
+                Intent intent = new Intent(PersonalCandidatesApprovedForTraders.this, DriverMapActivity.class);
                 if (intent != null) {
                     intent.putExtra("traderorcustomer", traderID);
                     intent.putExtra("role", role);
@@ -822,7 +1069,7 @@ public class ApproveHome extends AppCompatActivity implements GoogleApiClient.Co
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(ApproveHome.this, NotTraderActivity.class);
+                        Intent intent = new Intent(PersonalCandidatesApprovedForTraders.this, NotTraderActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderID);
                             intent.putExtra("role", role);
@@ -838,7 +1085,7 @@ public class ApproveHome extends AppCompatActivity implements GoogleApiClient.Co
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(ApproveHome.this, CartActivity.class);
+                        Intent intent = new Intent(PersonalCandidatesApprovedForTraders.this, CartActivity.class);
                         if (intent != null) {
                             intent.putExtra("traderorcustomer", traderID);
                             intent.putExtra("role", role);
@@ -858,7 +1105,7 @@ public class ApproveHome extends AppCompatActivity implements GoogleApiClient.Co
                             String cusomerId = "";
 
                             cusomerId = user.getUid();
-                            Intent intent = new Intent(ApproveHome.this, NotTraderActivity.class);
+                            Intent intent = new Intent(PersonalCandidatesApprovedForTraders.this, NotTraderActivity.class);
                             if (intent != null) {
                                 intent.putExtra("traderorcustomer", traderID);
                                 intent.putExtra("role", role);
@@ -874,7 +1121,7 @@ public class ApproveHome extends AppCompatActivity implements GoogleApiClient.Co
                             String cusomerId = "";
                             cusomerId = user.getUid();
 
-                            Intent intent = new Intent(ApproveHome.this, InstagramHomeActivity.class);
+                            Intent intent = new Intent(PersonalCandidatesApprovedForTraders.this, InstagramHomeActivity.class);
                             if (intent != null) {
                                 intent.putExtra("traderorcustomer", traderID);
                                 intent.putExtra("role", role);
@@ -894,7 +1141,7 @@ public class ApproveHome extends AppCompatActivity implements GoogleApiClient.Co
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(ApproveHome.this, NotTraderActivity.class);
+                                Intent intent = new Intent(PersonalCandidatesApprovedForTraders.this, NotTraderActivity.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
@@ -910,7 +1157,7 @@ public class ApproveHome extends AppCompatActivity implements GoogleApiClient.Co
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(ApproveHome.this, AdminAllProducts.class);
+                                Intent intent = new Intent(PersonalCandidatesApprovedForTraders.this, AdminAllProducts.class);
                                 if (intent != null) {
                                     intent.putExtra("traderorcustomer", traderID);
                                     intent.putExtra("role", role);
@@ -927,7 +1174,7 @@ public class ApproveHome extends AppCompatActivity implements GoogleApiClient.Co
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(ApproveHome.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(PersonalCandidatesApprovedForTraders.this, NotTraderActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -943,7 +1190,7 @@ public class ApproveHome extends AppCompatActivity implements GoogleApiClient.Co
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(ApproveHome.this, SearchForAdminProductsActivity.class);
+                                        Intent intent = new Intent(PersonalCandidatesApprovedForTraders.this, SearchForAdminProductsActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -959,7 +1206,7 @@ public class ApproveHome extends AppCompatActivity implements GoogleApiClient.Co
                             if (FirebaseAuth.getInstance() != null) {
                                 FirebaseAuth.getInstance().signOut();
                                 if (mGoogleApiClient != null) {
-                                    mGoogleSignInClient.signOut().addOnCompleteListener(ApproveHome.this,
+                                    mGoogleSignInClient.signOut().addOnCompleteListener(PersonalCandidatesApprovedForTraders.this,
                                             new OnCompleteListener<Void>() {
                                                 @Override
                                                 public void onComplete(@NonNull Task<Void> task) {
@@ -968,7 +1215,7 @@ public class ApproveHome extends AppCompatActivity implements GoogleApiClient.Co
                                             });
                                 }
                             }
-                            Intent intent = new Intent(ApproveHome.this, com.simcoder.bimbo.MainActivity.class);
+                            Intent intent = new Intent(PersonalCandidatesApprovedForTraders.this, com.simcoder.bimbo.MainActivity.class);
                             if (intent != null) {
                                 startActivity(intent);
                                 finish();
@@ -983,7 +1230,7 @@ public class ApproveHome extends AppCompatActivity implements GoogleApiClient.Co
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(ApproveHome.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(PersonalCandidatesApprovedForTraders.this, NotTraderActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -999,7 +1246,7 @@ public class ApproveHome extends AppCompatActivity implements GoogleApiClient.Co
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(ApproveHome.this, com.simcoder.bimbo.WorkActivities.SettinsActivity.class);
+                                        Intent intent = new Intent(PersonalCandidatesApprovedForTraders.this, com.simcoder.bimbo.WorkActivities.SettinsActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1017,7 +1264,7 @@ public class ApproveHome extends AppCompatActivity implements GoogleApiClient.Co
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(ApproveHome.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(PersonalCandidatesApprovedForTraders.this, NotTraderActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1033,7 +1280,7 @@ public class ApproveHome extends AppCompatActivity implements GoogleApiClient.Co
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(ApproveHome.this, HistoryActivity.class);
+                                        Intent intent = new Intent(PersonalCandidatesApprovedForTraders.this, HistoryActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1053,7 +1300,7 @@ public class ApproveHome extends AppCompatActivity implements GoogleApiClient.Co
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(ApproveHome.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(PersonalCandidatesApprovedForTraders.this, NotTraderActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1069,7 +1316,7 @@ public class ApproveHome extends AppCompatActivity implements GoogleApiClient.Co
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(ApproveHome.this, TraderProfile.class);
+                                        Intent intent = new Intent(PersonalCandidatesApprovedForTraders.this, TraderProfile.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1089,7 +1336,7 @@ public class ApproveHome extends AppCompatActivity implements GoogleApiClient.Co
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(ApproveHome.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(PersonalCandidatesApprovedForTraders.this, NotTraderActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1105,7 +1352,7 @@ public class ApproveHome extends AppCompatActivity implements GoogleApiClient.Co
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(ApproveHome.this, AdminAllCustomers.class);
+                                        Intent intent = new Intent(PersonalCandidatesApprovedForTraders.this, AdminAllCustomers.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1126,7 +1373,7 @@ public class ApproveHome extends AppCompatActivity implements GoogleApiClient.Co
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(ApproveHome.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(PersonalCandidatesApprovedForTraders.this, NotTraderActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1142,7 +1389,7 @@ public class ApproveHome extends AppCompatActivity implements GoogleApiClient.Co
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(ApproveHome.this, AdminAddNewProductActivityII.class);
+                                        Intent intent = new Intent(PersonalCandidatesApprovedForTraders.this, AdminAddNewProductActivityII.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1162,7 +1409,7 @@ public class ApproveHome extends AppCompatActivity implements GoogleApiClient.Co
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(ApproveHome.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(PersonalCandidatesApprovedForTraders.this, NotTraderActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1178,7 +1425,7 @@ public class ApproveHome extends AppCompatActivity implements GoogleApiClient.Co
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(ApproveHome.this, AllGoodsBought.class);
+                                        Intent intent = new Intent(PersonalCandidatesApprovedForTraders.this, AllGoodsBought.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1198,7 +1445,7 @@ public class ApproveHome extends AppCompatActivity implements GoogleApiClient.Co
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(ApproveHome.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(PersonalCandidatesApprovedForTraders.this, NotTraderActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1214,7 +1461,7 @@ public class ApproveHome extends AppCompatActivity implements GoogleApiClient.Co
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(ApproveHome.this, AdminPaymentHere.class);
+                                        Intent intent = new Intent(PersonalCandidatesApprovedForTraders.this, AdminPaymentHere.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1234,7 +1481,7 @@ public class ApproveHome extends AppCompatActivity implements GoogleApiClient.Co
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(ApproveHome.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(PersonalCandidatesApprovedForTraders.this, NotTraderActivity.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1250,7 +1497,7 @@ public class ApproveHome extends AppCompatActivity implements GoogleApiClient.Co
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(ApproveHome.this, AdminSettings.class);
+                                        Intent intent = new Intent(PersonalCandidatesApprovedForTraders.this, AdminSettings.class);
                                         if (intent != null) {
                                             intent.putExtra("traderorcustomer", traderID);
                                             intent.putExtra("role", role);
@@ -1265,18 +1512,10 @@ public class ApproveHome extends AppCompatActivity implements GoogleApiClient.Co
                     }
                 }
 
-
-                return true;
             }
 
-            return true;
         }
-        return true;
-    }
+        return false;
+    }}
 
-    @Override
-    public void onPointerCaptureChanged(boolean hasCapture) {
 
-    }
-}
-// #BuiltByGOD

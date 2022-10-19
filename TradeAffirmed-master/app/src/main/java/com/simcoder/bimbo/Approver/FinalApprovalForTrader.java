@@ -1,4 +1,4 @@
 package com.simcoder.bimbo.Approver;
 
-public class ApprovalViewProfile {
+public class FinalApprovalForTrader {
 }

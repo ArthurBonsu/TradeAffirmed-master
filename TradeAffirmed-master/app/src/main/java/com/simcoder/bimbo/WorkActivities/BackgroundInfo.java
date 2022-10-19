@@ -96,6 +96,7 @@ public class BackgroundInfo extends AppCompatActivity {
     Spinner countryspinner;
     Button saveinformationhere;
     ImageButton movetonext;
+    ImageButton deletebutton;
     ImageButton homebutton;
     ImageButton suggestionsbutton;
     ImageButton       services;
@@ -271,7 +272,14 @@ public class BackgroundInfo extends AppCompatActivity {
                         }
                     });
                 }
-
+                if (deletebutton != null) {
+                    deletebutton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                          deleteUserInformation();
+                        }
+                    });
+                }
 
             }
 
@@ -362,6 +370,87 @@ public class BackgroundInfo extends AppCompatActivity {
                 };
 
             }
+
+    public void deleteUserInformation() {
+        emnamestring = "";
+        emphonestring= "";
+        ememailstring = "";
+        empersonid = "";
+        emidtype="";
+        emcountry="";
+        // GET THE INFORMATION FROM THE TEXT BOX
+
+        backgroundapprove = "";
+
+
+
+
+
+        // GET DATES FOR PRODUCTS
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat currentDate = new SimpleDateFormat("MMM dd, yyyy");
+
+        if (currentDate != null) {
+            date = currentDate.format(calendar.getTime()).toString();
+
+            SimpleDateFormat currentTime = new SimpleDateFormat("HH:mm:ss a");
+            if (currentTime != null) {
+                time = currentTime.format(calendar.getTime());
+
+            }
+
+
+            if (emnamestring != null && emphonestring != null && ememailstring != null && empersonid !=null && emidtype !=null && emcountry !=null ) {
+
+                mProgress.setMessage("Deleting Background Person Information From Approval Info");
+
+                mProgress.show();
+
+
+
+
+                // PICK UP THE SPECIAL PRODUCT INFO AND LOADING THEM INTO THE DATABASE
+                BackgroundInfoSubmitModel backgroundinfotobesent = new BackgroundInfoSubmitModel( emnamestring, emphonestring,   ememailstring , empersonid , emidtype, emcountry,backgroundapprove);
+
+                mApproval.setValue(backgroundinfotobesent, new
+                        DatabaseReference.CompletionListener() {
+                            @Override
+                            public void onComplete(DatabaseError databaseError, DatabaseReference
+                                    databaseReference) {
+                                Toast.makeText(getApplicationContext(), "Remove BackgroundInfo Code Information From Approval", Toast.LENGTH_SHORT).show();
+                                Intent addbackgroundinformationtosapproval = new Intent(BackgroundInfo.this, BackgroundInfo.class);
+
+                                startActivity(addbackgroundinformationtosapproval);
+
+                            }
+                        });
+
+                /*
+                mUserDatabase.setValue(backgroundinfotobesent, new
+                        DatabaseReference.CompletionListener() {
+                            @Override
+                            public void onComplete(DatabaseError databaseError, DatabaseReference
+                                    databaseReference) {
+                                Toast.makeText(getApplicationContext(), "Add BackgroundInfo Code Information To User", Toast.LENGTH_SHORT).show();
+                                Intent userbackgroundinformationaddintent = new Intent(BackgroundInfo.this, SecurityInfo.class);
+                                userbackgroundinformationaddintent.putExtra("userID",  userID);
+                                userbackgroundinformationaddintent.putExtra("role", role);
+                                userbackgroundinformationaddintent.putExtra("approvalID", approvalID);
+                                startActivity(userbackgroundinformationaddintent);
+
+                            }
+                        });
+*/
+
+
+
+                mProgress.dismiss();
+            }
+
+        };
+
+    }
+
         }
 
 

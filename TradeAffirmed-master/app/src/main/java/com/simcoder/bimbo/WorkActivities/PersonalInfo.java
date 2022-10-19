@@ -105,6 +105,7 @@ public class PersonalInfo extends AppCompatActivity {
     Spinner countryspinner;
     Button saveinformationhere;
     ImageButton movetonext;
+    ImageButton deletebutton;
     ImageButton homebutton;
     ImageButton suggestionsbutton;
     ImageButton       services;
@@ -150,6 +151,7 @@ public class PersonalInfo extends AppCompatActivity {
         countryspinner = (Spinner)findViewById(R.id.countryspinner);
         saveinformationhere = (Button)findViewById(R.id.saveinformationhere);
         movetonext = (ImageButton)findViewById(R.id.movetonext);
+        deletebutton = (ImageButton) findViewById(R.id.deletebutton);
 
 
         // THESE ARE FOOTER BUTTONS FOR EASY NAVIGATION CAN BE SENT THROUGH THE WHOLE APPLLICATION
@@ -248,7 +250,17 @@ public class PersonalInfo extends AppCompatActivity {
                 });
             }
         }
+        if (deletebutton != null) {
+            deletebutton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    deleteUserInformation();
+                }
+            });
+        }
     }
+
+    
     public void getUserInfo(){
         mUserDatabase.addValueEventListener(new ValueEventListener() {
             @Override
@@ -381,6 +393,108 @@ public class PersonalInfo extends AppCompatActivity {
 
 
         }
+
+
+        // Delete User Info
+
+    public void deleteUserInformation() {
+        thenameinfostring = "";
+        theemailinfostring = "";
+        thephoneinfostring = "";
+        userID="";
+        gendertext="";
+        agetext ="";
+        countrytext="";
+        personalinfoapprove="";
+        // GET THE INFORMATION FROM THE TEXT BOX
+
+        personalinfoapprove = "false";
+
+
+
+
+
+        // GET DATES FOR PRODUCTS
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat currentDate = new SimpleDateFormat("MMM dd, yyyy");
+
+        if (currentDate != null) {
+            date = currentDate.format(calendar.getTime()).toString();
+
+            SimpleDateFormat currentTime = new SimpleDateFormat("HH:mm:ss a");
+            if (currentTime != null) {
+                time = currentTime.format(calendar.getTime());
+
+            }
+
+
+            if (thenameinfostring != null && theemailinfostring != null && thephoneinfostring != null) {
+
+                int selectedId = mRadioGroup.getCheckedRadioButtonId();
+
+                // find the radiobutton by returned id
+                radioButtonforgender = (RadioButton) findViewById(selectedId);
+                gendertext = radioButtonforgender.getText().toString();
+                Toast.makeText(PersonalInfo.this,
+                        radioButtonforgender.getText(), Toast.LENGTH_SHORT).show();
+
+
+
+                if (radioButtonforgender != null) {
+                    if (radioButtonforgender.getText() == null) {
+                        return;
+                    }
+                    mProgress.setMessage("Deleting your information provided");
+
+                    mProgress.show();
+
+
+                    mApproval = FirebaseDatabase.getInstance().getReference().child("Approval").child(approvalID);
+
+                    mApproval.keepSynced(true);
+
+                    // PICK UP THE SPECIAL PRODUCT INFO AND LOADING THEM INTO THE DATABASE
+                    PersonalInfoSubmitModel personalinfotobesent = new PersonalInfoSubmitModel( userID, thenameinfostring, thephoneinfostring, theemailinfostring, gendertext, agetext,countrytext,personalinfoapprove);
+
+                    mApproval.setValue(personalinfotobesent, new
+                            DatabaseReference.CompletionListener() {
+                                @Override
+                                public void onComplete(DatabaseError databaseError, DatabaseReference
+                                        databaseReference) {
+                                    Toast.makeText(getApplicationContext(), "Delete PersonalInfo Code Information From Approval", Toast.LENGTH_SHORT).show();
+                                    Intent personalinfoapprovaltobesenttoapproval = new Intent(PersonalInfo.this, PersonalInfo.class);
+                                    personalinfoapprovaltobesenttoapproval.putExtra("approvalID", approvalID);
+                                    startActivity(personalinfoapprovaltobesenttoapproval);
+
+                                }
+                            });
+                  /*
+                mUserDatabase.setValue(personalinfotobesent, new
+                        DatabaseReference.CompletionListener() {
+                            @Override
+                            public void onComplete(DatabaseError databaseError, DatabaseReference
+                                    databaseReference) {
+                                Toast.makeText(getApplicationContext(), "Add PersonalInfo Code Information To User", Toast.LENGTH_SHORT).show();
+                                Intent userbackgroundinformationtouser = new Intent(PersonalInfo.this, ResidentialInfo.class);
+                                userbackgroundinformationtouser.putExtra("userID", userID);
+                                userbackgroundinformationtouser.putExtra("approvalID", approvalID);
+                                userbackgroundinformationtouser.putExtra("role", role);
+                                startActivity(userbackgroundinformationtouser);
+
+                            }
+                        });
+*/
+
+
+                    mProgress.dismiss();
+                }
+
+            };
+
+        }
+
+
+    }
 
 
 

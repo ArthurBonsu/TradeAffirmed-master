@@ -355,6 +355,7 @@ public class ClientVerificationPendingPage extends AppCompatActivity implements 
             }
         }}
 
+         //
     protected synchronized void buildGoogleApiClient() {
         if (mGoogleApiClient != null) {
             mGoogleApiClient = new GoogleApiClient.Builder(this)
@@ -366,6 +367,7 @@ public class ClientVerificationPendingPage extends AppCompatActivity implements 
         }
 
 
+         //Detect From Approval Database
 
 
         getUserInfo();
@@ -381,7 +383,6 @@ public class ClientVerificationPendingPage extends AppCompatActivity implements 
                     if (intent != null) {
                         intent.putExtra("role", role);
                         intent.putExtra("userID", userID);
-
                         startActivity(intent);
                         finish();
                     }

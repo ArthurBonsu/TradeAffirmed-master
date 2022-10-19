@@ -19,7 +19,7 @@
 
             />
 
-        <TextView
+            <TextView
             android:layout_width="match_parent"
             android:layout_height="200sp"
             android:text="Thanks You have been confirmed to join our platform! You are welcome to TRADEX. Deal Courageously!"
@@ -30,6 +30,7 @@
             android:layout_marginBottom="100sp"
 
             />
+
 
         <com.suke.widget.SwitchButton
             android:id="@+id/personapprovebutton"

@@ -18,7 +18,8 @@ public class PersonalInfoSubmitModel {
         this.name= name;
         this.phone = phone;
         this.email = email;
-        this.gender = gender;
+        this.gender
+                = gender;
         this.age = age;
         this.country = country;
         this.personalinfoapprovestatus = personalinfoapprovestatus;

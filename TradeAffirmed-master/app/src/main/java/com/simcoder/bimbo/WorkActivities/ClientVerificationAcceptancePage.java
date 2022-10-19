@@ -328,7 +328,7 @@ public class ClientVerificationAcceptancePage extends AppCompatActivity implemen
 */
                 //I have to  check to ensure that gallery intent is not placed here for the other classes
                 mProgress = new ProgressDialog(this);
-
+                 // cliee
 
 
                 GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestIdToken(getString(R.string.default_web_client_id)).requestEmail().build();

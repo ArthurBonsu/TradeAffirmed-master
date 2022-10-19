@@ -597,8 +597,6 @@ public  class SecurityCheckApproveForTrader extends AppCompatActivity
 
                             holder.NameofPerson.setText( name);
                             holder.candidateuserid.setText(uid);
-
-
                             holder.gpscodetextpull.setText(gpscode);
 
 

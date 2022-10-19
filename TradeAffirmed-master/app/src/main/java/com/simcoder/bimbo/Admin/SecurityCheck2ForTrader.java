@@ -255,14 +255,10 @@ public class SecurityCheck2ForTrader extends AppCompatActivity implements Google
             traderID = traderIDintent.getExtras().getString("traderID");
         }
 
-
-
-
-        //  deletenationalidpicture  nationalidpicture
+       //  deletenationalidpicture  nationalidpicture
         //        // gps code GpsCodeMapID,
         //        // pick up  PickMap
         //        // ImageViewOfGPSCodeMap (GPSCodeID)
-
 
 
         saveinformationhere = findViewById(R.id.saveinformationhere);
@@ -272,9 +268,7 @@ public class SecurityCheck2ForTrader extends AppCompatActivity implements Google
         services = findViewById(R.id.services);
         expectedshipping = findViewById(R.id.expectedshipping);
         adminprofile = findViewById(R.id.adminprofile);
-
-
-           GPSCodeIdText = (EditText) findViewById(R.id.GPSCodeIdText);
+        GPSCodeIdText = (EditText) findViewById(R.id.GPSCodeIdText);
 
         GpsCodeMapID = (ImageView)findViewById(R.id.GpsCodeMapID );
          GPSPickButton = (Button)findViewById(R.id.GPSPickButton);
@@ -282,9 +276,6 @@ public class SecurityCheck2ForTrader extends AppCompatActivity implements Google
          GPSCodeButton = (Button)findViewById(R.id.GPSCodeButton);
 
         thegpscodeinformationstring= GPSCodeIdText.getText().toString();
-
-
-
         mAuth = FirebaseAuth.getInstance();
         mCurrentUser = mAuth.getCurrentUser();
 
@@ -417,12 +408,6 @@ public class SecurityCheck2ForTrader extends AppCompatActivity implements Google
         });
 
 
-
-
-
-
-
-
             if (movetonext != null) {
                 movetonext.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -527,9 +512,7 @@ public class SecurityCheck2ForTrader extends AppCompatActivity implements Google
 
         }}
 
-
-
-    // Post Info
+  // Post Info
     public void deletePosting() {
 
         // GET THE INFORMATION FROM THE TEXT BOX
@@ -570,9 +553,6 @@ public class SecurityCheck2ForTrader extends AppCompatActivity implements Google
                         traderID = user.getUid();
                         tradername = user.getDisplayName();
                         gpsimage ="";
-
-
-
 
                         Uri myphoto = user.getPhotoUrl();
                         traderimage = myphoto.toString();
@@ -646,16 +626,6 @@ public class SecurityCheck2ForTrader extends AppCompatActivity implements Google
 
 
     }
-
-
-
-
-
-
-
-
-
-
     @Override
     public void onConnected(@Nullable Bundle bundle) {
 
@@ -739,10 +709,6 @@ public class SecurityCheck2ForTrader extends AppCompatActivity implements Google
 //        {
 //            return true;
 //        }
-
-
-
-
         if (id == R.id.viewallcustomershere) {
             if (!role.equals("Trader")) {
                 if (FirebaseAuth.getInstance() != null) {

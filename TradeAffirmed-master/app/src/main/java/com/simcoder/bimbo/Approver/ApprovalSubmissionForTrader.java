@@ -268,7 +268,7 @@ public  class ApprovalSubmissionForTrader extends AppCompatActivity
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         if (toolbar != null) {
-            toolbar.setTitle("Approval Submissioni For Trader ");
+            toolbar.setTitle("Approval Submission For Trader ");
         }
 //        setSupportActionBar(toolbar);
 

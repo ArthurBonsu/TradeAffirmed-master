@@ -446,12 +446,6 @@ public class SecurityInfo extends AppCompatActivity implements GoogleApiClient.C
         });
 
 
-
-
-
-
-
-
         if (movetonext != null) {
             movetonext.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -471,9 +465,6 @@ public class SecurityInfo extends AppCompatActivity implements GoogleApiClient.C
 
 
     }
-
-
-
 
     // Post Info
     public void startPosting() {
@@ -547,8 +538,8 @@ public class SecurityInfo extends AppCompatActivity implements GoogleApiClient.C
                             @Override
                             public void onComplete(DatabaseError databaseError, DatabaseReference
                                     databaseReference) {
-                                Toast.makeText(getApplicationContext(), "GPS Security Information Deleted, Reuplod Info", Toast.LENGTH_SHORT).show();
-                                Intent myapprovaldatabaseintent = new Intent(SecurityInfo.this, ClientVerificationPendingPage.class);
+                                Toast.makeText(getApplicationContext(), "GPS Security Information Posted", Toast.LENGTH_SHORT).show();
+                                Intent myapprovaldatabaseintent = new Intent(SecurityInfo.this, SecurityInfo.class);
                                   myapprovaldatabaseintent.putExtra("userID", userID);
                                 myapprovaldatabaseintent.putExtra("role", role);
                                 myapprovaldatabaseintent.putExtra("approvalID", approvalID);
@@ -615,10 +606,6 @@ public class SecurityInfo extends AppCompatActivity implements GoogleApiClient.C
                         gpsimage ="";
                         status ="";
                         securityapprovalapprove= "";
-
-
-
-
                         Uri myphoto = user.getPhotoUrl();
                         traderimage = myphoto.toString();
 

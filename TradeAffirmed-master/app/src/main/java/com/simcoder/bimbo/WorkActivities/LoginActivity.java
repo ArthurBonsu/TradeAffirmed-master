@@ -55,23 +55,23 @@ import java.util.HashMap;
 
 import io.paperdb.Paper;
 
-public class LoginActivity extends AppCompatActivity
-{
+public class LoginActivity extends AppCompatActivity {
     private EditText InputPhoneNumber, InputPassword, Emailaccess;
     private Button LoginButton;
     private ProgressDialog loadingBar;
     private TextView AdminLink, NotAdminLink, ForgetPasswordLink;
 
     private String parentDbName = "";
-
+    FirebaseDatabase myfirebaseDatabase;
 
     private CheckBox chkBoxRememberMe;
 
-    String traderoruser= "";
+    String traderoruser = "";
     private static final int RC_SIGN_IN = 1;
     private FirebaseAuth.AuthStateListener firebaseAuthListener;
     String role;
 
+    private DatabaseReference myapprovalDatabase;
 
     //AUTHENTICATORS
 
@@ -85,10 +85,13 @@ public class LoginActivity extends AppCompatActivity
     private ProgressDialog mProgress;
     Intent roleintent;
     String userID;
+    String approvalID;
     Button SignupButton;
     TextView IamTrader;
     Button TryVerificationCode;
     Button MainHallButton;
+    String currentstatus;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -105,12 +108,17 @@ public class LoginActivity extends AppCompatActivity
             userID = userintent.getExtras().getString("userID");
         }
 
+        Intent approvalIDIntent = getIntent();
+        if (approvalIDIntent.getExtras().getString("approvalID") != null) {
+            approvalID = approvalIDIntent.getExtras().getString("approvalID");
+        }
+
         Emailaccess = (EditText) findViewById(R.id.login_email_input);
         InputPassword = (EditText) findViewById(R.id.login_password_input);
 
         LoginButton = (Button) findViewById(R.id.login_btn);
-        SignupButton = (Button)findViewById(R.id.signup);
-        MainHallButton =(Button)findViewById(R.id.mainhall_button);
+        SignupButton = (Button) findViewById(R.id.signup);
+        MainHallButton = (Button) findViewById(R.id.mainhall_button);
 
         // InputPhoneNumber = (EditText) findViewById(R.id.login_phone_number_input);
 
@@ -164,22 +172,41 @@ public class LoginActivity extends AppCompatActivity
         }
 
 
-
         chkBoxRememberMe = (CheckBox) findViewById(R.id.remember_me_chkb);
         Paper.init(this);
 
         SessionManager sessionManager = new SessionManager(LoginActivity.this, SessionManager.SESSION_REMEMBERME);
         if (sessionManager.checkRememberMe()) {
 
-            HashMap<String, String > rememberMeDetails = sessionManager.getRememberMeDetailsFromSession();
+            HashMap<String, String> rememberMeDetails = sessionManager.getRememberMeDetailsFromSession();
             Emailaccess.setText(rememberMeDetails.get(SessionManager.KEY_SESSIONEMAIL));
             InputPassword.setText(rememberMeDetails.get(SessionManager.KEY_SESSIONPASSWORD));
 
         }
 
+        myapprovalDatabase = myfirebaseDatabase.getReference().child("Approval");
+        myapprovalDatabase.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
 
+                    if (currentstatus != null) {
+                        if (dataSnapshot.child(approvalID).child("status").getValue() != null) {
+                            currentstatus = dataSnapshot.child(approvalID).child("status").getValue(String.class);
+                            if (currentstatus != null) {
+                                Log.d("CURRENT STATUS ", currentstatus);
+                            }
+                        }
+                    }
+                }
+            }
 
-        // GET FROM FOLLOWING KEY
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+
+       // GET FROM FOLLOWING KEY
 
         // FORGET PASSWORD PROBLEMS
         ForgetPasswordLink.setOnClickListener(new View.OnClickListener() {
@@ -228,12 +255,6 @@ public class LoginActivity extends AppCompatActivity
             }
         });
     }
-
-
-
-
-
-
     private  void signIn(){
         //    signInIntent  = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
 
@@ -316,13 +337,20 @@ public class LoginActivity extends AppCompatActivity
                                                                                                if (FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child(userID) != null && role.equals("Customer")) {
                                                                                                    Toast.makeText(LoginActivity.this, "logged in Successfully...", Toast.LENGTH_SHORT).show();
                                                                                                    loadingBar.dismiss();
+                                                                                                   if(currentstatus =="true") {
+                                                                                                       Intent intent = new Intent(LoginActivity.this, ClientMainPage.class);
+                                                                                                       intent.putExtra("role", role);
+                                                                                                       intent.putExtra("userID", userID);
+                                                                                                       startActivity(intent);
+                                                                                                       finish();
+                                                                                                   } else{
+                                                                                                       Intent intent = new Intent(LoginActivity.this, ClientVerificationPendingPage.class);
+                                                                                                       intent.putExtra("role", role);
+                                                                                                       intent.putExtra("userID", userID);
+                                                                                                       startActivity(intent);
+                                                                                                       finish();
 
-
-                                                                                                   Intent intent = new Intent(LoginActivity.this, ClientMainPage.class);
-                                                                                                   intent.putExtra("role", role);
-                                                                                                   intent.putExtra("userID", userID);
-                                                                                                   startActivity(intent);
-                                                                                                   finish();
+                                                                                                   }
 
                                                                                                }
                                                                                            } else {
@@ -523,16 +551,22 @@ public class LoginActivity extends AppCompatActivity
 
                                                             if (task.isSuccessful()) {
                                                                 Log.d(TAG, "signInWithEmail:success");
-                                                                String traderID = mAuth.getCurrentUser().getUid();
-                                                                SessionManager sessionManager = new SessionManager(LoginActivity.this, SessionManager.SESSION_REMEMBERME);
-                                                                sessionManager.createLogInSession(email, password);
-                                                                Toast.makeText(LoginActivity.this, "Welcome User, you are logged in Successfully...", Toast.LENGTH_SHORT).show();
-                                                                loadingBar.dismiss();
 
-                                                                Intent intent = new Intent(LoginActivity.this, AdminMainPage.class);
-                                                                startActivity(intent);
-                                                                finish();
-                                                                return;
+                                                                    String traderID = mAuth.getCurrentUser().getUid();
+                                                                    SessionManager sessionManager = new SessionManager(LoginActivity.this, SessionManager.SESSION_REMEMBERME);
+                                                                    sessionManager.createLogInSession(email, password);
+                                                                    Toast.makeText(LoginActivity.this, "Welcome User, you are logged in Successfully...", Toast.LENGTH_SHORT).show();
+                                                                    loadingBar.dismiss();
+                                                                if (currentstatus == "true") {
+                                                                    Intent intent = new Intent(LoginActivity.this, AdminMainPage.class);
+                                                                    startActivity(intent);
+                                                                    finish();
+                                                                    return;
+                                                                }
+                                                               else{ Intent intent = new Intent(LoginActivity.this, ClientVerificationPendingPage.class);
+                                                                    startActivity(intent);
+                                                                    finish();
+                                                                    return;}
                                                             } else {
                                                                 Toast.makeText(LoginActivity.this, "User with" + user.getDisplayName() + "does does not exist", Toast.LENGTH_SHORT).show();
                                                                 // WE HAVE TO UPDATE THE CURRENT UI AND GO TO THE NEXT ACTIVITY WHICH IS MAP

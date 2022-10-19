@@ -98,6 +98,7 @@ public class ResidentialInfo extends AppCompatActivity {
     ImageButton       services;
     ImageButton  expectedshipping;
     ImageButton       adminprofile;
+    ImageButton deletebutton;
 
 
 
@@ -152,7 +153,7 @@ public class ResidentialInfo extends AppCompatActivity {
         services = (ImageButton) findViewById(R.id.services);
         expectedshipping = (ImageButton) findViewById(R.id.expectedshipping);
         adminprofile = (ImageButton) findViewById(R.id.adminprofile);
-
+        deletebutton = (ImageButton) findViewById(R.id.deletebutton);
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -203,6 +204,8 @@ public class ResidentialInfo extends AppCompatActivity {
                         saveUserInformation();
                     }
                 });
+
+
                 if (movetonext != null) {
                     movetonext.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -217,13 +220,18 @@ public class ResidentialInfo extends AppCompatActivity {
                             }
                         }
                     });
+
+                    if (deletebutton != null) {
+                        deletebutton.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                               deleteUserInformation();
+                            }
+                        });
+                    }
                 }
-
-
             }
-
         }
-
     }
     //POPULATE THE EDIT BOX IF THERE ALREADY EXIST SUCH A TRANSACTION
     public void getUserInfo(){
@@ -343,6 +351,80 @@ public class ResidentialInfo extends AppCompatActivity {
 
         }
 
+
+    public void deleteUserInformation() {
+        themailingaddressstring = "";
+        thegpscodestring = "";
+        thestreetaddressstring = ""; // GET THE INFORMATION FROM THE TEXT BOX
+
+        residenceinfoapprove = "false";
+
+
+
+        // GET DATES FOR PRODUCTS
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat currentDate = new SimpleDateFormat("MMM dd, yyyy");
+
+        if (currentDate != null) {
+            date = currentDate.format(calendar.getTime()).toString();
+
+            SimpleDateFormat currentTime = new SimpleDateFormat("HH:mm:ss a");
+            if (currentTime != null) {
+                time = currentTime.format(calendar.getTime());
+
+            }
+
+
+            if (themailingaddressstring != null && thegpscodestring != null && thestreetaddressstring != null) {
+
+
+                mProgress.setMessage("Deleting Residence Information For Approval");
+
+                mProgress.show();
+
+
+
+
+                // PICK UP THE SPECIAL PRODUCT INFO AND LOADING THEM INTO THE DATABASE
+                ResidentialInfoSubmitModel residentialinfotobesent = new ResidentialInfoSubmitModel( themailingaddressstring , thegpscodestring, thestreetaddressstring,residenceinfoapprove);
+
+                mApproval.setValue(residentialinfotobesent, new
+                        DatabaseReference.CompletionListener() {
+                            @Override
+                            public void onComplete(DatabaseError databaseError, DatabaseReference
+                                    databaseReference) {
+                                Toast.makeText(getApplicationContext(), "Remove Residence Info Code Information To Approval", Toast.LENGTH_SHORT).show();
+                                Intent residentialinofoapprove = new Intent(ResidentialInfo.this, ResidentialInfo.class);
+
+                                startActivity(residentialinofoapprove);
+
+                            }
+                        });
+/*
+                    mUserDatabase.setValue(residentialinfotobesent, new
+                            DatabaseReference.CompletionListener() {
+                                @Override
+                                public void onComplete(DatabaseError databaseError, DatabaseReference
+                                        databaseReference) {
+                                    Toast.makeText(getApplicationContext(), "Add Residence Info Code Information To Approval", Toast.LENGTH_SHORT).show();
+                                    Intent residentialinofoapprove = new Intent(ResidentialInfo.this, SecurityInfo.class);
+                                    residentialinofoapprove.putExtra("userID", userID);
+                                    residentialinofoapprove.putExtra("approvalID", approvalID);
+                                    residentialinofoapprove.putExtra("role", role);
+                                    startActivity(residentialinofoapprove);
+
+                                }
+                            });
+
+*/
+
+
+                mProgress.dismiss();
+            }
+
+        };
+
+    }
 
 
 
