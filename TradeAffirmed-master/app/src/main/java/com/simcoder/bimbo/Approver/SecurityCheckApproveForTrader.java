@@ -523,7 +523,7 @@ public  class SecurityCheckApproveForTrader extends AppCompatActivity
 
             Query queryhere =
 
-                    FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").orderByChild("tid").equalTo(userID);
+                    FirebaseDatabase.getInstance().getReference().child("Approval").orderByChild("tid").equalTo(userID);
             if (queryhere != null) {
 
                 FirebaseRecyclerOptions<Users> options =

@@ -157,6 +157,7 @@ public  class AllCandidatesApprovedForClients extends AppCompatActivity
     Button backtopreviouspage;
     Button      nextallcandidates;
     String  email,gender, age, country, personalinfoapprovestatus;
+    Button gotopendingpage;
 /*
     addnewproducthere
             allproductshere
@@ -232,6 +233,7 @@ public  class AllCandidatesApprovedForClients extends AppCompatActivity
 
         backtopreviouspage = (Button)findViewById(R.id.backtopreviouspage);
         nextallcandidates = (Button) findViewById(R.id.nextallcandidates);
+        gotopendingpage = (Button)findViewById(R.id.gotopendingpage);
 
 
 
@@ -350,6 +352,7 @@ public  class AllCandidatesApprovedForClients extends AppCompatActivity
         public  TextView thestatustextbox;
         public Button backtopreviouspage;
         public Button nextallcandidates;
+        public  Button gotopendingpage;
 
 
         public android.widget.ImageView personalimageofapprovedperson;
@@ -364,6 +367,7 @@ public  class AllCandidatesApprovedForClients extends AppCompatActivity
             backtopreviouspage = itemView.findViewById(R.id.backtopreviouspage);
             nextallcandidates = itemView.findViewById(R.id.nextallcandidates);
             personalimageofapprovedperson = itemView.findViewById(R.id.personalimageofapprovedperson);
+            gotopendingpage = itemView.findViewById(R.id.gotopendingpage);
 
 
         }
@@ -437,7 +441,7 @@ public  class AllCandidatesApprovedForClients extends AppCompatActivity
 
             Query queryhere =
 
-                    FirebaseDatabase.getInstance().getReference().child("Approval").orderByChild("statusidentifier").equalTo("approvedCustomer");
+                    FirebaseDatabase.getInstance().getReference().child("Approval").orderByChild("status").equalTo("true");
             if (queryhere != null) {
 
                 FirebaseRecyclerOptions<AllCandidatesApproved> options =
@@ -514,7 +518,7 @@ public  class AllCandidatesApprovedForClients extends AppCompatActivity
 
                         @Nullable
                         View view = LayoutInflater.from(parent.getContext())
-                                .inflate(R.layout.allcandidatesapprovedforclient, parent, false);
+                                .inflate(R.layout.initialallcandidatesapprovedforclient, parent, false);
 
                         return new AllCandidatesApprovedForClientsViewHolder(view);
                     }
@@ -533,11 +537,9 @@ public  class AllCandidatesApprovedForClients extends AppCompatActivity
                             holders = holder;
 
 
-
                             holder.textboxforapprovedpersonname.setText(status);
                             holder.theUIDtextbox.setText(approvername);
                             holder.thestatustextbox.setText(uid);
-
                             Log.d(TAG, "All Candidate Approved For Clients " + status + approvername );
                             holder.setpersonalimageofapprovedperson(getApplicationContext(), approverimage);
 
@@ -545,7 +547,7 @@ public  class AllCandidatesApprovedForClients extends AppCompatActivity
                                 holder.nextallcandidates.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View view) {
-                                        Intent candidatesapprovedintent = new Intent(AllCandidatesApprovedForClients.this, BackgroundInfoApproveForCustomer.class);
+                                        Intent candidatesapprovedintent = new Intent(AllCandidatesApprovedForClients.this, AllCandidatesPersonalApprovedForClients.class);
                                         candidatesapprovedintent.putExtra("role", role);
                                         candidatesapprovedintent.putExtra("uid", uid);
                                         candidatesapprovedintent.putExtra("approverID", approverID);
@@ -562,7 +564,7 @@ public  class AllCandidatesApprovedForClients extends AppCompatActivity
                                 holder.backtopreviouspage.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View view) {
-                                        Intent backtopreviouspageintent = new Intent(AllCandidatesApprovedForClients.this, ApprovalViewPendingForClient.class);
+                                        Intent backtopreviouspageintent = new Intent(AllCandidatesApprovedForClients.this, CustomerApprovalClickToView.class);
 
                                         startActivity(backtopreviouspageintent);
 
@@ -571,7 +573,17 @@ public  class AllCandidatesApprovedForClients extends AppCompatActivity
                             }
 
 
+                            if (holder.gotopendingpage != null) {
+                                holder.gotopendingpage.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        Intent gotopendingpageintent = new Intent(AllCandidatesApprovedForClients.this, ApprovalViewPendingForClient.class);
 
+                                        startActivity(gotopendingpageintent);
+
+                                    }
+                                });
+                            }
                         }
                     }
 

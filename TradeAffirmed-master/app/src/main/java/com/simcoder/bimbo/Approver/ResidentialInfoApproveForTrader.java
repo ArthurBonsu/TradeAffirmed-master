@@ -472,7 +472,7 @@ public  class ResidentialInfoApproveForTrader extends AppCompatActivity
 
             Query queryhere =
 
-                    FirebaseDatabase.getInstance().getReference().child("Users").child("Drivers").orderByChild("tid").equalTo(userID);
+                    FirebaseDatabase.getInstance().getReference().child("Approval").orderByChild("tid").equalTo(userID);
             if (queryhere != null) {
 
                 FirebaseRecyclerOptions<Users> options =

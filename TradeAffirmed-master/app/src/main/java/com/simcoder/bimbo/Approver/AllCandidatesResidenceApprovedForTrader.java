@@ -1,33 +1,30 @@
 package com.simcoder.bimbo.Approver;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
-import com.google.android.material.navigation.NavigationView;
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.ViewGroup;
-import android.widget.ImageButton;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.firebase.ui.database.SnapshotParser;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -38,12 +35,13 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
-import com.google.firebase.storage.StorageReference;
 import com.rey.material.widget.ImageView;
 import com.simcoder.bimbo.Admin.AdminAddNewProductActivityII;
 import com.simcoder.bimbo.Admin.AdminAllCustomers;
@@ -53,7 +51,6 @@ import com.simcoder.bimbo.Admin.AdminCustomerServed;
 import com.simcoder.bimbo.Admin.AdminNewOrdersActivity;
 import com.simcoder.bimbo.Admin.AdminPaymentHere;
 import com.simcoder.bimbo.Admin.AdminSettings;
-import com.simcoder.bimbo.Admin.AllCandidates;
 import com.simcoder.bimbo.Admin.AllGoodsBought;
 import com.simcoder.bimbo.Admin.AllProductsPurchased;
 import com.simcoder.bimbo.Admin.NotTraderActivity;
@@ -61,51 +58,43 @@ import com.simcoder.bimbo.Admin.SearchForAdminProductsActivity;
 import com.simcoder.bimbo.Admin.TradersFollowing;
 import com.simcoder.bimbo.Admin.ViewAllCarts;
 import com.simcoder.bimbo.Admin.ViewAllCustomers;
-import com.simcoder.bimbo.Model.PersonalInfoSubmitModel;
-import com.simcoder.bimbo.Model.Users;
-import com.simcoder.bimbo.WorkActivities.CartActivity;
-import com.simcoder.bimbo.WorkActivities.HomeActivity;
 import com.simcoder.bimbo.DriverMapActivity;
 import com.simcoder.bimbo.HistoryActivity;
 import com.simcoder.bimbo.Interface.ItemClickListner;
-import com.firebase.ui.database.FirebaseRecyclerAdapter;
-import com.firebase.ui.database.FirebaseRecyclerOptions;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+import com.simcoder.bimbo.Model.AllCandidatesApproved;
 import com.simcoder.bimbo.R;
+import com.simcoder.bimbo.WorkActivities.CartActivity;
 import com.simcoder.bimbo.WorkActivities.TraderProfile;
 import com.simcoder.bimbo.instagram.Home.InstagramHomeActivity;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.paperdb.Paper;
 
-
-public  class PersonalInfoApproveForClient extends AppCompatActivity
+public  class AllCandidatesResidenceApprovedForTrader extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     DatabaseReference ProductsRef;
     private DatabaseReference Userdetails;
     private DatabaseReference ProductsRefwithproduct;
+    private  DatabaseReference UsersRef;
     private RecyclerView recyclerView;
     RecyclerView.LayoutManager layoutManager;
-    DatabaseReference UsersRef;
+
+    DatabaseReference AllOrderDatabaseRef;
     DatabaseReference FollowerDatabaseReference;
     String productkey;
     String traderkeyhere;
-    private String type = "";
-    String traderoruser = "";
+    private String role = "";
+    String traderID = "";
     private static final int RC_SIGN_IN = 1;
     private FirebaseAuth.AuthStateListener firebaseAuthListener;
     String ProductID;
     FirebaseDatabase myfirebaseDatabase;
     FirebaseDatabase FollowerDatabase;
-    String gender;
-    public ViewHolder holders;
+
+    public AllCandidatesApprovedForClientsViewHolder holders;
 
     public FirebaseRecyclerAdapter feedadapter;
 
@@ -145,70 +134,57 @@ public  class PersonalInfoApproveForClient extends AppCompatActivity
     String shippingcost;
     String state;
     String thecustomersjob;
+    String orderkey;
 
+    Getmyfollowings getmyfollowingsagain;
     String userkey;
-
-    private RecyclerView productsList;
-    private DatabaseReference cartListRef;
-    private Query mQueryTraderandUserCart;
-    private String userID = "";
-    String traderID = "";
-    Query QueryUser;
-    String role;
-    String cartkey;
-    String photoid;
-    String getimage;
-    DatabaseReference myreferencetoimage;
-    String productID;
-
-    ImageButton ApprovalButtton;
-    ImageButton RejectButton;
-    ImageButton PauseButton;
-
-    ImageView ProfileImageofPerson;
-    TextView NameofPerson;
-    TextView PhoneNumberofPerson;
-    TextView PersonEmail;
-    TextView Gender;
-    TextView Age;
-    String email;
-    String age;
-    TextView candidateuserid;
-    String 
-personalinfoapprovestatus = "approved";
-    //
-    //AUTHENTICATORS
-    android.widget.ImageView admincartimageofproduct;
-    TextView admincartproductid;
-    TextView admincarttitlehere;
-    TextView admincartquantity;
-    TextView admincart_price;
-    TextView admincarttime;
-
-    ImageView admincartimageofuser;
-    TextView admincartusername;
-    ImageButton candidateapprovebackbutton;
-    ImageButton candidateapprovenextbutton;
-
-    ImageView admincartimageofprouct;
-    String traderuser;
-    String trader;
-    private Uri mImageUri = null;
-    private static final int GALLERY_REQUEST = 1;
-    private StorageReference mStorage;
-    private DatabaseReference mDatabase;
-    private DatabaseReference mDatabaseCHURCHCHOSEN;
-    private ProgressDialog mProgress;
-    String approverID;
+    TextView  orderid;
+    TextView customername;
+    TextView thetradername;
+    TextView orderedtime;
+    TextView ordereddate;
+    String newornot;
+    String   aid;
+    String  approvername;
     String approvalID;
-    String personalinfoapproveactivity = "personalinfoapproveact";
+    String userID;
+    ImageView personalimageofapprovedperson;
+    TextView  textboxforapprovedpersonname;
+    TextView theUIDtextbox;
+    TextView       thestatustextbox;
+    Button backtopreviouspage;
+    Button      nextallcandidates;
+    String  email,gender, age, country, personalinfoapprovestatus;
+/*
+    addnewproducthere
+            allproductshere
+    allproductspurchased
+            viewallcustomershere
+    tradersfollowing
+            Maintainnewordershere
+    AdminNewOrders
+            allcustomersincart
+    allcustomersserved
+            allorders
+  */
+
+    TextView    theuserstatus;
+    ImageView   theapproverhomepic;
+    TextView   theuiditself;
+    TextView theapprovername;
+    Button   theapprovalpendingstatusdetails;
+    Button   nextoftheprofile;
+    Button  backoftheprofile;
+    String approverID;
+    String  status, approverimage;
+    String emcountry, ememail,empersionid, emphone, empidtype, backgroundinfostatus;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(
-                (R.layout.stickynoterecycler));
-
+                (R.layout.activityhomeforadmin));
 
         Intent roleintent = getIntent();
         if (roleintent.getExtras().getString("role") != null) {
@@ -217,52 +193,52 @@ personalinfoapprovestatus = "approved";
 
         Intent approverIDintent = getIntent();
         if (approverIDintent.getExtras().getString("approverID") != null) {
-            approverID= approverIDintent.getExtras().getString("approverID");
+            approverID = approverIDintent.getExtras().getString("approverID");
         }
         Intent userIDIntent = getIntent();
         if (userIDIntent.getExtras().getString("userID") != null) {
-            userID= userIDIntent.getExtras().getString("userID");
+            userID = userIDIntent.getExtras().getString("userID");
         }
 
 
 
         Intent approvalIDintent = getIntent();
         if (approvalIDintent.getExtras().getString("approvalID") != null) {
-            approvalID= approvalIDintent.getExtras().getString("approvalID");
+            approvalID = approvalIDintent.getExtras().getString("approvalID");
         }
 
 
-        recyclerView = findViewById(R.id.stickyheaderrecyler);
+
+        recyclerView = findViewById(R.id.recycler_menu);
+
+
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        layoutManager.setReverseLayout(true);
+        layoutManager.setStackFromEnd(true);
         if (recyclerView != null) {
             recyclerView.setLayoutManager(layoutManager);
         }
-        if (recyclerView != null) {
+     /*  if (recyclerView != null) {
             recyclerView.setHasFixedSize(true);
 
         }
+*/
+        personalimageofapprovedperson = (ImageView)findViewById(R.id.personalimageofapprovedperson);
+        textboxforapprovedpersonname = (TextView)findViewById(R.id.textboxforapprovedpersonname);
+        theUIDtextbox = (TextView)findViewById(R.id.theUIDtextbox);
+        thestatustextbox = (TextView)findViewById(R.id.thestatustextbox);
 
-        ApprovalButtton = (ImageButton) findViewById(R.id.approve);
-        RejectButton = (ImageButton) findViewById(R.id.reject);
-        PauseButton = (ImageButton) findViewById(R.id.pauseapproval);
+        backtopreviouspage = (Button)findViewById(R.id.backtopreviouspage);
+        nextallcandidates = (Button) findViewById(R.id.nextallcandidates);
 
-        ProfileImageofPerson = (ImageView) findViewById(R.id.candidateprofileimage);
-        NameofPerson = (TextView) findViewById(R.id.candidatename);
-        PhoneNumberofPerson = (TextView) findViewById(R.id.candidatephonenumber);
-        PersonEmail = (TextView) findViewById(R.id.candidateemail);
-        Gender = (TextView) findViewById(R.id.candidategender);
-        Age = (TextView) findViewById(R.id.candidateage);
-        candidateuserid = (TextView) findViewById(R.id.candidateuserid);
-        candidateapprovebackbutton =  (ImageButton) findViewById(R.id.candidateapproveback);
-                candidateapprovenextbutton = (ImageButton) findViewById(R.id.candidateapprovenext);
+
 
         Paper.init(this);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.hometoolbar);
         if (toolbar != null) {
-            toolbar.setTitle("Personal Information Activity");
+            toolbar.setTitle("All Candidates Approved Page");
         }
-//        setSupportActionBar(toolbar);
 
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -282,7 +258,6 @@ personalinfoapprovestatus = "approved";
             TextView userNameTextView = headerView.findViewById(R.id.user_profile_name);
             CircleImageView profileImageView = headerView.findViewById(R.id.user_profile_image);
 
-
             // USER
 
 
@@ -301,22 +276,28 @@ personalinfoapprovestatus = "approved";
                 }
 
 
+                myfirebaseDatabase = FirebaseDatabase.getInstance();
+
+                UsersRef = myfirebaseDatabase.getReference().child("Users");
+
+
+                userkey = UsersRef.getKey();
+                // GET FROM FOLLOWING KEY
+
+
+                fetch();
+                recyclerView.setAdapter(feedadapter);
+
+
                 if (mAuth != null) {
                     user = mAuth.getCurrentUser();
                     if (user != null) {
-                        userID = user.getUid();
+                        approverID= user.getUid();
 
                     }
 
-                    myfirebaseDatabase = FirebaseDatabase.getInstance();
 
-                    UsersRef = myfirebaseDatabase.getReference().child("Users");
-
-                    userkey = UsersRef.getKey();
-                    // GET FROM FOLLOWING KEY
-                    fetch();
-                    recyclerView.setAdapter(feedadapter);
-                    //        setSupportActionBar(toolbar);
+//        setSupportActionBar(toolbar);
 
                     GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestIdToken(getString(R.string.default_web_client_id)).requestEmail().build();
                     if (mGoogleApiClient != null) {
@@ -325,7 +306,7 @@ personalinfoapprovestatus = "approved";
                     }
 
                     if (mGoogleApiClient != null) {
-                        mGoogleApiClient = new GoogleApiClient.Builder(this).enableAutoManage(PersonalInfoApproveForClient.this,
+                        mGoogleApiClient = new GoogleApiClient.Builder(this).enableAutoManage(AllCandidatesResidenceApprovedForTrader.this,
                                 new GoogleApiClient.OnConnectionFailedListener() {
                                     @Override
                                     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
@@ -333,6 +314,8 @@ personalinfoapprovestatus = "approved";
                                     }
                                 }).addApi(Auth.GOOGLE_SIGN_IN_API, gso).build();
                     }
+
+
                     // USER
                     user = mAuth.getCurrentUser();
 
@@ -340,49 +323,46 @@ personalinfoapprovestatus = "approved";
                 }
             }
         }
-    }    //GETFOLLOWING WILL PULL FROM DIFFERENT DATASTORE( THE USER DATASTORE)
+    }
 
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public interface Getmyfollowings {
+
+        void onCallback(String followingid, String followingname, String followingimage);
+
+
+    }
+
+
+
+
+
+    //GETFOLLOWING WILL PULL FROM DIFFERENT DATASTORE( THE USER DATASTORE)
+
+
+    public class AllCandidatesApprovedForClientsViewHolder extends RecyclerView.ViewHolder {
         public LinearLayout root;
 
-        public ImageButton ApprovalButtton;
-        public ImageButton RejectButton;
-        public ImageButton PauseButton;
-        public TextView NameofPerson;
-
-        public TextView PhoneNumberofPerson;
-        public TextView PersonEmail;
-        public TextView Gender;
-        public TextView Age;
-        public TextView candidateuserid;
-        public android.widget.ImageView ProfileImageofPerson;
-
-        public ImageButton candidateapprovebackbutton;
-        public ImageButton candidateapprovenextbutton;
+        public TextView textboxforapprovedpersonname;
+        public TextView theUIDtextbox;
+        public  TextView thestatustextbox;
+        public Button backtopreviouspage;
+        public Button nextallcandidates;
 
 
+        public android.widget.ImageView personalimageofapprovedperson;
         public ItemClickListner listner;
 
-        public ViewHolder(View itemView) {
+        public AllCandidatesApprovedForClientsViewHolder(View itemView) {
             super(itemView);
 
+            textboxforapprovedpersonname = itemView.findViewById(R.id.textboxforapprovedpersonname);
+            theUIDtextbox = itemView.findViewById(R.id.theUIDtextbox);
+            thestatustextbox = itemView.findViewById(R.id.thestatustextbox);
+            backtopreviouspage = itemView.findViewById(R.id.backtopreviouspage);
+            nextallcandidates = itemView.findViewById(R.id.nextallcandidates);
+            personalimageofapprovedperson = itemView.findViewById(R.id.personalimageofapprovedperson);
 
-            ApprovalButtton = itemView.findViewById(R.id.approve);
-            RejectButton = itemView.findViewById(R.id.reject);
-            PauseButton = itemView.findViewById(R.id.pauseapproval);
-
-            ProfileImageofPerson = itemView.findViewById(R.id.candidateprofileimage);
-
-            NameofPerson = itemView.findViewById(R.id.candidatename);
-            PhoneNumberofPerson = itemView.findViewById(R.id.candidatephonenumber);
-            PersonEmail = itemView.findViewById(R.id.candidateemail);
-            Gender = itemView.findViewById(R.id.candidategender);
-            Age = itemView.findViewById(R.id.candidateage);
-            candidateuserid = itemView.findViewById((R.id.candidateuserid));
-
-            candidateapprovebackbutton = itemView.findViewById(R.id.candidateapproveback );
-            candidateapprovenextbutton = itemView.findViewById(R.id.candidateapprovenext);
 
         }
 
@@ -390,41 +370,30 @@ personalinfoapprovestatus = "approved";
             this.listner = listner;
         }
 
-        public void setnameofcandidateid(String ourfcandidateid) {
 
-            candidateuserid.setText(ourfcandidateid);
+        public void settextboxforapprovedpersonname(String _textboxforapprovedpersonname) {
+
+            textboxforapprovedpersonname.setText(_textboxforapprovedpersonname);
         }
 
-        public void setnameofcandidate(String nameofcandidate) {
+        public void settheUIDtextbox(String _theUIDtextbox) {
 
-            NameofPerson.setText(nameofcandidate);
-        }
-
-        public void setphonenumberofcandidate(String phonenumberofcadidate) {
-
-            PhoneNumberofPerson.setText(phonenumberofcadidate);
-        }
-
-        public void setpersonemail(String personemailinfo) {
-
-            PersonEmail.setText(personemailinfo);
-        }
-
-        public void setgenderifo(String genderifo) {
-
-            Gender.setText(genderifo);
-        }
-
-        public void setageinfohere(String ageinfo) {
-
-            Age.setText(ageinfo);
+            theUIDtextbox.setText(_theUIDtextbox);
         }
 
 
-        public void setcandidateprofileimage(final Context ctx, final String image) {
-            final android.widget.ImageView candidateprofileimage = (android.widget.ImageView) itemView.findViewById(R.id.candidateprofileimage);
+        public void setthestatustextbox(String _thestatustextbox) {
 
-            Picasso.get().load(image).resize(400, 0).networkPolicy(NetworkPolicy.OFFLINE).into(candidateprofileimage, new Callback() {
+            thestatustextbox.setText(_thestatustextbox);
+        }
+
+
+
+
+        public void setpersonalimageofapprovedperson(final Context ctx, final String image) {
+            final android.widget.ImageView personalimageofapprovedperson = (android.widget.ImageView) itemView.findViewById(R.id.personalimageofapprovedperson);
+
+            Picasso.get().load(image).resize(400, 0).networkPolicy(NetworkPolicy.OFFLINE).into(personalimageofapprovedperson, new Callback() {
 
 
                 @Override
@@ -434,19 +403,20 @@ personalinfoapprovestatus = "approved";
 
                 @Override
                 public void onError(Exception e) {
-                    Picasso.get().load(image).resize(100, 0).into(candidateprofileimage);
+                    Picasso.get().load(image).resize(100, 0).into(personalimageofapprovedperson);
                 }
 
 
             });
         }
 
-    }
-
-    ;
 
 
-    public void useValue(String yourValue) {
+
+    };
+
+
+    public void useValue (String yourValue){
 
         Log.d(TAG, "countryNameCode: " + yourValue);
 
@@ -457,75 +427,94 @@ personalinfoapprovestatus = "approved";
         if (mAuth != null) {
             user = mAuth.getCurrentUser();
             if (user != null) {
-                traderID = user.getUid();
+                approverID = user.getUid();
 
             }
+
             @Nullable
 
             Query queryhere =
 
-                    FirebaseDatabase.getInstance().getReference().child("Approval").orderByChild("uid").equalTo(userID);
+                    FirebaseDatabase.getInstance().getReference().child("Approval").orderByChild("residenceinfoapprovestatus").equalTo("approve");
             if (queryhere != null) {
 
-                FirebaseRecyclerOptions<PersonalInfoSubmitModel> options =
-                        new FirebaseRecyclerOptions.Builder<PersonalInfoSubmitModel>()
-                                .setQuery(queryhere, new SnapshotParser<PersonalInfoSubmitModel>() {
+                FirebaseRecyclerOptions<AllCandidatesApproved> options =
+                        new FirebaseRecyclerOptions.Builder<AllCandidatesApproved>()
+                                .setQuery(queryhere, new SnapshotParser<AllCandidatesApproved>() {
 
 
                                     @Nullable
                                     @Override
-                                    public PersonalInfoSubmitModel parseSnapshot(@Nullable DataSnapshot snapshot) {
+                                    public AllCandidatesApproved parseSnapshot(@Nullable DataSnapshot snapshot) {
 
 
                                       /*
                                       String commentkey = snapshot.child("Comments").getKey();
-                                      String likekey = snapshot.child("Likes").getKey();*/
-                                        Log.i(TAG, "PersonalInfoSubmitModel " + snapshot);
+                                      String likekey = snapshot.child("Likes").getKey();
+                                      */
 
-                                        if (snapshot.child("uid").getValue() != null) {
+                                        Log.i(TAG, "All Candidates Approved Personal Info" + snapshot);
+
+
+                                        if (snapshot.child("approvalID").getValue(String.class) != null) {
+                                            approvalID = snapshot.child("approvalID").getValue(String.class);
+                                        }
+
+                                        if (snapshot.child("uid").getValue(String.class) != null) {
                                             uid = snapshot.child("uid").getValue(String.class);
                                         }
 
-                                        if (snapshot.child("name").getValue() != null) {
-                                            name = snapshot.child("name").getValue(String.class);
+                                        if (snapshot.child("tid").getValue(String.class) != null) {
+                                            tid = snapshot.child("tid").getValue(String.class);
                                         }
-
-                                        if (snapshot.child("image").getValue() != null) {
-                                            image = snapshot.child("image").getValue(String.class);
-                                        }
-
-
-                                        if (snapshot.child("phone").getValue() != null) {
-                                            phone = snapshot.child("phone").getValue(String.class);
-                                        }
-                                        if (snapshot.child("email").getValue() != null) {
-                                            email = snapshot.child("email").getValue(String.class);
-                                        }
-                                        if (snapshot.child("gender").getValue() != null) {
-                                            gender = snapshot.child("gender").getValue(String.class);
-                                        }
-                                        if (snapshot.child("age").getValue() != null) {
+                                        if (snapshot.child("age").getValue(String.class) != null) {
                                             age = snapshot.child("age").getValue(String.class);
                                         }
+                                        if (snapshot.child("name").getValue(String.class) != null) {
+                                            name = snapshot.child("name").getValue(String.class);
+                                        }
+                                        if (snapshot.child("image").getValue(String.class) != null) {
+                                            image = snapshot.child("image").getValue(String.class);
+                                        }
+                                        if (snapshot.child("email").getValue(String.class) != null) {
+                                            email = snapshot.child("email").getValue(String.class);
+                                        }
+                                        if (snapshot.child("aid").getValue(String.class) != null) {
+                                            aid = snapshot.child("aid").getValue(String.class);
+                                        }
+                                        if (snapshot.child("status").getValue(String.class) != null) {
+                                            status = snapshot.child("status").getValue(String.class);
+                                        }
+                                        if (snapshot.child("gender").getValue(String.class) != null) {
+                                            gender = snapshot.child("gender").getValue(String.class);
+                                        }
+                                        if (snapshot.child("country").getValue(String.class) != null) {
+                                            country = snapshot.child("country").getValue(String.class);
+                                        }
+                                        if (snapshot.child("date").getValue(String.class) != null) {
+                                            date = snapshot.child("date").getValue(String.class);
+                                        }
 
-                                        return new PersonalInfoSubmitModel(uid, name, image, phone, email, gender, age);
 
+
+
+
+                                        return new AllCandidatesApproved(approvalID, uid,tid,age, name, image,email,  aid, status,gender, country,date);
 
                                     }
-
                                 }).build();
 
 
-                feedadapter = new FirebaseRecyclerAdapter<PersonalInfoSubmitModel, ViewHolder>(options) {
+                feedadapter = new FirebaseRecyclerAdapter<AllCandidatesApproved, AllCandidatesResidenceApprovedForTrader.AllCandidatesApprovedForClientsViewHolder>(options) {
                     @Nullable
                     @Override
-                    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+                    public AllCandidatesApprovedForClientsViewHolder onCreateViewHolder(ViewGroup parent, int viewrole) {
 
                         @Nullable
                         View view = LayoutInflater.from(parent.getContext())
-                                .inflate(R.layout.personalinfoapprove, parent, false);
+                                .inflate(R.layout.allcandidatesapprovedforclient, parent, false);
 
-                        return new ViewHolder(view);
+                        return new AllCandidatesApprovedForClientsViewHolder(view);
                     }
 
 
@@ -534,260 +523,121 @@ personalinfoapprovestatus = "approved";
                         return super.getItemCount();
                     }
 
+
+
                     @Override
-                    protected void onBindViewHolder(@Nullable final ViewHolder holder, int position, @Nullable PersonalInfoSubmitModel model) {
+                    protected void onBindViewHolder(@Nullable final AllCandidatesResidenceApprovedForTrader.AllCandidatesApprovedForClientsViewHolder holder, int position, @Nullable AllCandidatesApproved model) {
                         if (model != null) {
+                            holders = holder;
 
 
-                            holder.NameofPerson.setText( name);
-                            holder.PhoneNumberofPerson.setText(phone);
-                            holder.PersonEmail.setText(email);
-                            holder.Gender.setText(gender);
-                            holder.Age.setText(age);
-                            holder.candidateuserid.setText(uid);
-
-                            Log.d(TAG, "Personal Approval Info" + name);
-                            holder.setcandidateprofileimage(getApplicationContext(), image);
 
 
-                            if (ProfileImageofPerson != null) {
-                                Picasso.get().load(image).placeholder(R.drawable.profile).into(ProfileImageofPerson);
-                            }
+                            holder.textboxforapprovedpersonname.setText(status);
+                            holder.theUIDtextbox.setText(approvername);
+                            holder.thestatustextbox.setText(uid);
 
+                            Log.d(TAG, "Residence Approved For Clients " + status + approvername );
+                            holder.setpersonalimageofapprovedperson(getApplicationContext(), approverimage);
 
-                            holder.ApprovalButtton.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    
-personalinfoapprovestatus = "approve";
-                                    setDecision(
-personalinfoapprovestatus);
-                                    Intent approvalintent = new Intent(PersonalInfoApproveForClient.this, PersonalInfoApproveForClient.class);
-                                    approvalintent.putExtra("role", role);
-                                    approvalintent.putExtra("uid", uid);
-                                    approvalintent.putExtra("approverID", approverID);
-                                    approvalintent.putExtra("approvalID", approvalID);
-                                    approvalintent.putExtra("userID", userID);
-
-                                    Toast.makeText(PersonalInfoApproveForClient.this, "Candidate has been approved", Toast.LENGTH_SHORT).show();
-                                    startActivity(approvalintent);
-                                }
-                            });
-
-                            if (holder.RejectButton != null) {
-                                holder.RejectButton.setOnClickListener(new View.OnClickListener() {
+                            if (holder.nextallcandidates != null) {
+                                holder.nextallcandidates.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View view) {
+                                        Intent candidatesapprovedintent = new Intent(AllCandidatesResidenceApprovedForTrader.this, AllCandidatesSecurityApprovedForTrader.class);
+                                        candidatesapprovedintent.putExtra("role", role);
+                                        candidatesapprovedintent.putExtra("uid", uid);
+                                        candidatesapprovedintent.putExtra("approverID", approverID);
+                                        candidatesapprovedintent.putExtra("approvalID", approvalID);
+                                        candidatesapprovedintent.putExtra("userID", userID);
 
-                                          /// Dialog Box
-                                        
-personalinfoapprovestatus = "reject";
-                                        setDecision(
-personalinfoapprovestatus);
-                                        Intent rejectintent = new Intent(PersonalInfoApproveForClient.this, PersonalInfoApproveForClient.class);
-                                        rejectintent.putExtra("role", role);
-                                        rejectintent.putExtra("uid", uid);
-                                        rejectintent.putExtra("approverID", approverID);
-                                        rejectintent.putExtra("approvalID", approvalID);
-                                        rejectintent.putExtra("userID", userID);
-
-                                        Toast.makeText(PersonalInfoApproveForClient.this, "Candidate has been rejected", Toast.LENGTH_SHORT).show();
-                                        startActivity(rejectintent);
-
+                                        startActivity(candidatesapprovedintent);
 
                                     }
                                 });
                             }
 
-                            // Product Details
-                            if (holder.PauseButton != null) {
-                                holder.PauseButton.setOnClickListener(new View.OnClickListener() {
+                            if (holder.backtopreviouspage != null) {
+                                holder.backtopreviouspage.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View view) {
-                                        
-personalinfoapprovestatus = "pause";
-                                        setDecision(
-personalinfoapprovestatus);
-                                        Intent pausebuttonintent = new Intent(PersonalInfoApproveForClient.this, PersonalInfoApproveForClient.class);
-                                        pausebuttonintent.putExtra("role", role);
-                                        pausebuttonintent.putExtra("uid", uid);
-                                        pausebuttonintent.putExtra("approverID", approverID);
-                                        pausebuttonintent.putExtra("approvalID", approvalID);
-                                        pausebuttonintent.putExtra("userID", userID);
+                                        Intent backtopreviouspageintent = new Intent(AllCandidatesResidenceApprovedForTrader.this, AllCandidatesBackgroundApprovedForTrader.class);
 
-
-                                        Toast.makeText(PersonalInfoApproveForClient.this, "Candidate has been paused", Toast.LENGTH_SHORT).show();
-                                        startActivity(pausebuttonintent);
-
-                                    }
-                                });
-                            }
-
-////
-
-
-                            // Product Details
-                            if (holder.candidateapprovebackbutton != null) {
-                                holder.candidateapprovebackbutton.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
-
-                                        Intent candidatebackbutton  = new Intent(PersonalInfoApproveForClient.this, AllCandidates.class);
-                                        candidatebackbutton.putExtra("role", role);
-                                        candidatebackbutton.putExtra("uid", uid);
-                                        candidatebackbutton.putExtra("approverID", approverID);
-                                        candidatebackbutton.putExtra("approvalID", approvalID);
-                                        candidatebackbutton.putExtra("userID", userID);
-
-
-                                        Toast.makeText(PersonalInfoApproveForClient.this, "Back to candidate list", Toast.LENGTH_SHORT).show();
-                                        startActivity(candidatebackbutton);
+                                        startActivity(backtopreviouspageintent);
 
                                     }
                                 });
                             }
 
 
-                            // Product Details
-                            if (holder.candidateapprovenextbutton != null) {
-                                holder.candidateapprovenextbutton.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
-
-                                        Intent caandidateapprovenextbutton = new Intent(PersonalInfoApproveForClient.this, ResidentialInfoApproveForClient.class);
-                                        caandidateapprovenextbutton.putExtra("role", role);
-                                        caandidateapprovenextbutton.putExtra("uid", uid);
-                                        caandidateapprovenextbutton.putExtra("approverID", approverID);
-                                        caandidateapprovenextbutton.putExtra("approvalID", approvalID);
-                                        caandidateapprovenextbutton.putExtra("userID", userID);
-
-                                        Toast.makeText(PersonalInfoApproveForClient.this, "To Residential Page", Toast.LENGTH_SHORT).show();
-
-                                        startActivity(caandidateapprovenextbutton);
-
-                                    }
-                                });
-                            }
 
                         }
                     }
-                };
-            }
-//            if (recyclerView != null) {
-            //              recyclerView.setAdapter(feedadapter);
-            //        }
-        }
-    }
 
-
-    // Post Info
-    private void setDecision(String 
-personalinfoapprovestatus) {
-
-        user = mAuth.getCurrentUser();
-
-        // GET DATES FOR PRODUCTS
-        Calendar calendar = Calendar.getInstance();
-        SimpleDateFormat currentDate = new SimpleDateFormat("MMM dd, yyyy");
-
-        if (currentDate != null) {
-            date = currentDate.format(calendar.getTime()).toString();
-
-            SimpleDateFormat currentTime = new SimpleDateFormat("HH:mm:ss a");
-            if (currentTime != null) {
-                time = currentTime.format(calendar.getTime());
-
-            }
-
-            if (
-personalinfoapprovestatus != null) {
-                mProgress.setMessage("Making +" + 
-personalinfoapprovestatus + "for this current user");
-
-                mProgress.show();
-
-
-
-
-                        // PICK UP THE SPECIAL PRODUCT INFO AND LOADING THEM INTO THE DATABASE
-
-                PersonalInfoSubmitModel newuserapprovalinfo =     new PersonalInfoSubmitModel(uid, name, image, phone, email, gender, age,
-personalinfoapprovestatus);
-                        UsersRef.child(userID).setValue(newuserapprovalinfo, new
-                                DatabaseReference.CompletionListener() {
-                                    @Override
-                                    public void onComplete(DatabaseError databaseError, DatabaseReference
-                                            databaseReference) {
-                                        Toast.makeText(getApplicationContext(), "User Decision Taken as "  +
-personalinfoapprovestatus, Toast.LENGTH_SHORT).show();
-                                        Intent personapprovalloginfointent = new Intent(PersonalInfoApproveForClient.this, HomeActivity.class);
-
-                                        startActivity(personapprovalloginfointent);
-
-                                    }
-                                });
-
-
-                    }
 
                 };
 
 
-                mProgress.dismiss();
 
             }
 
 
 
 
-    public void onConnected(@Nullable Bundle bundle) {
+            if (recyclerView != null) {
+                recyclerView.setAdapter(feedadapter);
+            }
 
-    }
-
-    public void onConnectionSuspended(int i) {
-        if (mGoogleApiClient != null) {
-            mGoogleApiClient.connect();
         }
-    }
-
-
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
     }
-
+    @Nullable
     @Override
-    protected void onStart() {
+    public void onStart() {
         super.onStart();
+        if (feedadapter != null) {
+            feedadapter.startListening();
+        }
 
         firebaseAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
 
-                FirebaseUser user = mAuth.getCurrentUser();
-                if (user != null) {
-                    traderID = "";
-                    traderID = user.getUid();
+                user = mAuth.getCurrentUser();
+                if (mAuth != null) {
+                    if (user != null) {
+
+                        approverID = user.getUid();
+                    }
+
+                    // I HAVE TO TRY TO GET THE SETUP INFORMATION , IF THEY ARE ALREADY PROVIDED WE TAKE TO THE NEXT STAGE
+                    // WHICH IS CUSTOMER TO BE ADDED.
+                    // PULLING DATABASE REFERENCE IS NULL, WE CHANGE BACK TO THE SETUP PAGE ELSE WE GO STRAIGHT TO MAP PAGE
                 }
-
-                // I HAVE TO TRY TO GET THE SETUP INFORMATION , IF THEY ARE ALREADY PROVIDED WE TAKE TO THE NEXT STAGE
-                // WHICH IS CUSTOMER TO BE ADDED.
-                // PULLING DATABASE REFERENCE IS NULL, WE CHANGE BACK TO THE SETUP PAGE ELSE WE GO STRAIGHT TO MAP PAGE
-            }
-        };
-
+            }    };
 
 
         if (mAuth != null) {
             mAuth.addAuthStateListener(firebaseAuthListener);
         }
+
+
+
     }
+
+
     @Override
-    protected void onStop() {
+    public void onStop () {
         super.onStop();
-        if (mAuth !=null) {
+        if (feedadapter != null) {
+            feedadapter.stopListening();
+        }
+        //     mProgress.hide();
+        if (mAuth != null) {
             mAuth.removeAuthStateListener(firebaseAuthListener);
         }
     }
+
 
 
     @Override
@@ -826,17 +676,17 @@ personalinfoapprovestatus, Toast.LENGTH_SHORT).show();
 
 
         if (id == R.id.viewallcustomershere) {
-            if (!type.equals("Trader")) {
+            if (!role.equals("Trader")) {
                 if (FirebaseAuth.getInstance() != null) {
                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                     if (user != null) {
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(PersonalInfoApproveForClient.this, NotTraderActivity.class);
+                        Intent intent = new Intent(AllCandidatesResidenceApprovedForTrader.this, NotTraderActivity.class);
                         if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderoruser);
-                            intent.putExtra("role", type);
+                            intent.putExtra("traderorcustomer", traderID);
+                            intent.putExtra("role", role);
                             startActivity(intent);
                         }
                     }
@@ -849,10 +699,10 @@ personalinfoapprovestatus, Toast.LENGTH_SHORT).show();
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(PersonalInfoApproveForClient.this, AdminAllCustomers.class);
+                        Intent intent = new Intent(AllCandidatesResidenceApprovedForTrader.this, AdminAllCustomers.class);
                         if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderoruser);
-                            intent.putExtra("role", type);
+                            intent.putExtra("traderorcustomer", traderID);
+                            intent.putExtra("role", role);
                             startActivity(intent);
                         }
                     }
@@ -864,17 +714,17 @@ personalinfoapprovestatus, Toast.LENGTH_SHORT).show();
 
         if (id == R.id. allcustomersincart) {
 
-            if (!type.equals("Trader")) {
+            if (!role.equals("Trader")) {
                 if (FirebaseAuth.getInstance() != null) {
                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                     if (user != null) {
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(PersonalInfoApproveForClient.this, NotTraderActivity.class);
+                        Intent intent = new Intent(AllCandidatesResidenceApprovedForTrader.this, NotTraderActivity.class);
                         if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderoruser);
-                            intent.putExtra("role", type);
+                            intent.putExtra("traderorcustomer", traderID);
+                            intent.putExtra("role", role);
                             startActivity(intent);
                         }
                     }
@@ -887,10 +737,10 @@ personalinfoapprovestatus, Toast.LENGTH_SHORT).show();
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(PersonalInfoApproveForClient.this, ViewAllCarts.class);
+                        Intent intent = new Intent(AllCandidatesResidenceApprovedForTrader.this, ViewAllCarts.class);
                         if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderoruser);
-                            intent.putExtra("role", type);
+                            intent.putExtra("traderorcustomer", traderID);
+                            intent.putExtra("role", role);
                             startActivity(intent);
                         }
                     }
@@ -901,17 +751,17 @@ personalinfoapprovestatus, Toast.LENGTH_SHORT).show();
 
 
         if (id == R.id.addnewproducthere) {
-            if (!type.equals("Trader")) {
+            if (!role.equals("Trader")) {
                 if (FirebaseAuth.getInstance() != null) {
                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                     if (user != null) {
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(PersonalInfoApproveForClient.this, NotTraderActivity.class);
+                        Intent intent = new Intent(AllCandidatesResidenceApprovedForTrader.this, NotTraderActivity.class);
                         if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderoruser);
-                            intent.putExtra("role", type);
+                            intent.putExtra("traderorcustomer", traderID);
+                            intent.putExtra("role", role);
                             startActivity(intent);
                         }
                     }
@@ -924,10 +774,10 @@ personalinfoapprovestatus, Toast.LENGTH_SHORT).show();
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(PersonalInfoApproveForClient.this, AdminAddNewProductActivityII.class);
+                        Intent intent = new Intent(AllCandidatesResidenceApprovedForTrader.this, AdminAddNewProductActivityII.class);
                         if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderoruser);
-                            intent.putExtra("role", type);
+                            intent.putExtra("traderorcustomer", traderID);
+                            intent.putExtra("role", role);
                             startActivity(intent);
                         }
                     }
@@ -936,17 +786,17 @@ personalinfoapprovestatus, Toast.LENGTH_SHORT).show();
         }
 
         if (id == R.id.allproductshere) {
-            if (!type.equals("Trader")) {
+            if (!role.equals("Trader")) {
                 if (FirebaseAuth.getInstance() != null) {
                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                     if (user != null) {
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(PersonalInfoApproveForClient.this, NotTraderActivity.class);
+                        Intent intent = new Intent(AllCandidatesResidenceApprovedForTrader.this, NotTraderActivity.class);
                         if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderoruser);
-                            intent.putExtra("role", type);
+                            intent.putExtra("traderorcustomer", traderID);
+                            intent.putExtra("role", role);
                             startActivity(intent);
                         }
                     }
@@ -959,26 +809,26 @@ personalinfoapprovestatus, Toast.LENGTH_SHORT).show();
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(PersonalInfoApproveForClient.this, AdminAllProducts.class);
+                        Intent intent = new Intent(AllCandidatesResidenceApprovedForTrader.this, AdminAllCustomers.class);
                         if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderoruser);
-                            intent.putExtra("role", type);
+                            intent.putExtra("traderorcustomer", traderID);
+                            intent.putExtra("role", role);
                             startActivity(intent);
                         }
                     }}
 
                 if (id == R.id.allproductspurchased) {
-                    if (!type.equals("Trader")) {
+                    if (!role.equals("Trader")) {
                         if (FirebaseAuth.getInstance() != null) {
                             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                             if (user != null) {
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(PersonalInfoApproveForClient.this, NotTraderActivity.class);
+                                Intent intent = new Intent(AllCandidatesResidenceApprovedForTrader.this, NotTraderActivity.class);
                                 if (intent != null) {
-                                    intent.putExtra("traderorcustomer", traderoruser);
-                                    intent.putExtra("role", type);
+                                    intent.putExtra("traderorcustomer", traderID);
+                                    intent.putExtra("role", role);
                                     startActivity(intent);
                                 }
                             }
@@ -991,10 +841,10 @@ personalinfoapprovestatus, Toast.LENGTH_SHORT).show();
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(PersonalInfoApproveForClient.this, AllProductsPurchased.class);
+                                Intent intent = new Intent(AllCandidatesResidenceApprovedForTrader.this, AllProductsPurchased.class);
                                 if (intent != null) {
-                                    intent.putExtra("traderorcustomer", traderoruser);
-                                    intent.putExtra("role", type);
+                                    intent.putExtra("traderorcustomer", traderID);
+                                    intent.putExtra("role", role);
                                     startActivity(intent);
                                 }
                             }
@@ -1004,17 +854,17 @@ personalinfoapprovestatus, Toast.LENGTH_SHORT).show();
 
 
                 if (id == R.id. viewallcustomershere) {
-                    if (!type.equals("Trader")) {
+                    if (!role.equals("Trader")) {
                         if (FirebaseAuth.getInstance() != null) {
                             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                             if (user != null) {
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(PersonalInfoApproveForClient.this, NotTraderActivity.class);
+                                Intent intent = new Intent(AllCandidatesResidenceApprovedForTrader.this, NotTraderActivity.class);
                                 if (intent != null) {
-                                    intent.putExtra("traderorcustomer", traderoruser);
-                                    intent.putExtra("role", type);
+                                    intent.putExtra("traderorcustomer", traderID);
+                                    intent.putExtra("role", role);
                                     startActivity(intent);
                                 }
                             }
@@ -1027,10 +877,10 @@ personalinfoapprovestatus, Toast.LENGTH_SHORT).show();
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(PersonalInfoApproveForClient.this, ViewAllCustomers.class);
+                                Intent intent = new Intent(AllCandidatesResidenceApprovedForTrader.this, ViewAllCustomers.class);
                                 if (intent != null) {
-                                    intent.putExtra("traderorcustomer", traderoruser);
-                                    intent.putExtra("role", type);
+                                    intent.putExtra("traderorcustomer", traderID);
+                                    intent.putExtra("role", role);
                                     startActivity(intent);
                                 }
                             }
@@ -1039,17 +889,17 @@ personalinfoapprovestatus, Toast.LENGTH_SHORT).show();
                 }
 
                 if (id == R.id.tradersfollowing) {
-                    if (!type.equals("Trader")) {
+                    if (!role.equals("Trader")) {
                         if (FirebaseAuth.getInstance() != null) {
                             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                             if (user != null) {
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(PersonalInfoApproveForClient.this, NotTraderActivity.class);
+                                Intent intent = new Intent(AllCandidatesResidenceApprovedForTrader.this, NotTraderActivity.class);
                                 if (intent != null) {
-                                    intent.putExtra("traderorcustomer", traderoruser);
-                                    intent.putExtra("role", type);
+                                    intent.putExtra("traderorcustomer", traderID);
+                                    intent.putExtra("role", role);
                                     startActivity(intent);
                                 }
                             }
@@ -1062,10 +912,10 @@ personalinfoapprovestatus, Toast.LENGTH_SHORT).show();
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(PersonalInfoApproveForClient.this, TradersFollowing.class);
+                                Intent intent = new Intent(AllCandidatesResidenceApprovedForTrader.this, TradersFollowing.class);
                                 if (intent != null) {
-                                    intent.putExtra("traderorcustomer", traderoruser);
-                                    intent.putExtra("role", type);
+                                    intent.putExtra("traderorcustomer", traderID);
+                                    intent.putExtra("role", role);
                                     startActivity(intent);
                                 }
                             }
@@ -1076,17 +926,17 @@ personalinfoapprovestatus, Toast.LENGTH_SHORT).show();
 
                 if (id == R.id.AdminNewOrders) {
 
-                    if (!type.equals("Trader")) {
+                    if (!role.equals("Trader")) {
                         if (FirebaseAuth.getInstance() != null) {
                             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                             if (user != null) {
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(PersonalInfoApproveForClient.this, NotTraderActivity.class);
+                                Intent intent = new Intent(AllCandidatesResidenceApprovedForTrader.this, NotTraderActivity.class);
                                 if (intent != null) {
-                                    intent.putExtra("traderorcustomer", traderoruser);
-                                    intent.putExtra("role", type);
+                                    intent.putExtra("traderorcustomer", traderID);
+                                    intent.putExtra("role", role);
                                     startActivity(intent);
                                 }
                             }
@@ -1099,10 +949,10 @@ personalinfoapprovestatus, Toast.LENGTH_SHORT).show();
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(PersonalInfoApproveForClient.this, AdminNewOrdersActivity.class);
+                                Intent intent = new Intent(AllCandidatesResidenceApprovedForTrader.this, AdminNewOrdersActivity.class);
                                 if (intent != null) {
-                                    intent.putExtra("traderorcustomer", traderoruser);
-                                    intent.putExtra("role", type);
+                                    intent.putExtra("traderorcustomer", traderID);
+                                    intent.putExtra("role", role);
                                     startActivity(intent);
                                 }
                             }
@@ -1113,17 +963,17 @@ personalinfoapprovestatus, Toast.LENGTH_SHORT).show();
 
                 if (id == R.id.allcustomersserved) {
 
-                    if (!type.equals("Trader")) {
+                    if (!role.equals("Trader")) {
                         if (FirebaseAuth.getInstance() != null) {
                             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                             if (user != null) {
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(PersonalInfoApproveForClient.this, NotTraderActivity.class);
+                                Intent intent = new Intent(AllCandidatesResidenceApprovedForTrader.this, NotTraderActivity.class);
                                 if (intent != null) {
-                                    intent.putExtra("traderorcustomer", traderoruser);
-                                    intent.putExtra("role", type);
+                                    intent.putExtra("traderorcustomer", traderID);
+                                    intent.putExtra("role", role);
                                     startActivity(intent);
                                 }
                             }
@@ -1136,10 +986,10 @@ personalinfoapprovestatus, Toast.LENGTH_SHORT).show();
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(PersonalInfoApproveForClient.this, AdminCustomerServed.class);
+                                Intent intent = new Intent(AllCandidatesResidenceApprovedForTrader.this, AdminCustomerServed.class);
                                 if (intent != null) {
-                                    intent.putExtra("traderorcustomer", traderoruser);
-                                    intent.putExtra("role", type);
+                                    intent.putExtra("traderorcustomer", traderID);
+                                    intent.putExtra("role", role);
                                     startActivity(intent);
                                 }
                             }
@@ -1149,17 +999,17 @@ personalinfoapprovestatus, Toast.LENGTH_SHORT).show();
 
                 if (id == R.id.allordershistory) {
 
-                    if (!type.equals("Trader")) {
+                    if (!role.equals("Trader")) {
                         if (FirebaseAuth.getInstance() != null) {
                             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                             if (user != null) {
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(PersonalInfoApproveForClient.this, NotTraderActivity.class);
+                                Intent intent = new Intent(AllCandidatesResidenceApprovedForTrader.this, NotTraderActivity.class);
                                 if (intent != null) {
-                                    intent.putExtra("traderorcustomer", traderoruser);
-                                    intent.putExtra("role", type);
+                                    intent.putExtra("traderorcustomer", traderID);
+                                    intent.putExtra("role", role);
                                     startActivity(intent);
                                 }
                             }
@@ -1172,10 +1022,10 @@ personalinfoapprovestatus, Toast.LENGTH_SHORT).show();
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(PersonalInfoApproveForClient.this, AdminAllOrderHistory.class);
+                                Intent intent = new Intent(AllCandidatesResidenceApprovedForTrader.this, AdminAllOrderHistory.class);
                                 if (intent != null) {
-                                    intent.putExtra("traderorcustomer", traderoruser);
-                                    intent.putExtra("role", type);
+                                    intent.putExtra("traderorcustomer", traderID);
+                                    intent.putExtra("role", role);
                                     startActivity(intent);
                                 }
                             }
@@ -1199,21 +1049,21 @@ personalinfoapprovestatus, Toast.LENGTH_SHORT).show();
         int id = item.getItemId();
 
         if (id == R.id.viewmap) {
-            if (!type.equals("Trader")) {
+            if (!role.equals("Trader")) {
 
-                Intent intent = new Intent(PersonalInfoApproveForClient.this, NotTraderActivity.class);
+                Intent intent = new Intent(AllCandidatesResidenceApprovedForTrader.this, NotTraderActivity.class);
                 if (intent != null) {
-                    intent.putExtra("traderorcustomer", traderoruser);
-                    intent.putExtra("role", type);
+                    intent.putExtra("traderorcustomer", traderID);
+                    intent.putExtra("role", role);
                     startActivity(intent);
                     finish();
                 }
             } else {
 
-                Intent intent = new Intent(PersonalInfoApproveForClient.this, DriverMapActivity.class);
+                Intent intent = new Intent(AllCandidatesResidenceApprovedForTrader.this, DriverMapActivity.class);
                 if (intent != null) {
-                    intent.putExtra("traderorcustomer", traderoruser);
-                    intent.putExtra("role", type);
+                    intent.putExtra("traderorcustomer", traderID);
+                    intent.putExtra("role", role);
                     startActivity(intent);
                     finish();
                 }
@@ -1224,17 +1074,17 @@ personalinfoapprovestatus, Toast.LENGTH_SHORT).show();
 
 
         if (id == R.id.nav_cart) {
-            if (!type.equals("Trader")) {
+            if (!role.equals("Trader")) {
                 if (FirebaseAuth.getInstance() != null) {
                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                     if (user != null) {
                         String cusomerId = "";
 
                         cusomerId = user.getUid();
-                        Intent intent = new Intent(PersonalInfoApproveForClient.this, NotTraderActivity.class);
+                        Intent intent = new Intent(AllCandidatesResidenceApprovedForTrader.this, NotTraderActivity.class);
                         if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderoruser);
-                            intent.putExtra("role", type);
+                            intent.putExtra("traderorcustomer", traderID);
+                            intent.putExtra("role", role);
                             startActivity(intent);
                         }
                     }
@@ -1247,10 +1097,10 @@ personalinfoapprovestatus, Toast.LENGTH_SHORT).show();
                         String cusomerId = "";
                         cusomerId = user.getUid();
 
-                        Intent intent = new Intent(PersonalInfoApproveForClient.this, CartActivity.class);
+                        Intent intent = new Intent(AllCandidatesResidenceApprovedForTrader.this, CartActivity.class);
                         if (intent != null) {
-                            intent.putExtra("traderorcustomer", traderoruser);
-                            intent.putExtra("role", type);
+                            intent.putExtra("traderorcustomer", traderID);
+                            intent.putExtra("role", role);
                             startActivity(intent);
                         }
                     }
@@ -1260,17 +1110,17 @@ personalinfoapprovestatus, Toast.LENGTH_SHORT).show();
 
 
             if (id == R.id.nav_social_media) {
-                if (!type.equals("Trader")) {
+                if (!role.equals("Trader")) {
                     if (FirebaseAuth.getInstance() != null) {
                         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                         if (user != null) {
                             String cusomerId = "";
 
                             cusomerId = user.getUid();
-                            Intent intent = new Intent(PersonalInfoApproveForClient.this, NotTraderActivity.class);
+                            Intent intent = new Intent(AllCandidatesResidenceApprovedForTrader.this, NotTraderActivity.class);
                             if (intent != null) {
-                                intent.putExtra("traderorcustomer", traderoruser);
-                                intent.putExtra("role", type);
+                                intent.putExtra("traderorcustomer", traderID);
+                                intent.putExtra("role", role);
                                 startActivity(intent);
                             }
                         }
@@ -1283,10 +1133,10 @@ personalinfoapprovestatus, Toast.LENGTH_SHORT).show();
                             String cusomerId = "";
                             cusomerId = user.getUid();
 
-                            Intent intent = new Intent(PersonalInfoApproveForClient.this, InstagramHomeActivity.class);
+                            Intent intent = new Intent(AllCandidatesResidenceApprovedForTrader.this, InstagramHomeActivity.class);
                             if (intent != null) {
-                                intent.putExtra("traderorcustomer", traderoruser);
-                                intent.putExtra("role", type);
+                                intent.putExtra("traderorcustomer", traderID);
+                                intent.putExtra("role", role);
                                 startActivity(intent);
                             }
                         }
@@ -1296,17 +1146,17 @@ personalinfoapprovestatus, Toast.LENGTH_SHORT).show();
 
 
                 if (id == R.id.viewproducts) {
-                    if (!type.equals("Trader")) {
+                    if (!role.equals("Trader")) {
                         if (FirebaseAuth.getInstance() != null) {
                             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                             if (user != null) {
                                 String cusomerId = "";
 
                                 cusomerId = user.getUid();
-                                Intent intent = new Intent(PersonalInfoApproveForClient.this, NotTraderActivity.class);
+                                Intent intent = new Intent(AllCandidatesResidenceApprovedForTrader.this, NotTraderActivity.class);
                                 if (intent != null) {
-                                    intent.putExtra("traderorcustomer", traderoruser);
-                                    intent.putExtra("role", type);
+                                    intent.putExtra("traderorcustomer", traderID);
+                                    intent.putExtra("role", role);
                                     startActivity(intent);
                                 }
                             }
@@ -1319,27 +1169,27 @@ personalinfoapprovestatus, Toast.LENGTH_SHORT).show();
                                 String cusomerId = "";
                                 cusomerId = user.getUid();
 
-                                Intent intent = new Intent(PersonalInfoApproveForClient.this, AdminAllProducts.class);
+                                Intent intent = new Intent(AllCandidatesResidenceApprovedForTrader.this, AdminAllProducts.class);
                                 if (intent != null) {
-                                    intent.putExtra("traderorcustomer", traderoruser);
-                                    intent.putExtra("role", type);
+                                    intent.putExtra("traderorcustomer", traderID);
+                                    intent.putExtra("role", role);
                                     startActivity(intent);
                                 }
                             }
                         }
 
                         if (id == R.id.nav_searchforproducts) {
-                            if (!type.equals("Trader")) {
+                            if (!role.equals("Trader")) {
                                 if (FirebaseAuth.getInstance() != null) {
                                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                                     if (user != null) {
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(PersonalInfoApproveForClient.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(AllCandidatesResidenceApprovedForTrader.this, NotTraderActivity.class);
                                         if (intent != null) {
-                                            intent.putExtra("traderorcustomer", traderoruser);
-                                            intent.putExtra("role", type);
+                                            intent.putExtra("traderorcustomer", traderID);
+                                            intent.putExtra("role", role);
                                             startActivity(intent);
                                         }
                                     }
@@ -1352,10 +1202,10 @@ personalinfoapprovestatus, Toast.LENGTH_SHORT).show();
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(PersonalInfoApproveForClient.this, SearchForAdminProductsActivity.class);
+                                        Intent intent = new Intent(AllCandidatesResidenceApprovedForTrader.this, SearchForAdminProductsActivity.class);
                                         if (intent != null) {
-                                            intent.putExtra("traderorcustomer", traderoruser);
-                                            intent.putExtra("role", type);
+                                            intent.putExtra("traderorcustomer", traderID);
+                                            intent.putExtra("role", role);
                                             startActivity(intent);
                                         }
                                     }
@@ -1368,7 +1218,7 @@ personalinfoapprovestatus, Toast.LENGTH_SHORT).show();
                             if (FirebaseAuth.getInstance() != null) {
                                 FirebaseAuth.getInstance().signOut();
                                 if (mGoogleApiClient != null) {
-                                    mGoogleSignInClient.signOut().addOnCompleteListener(PersonalInfoApproveForClient.this,
+                                    mGoogleSignInClient.signOut().addOnCompleteListener(AllCandidatesResidenceApprovedForTrader.this,
                                             new OnCompleteListener<Void>() {
                                                 @Override
                                                 public void onComplete(@NonNull Task<Void> task) {
@@ -1377,7 +1227,7 @@ personalinfoapprovestatus, Toast.LENGTH_SHORT).show();
                                             });
                                 }
                             }
-                            Intent intent = new Intent(PersonalInfoApproveForClient.this, com.simcoder.bimbo.MainActivity.class);
+                            Intent intent = new Intent(AllCandidatesResidenceApprovedForTrader.this, com.simcoder.bimbo.MainActivity.class);
                             if (intent != null) {
                                 startActivity(intent);
                                 finish();
@@ -1385,17 +1235,17 @@ personalinfoapprovestatus, Toast.LENGTH_SHORT).show();
                         }
 
                         if (id == R.id.nav_settings) {
-                            if (!type.equals("Trader")) {
+                            if (!role.equals("Trader")) {
                                 if (FirebaseAuth.getInstance() != null) {
                                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                                     if (user != null) {
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(PersonalInfoApproveForClient.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(AllCandidatesResidenceApprovedForTrader.this, NotTraderActivity.class);
                                         if (intent != null) {
-                                            intent.putExtra("traderorcustomer", traderoruser);
-                                            intent.putExtra("role", type);
+                                            intent.putExtra("traderorcustomer", traderID);
+                                            intent.putExtra("role", role);
                                             startActivity(intent);
                                         }
                                     }
@@ -1408,10 +1258,10 @@ personalinfoapprovestatus, Toast.LENGTH_SHORT).show();
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(PersonalInfoApproveForClient.this, com.simcoder.bimbo.WorkActivities.SettinsActivity.class);
+                                        Intent intent = new Intent(AllCandidatesResidenceApprovedForTrader.this, com.simcoder.bimbo.WorkActivities.SettinsActivity.class);
                                         if (intent != null) {
-                                            intent.putExtra("traderorcustomer", traderoruser);
-                                            intent.putExtra("role", type);
+                                            intent.putExtra("traderorcustomer", traderID);
+                                            intent.putExtra("role", role);
                                             startActivity(intent);
                                         }
                                     }
@@ -1419,17 +1269,17 @@ personalinfoapprovestatus, Toast.LENGTH_SHORT).show();
                             }
                         }
                         if (id == R.id.nav_history) {
-                            if (!type.equals("Trader")) {
+                            if (!role.equals("Trader")) {
                                 if (FirebaseAuth.getInstance() != null) {
                                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                                     if (user != null) {
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(PersonalInfoApproveForClient.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(AllCandidatesResidenceApprovedForTrader.this, NotTraderActivity.class);
                                         if (intent != null) {
-                                            intent.putExtra("traderorcustomer", traderoruser);
-                                            intent.putExtra("role", type);
+                                            intent.putExtra("traderorcustomer", traderID);
+                                            intent.putExtra("role", role);
                                             startActivity(intent);
                                         }
                                     }
@@ -1442,10 +1292,10 @@ personalinfoapprovestatus, Toast.LENGTH_SHORT).show();
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(PersonalInfoApproveForClient.this, HistoryActivity.class);
+                                        Intent intent = new Intent(AllCandidatesResidenceApprovedForTrader.this, HistoryActivity.class);
                                         if (intent != null) {
-                                            intent.putExtra("traderorcustomer", traderoruser);
-                                            intent.putExtra("role", type);
+                                            intent.putExtra("traderorcustomer", traderID);
+                                            intent.putExtra("role", role);
                                             startActivity(intent);
                                         }
                                     }
@@ -1455,17 +1305,17 @@ personalinfoapprovestatus, Toast.LENGTH_SHORT).show();
 
 
                         if (id == R.id.nav_viewprofilehome) {
-                            if (!type.equals("Trader")) {
+                            if (!role.equals("Trader")) {
                                 if (FirebaseAuth.getInstance() != null) {
                                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                                     if (user != null) {
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(PersonalInfoApproveForClient.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(AllCandidatesResidenceApprovedForTrader.this, NotTraderActivity.class);
                                         if (intent != null) {
-                                            intent.putExtra("traderorcustomer", traderoruser);
-                                            intent.putExtra("role", type);
+                                            intent.putExtra("traderorcustomer", traderID);
+                                            intent.putExtra("role", role);
                                             startActivity(intent);
                                         }
                                     }
@@ -1478,10 +1328,10 @@ personalinfoapprovestatus, Toast.LENGTH_SHORT).show();
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(PersonalInfoApproveForClient.this, TraderProfile.class);
+                                        Intent intent = new Intent(AllCandidatesResidenceApprovedForTrader.this, TraderProfile.class);
                                         if (intent != null) {
-                                            intent.putExtra("traderorcustomer", traderoruser);
-                                            intent.putExtra("role", type);
+                                            intent.putExtra("traderorcustomer", traderID);
+                                            intent.putExtra("role", role);
                                             startActivity(intent);
                                         }
                                     }
@@ -1491,17 +1341,17 @@ personalinfoapprovestatus, Toast.LENGTH_SHORT).show();
 
 
                         if (id == R.id.viewallcustomershere) {
-                            if (!type.equals("Trader")) {
+                            if (!role.equals("Trader")) {
                                 if (FirebaseAuth.getInstance() != null) {
                                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                                     if (user != null) {
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(PersonalInfoApproveForClient.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(AllCandidatesResidenceApprovedForTrader.this, NotTraderActivity.class);
                                         if (intent != null) {
-                                            intent.putExtra("traderorcustomer", traderoruser);
-                                            intent.putExtra("role", type);
+                                            intent.putExtra("traderorcustomer", traderID);
+                                            intent.putExtra("role", role);
                                             startActivity(intent);
                                         }
                                     }
@@ -1514,10 +1364,10 @@ personalinfoapprovestatus, Toast.LENGTH_SHORT).show();
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(PersonalInfoApproveForClient.this, AdminAllCustomers.class);
+                                        Intent intent = new Intent(AllCandidatesResidenceApprovedForTrader.this, AdminAllCustomers.class);
                                         if (intent != null) {
-                                            intent.putExtra("traderorcustomer", traderoruser);
-                                            intent.putExtra("role", type);
+                                            intent.putExtra("traderorcustomer", traderID);
+                                            intent.putExtra("role", role);
                                             startActivity(intent);
                                         }
                                     }
@@ -1528,17 +1378,17 @@ personalinfoapprovestatus, Toast.LENGTH_SHORT).show();
 
                         if (id == R.id.addnewproducthere) {
 
-                            if (!type.equals("Trader")) {
+                            if (!role.equals("Trader")) {
                                 if (FirebaseAuth.getInstance() != null) {
                                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                                     if (user != null) {
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(PersonalInfoApproveForClient.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(AllCandidatesResidenceApprovedForTrader.this, NotTraderActivity.class);
                                         if (intent != null) {
-                                            intent.putExtra("traderorcustomer", traderoruser);
-                                            intent.putExtra("role", type);
+                                            intent.putExtra("traderorcustomer", traderID);
+                                            intent.putExtra("role", role);
                                             startActivity(intent);
                                         }
                                     }
@@ -1551,10 +1401,10 @@ personalinfoapprovestatus, Toast.LENGTH_SHORT).show();
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(PersonalInfoApproveForClient.this, AdminAddNewProductActivityII.class);
+                                        Intent intent = new Intent(AllCandidatesResidenceApprovedForTrader.this, AdminAddNewProductActivityII.class);
                                         if (intent != null) {
-                                            intent.putExtra("traderorcustomer", traderoruser);
-                                            intent.putExtra("role", type);
+                                            intent.putExtra("traderorcustomer", traderID);
+                                            intent.putExtra("role", role);
                                             startActivity(intent);
                                         }
                                     }
@@ -1564,17 +1414,17 @@ personalinfoapprovestatus, Toast.LENGTH_SHORT).show();
 
 
                         if (id == R.id.goodsbought) {
-                            if (!type.equals("Trader")) {
+                            if (!role.equals("Trader")) {
                                 if (FirebaseAuth.getInstance() != null) {
                                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                                     if (user != null) {
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(PersonalInfoApproveForClient.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(AllCandidatesResidenceApprovedForTrader.this, NotTraderActivity.class);
                                         if (intent != null) {
-                                            intent.putExtra("traderorcustomer", traderoruser);
-                                            intent.putExtra("role", type);
+                                            intent.putExtra("traderorcustomer", traderID);
+                                            intent.putExtra("role", role);
                                             startActivity(intent);
                                         }
                                     }
@@ -1587,10 +1437,10 @@ personalinfoapprovestatus, Toast.LENGTH_SHORT).show();
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(PersonalInfoApproveForClient.this, AllGoodsBought.class);
+                                        Intent intent = new Intent(AllCandidatesResidenceApprovedForTrader.this, AllGoodsBought.class);
                                         if (intent != null) {
-                                            intent.putExtra("traderorcustomer", traderoruser);
-                                            intent.putExtra("role", type);
+                                            intent.putExtra("traderorcustomer", traderID);
+                                            intent.putExtra("role", role);
                                             startActivity(intent);
                                         }
                                     }
@@ -1600,17 +1450,17 @@ personalinfoapprovestatus, Toast.LENGTH_SHORT).show();
 
 
                         if (id == R.id.nav_paymenthome) {
-                            if (!type.equals("Trader")) {
+                            if (!role.equals("Trader")) {
                                 if (FirebaseAuth.getInstance() != null) {
                                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                                     if (user != null) {
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(PersonalInfoApproveForClient.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(AllCandidatesResidenceApprovedForTrader.this, NotTraderActivity.class);
                                         if (intent != null) {
-                                            intent.putExtra("traderorcustomer", traderoruser);
-                                            intent.putExtra("role", type);
+                                            intent.putExtra("traderorcustomer", traderID);
+                                            intent.putExtra("role", role);
                                             startActivity(intent);
                                         }
                                     }
@@ -1623,10 +1473,10 @@ personalinfoapprovestatus, Toast.LENGTH_SHORT).show();
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(PersonalInfoApproveForClient.this, AdminPaymentHere.class);
+                                        Intent intent = new Intent(AllCandidatesResidenceApprovedForTrader.this, AdminPaymentHere.class);
                                         if (intent != null) {
-                                            intent.putExtra("traderorcustomer", traderoruser);
-                                            intent.putExtra("role", type);
+                                            intent.putExtra("traderorcustomer", traderID);
+                                            intent.putExtra("role", role);
                                             startActivity(intent);
                                         }
                                     }
@@ -1636,17 +1486,17 @@ personalinfoapprovestatus, Toast.LENGTH_SHORT).show();
 
 
                         if (id == R.id.nav_settings) {
-                            if (!type.equals("Trader")) {
+                            if (!role.equals("Trader")) {
                                 if (FirebaseAuth.getInstance() != null) {
                                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                                     if (user != null) {
                                         String cusomerId = "";
 
                                         cusomerId = user.getUid();
-                                        Intent intent = new Intent(PersonalInfoApproveForClient.this, NotTraderActivity.class);
+                                        Intent intent = new Intent(AllCandidatesResidenceApprovedForTrader.this, NotTraderActivity.class);
                                         if (intent != null) {
-                                            intent.putExtra("traderorcustomer", traderoruser);
-                                            intent.putExtra("role", type);
+                                            intent.putExtra("traderorcustomer", traderID);
+                                            intent.putExtra("role", role);
                                             startActivity(intent);
                                         }
                                     }
@@ -1659,10 +1509,10 @@ personalinfoapprovestatus, Toast.LENGTH_SHORT).show();
                                         String cusomerId = "";
                                         cusomerId = user.getUid();
 
-                                        Intent intent = new Intent(PersonalInfoApproveForClient.this, AdminSettings.class);
+                                        Intent intent = new Intent(AllCandidatesResidenceApprovedForTrader.this, AdminSettings.class);
                                         if (intent != null) {
-                                            intent.putExtra("traderorcustomer", traderoruser);
-                                            intent.putExtra("role", type);
+                                            intent.putExtra("traderorcustomer", traderID);
+                                            intent.putExtra("role", role);
                                             startActivity(intent);
                                         }
                                     }
@@ -1674,21 +1524,10 @@ personalinfoapprovestatus, Toast.LENGTH_SHORT).show();
                     }
                 }
 
-
-                return true;
             }
 
-            return true;
         }
-        return true;
-    }
-
-
-}
-
-
-
-// #BuiltByGOD
-
+        return false;
+    }}
 
 

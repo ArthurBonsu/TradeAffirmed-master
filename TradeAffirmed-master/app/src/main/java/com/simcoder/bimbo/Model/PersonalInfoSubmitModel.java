@@ -6,23 +6,35 @@ import java.util.List;
 public class PersonalInfoSubmitModel {
 
     String uid;  String name; String phone; String email; String gender; String age; String country; String personalinfoapprovestatus;
-
+   String  image;
     public PersonalInfoSubmitModel(  String name, String phone, String email, String gender, String age, String country, String personalinfoapprovestatus) {
     }
 
 
-    public PersonalInfoSubmitModel(
-           String uid,  String name, String phone, String email, String gender, String age, String country, String personalinfoapprovestatus
-    ) {
+
+
+    public PersonalInfoSubmitModel(String uid, String name, String image, String phone, String email, String gender, String age, String personalinfoapprovestatus) {
         this.uid = uid;
         this.name= name;
+        this.image = image;
         this.phone = phone;
-        this.email = email;
-        this.gender
-                = gender;
+        this.email =email;
+         this.gender = gender;
         this.age = age;
         this.country = country;
         this.personalinfoapprovestatus = personalinfoapprovestatus;
+
+    }
+
+
+
+    public String getimage() {
+        return image;
+    }
+
+
+    public void setimage(String image) {
+        this.image = image;
     }
 
     public String getUid() {

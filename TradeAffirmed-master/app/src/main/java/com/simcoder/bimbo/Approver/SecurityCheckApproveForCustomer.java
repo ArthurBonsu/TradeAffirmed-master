@@ -521,7 +521,7 @@ public  class SecurityCheckApproveForCustomer extends AppCompatActivity
 
             Query queryhere =
 
-                    FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").orderByChild("uid").equalTo(userID);
+                    FirebaseDatabase.getInstance().getReference().child("Approval").orderByChild("uid").equalTo(userID);
             if (queryhere != null) {
 
                 FirebaseRecyclerOptions<Users> options =

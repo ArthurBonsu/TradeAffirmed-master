@@ -67,6 +67,7 @@ import com.simcoder.bimbo.Admin.ViewAllCustomers;
 import com.simcoder.bimbo.DriverMapActivity;
 import com.simcoder.bimbo.HistoryActivity;
 import com.simcoder.bimbo.Interface.ItemClickListner;
+import com.simcoder.bimbo.Model.PersonalInfoSubmitModel;
 import com.simcoder.bimbo.Model.Users;
 import com.simcoder.bimbo.R;
 import com.simcoder.bimbo.WorkActivities.CartActivity;
@@ -172,7 +173,7 @@ public  class PersonalInfoApproveForTrader extends AppCompatActivity
     String email;
     String age;
     TextView candidateuserid;
-    String personalinforesponse = "approved";
+    String personalinfoapprovestatus = "approved";
     //
     //AUTHENTICATORS
     android.widget.ImageView admincartimageofproduct;
@@ -461,17 +462,17 @@ public  class PersonalInfoApproveForTrader extends AppCompatActivity
 
             Query queryhere =
 
-                    FirebaseDatabase.getInstance().getReference().child("Users").child("Drivers").orderByChild("tid").equalTo(userID);
+                    FirebaseDatabase.getInstance().getReference().child("Approval").orderByChild("tid").equalTo(userID);
             if (queryhere != null) {
 
-                FirebaseRecyclerOptions<Users> options =
-                        new FirebaseRecyclerOptions.Builder<Users>()
-                                .setQuery(queryhere, new SnapshotParser<Users>() {
+                FirebaseRecyclerOptions<PersonalInfoSubmitModel> options =
+                        new FirebaseRecyclerOptions.Builder<PersonalInfoSubmitModel>()
+                                .setQuery(queryhere, new SnapshotParser<PersonalInfoSubmitModel>() {
 
 
                                     @Nullable
                                     @Override
-                                    public Users parseSnapshot(@Nullable DataSnapshot snapshot) {
+                                    public PersonalInfoSubmitModel parseSnapshot(@Nullable DataSnapshot snapshot) {
 
 
                                       /*
@@ -505,7 +506,7 @@ public  class PersonalInfoApproveForTrader extends AppCompatActivity
                                             age = snapshot.child("age").getValue(String.class);
                                         }
 
-                                        return new Users(uid, name, image, phone, email, gender, age);
+                                        return new PersonalInfoSubmitModel(uid, name, image, phone, email, gender, age);
 
 
                                     }
@@ -513,7 +514,7 @@ public  class PersonalInfoApproveForTrader extends AppCompatActivity
                                 }).build();
 
 
-                feedadapter = new FirebaseRecyclerAdapter<Users, ViewHolder>(options) {
+                feedadapter = new FirebaseRecyclerAdapter<PersonalInfoSubmitModel, ViewHolder>(options) {
                     @Nullable
                     @Override
                     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -532,7 +533,7 @@ public  class PersonalInfoApproveForTrader extends AppCompatActivity
                     }
 
                     @Override
-                    protected void onBindViewHolder(@Nullable final ViewHolder holder, int position, @Nullable Users model) {
+                    protected void onBindViewHolder(@Nullable final ViewHolder holder, int position, @Nullable PersonalInfoSubmitModel model) {
                         if (model != null) {
 
 
@@ -555,8 +556,8 @@ public  class PersonalInfoApproveForTrader extends AppCompatActivity
                             holder.ApprovalButtton.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    personalinforesponse = "approve";
-                                    setDecision(personalinforesponse);
+                                    personalinfoapprovestatus = "approve";
+                                    setDecision(personalinfoapprovestatus);
                                     Intent approvalintent = new Intent(PersonalInfoApproveForTrader.this, PersonalInfoApproveForTrader.class);
                                     approvalintent.putExtra("role", role);
                                     approvalintent.putExtra("tid", tid);
@@ -575,8 +576,8 @@ public  class PersonalInfoApproveForTrader extends AppCompatActivity
                                     public void onClick(View view) {
 
                                           /// Dialog Box
-                                        personalinforesponse = "reject";
-                                        setDecision(personalinforesponse);
+                                        personalinfoapprovestatus = "reject";
+                                        setDecision(personalinfoapprovestatus);
                                         Intent rejectintent = new Intent(PersonalInfoApproveForTrader.this, PersonalInfoApproveForTrader.class);
                                         rejectintent.putExtra("role", role);
                                         rejectintent.putExtra("tid", tid);
@@ -597,8 +598,9 @@ public  class PersonalInfoApproveForTrader extends AppCompatActivity
                                 holder.PauseButton.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View view) {
-                                        personalinforesponse = "pause";
-                                        setDecision(personalinforesponse);
+
+                                        personalinfoapprovestatus = "pause";
+                                        setDecision(personalinfoapprovestatus);
                                         Intent pausebuttonintent = new Intent(PersonalInfoApproveForTrader.this, PersonalInfoApproveForTrader.class);
                                         pausebuttonintent.putExtra("role", role);
                                         pausebuttonintent.putExtra("tid", tid);
@@ -671,7 +673,7 @@ public  class PersonalInfoApproveForTrader extends AppCompatActivity
 
 
     // Post Info
-    private void setDecision(String personalinforesponse) {
+    private void setDecision(String personalinfoapprovestatus) {
 
         user = mAuth.getCurrentUser();
 
@@ -688,8 +690,8 @@ public  class PersonalInfoApproveForTrader extends AppCompatActivity
 
             }
 
-            if (personalinforesponse != null) {
-                mProgress.setMessage("Making +" + personalinforesponse + "for this current user");
+            if (personalinfoapprovestatus != null) {
+                mProgress.setMessage("Making +" + personalinfoapprovestatus + "for this current user");
 
                 mProgress.show();
 
@@ -698,13 +700,13 @@ public  class PersonalInfoApproveForTrader extends AppCompatActivity
 
                         // PICK UP THE SPECIAL PRODUCT INFO AND LOADING THEM INTO THE DATABASE
 
-                        Users newuserapprovalinfo =     new Users(tid, name, image, phone, email, gender, age,personalinforesponse,personalinfoapproveactivity);
+                PersonalInfoSubmitModel newuserapprovalinfo =     new PersonalInfoSubmitModel(tid, name, image, phone, email, gender, age,personalinfoapprovestatus);
                         UsersRef.child(userID).setValue(newuserapprovalinfo, new
                                 DatabaseReference.CompletionListener() {
                                     @Override
                                     public void onComplete(DatabaseError databaseError, DatabaseReference
                                             databaseReference) {
-                                        Toast.makeText(getApplicationContext(), "User Decision Taken as "  +personalinforesponse, Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(getApplicationContext(), "Person Decision Taken as "  +personalinfoapprovestatus, Toast.LENGTH_SHORT).show();
                                         Intent personapprovalloginfointent = new Intent(PersonalInfoApproveForTrader.this, HomeActivity.class);
 
                                         startActivity(personapprovalloginfointent);

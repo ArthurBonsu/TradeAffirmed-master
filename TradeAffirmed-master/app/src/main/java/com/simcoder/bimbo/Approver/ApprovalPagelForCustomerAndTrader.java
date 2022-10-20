@@ -145,6 +145,7 @@ public class ApprovalPagelForCustomerAndTrader extends AppCompatActivity impleme
     Button pendingreviewcustomer;
     Button pendingreviewtrader;
     String approverID;
+    Button traderapprovallistbutton, customerapprovallist;
     public ApprovalPagelForCustomerAndTrader() {
         super();
     }
@@ -173,6 +174,8 @@ public class ApprovalPagelForCustomerAndTrader extends AppCompatActivity impleme
         InputProductPrice = (EditText) findViewById(R.id.product_price);
 
         msubmitButton = (Button) findViewById(R.id.add_new_product);
+        traderapprovallistbutton = (Button) findViewById(R.id.traderapprovallistbutton);
+                customerapprovallist = (Button)findViewById(R.id.customerapprovallist);
 
         mAuth = FirebaseAuth.getInstance();
         mCurrentUser = mAuth.getCurrentUser();
@@ -288,12 +291,34 @@ public class ApprovalPagelForCustomerAndTrader extends AppCompatActivity impleme
                 pendingreviewtrader.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent intent = new Intent(ApprovalPagelForCustomerAndTrader.this, ApprovalViewPendingForClient.class);
+                        Intent intent = new Intent(ApprovalPagelForCustomerAndTrader.this, ApprovalViewPendingForTrader.class);
                         intent.putExtra("approverID", approverID);
                         intent.putExtra("role", role);
                         startActivity(intent);
                     }
                 });
+        traderapprovallistbutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ApprovalPagelForCustomerAndTrader.this, TraderApprovalClickToView.class);
+                intent.putExtra("approverID", approverID);
+                intent.putExtra("role", role);
+                startActivity(intent);
+            }
+        });
+        customerapprovallist.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ApprovalPagelForCustomerAndTrader.this, CustomerApprovalClickToView.class);
+                intent.putExtra("approverID", approverID);
+                intent.putExtra("role", role);
+                startActivity(intent);
+            }
+        });
+
+
+
+
     }
 
 

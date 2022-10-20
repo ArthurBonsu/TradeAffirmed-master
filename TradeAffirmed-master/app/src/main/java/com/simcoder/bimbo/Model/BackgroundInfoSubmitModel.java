@@ -6,14 +6,14 @@ import java.util.List;
 
 public class BackgroundInfoSubmitModel {
 
-        String emcountry, ememail, empersionid, emphone, empidtype, uid, backgroundinfostatus;
+        String emcountry, ememail, empersionid, emphone, empidtype, uid, backgroundinfostatus,  empersonname;
 
         public BackgroundInfoSubmitModel( String emcountry, String ememail, String empersionid, String emphone, String empidtype) {
         }
 
 
         public BackgroundInfoSubmitModel(
-                String uid, String emcountry, String ememail, String empersionid, String emphone, String empidtype,String backgroundinfostatus
+                String uid,String empersonname, String emcountry, String ememail, String empersionid, String emphone, String empidtype,String backgroundinfostatus
         ) {
            this.uid = uid;
            this.emcountry= emcountry;
@@ -22,6 +22,7 @@ public class BackgroundInfoSubmitModel {
            this.emphone = emphone;
            this.empidtype = empidtype;
            this.backgroundinfostatus = backgroundinfostatus;
+           this.empersonname = empersonname;
         }
 
         public String getUid() {
@@ -89,7 +90,14 @@ public class BackgroundInfoSubmitModel {
     public void setBackgroundinfostatus(String backgroundinfostatus) {
         this.backgroundinfostatus = backgroundinfostatus;
     }
+    public String getempersonname() {
+        return empersonname;
+    }
 
+
+    public void setempersonname(String empersonname) {
+        this.empersonname = empersonname;
+    }
 
 
 }

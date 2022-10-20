@@ -6,7 +6,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Pending Reviews"
+        android:text="TRADER APPROVED"
         android:textAlignment="center"
         android:gravity="center_horizontal"
         android:layout_marginBottom="15sp">
@@ -22,50 +22,24 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="CUSTOMER"
-            android:id="@+id/pendingreviewcustomer"
+            android:text="VIEW"
+            android:id="@+id/traderclicktoview"
             android:layout_marginRight="40sp">
 
 
         </Button>
-
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="TRADER"
-            android:id="@+id/pendingreviewtrader"
+            android:text="HOME"
+            android:id="@+id/homeclicktoview"
             android:layout_marginRight="40sp">
 
 
         </Button>
+
 
     </LinearLayout>
-    <LinearLayout
-        android:layout_marginTop="40sp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="CUSTOMER APPROVAL"
-            android:id="@+id/customerapprovallist"
-            android:layout_marginRight="40sp">
 
-
-        </Button>
-
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="TRADER APPROVAL"
-            android:id="@+id/traderapprovallistbutton"
-            android:layout_marginRight="40sp">
-
-
-        </Button>
-
-    </LinearLayout>
 </LinearLayout>

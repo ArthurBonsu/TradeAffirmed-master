@@ -60,6 +60,7 @@ import com.simcoder.bimbo.Admin.SearchForAdminProductsActivity;
 import com.simcoder.bimbo.Admin.TradersFollowing;
 import com.simcoder.bimbo.Admin.ViewAllCarts;
 import com.simcoder.bimbo.Admin.ViewAllCustomers;
+import com.simcoder.bimbo.Model.BackgroundInfoSubmitModel;
 import com.simcoder.bimbo.Model.Users;
 import com.simcoder.bimbo.WorkActivities.CartActivity;
 import com.simcoder.bimbo.WorkActivities.HomeActivity;
@@ -172,7 +173,8 @@ public  class BackgroundInfoApproveForCustomer extends AppCompatActivity
     String email;
     String age;
     TextView candidateuserid;
-    String backgroundinforesponse;
+    String 
+backgroundinfostatus;
     String backgroundinfoactivity = "backgroundinfoapproveact";
     String  auxname,auxemail,auxcountry,auxid,auxidtype, auxphone;
     //
@@ -211,6 +213,7 @@ public  class BackgroundInfoApproveForCustomer extends AppCompatActivity
     ImageButton candidateapprovebackbutton;
     ImageButton candidateapprovenextbutton;
     String approverID, approvalID;
+    String  emcountry,empersonname, ememail, empersionid, emphone,  empidtype;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -498,56 +501,60 @@ public  class BackgroundInfoApproveForCustomer extends AppCompatActivity
 
             Query queryhere =
 
-                    FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").orderByChild("uid").equalTo(userID);
+                    FirebaseDatabase.getInstance().getReference().child("Approval").orderByChild("uid").equalTo(userID);
             if (queryhere != null) {
 
-                FirebaseRecyclerOptions<Users> options =
-                        new FirebaseRecyclerOptions.Builder<Users>()
-                                .setQuery(queryhere, new SnapshotParser<Users>() {
+                FirebaseRecyclerOptions<BackgroundInfoSubmitModel> options =
+                        new FirebaseRecyclerOptions.Builder<BackgroundInfoSubmitModel>()
+                                .setQuery(queryhere, new SnapshotParser<BackgroundInfoSubmitModel>() {
 
 
                                     @Nullable
                                     @Override
-                                    public Users parseSnapshot(@Nullable DataSnapshot snapshot) {
+                                    public BackgroundInfoSubmitModel parseSnapshot(@Nullable DataSnapshot snapshot) {
 
 
                                       /*
                                       String commentkey = snapshot.child("Comments").getKey();
                                       String likekey = snapshot.child("Likes").getKey();*/
-                                        Log.i(TAG, "User " + snapshot);
+                                        Log.i(TAG, "BackgroundInfoSubmitModel " + snapshot);
 
                                         if (snapshot.child("uid").getValue() != null) {
                                             uid = snapshot.child("uid").getValue(String.class);
                                         }
-
+                                        if (snapshot.child("empersonname").getValue() != null) {
+                                            empersonname = snapshot.child("empersonname").getValue(String.class);
+                                        }
                                         if (snapshot.child("name").getValue() != null) {
                                             name = snapshot.child("name").getValue(String.class);
                                         }
+                                        if (snapshot.child("emcountry").getValue() != null) {
+                                            emcountry = snapshot.child("emcountry").getValue(String.class);
+                                        }
 
-                                        if (snapshot.child("auxname").getValue() != null) {
-                                            auxname = snapshot.child("auxname").getValue(String.class);
+                                        if (snapshot.child("ememail").getValue() != null) {
+                                            ememail = snapshot.child("ememail").getValue(String.class);
                                         }
 
 
-                                        if (snapshot.child("auxphone").getValue() != null) {
-                                            auxphone = snapshot.child("auxphone").getValue(String.class);
+                                        if (snapshot.child("empersionid").getValue() != null) {
+                                            empersionid = snapshot.child("empersionid").getValue(String.class);
                                         }
-                                        if (snapshot.child("auxemail").getValue() != null) {
-                                            auxemail = snapshot.child("auxemail").getValue(String.class);
-                                        }
-
-                                        if (snapshot.child("auxid").getValue() != null) {
-                                            auxid = snapshot.child("auxid").getValue(String.class);
+                                        if (snapshot.child("emphone").getValue() != null) {
+                                            emphone = snapshot.child("emphone").getValue(String.class);
                                         }
 
-                                        if (snapshot.child("auxidtype").getValue() != null) {
-                                            auxidtype = snapshot.child("auxidtype").getValue(String.class);
+                                        if (snapshot.child("empidtype").getValue() != null) {
+                                            empidtype = snapshot.child("empidtype").getValue(String.class);
                                         }
 
-                                        if (snapshot.child("auxcountry").getValue() != null) {
-                                            auxcountry = snapshot.child("auxcountry").getValue(String.class);
+                                        if (snapshot.child("backgroundinfostatus").getValue() != null) {
+                                            backgroundinfostatus = snapshot.child("backgroundinfostatus").getValue(String.class);
                                         }
-                                        return new Users(uid, name, address, street, gpscode, country);
+
+
+
+                                        return new BackgroundInfoSubmitModel( uid, empersonname,emcountry, ememail, empersionid, emphone,  empidtype, backgroundinfostatus);
 
 
                                     }
@@ -557,7 +564,7 @@ public  class BackgroundInfoApproveForCustomer extends AppCompatActivity
 
 
 
-                feedadapter = new FirebaseRecyclerAdapter<Users, ViewHolder>(options) {
+                feedadapter = new FirebaseRecyclerAdapter<BackgroundInfoSubmitModel, ViewHolder>(options) {
                     @Nullable
                     @Override
                     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -576,7 +583,7 @@ public  class BackgroundInfoApproveForCustomer extends AppCompatActivity
                     }
 
                     @Override
-                    protected void onBindViewHolder(@Nullable final ViewHolder holder, int position, @Nullable Users model) {
+                    protected void onBindViewHolder(@Nullable final ViewHolder holder, int position, @Nullable BackgroundInfoSubmitModel model) {
                         if (model != null) {
 
 
@@ -585,14 +592,14 @@ public  class BackgroundInfoApproveForCustomer extends AppCompatActivity
                             holder.candidateuserid.setText(uid);
 
 
-                            holder.EmergencyPersonName.setText(auxname);
-                            holder.EmergencyPersonPhone.setText(auxphone);
-                            holder.EmergencyPersonEmail.setText(auxemail);
-                            holder.EmergencyPersonType.setText(auxidtype);
-                            holder.EmergencyPersonID.setText(auxid);
-                            holder.EmergencyPersonCountry.setText(auxcountry);
+                            holder.EmergencyPersonName.setText(empersonname);
+                            holder.EmergencyPersonPhone.setText(emphone);
+                            holder.EmergencyPersonEmail.setText(ememail);
+                            holder.EmergencyPersonType.setText(empidtype);
+                            holder.EmergencyPersonID.setText(empersionid);
+                            holder.EmergencyPersonCountry.setText(emcountry);
 
-                            Log.d(TAG, "Residential Approval Info" + name);
+                            Log.d(TAG, "Background Approval Info" + name);
                             holder.setcandidateprofileimage(getApplicationContext(), image);
 
 
@@ -608,8 +615,10 @@ public  class BackgroundInfoApproveForCustomer extends AppCompatActivity
                             holder.ApprovalButtton.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    backgroundinforesponse = "approve";
-                                    setDecision(backgroundinforesponse);
+                                    
+backgroundinfostatus = "approve";
+                                    setDecision(
+backgroundinfostatus);
                                     Intent approvalintent = new Intent(BackgroundInfoApproveForCustomer.this, BackgroundInfoApproveForCustomer.class);
                                     approvalintent.putExtra("role", role);
                                     approvalintent.putExtra("uid", uid);
@@ -625,8 +634,10 @@ public  class BackgroundInfoApproveForCustomer extends AppCompatActivity
                                 holder.RejectButton.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View view) {
-                                        backgroundinforesponse = "reject";
-                                        setDecision(backgroundinforesponse);
+                                        
+backgroundinfostatus = "reject";
+                                        setDecision(
+backgroundinfostatus);
                                         Intent rejectintent = new Intent(BackgroundInfoApproveForCustomer.this, BackgroundInfoApproveForCustomer.class);
                                         rejectintent.putExtra("role", role);
                                         rejectintent.putExtra("uid", uid);
@@ -647,8 +658,10 @@ public  class BackgroundInfoApproveForCustomer extends AppCompatActivity
                                 holder.PauseButton.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View view) {
-                                        backgroundinforesponse = "pause";
-                                        setDecision(backgroundinforesponse);
+                                        
+backgroundinfostatus = "pause";
+                                        setDecision(
+backgroundinfostatus);
                                         Intent pausebuttonintent = new Intent(BackgroundInfoApproveForCustomer.this, BackgroundInfoApproveForCustomer.class);
                                         pausebuttonintent.putExtra("role", role);
                                         pausebuttonintent.putExtra("uid", uid);
@@ -670,14 +683,14 @@ public  class BackgroundInfoApproveForCustomer extends AppCompatActivity
                                     @Override
                                     public void onClick(View view) {
 
-                                        Intent candidatebackbutton  = new Intent(BackgroundInfoApproveForCustomer.this, PersonalInfoApproveForClient.class);
+                                        Intent candidatebackbutton  = new Intent(BackgroundInfoApproveForCustomer.this, ResidentialInfoApproveForClient.class);
                                         candidatebackbutton.putExtra("role", role);
                                         candidatebackbutton.putExtra("uid", uid);
                                         candidatebackbutton.putExtra("approverID", approverID);
                                         candidatebackbutton.putExtra("approvalID", approvalID);
                                         candidatebackbutton.putExtra("userID", userID);
 
-                                        Toast.makeText(BackgroundInfoApproveForCustomer.this, "Back to Residence Approval List", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(BackgroundInfoApproveForCustomer.this, "Back to Residential Approval List", Toast.LENGTH_SHORT).show();
                                         startActivity(candidatebackbutton);
 
                                     }
@@ -691,14 +704,14 @@ public  class BackgroundInfoApproveForCustomer extends AppCompatActivity
                                     @Override
                                     public void onClick(View view) {
 
-                                        Intent caandidateapprovenextbutton = new Intent(BackgroundInfoApproveForCustomer.this, BackgroundInfoApproveForCustomer.class);
+                                        Intent caandidateapprovenextbutton = new Intent(BackgroundInfoApproveForCustomer.this, SecurityCheckApproveForCustomer.class);
                                         caandidateapprovenextbutton.putExtra("role", role);
                                         caandidateapprovenextbutton.putExtra("uid", uid);
                                         caandidateapprovenextbutton.putExtra("approverID", approverID);
                                         caandidateapprovenextbutton.putExtra("approvalID", approvalID);
                                         caandidateapprovenextbutton.putExtra("userID", userID);
 
-                                        Toast.makeText(BackgroundInfoApproveForCustomer.this, "To Security Check Page", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(BackgroundInfoApproveForCustomer.this, "To SecurityCheckApproveForCustomer Page", Toast.LENGTH_SHORT).show();
 
                                         startActivity(caandidateapprovenextbutton);
 
@@ -721,7 +734,8 @@ public  class BackgroundInfoApproveForCustomer extends AppCompatActivity
 
 
     // Post Info
-    private void setDecision(String backgroundinforesponse) {
+    private void setDecision(String 
+backgroundinfostatus) {
 
         user = mAuth.getCurrentUser();
 
@@ -738,8 +752,10 @@ public  class BackgroundInfoApproveForCustomer extends AppCompatActivity
 
             }
 
-            if (backgroundinforesponse != null) {
-                mProgress.setMessage("Making +" + backgroundinforesponse + "for this current user");
+            if (
+backgroundinfostatus != null) {
+                mProgress.setMessage("Making +" + 
+backgroundinfostatus + "for this current user");
 
                 mProgress.show();
 
@@ -748,13 +764,15 @@ public  class BackgroundInfoApproveForCustomer extends AppCompatActivity
 
                 // PICK UP THE SPECIAL PRODUCT INFO AND LOADING THEM INTO THE DATABASE
 
-                Users newuserapprovalinfo = new Users(uid,name, address, street, gpscode, country,backgroundinforesponse,backgroundinfoactivity);
+                Users newuserapprovalinfo = new Users(uid,name, address, street, gpscode, country,
+backgroundinfostatus,backgroundinfoactivity);
                 UsersRef.child(userID).setValue(newuserapprovalinfo, new
                         DatabaseReference.CompletionListener() {
                             @Override
                             public void onComplete(DatabaseError databaseError, DatabaseReference
                                     databaseReference) {
-                                Toast.makeText(getApplicationContext(), "User Decision Taken as "  +backgroundinforesponse, Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getApplicationContext(), "Background Decision Taken as "  +
+backgroundinfostatus, Toast.LENGTH_SHORT).show();
                                 Intent personapprovalloginfointent = new Intent(BackgroundInfoApproveForCustomer.this, HomeActivity.class);
 
                                 startActivity(personapprovalloginfointent);
