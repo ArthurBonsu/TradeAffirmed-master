@@ -491,7 +491,7 @@ public  class ApprovalDirectRejectOrReviewForCustomer extends AppCompatActivity
                                     @Override
                                     public void onClick(View view) {
 
-
+                                            //Sends you to the approval page to start approval
                                         Intent approvalpendingbuttonintent = new Intent(ApprovalDirectRejectOrReviewForCustomer.this, ApprovalPagelForCustomerAndTrader.class);
                                         approvalpendingbuttonintent.putExtra("role", role);
                                         approvalpendingbuttonintent.putExtra("uid", uid);

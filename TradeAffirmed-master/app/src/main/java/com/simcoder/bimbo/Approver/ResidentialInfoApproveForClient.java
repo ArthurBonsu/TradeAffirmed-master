@@ -60,9 +60,8 @@ import com.simcoder.bimbo.Admin.SearchForAdminProductsActivity;
 import com.simcoder.bimbo.Admin.TradersFollowing;
 import com.simcoder.bimbo.Admin.ViewAllCarts;
 import com.simcoder.bimbo.Admin.ViewAllCustomers;
-import com.simcoder.bimbo.Model.Users;
+import com.simcoder.bimbo.Model.ResidentialInfoSubmitModelForClient;
 import com.simcoder.bimbo.WorkActivities.CartActivity;
-import com.simcoder.bimbo.WorkActivities.HomeActivity;
 import com.simcoder.bimbo.DriverMapActivity;
 import com.simcoder.bimbo.HistoryActivity;
 import com.simcoder.bimbo.Interface.ItemClickListner;
@@ -86,12 +85,14 @@ import io.paperdb.Paper;
 
 public  class ResidentialInfoApproveForClient extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+    //These are susbmissions to be made for each of the modules
     DatabaseReference ProductsRef;
     private DatabaseReference Userdetails;
     private DatabaseReference ProductsRefwithproduct;
     private RecyclerView recyclerView;
     RecyclerView.LayoutManager layoutManager;
-    DatabaseReference UsersRef;
+    DatabaseReference ApprovalRef;
+
     DatabaseReference FollowerDatabaseReference;
     String productkey;
     String traderkeyhere;
@@ -143,7 +144,7 @@ public  class ResidentialInfoApproveForClient extends AppCompatActivity
     String shippingcost;
     String state;
     String thecustomersjob;
-
+    String   approvalkey;
     String userkey;
 
     private RecyclerView productsList;
@@ -172,7 +173,7 @@ public  class ResidentialInfoApproveForClient extends AppCompatActivity
     String email;
     String age;
     TextView candidateuserid;
-    String response = "approved";
+    String residenceinfoapprovestatus = "";
     //
     //AUTHENTICATORS
     android.widget.ImageView admincartimageofproduct;
@@ -204,7 +205,8 @@ public  class ResidentialInfoApproveForClient extends AppCompatActivity
     String approverID;
     String approvalID;
 
-    String residentialactivity = "residentialinfoapproveact";
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -267,7 +269,7 @@ public  class ResidentialInfoApproveForClient extends AppCompatActivity
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         if (toolbar != null) {
-            toolbar.setTitle("Personal Information Activity");
+            toolbar.setTitle("Residence Information Activity");
         }
 //        setSupportActionBar(toolbar);
 
@@ -317,9 +319,9 @@ public  class ResidentialInfoApproveForClient extends AppCompatActivity
 
                     myfirebaseDatabase = FirebaseDatabase.getInstance();
 
-                    UsersRef = myfirebaseDatabase.getReference().child("Users");
+                    ApprovalRef = myfirebaseDatabase.getReference().child("Approval");
 
-                    userkey = UsersRef.getKey();
+                    approvalkey = ApprovalRef.getKey();
                     // GET FROM FOLLOWING KEY
                     fetch();
                     recyclerView.setAdapter(feedadapter);
@@ -467,7 +469,7 @@ public  class ResidentialInfoApproveForClient extends AppCompatActivity
         if (mAuth != null) {
             user = mAuth.getCurrentUser();
             if (user != null) {
-                traderID = user.getUid();
+                userID = user.getUid();
 
             }
             @Nullable
@@ -477,20 +479,20 @@ public  class ResidentialInfoApproveForClient extends AppCompatActivity
                     FirebaseDatabase.getInstance().getReference().child("Approval").orderByChild("uid").equalTo(userID);
             if (queryhere != null) {
 
-                FirebaseRecyclerOptions<Users> options =
-                        new FirebaseRecyclerOptions.Builder<Users>()
-                                .setQuery(queryhere, new SnapshotParser<Users>() {
+                FirebaseRecyclerOptions<ResidentialInfoSubmitModelForClient> options =
+                        new FirebaseRecyclerOptions.Builder<ResidentialInfoSubmitModelForClient>()
+                                .setQuery(queryhere, new SnapshotParser<ResidentialInfoSubmitModelForClient>() {
 
 
                                     @Nullable
                                     @Override
-                                    public Users parseSnapshot(@Nullable DataSnapshot snapshot) {
+                                    public ResidentialInfoSubmitModelForClient parseSnapshot(@Nullable DataSnapshot snapshot) {
 
 
                                       /*
                                       String commentkey = snapshot.child("Comments").getKey();
                                       String likekey = snapshot.child("Likes").getKey();*/
-                                        Log.i(TAG, "User " + snapshot);
+                                        Log.i(TAG, "ResidentialInfoSubmitModel " + snapshot);
 
                                         if (snapshot.child("uid").getValue() != null) {
                                             uid = snapshot.child("uid").getValue(String.class);
@@ -514,8 +516,11 @@ public  class ResidentialInfoApproveForClient extends AppCompatActivity
                                         if (snapshot.child("country").getValue() != null) {
                                             country = snapshot.child("country").getValue(String.class);
                                         }
+                                        if (snapshot.child("residenceinfoapprovestatus").getValue() != null) {
+                                            residenceinfoapprovestatus = snapshot.child("residenceinfoapprovestatus").getValue(String.class);
+                                        }
 
-                                        return new Users(uid, name, address, street, gpscode, country);
+                                        return new ResidentialInfoSubmitModelForClient( address, street, gpscode, country);
 
 
                                     }
@@ -523,7 +528,7 @@ public  class ResidentialInfoApproveForClient extends AppCompatActivity
                                 }).build();
 
 
-                feedadapter = new FirebaseRecyclerAdapter<Users, ViewHolder>(options) {
+                feedadapter = new FirebaseRecyclerAdapter<ResidentialInfoSubmitModelForClient, ViewHolder>(options) {
                     @Nullable
                     @Override
                     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -542,7 +547,7 @@ public  class ResidentialInfoApproveForClient extends AppCompatActivity
                     }
 
                     @Override
-                    protected void onBindViewHolder(@Nullable final ViewHolder holder, int position, @Nullable Users model) {
+                    protected void onBindViewHolder(@Nullable final ViewHolder holder, int position, @Nullable ResidentialInfoSubmitModelForClient model) {
                         if (model != null) {
 
 
@@ -552,9 +557,9 @@ public  class ResidentialInfoApproveForClient extends AppCompatActivity
                             holder.CandidateAddress.setText(email);
                             holder.CandidateStreet.setText(gender);
                             holder.CandidateGPSCode.setText(age);
-                            holder.CandidateCountry.setText(uid);
+                            holder.CandidateCountry.setText(country);
 
-                            Log.d(TAG, "Residential Approval Info" + name);
+                            Log.d(TAG, "ResidentialInfoSubmitModel Approval Info" + name);
                             holder.setcandidateprofileimage(getApplicationContext(), image);
 
 
@@ -570,12 +575,12 @@ public  class ResidentialInfoApproveForClient extends AppCompatActivity
                             holder.ApprovalButtton.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    response = "approve";
-                                    setDecision(response);
+                                    residenceinfoapprovestatus = "approvedCustomer";
+                                    setDecision(residenceinfoapprovestatus);
                                     Intent approvalintent = new Intent(ResidentialInfoApproveForClient.this, ResidentialInfoApproveForClient.class);
                                     approvalintent.putExtra("role", role);
                                     approvalintent.putExtra("uid", uid);
-                                    approvalintent.putExtra("traderID", traderID);
+                                    approvalintent.putExtra("userID", userID);
                                     Toast.makeText(ResidentialInfoApproveForClient.this, "Candidate has been approved", Toast.LENGTH_SHORT).show();
                                     startActivity(approvalintent);
                                 }
@@ -585,12 +590,12 @@ public  class ResidentialInfoApproveForClient extends AppCompatActivity
                                 holder.RejectButton.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View view) {
-                                        response = "reject";
-                                        setDecision(response);
+                                        residenceinfoapprovestatus = "rejectCustomer";
+                                        setDecision(residenceinfoapprovestatus);
                                         Intent rejectintent = new Intent(ResidentialInfoApproveForClient.this, ResidentialInfoApproveForClient.class);
                                         rejectintent.putExtra("role", role);
                                         rejectintent.putExtra("uid", uid);
-                                        rejectintent.putExtra("traderID", traderID);
+                                        rejectintent.putExtra("userID", userID);
                                         Toast.makeText(ResidentialInfoApproveForClient.this, "Candidate has been rejected", Toast.LENGTH_SHORT).show();
                                         startActivity(rejectintent);
 
@@ -604,8 +609,8 @@ public  class ResidentialInfoApproveForClient extends AppCompatActivity
                                 holder.PauseButton.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View view) {
-                                        response = "pause";
-                                        setDecision(response);
+                                        residenceinfoapprovestatus = "pause";
+                                        setDecision(residenceinfoapprovestatus);
                                         Intent pausebuttonintent = new Intent(ResidentialInfoApproveForClient.this, ResidentialInfoApproveForClient.class);
                                         pausebuttonintent.putExtra("role", role);
                                         pausebuttonintent.putExtra("uid", uid);
@@ -629,7 +634,7 @@ public  class ResidentialInfoApproveForClient extends AppCompatActivity
                                         candidatebackbutton.putExtra("uid", uid);
 
                                         /// Controllers
-                                        candidatebackbutton.putExtra("traderID", traderID);
+                                        candidatebackbutton.putExtra("userID", userID);
 
                                         Toast.makeText(ResidentialInfoApproveForClient.this, "Back to candidate list", Toast.LENGTH_SHORT).show();
                                         startActivity(candidatebackbutton);
@@ -648,8 +653,8 @@ public  class ResidentialInfoApproveForClient extends AppCompatActivity
                                         Intent caandidateapprovenextbutton = new Intent(ResidentialInfoApproveForClient.this, BackgroundInfoApproveForCustomer.class);
                                         caandidateapprovenextbutton.putExtra("role", role);
                                         caandidateapprovenextbutton.putExtra("uid", uid);
-                                        caandidateapprovenextbutton.putExtra("traderID", traderID);
-                                        Toast.makeText(ResidentialInfoApproveForClient.this, "To BackgroundCheckPage", Toast.LENGTH_SHORT).show();
+                                        caandidateapprovenextbutton.putExtra("userID", userID);
+                                        Toast.makeText(ResidentialInfoApproveForClient.this, "To Residential Page", Toast.LENGTH_SHORT).show();
 
                                         startActivity(caandidateapprovenextbutton);
 
@@ -672,7 +677,7 @@ public  class ResidentialInfoApproveForClient extends AppCompatActivity
 
 
     // Post Info
-    private void setDecision(String response) {
+    private void setDecision(String residenceinfoapprovestatus) {
 
         user = mAuth.getCurrentUser();
 
@@ -689,8 +694,8 @@ public  class ResidentialInfoApproveForClient extends AppCompatActivity
 
             }
 
-            if (response != null) {
-                mProgress.setMessage("Making +" + response + "for this current user");
+            if (residenceinfoapprovestatus != null) {
+                mProgress.setMessage("Making +" + residenceinfoapprovestatus + "for this current user");
 
                 mProgress.show();
 
@@ -698,16 +703,16 @@ public  class ResidentialInfoApproveForClient extends AppCompatActivity
 
 
                 // PICK UP THE SPECIAL PRODUCT INFO AND LOADING THEM INTO THE DATABASE
-                Users newuserapprovalinfo =     new Users(uid, name, address, street, gpscode, country,response,residentialactivity);
-                UsersRef.child(userID).setValue(newuserapprovalinfo, new
+                ResidentialInfoSubmitModelForClient newuserapprovalinfo =     new ResidentialInfoSubmitModelForClient( address ,gpscode, street,residenceinfoapprovestatus);
+                ApprovalRef.child(approvalID).setValue(newuserapprovalinfo, new
                         DatabaseReference.CompletionListener() {
                             @Override
                             public void onComplete(DatabaseError databaseError, DatabaseReference
                                     databaseReference) {
-                                Toast.makeText(getApplicationContext(), "User Decision Taken as "  +response, Toast.LENGTH_SHORT).show();
-                                Intent personapprovalloginfointent = new Intent(ResidentialInfoApproveForClient.this, HomeActivity.class);
+                                Toast.makeText(getApplicationContext(), "Residential Approval Decision "  +residenceinfoapprovestatus, Toast.LENGTH_SHORT).show();
+                                Intent residentialapproveforintent = new Intent(ResidentialInfoApproveForClient.this, ResidentialInfoApproveForClient.class);
 
-                                startActivity(personapprovalloginfointent);
+                                startActivity(residentialapproveforintent);
 
                             }
                         });

@@ -4,15 +4,15 @@ package com.simcoder.bimbo.Model;
 import com.simcoder.bimbo.instagram.Models.Like;
 
 import java.util.List;
-public class ResidentialInfoSubmitModel {
+public class ResidentialInfoSubmitModelForTrader {
 
     String address , gpscode, street,residenceinfoapprovestatus;
 
-    public ResidentialInfoSubmitModel(    String gpscode, String  street,String residenceinfoapprovestatus) {
+    public ResidentialInfoSubmitModelForTrader(String gpscode, String  street, String residenceinfoapprovestatus) {
     }
 
 
-    public ResidentialInfoSubmitModel(
+    public ResidentialInfoSubmitModelForTrader(
             String address , String gpscode, String  street,String residenceinfoapprovestatus
     ) {
         this.address = address;

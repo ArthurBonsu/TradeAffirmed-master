@@ -79,6 +79,7 @@ import io.paperdb.Paper;
 
 public  class ApprovalDirectRejectOrReviewForTrader extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+    //Here we approve or reject both the status
     DatabaseReference ProductsRef;
     private DatabaseReference Userdetails;
     private DatabaseReference ProductsRefwithproduct;

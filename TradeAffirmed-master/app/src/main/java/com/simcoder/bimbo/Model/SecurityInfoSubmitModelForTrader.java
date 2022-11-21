@@ -4,27 +4,33 @@ package com.simcoder.bimbo.Model;
 import com.simcoder.bimbo.instagram.Models.Like;
 
 import java.util.List;
-public class SecurityInfoSubmitModel {
+public class SecurityInfoSubmitModelForTrader {
 
-    String gpscode , gpsimage, securityinfoapprovestatus, securityapprovalapprove, status, approvalID;
-
-    public SecurityInfoSubmitModel(  String gpsimage,String securityinfoapprovestatus) {
-    }
+    String gpscode , gpsimage, securityinfoapprovestatus, securityapprovalapprove, status, approvalID, uid, tid, natidimage;
 
 
-    public SecurityInfoSubmitModel(
-            String gpscode, String gpsimage,String approvalID, String  securityinfoapprovestatus, String status
+
+    public SecurityInfoSubmitModelForTrader (
+            String  tid, String gpscode,String  gpsimage,String natidimage, String approvalID, String securityinfoapprovestatus
     ) {
+        this.tid =tid;
         this.gpscode = gpscode;
-        this.gpsimage= gpsimage;
-
+        this.gpsimage = gpsimage;
+        this.natidimage = natidimage;
+        this.approvalID = approvalID;
         this.securityinfoapprovestatus = securityinfoapprovestatus;
-        this.status = status;
-        this.approvalID =approvalID;
 
     }
 
 
+    public String gettid() {
+        return tid;
+    }
+
+
+    public void settid(String tid) {
+        this.tid = tid;
+    }
     public String getsecurityinfoapprovestatus() {
         return securityinfoapprovestatus;
     }

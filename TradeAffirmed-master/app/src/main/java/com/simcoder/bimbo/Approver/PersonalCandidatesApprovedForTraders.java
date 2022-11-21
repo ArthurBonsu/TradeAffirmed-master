@@ -61,7 +61,7 @@ import com.simcoder.bimbo.Admin.ViewAllCustomers;
 import com.simcoder.bimbo.DriverMapActivity;
 import com.simcoder.bimbo.HistoryActivity;
 import com.simcoder.bimbo.Interface.ItemClickListner;
-import com.simcoder.bimbo.Model.PersonalInfoSubmitModel;
+import com.simcoder.bimbo.Model.PersonalInfoSubmitModelForClient;
 import com.simcoder.bimbo.R;
 import com.simcoder.bimbo.WorkActivities.CartActivity;
 import com.simcoder.bimbo.WorkActivities.TraderProfile;
@@ -437,14 +437,14 @@ public  class PersonalCandidatesApprovedForTraders extends AppCompatActivity
                     FirebaseDatabase.getInstance().getReference().child("Approval").orderByChild("statusidentifier").equalTo("approvedTrader");
             if (queryhere != null) {
 
-                FirebaseRecyclerOptions<PersonalInfoSubmitModel> options =
-                        new FirebaseRecyclerOptions.Builder<PersonalInfoSubmitModel>()
-                                .setQuery(queryhere, new SnapshotParser<PersonalInfoSubmitModel>() {
+                FirebaseRecyclerOptions<PersonalInfoSubmitModelForClient> options =
+                        new FirebaseRecyclerOptions.Builder<PersonalInfoSubmitModelForClient>()
+                                .setQuery(queryhere, new SnapshotParser<PersonalInfoSubmitModelForClient>() {
 
 
                                     @Nullable
                                     @Override
-                                    public PersonalInfoSubmitModel parseSnapshot(@Nullable DataSnapshot snapshot) {
+                                    public PersonalInfoSubmitModelForClient parseSnapshot(@Nullable DataSnapshot snapshot) {
 
 
                                       /*
@@ -483,12 +483,12 @@ public  class PersonalCandidatesApprovedForTraders extends AppCompatActivity
                                             personalinfoapprovestatus = snapshot.child("personalinfoapprovestatus").getValue(String.class);
                                         }
 
-                                        return new PersonalInfoSubmitModel(tid, name, phone, email, gender, age, country, personalinfoapprovestatus);
+                                        return new PersonalInfoSubmitModelForClient(tid, name, phone, email, gender, age, country, personalinfoapprovestatus);
 
                                     }
                                 }).build();
 
-                feedadapter = new FirebaseRecyclerAdapter<PersonalInfoSubmitModel, PersonalCandidatesApprovedForTraders.PersonalCandidatesApprovedForTradersViewHolder>(options) {
+                feedadapter = new FirebaseRecyclerAdapter<PersonalInfoSubmitModelForClient, PersonalCandidatesApprovedForTraders.PersonalCandidatesApprovedForTradersViewHolder>(options) {
                     @Nullable
                     @Override
                     public PersonalCandidatesApprovedForTradersViewHolder onCreateViewHolder(ViewGroup parent, int viewrole) {
@@ -509,7 +509,7 @@ public  class PersonalCandidatesApprovedForTraders extends AppCompatActivity
 
 
                     @Override
-                    protected void onBindViewHolder(@Nullable final PersonalCandidatesApprovedForTraders.PersonalCandidatesApprovedForTradersViewHolder holder, int position, @Nullable PersonalInfoSubmitModel model) {
+                    protected void onBindViewHolder(@Nullable final PersonalCandidatesApprovedForTraders.PersonalCandidatesApprovedForTradersViewHolder holder, int position, @Nullable PersonalInfoSubmitModelForClient model) {
                         if (model != null) {
                             holders = holder;
 

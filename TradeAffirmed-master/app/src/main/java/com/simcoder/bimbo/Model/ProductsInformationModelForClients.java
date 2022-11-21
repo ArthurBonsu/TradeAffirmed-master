@@ -4,7 +4,7 @@ import com.simcoder.bimbo.instagram.Models.Like;
 
 import java.util.List;
 
-public class ProductsInformationModel
+public class ProductsInformationModelForClients
 {
     private String name,   time,   price,desc, pid, image;
 
@@ -38,11 +38,11 @@ public class ProductsInformationModel
 
 
 
-    public ProductsInformationModel() {
+    public ProductsInformationModelForClients() {
     }
     //careful of deliverID and deliveryID
     /// DRIVERS AVAILABLE // DRIVERS WORKING
-    public ProductsInformationModel( String name,String time, String  price, String pid, String image) {
+    public ProductsInformationModelForClients(String name, String time, String  price, String pid, String image) {
 
 
 
@@ -69,8 +69,8 @@ public class ProductsInformationModel
     }
 
 
-    public ProductsInformationModel(String comment, String uid, List<Like> likes, String date, String time, String tid, String name, String number, String subject, String likeid, String pid, String commentkey, String photoid, String orderkey,
-                   String reply, String replyid, String traderimage, String tradername, String pname, String pimage, String image, String likenumber
+    public ProductsInformationModelForClients(String comment, String uid, List<Like> likes, String date, String time, String tid, String name, String number, String subject, String likeid, String pid, String commentkey, String photoid, String orderkey,
+                                              String reply, String replyid, String traderimage, String tradername, String pname, String pimage, String image, String likenumber
     ) {
         this.comment = comment;
         this.uid = uid;

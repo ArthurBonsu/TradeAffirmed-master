@@ -61,13 +61,9 @@ import com.simcoder.bimbo.Admin.ViewAllCustomers;
 import com.simcoder.bimbo.DriverMapActivity;
 import com.simcoder.bimbo.HistoryActivity;
 import com.simcoder.bimbo.Interface.ItemClickListner;
-import com.simcoder.bimbo.Model.BackgroundInfoSubmitModel;
-import com.simcoder.bimbo.Model.PersonalInfoSubmitModel;
-import com.simcoder.bimbo.Model.ResidentialInfoSubmitModel;
-import com.simcoder.bimbo.Model.SecurityInfoSubmitModel;
+import com.simcoder.bimbo.Model.SecurityInfoSubmitModelForClient;
 import com.simcoder.bimbo.R;
 import com.simcoder.bimbo.WorkActivities.CartActivity;
-import com.simcoder.bimbo.WorkActivities.SecurityInfo;
 import com.simcoder.bimbo.WorkActivities.TraderProfile;
 import com.simcoder.bimbo.instagram.Home.InstagramHomeActivity;
 import com.squareup.picasso.Callback;
@@ -79,6 +75,7 @@ import io.paperdb.Paper;
 
 public  class SecurityCandidatesApprovedForClients extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+    //These are susbmissions to be made for each of the modules
     DatabaseReference ProductsRef;
     private DatabaseReference Userdetails;
     private DatabaseReference ProductsRefwithproduct;
@@ -185,6 +182,7 @@ public  class SecurityCandidatesApprovedForClients extends AppCompatActivity
     String  approverimage;
     String emcountry, ememail,empersionid, emphone, empidtype, backgroundinfostatus;
     String  street;
+    String natidimage;
 
 
     @Override
@@ -442,14 +440,14 @@ public  class SecurityCandidatesApprovedForClients extends AppCompatActivity
                     FirebaseDatabase.getInstance().getReference().child("Approval").orderByChild("statusidentifier").equalTo("approvedCustomer");
             if (queryhere != null) {
 
-                FirebaseRecyclerOptions<SecurityInfoSubmitModel> options =
-                        new FirebaseRecyclerOptions.Builder<SecurityInfoSubmitModel>()
-                                .setQuery(queryhere, new SnapshotParser<SecurityInfoSubmitModel>() {
+                FirebaseRecyclerOptions<SecurityInfoSubmitModelForClient> options =
+                        new FirebaseRecyclerOptions.Builder<SecurityInfoSubmitModelForClient>()
+                                .setQuery(queryhere, new SnapshotParser<SecurityInfoSubmitModelForClient>() {
 
 
                                     @Nullable
                                     @Override
-                                    public SecurityInfoSubmitModel parseSnapshot(@Nullable DataSnapshot snapshot) {
+                                    public SecurityInfoSubmitModelForClient parseSnapshot(@Nullable DataSnapshot snapshot) {
 
 
                                       /*
@@ -457,7 +455,7 @@ public  class SecurityCandidatesApprovedForClients extends AppCompatActivity
                                       String likekey = snapshot.child("Likes").getKey();
                                       */
 
-                                        Log.i(TAG, "All Candidates Approved Residence Info" + snapshot);
+                                        Log.i(TAG, "All Candidates Approved Security Info" + snapshot);
 
 
                                         if (snapshot.child("gpscode").getValue(String.class) != null) {
@@ -467,7 +465,9 @@ public  class SecurityCandidatesApprovedForClients extends AppCompatActivity
                                         if (snapshot.child("gpsimage").getValue(String.class) != null) {
                                             gpsimage = snapshot.child("gpsimage").getValue(String.class);
                                         }
-
+                                        if (snapshot.child("natidimage").getValue(String.class) != null) {
+                                            natidimage = snapshot.child("natidimage").getValue(String.class);
+                                        }
                                         if (snapshot.child("approvalID").getValue(String.class) != null) {
                                             approvalID = snapshot.child("approvalID").getValue(String.class);
                                         }
@@ -480,12 +480,12 @@ public  class SecurityCandidatesApprovedForClients extends AppCompatActivity
 
 
 
-                                        return new SecurityInfoSubmitModel(  gpscode, gpsimage,approvalID,securityinfoapprovestatus, status);
+                                        return new SecurityInfoSubmitModelForClient(uid, gpscode, gpsimage,natidimage, approvalID,securityinfoapprovestatus);
 
                                     }
                                 }).build();
 
-                feedadapter = new FirebaseRecyclerAdapter<SecurityInfoSubmitModel, SecurityCandidatesApprovedForClients.AllCandidatesApprovedForClientsViewHolder>(options) {
+                feedadapter = new FirebaseRecyclerAdapter<SecurityInfoSubmitModelForClient, SecurityCandidatesApprovedForClients.AllCandidatesApprovedForClientsViewHolder>(options) {
                     @Nullable
                     @Override
                     public AllCandidatesApprovedForClientsViewHolder onCreateViewHolder(ViewGroup parent, int viewrole) {
@@ -506,7 +506,7 @@ public  class SecurityCandidatesApprovedForClients extends AppCompatActivity
 
 
                     @Override
-                    protected void onBindViewHolder(@Nullable final SecurityCandidatesApprovedForClients.AllCandidatesApprovedForClientsViewHolder holder, int position, @Nullable SecurityInfoSubmitModel model) {
+                    protected void onBindViewHolder(@Nullable final SecurityCandidatesApprovedForClients.AllCandidatesApprovedForClientsViewHolder holder, int position, @Nullable SecurityInfoSubmitModelForClient model) {
                         if (model != null) {
                             holders = holder;
 

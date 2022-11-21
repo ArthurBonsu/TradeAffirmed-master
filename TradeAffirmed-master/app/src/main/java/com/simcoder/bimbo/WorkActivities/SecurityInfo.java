@@ -58,8 +58,7 @@ import com.simcoder.bimbo.Admin.ViewSpecificUsersCart;
 import com.simcoder.bimbo.Admin.ViewYourPersonalProduct;
 import com.simcoder.bimbo.DriverMapActivity;
 import com.simcoder.bimbo.HistoryActivity;
-import com.simcoder.bimbo.Model.SecurityInfoSubmitModel;
-import com.simcoder.bimbo.Model.Users;
+import com.simcoder.bimbo.Model.SecurityInfoSubmitModelForClient;
 import com.simcoder.bimbo.R;
 import com.simcoder.bimbo.instagram.Home.InstagramHomeActivity;
 import com.squareup.picasso.Picasso;
@@ -518,7 +517,7 @@ public class SecurityInfo extends AppCompatActivity implements GoogleApiClient.C
                         securityapprovalapprove = "false";
 
                         // PICK UP THE SPECIAL PRODUCT INFO AND LOADING THEM INTO THE DATABASE
-                        SecurityInfoSubmitModel securityinfosubmit = new SecurityInfoSubmitModel (gpscode,gpsimage,approvalID, securityapprovalapprove, status);
+                        SecurityInfoSubmitModelForClient securityinfosubmit = new SecurityInfoSubmitModelForClient(gpscode,gpsimage,approvalID, securityapprovalapprove, status);
                          /*
                         mCustomerUserDatabase.setValue(securityinfosubmit, new
                                 DatabaseReference.CompletionListener() {
@@ -634,7 +633,7 @@ public class SecurityInfo extends AppCompatActivity implements GoogleApiClient.C
                     });
 */
 
-                        SecurityInfoSubmitModel securityinfotobesent = new SecurityInfoSubmitModel (gpscode,gpsimage,approvalID, securityapprovalapprove, status);
+                        SecurityInfoSubmitModelForClient securityinfotobesent = new SecurityInfoSubmitModelForClient(gpscode,gpsimage,approvalID, securityapprovalapprove, status);
 
                         mApprovalDatabase.setValue(securityinfotobesent, new
                                 DatabaseReference.CompletionListener() {

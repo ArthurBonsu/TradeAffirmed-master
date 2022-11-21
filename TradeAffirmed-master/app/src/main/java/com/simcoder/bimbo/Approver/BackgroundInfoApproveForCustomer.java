@@ -87,6 +87,7 @@ import io.paperdb.Paper;
 
 public  class BackgroundInfoApproveForCustomer extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+    //These are susbmissions to be made for each of the modules
     DatabaseReference ProductsRef;
     private DatabaseReference Userdetails;
     private DatabaseReference ProductsRefwithproduct;

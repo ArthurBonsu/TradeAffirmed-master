@@ -5,29 +5,29 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.View;
+
+import com.google.android.material.navigation.NavigationView;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import com.firebase.ui.database.FirebaseRecyclerAdapter;
-import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.firebase.ui.database.SnapshotParser;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -38,13 +38,10 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.storage.StorageReference;
 import com.rey.material.widget.ImageView;
@@ -63,13 +60,17 @@ import com.simcoder.bimbo.Admin.SearchForAdminProductsActivity;
 import com.simcoder.bimbo.Admin.TradersFollowing;
 import com.simcoder.bimbo.Admin.ViewAllCarts;
 import com.simcoder.bimbo.Admin.ViewAllCustomers;
+import com.simcoder.bimbo.Model.ResidentialInfoSubmitModelForClient;
+import com.simcoder.bimbo.Model.ResidentialInfoSubmitModelForTrader;
+import com.simcoder.bimbo.WorkActivities.CartActivity;
 import com.simcoder.bimbo.DriverMapActivity;
 import com.simcoder.bimbo.HistoryActivity;
 import com.simcoder.bimbo.Interface.ItemClickListner;
-import com.simcoder.bimbo.Model.Users;
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.simcoder.bimbo.R;
-import com.simcoder.bimbo.WorkActivities.CartActivity;
-import com.simcoder.bimbo.WorkActivities.HomeActivity;
 import com.simcoder.bimbo.WorkActivities.TraderProfile;
 import com.simcoder.bimbo.instagram.Home.InstagramHomeActivity;
 import com.squareup.picasso.Callback;
@@ -85,12 +86,14 @@ import io.paperdb.Paper;
 
 public  class ResidentialInfoApproveForTrader extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+    //These are susbmissions to be made for each of the modules
     DatabaseReference ProductsRef;
     private DatabaseReference Userdetails;
     private DatabaseReference ProductsRefwithproduct;
     private RecyclerView recyclerView;
     RecyclerView.LayoutManager layoutManager;
-    DatabaseReference UsersRef;
+    DatabaseReference ApprovalRef;
+
     DatabaseReference FollowerDatabaseReference;
     String productkey;
     String traderkeyhere;
@@ -142,7 +145,7 @@ public  class ResidentialInfoApproveForTrader extends AppCompatActivity
     String shippingcost;
     String state;
     String thecustomersjob;
-
+    String   approvalkey;
     String userkey;
 
     private RecyclerView productsList;
@@ -171,7 +174,7 @@ public  class ResidentialInfoApproveForTrader extends AppCompatActivity
     String email;
     String age;
     TextView candidateuserid;
-    String response = "approved";
+    String residenceinfoapprovestatus = "";
     //
     //AUTHENTICATORS
     android.widget.ImageView admincartimageofproduct;
@@ -200,9 +203,11 @@ public  class ResidentialInfoApproveForTrader extends AppCompatActivity
 
     ImageButton candidateapprovebackbutton;
     ImageButton candidateapprovenextbutton;
-    String   approverID;
+    String approverID;
     String approvalID;
-    String residentialactivity = "residentialinfoapproveact";
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -265,7 +270,7 @@ public  class ResidentialInfoApproveForTrader extends AppCompatActivity
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         if (toolbar != null) {
-            toolbar.setTitle("Personal Information Activity");
+            toolbar.setTitle("Residence Information Activity");
         }
 //        setSupportActionBar(toolbar);
 
@@ -315,9 +320,9 @@ public  class ResidentialInfoApproveForTrader extends AppCompatActivity
 
                     myfirebaseDatabase = FirebaseDatabase.getInstance();
 
-                    UsersRef = myfirebaseDatabase.getReference().child("Users");
+                    ApprovalRef = myfirebaseDatabase.getReference().child("Approval");
 
-                    userkey = UsersRef.getKey();
+                    approvalkey = ApprovalRef.getKey();
                     // GET FROM FOLLOWING KEY
                     fetch();
                     recyclerView.setAdapter(feedadapter);
@@ -465,7 +470,7 @@ public  class ResidentialInfoApproveForTrader extends AppCompatActivity
         if (mAuth != null) {
             user = mAuth.getCurrentUser();
             if (user != null) {
-                traderID = user.getUid();
+                userID = user.getUid();
 
             }
             @Nullable
@@ -475,20 +480,20 @@ public  class ResidentialInfoApproveForTrader extends AppCompatActivity
                     FirebaseDatabase.getInstance().getReference().child("Approval").orderByChild("tid").equalTo(userID);
             if (queryhere != null) {
 
-                FirebaseRecyclerOptions<Users> options =
-                        new FirebaseRecyclerOptions.Builder<Users>()
-                                .setQuery(queryhere, new SnapshotParser<Users>() {
+                FirebaseRecyclerOptions<ResidentialInfoSubmitModelForClient> options =
+                        new FirebaseRecyclerOptions.Builder<ResidentialInfoSubmitModelForClient>()
+                                .setQuery(queryhere, new SnapshotParser<ResidentialInfoSubmitModelForClient>() {
 
 
                                     @Nullable
                                     @Override
-                                    public Users parseSnapshot(@Nullable DataSnapshot snapshot) {
+                                    public ResidentialInfoSubmitModelForClient parseSnapshot(@Nullable DataSnapshot snapshot) {
 
 
                                       /*
                                       String commentkey = snapshot.child("Comments").getKey();
                                       String likekey = snapshot.child("Likes").getKey();*/
-                                        Log.i(TAG, "User " + snapshot);
+                                        Log.i(TAG, "ResidentialInfoSubmitModel " + snapshot);
 
                                         if (snapshot.child("tid").getValue() != null) {
                                             tid = snapshot.child("tid").getValue(String.class);
@@ -512,8 +517,11 @@ public  class ResidentialInfoApproveForTrader extends AppCompatActivity
                                         if (snapshot.child("country").getValue() != null) {
                                             country = snapshot.child("country").getValue(String.class);
                                         }
+                                        if (snapshot.child("residenceinfoapprovestatus").getValue() != null) {
+                                            residenceinfoapprovestatus = snapshot.child("residenceinfoapprovestatus").getValue(String.class);
+                                        }
 
-                                        return new Users(uid, name, address, street, gpscode, country);
+                                        return new ResidentialInfoSubmitModelForClient( address, street, gpscode, country);
 
 
                                     }
@@ -521,7 +529,7 @@ public  class ResidentialInfoApproveForTrader extends AppCompatActivity
                                 }).build();
 
 
-                feedadapter = new FirebaseRecyclerAdapter<Users, ViewHolder>(options) {
+                feedadapter = new FirebaseRecyclerAdapter<ResidentialInfoSubmitModelForClient, ViewHolder>(options) {
                     @Nullable
                     @Override
                     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -540,19 +548,19 @@ public  class ResidentialInfoApproveForTrader extends AppCompatActivity
                     }
 
                     @Override
-                    protected void onBindViewHolder(@Nullable final ViewHolder holder, int position, @Nullable Users model) {
+                    protected void onBindViewHolder(@Nullable final ViewHolder holder, int position, @Nullable ResidentialInfoSubmitModelForClient model) {
                         if (model != null) {
 
 
 
                             holder.NameofPerson.setText( name);
-                            holder.candidateuserid.setText(uid);
+                            holder.candidateuserid.setText(tid);
                             holder.CandidateAddress.setText(email);
                             holder.CandidateStreet.setText(gender);
                             holder.CandidateGPSCode.setText(age);
-                            holder.CandidateCountry.setText(uid);
+                            holder.CandidateCountry.setText(country);
 
-                            Log.d(TAG, "Residential Approval Info" + name);
+                            Log.d(TAG, "ResidentialInfoSubmitModel Approval Info" + name);
                             holder.setcandidateprofileimage(getApplicationContext(), image);
 
 
@@ -568,14 +576,12 @@ public  class ResidentialInfoApproveForTrader extends AppCompatActivity
                             holder.ApprovalButtton.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    response = "approve";
-                                    setDecision(response);
-                                    Intent approvalintent = new Intent(ResidentialInfoApproveForTrader.this, ResidentialInfoApproveForTrader.class);
-                                    approvalintent.putExtra("userID" , userID);
-                                    approvalintent.putExtra("uid", tid);
-                                    approvalintent.putExtra("approverID", approverID);
-                                    approvalintent.putExtra("approvalID", approvalID);
+                                    residenceinfoapprovestatus = "approvedCustomer";
+                                    setDecision(residenceinfoapprovestatus);
+                                    Intent approvalintent = new Intent(ResidentialInfoApproveForTrader.this, ResidentialInfoApproveForClient.class);
                                     approvalintent.putExtra("role", role);
+                                    approvalintent.putExtra("tid", tid);
+                                    approvalintent.putExtra("userID", userID);
                                     Toast.makeText(ResidentialInfoApproveForTrader.this, "Candidate has been approved", Toast.LENGTH_SHORT).show();
                                     startActivity(approvalintent);
                                 }
@@ -585,14 +591,12 @@ public  class ResidentialInfoApproveForTrader extends AppCompatActivity
                                 holder.RejectButton.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View view) {
-                                        response = "reject";
-                                        setDecision(response);
-                                        Intent rejectintent = new Intent(ResidentialInfoApproveForTrader.this, ResidentialInfoApproveForTrader.class);
-                                        rejectintent.putExtra("userID" , userID);
-                                        rejectintent.putExtra("uid", tid);
-                                        rejectintent.putExtra("approverID", approverID);
-                                        rejectintent.putExtra("approvalID", approvalID);
+                                        residenceinfoapprovestatus = "rejectCustomer";
+                                        setDecision(residenceinfoapprovestatus);
+                                        Intent rejectintent = new Intent(ResidentialInfoApproveForTrader.this, ResidentialInfoApproveForClient.class);
                                         rejectintent.putExtra("role", role);
+                                        rejectintent.putExtra("tid", tid);
+                                        rejectintent.putExtra("userID", userID);
                                         Toast.makeText(ResidentialInfoApproveForTrader.this, "Candidate has been rejected", Toast.LENGTH_SHORT).show();
                                         startActivity(rejectintent);
 
@@ -606,14 +610,12 @@ public  class ResidentialInfoApproveForTrader extends AppCompatActivity
                                 holder.PauseButton.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View view) {
-                                        response = "pause";
-                                        setDecision(response);
-                                        Intent pausebuttonintent = new Intent(ResidentialInfoApproveForTrader.this, ResidentialInfoApproveForTrader.class);
-                                        pausebuttonintent.putExtra("userID" , userID);
-                                        pausebuttonintent.putExtra("uid", tid);
-                                        pausebuttonintent.putExtra("approverID", approverID);
-                                        pausebuttonintent.putExtra("approvalID", approvalID);
+                                        residenceinfoapprovestatus = "pause";
+                                        setDecision(residenceinfoapprovestatus);
+                                        Intent pausebuttonintent = new Intent(ResidentialInfoApproveForTrader.this, ResidentialInfoApproveForClient.class);
                                         pausebuttonintent.putExtra("role", role);
+                                        pausebuttonintent.putExtra("tid", tid);
+
 
                                         Toast.makeText(ResidentialInfoApproveForTrader.this, "Candidate has been paused", Toast.LENGTH_SHORT).show();
                                         startActivity(pausebuttonintent);
@@ -629,12 +631,11 @@ public  class ResidentialInfoApproveForTrader extends AppCompatActivity
                                     public void onClick(View view) {
 
                                         Intent candidatebackbutton  = new Intent(ResidentialInfoApproveForTrader.this, PersonalInfoApproveForClient.class);
-                                        candidatebackbutton.putExtra("userID" , userID);
-                                        candidatebackbutton.putExtra("uid", tid);
-                                        candidatebackbutton.putExtra("approverID", approverID);
-                                        candidatebackbutton.putExtra("approvalID", approvalID);
                                         candidatebackbutton.putExtra("role", role);
+                                        candidatebackbutton.putExtra("tid", tid);
 
+                                        /// Controllers
+                                        candidatebackbutton.putExtra("userID", userID);
 
                                         Toast.makeText(ResidentialInfoApproveForTrader.this, "Back to candidate list", Toast.LENGTH_SHORT).show();
                                         startActivity(candidatebackbutton);
@@ -651,13 +652,10 @@ public  class ResidentialInfoApproveForTrader extends AppCompatActivity
                                     public void onClick(View view) {
 
                                         Intent caandidateapprovenextbutton = new Intent(ResidentialInfoApproveForTrader.this, BackgroundInfoApproveForCustomer.class);
-                                        caandidateapprovenextbutton.putExtra("userID" , userID);
-                                        caandidateapprovenextbutton.putExtra("uid", tid);
-                                        caandidateapprovenextbutton.putExtra("approverID", approverID);
-                                        caandidateapprovenextbutton.putExtra("approvalID", approvalID);
                                         caandidateapprovenextbutton.putExtra("role", role);
-
-                                        Toast.makeText(ResidentialInfoApproveForTrader.this, "To BackgroundCheckPage", Toast.LENGTH_SHORT).show();
+                                        caandidateapprovenextbutton.putExtra("tid", tid);
+                                        caandidateapprovenextbutton.putExtra("userID", userID);
+                                        Toast.makeText(ResidentialInfoApproveForTrader.this, "To Residential Page", Toast.LENGTH_SHORT).show();
 
                                         startActivity(caandidateapprovenextbutton);
 
@@ -680,7 +678,7 @@ public  class ResidentialInfoApproveForTrader extends AppCompatActivity
 
 
     // Post Info
-    private void setDecision(String response) {
+    private void setDecision(String residenceinfoapprovestatus) {
 
         user = mAuth.getCurrentUser();
 
@@ -697,8 +695,8 @@ public  class ResidentialInfoApproveForTrader extends AppCompatActivity
 
             }
 
-            if (response != null) {
-                mProgress.setMessage("Making +" + response + "for this current user");
+            if (residenceinfoapprovestatus != null) {
+                mProgress.setMessage("Making +" + residenceinfoapprovestatus + "for this current user");
 
                 mProgress.show();
 
@@ -706,16 +704,16 @@ public  class ResidentialInfoApproveForTrader extends AppCompatActivity
 
 
                 // PICK UP THE SPECIAL PRODUCT INFO AND LOADING THEM INTO THE DATABASE
-                Users newuserapprovalinfo =     new Users(tid, name, address, street, gpscode, country,response,residentialactivity);
-                UsersRef.child(userID).setValue(newuserapprovalinfo, new
+                ResidentialInfoSubmitModelForTrader newuserapprovalinfo =     new ResidentialInfoSubmitModelForTrader( address ,gpscode, street,residenceinfoapprovestatus);
+                ApprovalRef.child(approvalID).setValue(newuserapprovalinfo, new
                         DatabaseReference.CompletionListener() {
                             @Override
                             public void onComplete(DatabaseError databaseError, DatabaseReference
                                     databaseReference) {
-                                Toast.makeText(getApplicationContext(), "User Decision Taken as "  +response, Toast.LENGTH_SHORT).show();
-                                Intent personapprovalloginfointent = new Intent(ResidentialInfoApproveForTrader.this, HomeActivity.class);
+                                Toast.makeText(getApplicationContext(), "Residential Approval Decision "  +residenceinfoapprovestatus, Toast.LENGTH_SHORT).show();
+                                Intent residentialapproveforintent = new Intent(ResidentialInfoApproveForTrader.this, ResidentialInfoApproveForTrader.class);
 
-                                startActivity(personapprovalloginfointent);
+                                startActivity(residentialapproveforintent);
 
                             }
                         });
@@ -758,8 +756,8 @@ public  class ResidentialInfoApproveForTrader extends AppCompatActivity
 
                 FirebaseUser user = mAuth.getCurrentUser();
                 if (user != null) {
-                    approverID = "";
-                    approverID = user.getUid();
+                    traderID = "";
+                    traderID = user.getUid();
                 }
 
                 // I HAVE TO TRY TO GET THE SETUP INFORMATION , IF THEY ARE ALREADY PROVIDED WE TAKE TO THE NEXT STAGE

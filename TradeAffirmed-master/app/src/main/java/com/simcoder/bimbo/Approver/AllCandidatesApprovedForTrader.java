@@ -62,8 +62,6 @@ import com.simcoder.bimbo.DriverMapActivity;
 import com.simcoder.bimbo.HistoryActivity;
 import com.simcoder.bimbo.Interface.ItemClickListner;
 import com.simcoder.bimbo.Model.AllCandidatesApproved;
-import com.simcoder.bimbo.Model.BackgroundInfoSubmitModel;
-import com.simcoder.bimbo.Model.PersonalInfoSubmitModel;
 import com.simcoder.bimbo.R;
 import com.simcoder.bimbo.WorkActivities.CartActivity;
 import com.simcoder.bimbo.WorkActivities.TraderProfile;
@@ -442,7 +440,7 @@ public  class AllCandidatesApprovedForTrader extends AppCompatActivity
 
             Query queryhere =
 
-                    FirebaseDatabase.getInstance().getReference().child("Approval").orderByChild("status").equalTo("true");
+                    FirebaseDatabase.getInstance().getReference().child("Approval").orderByChild("statusidentifier").equalTo("approvedTrader");
             if (queryhere != null) {
 
                 FirebaseRecyclerOptions<AllCandidatesApproved> options =

@@ -3,17 +3,17 @@ package com.simcoder.bimbo.Model;
 import com.simcoder.bimbo.instagram.Models.Like;
 
 import java.util.List;
-public class PersonalInfoSubmitModel {
+public class PersonalInfoSubmitModelForClient {
 
     String uid;  String name; String phone; String email; String gender; String age; String country; String personalinfoapprovestatus;
    String  image;
-    public PersonalInfoSubmitModel(  String name, String phone, String email, String gender, String age, String country, String personalinfoapprovestatus) {
+    public PersonalInfoSubmitModelForClient(String name, String phone, String email, String gender, String age, String country, String personalinfoapprovestatus) {
     }
 
 
 
 
-    public PersonalInfoSubmitModel(String uid, String name, String image, String phone, String email, String gender, String age, String personalinfoapprovestatus) {
+    public PersonalInfoSubmitModelForClient(String uid, String name, String image, String phone, String email, String gender, String age, String personalinfoapprovestatus) {
         this.uid = uid;
         this.name= name;
         this.image = image;

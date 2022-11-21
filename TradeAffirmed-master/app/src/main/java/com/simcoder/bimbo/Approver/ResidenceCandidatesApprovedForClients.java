@@ -61,9 +61,7 @@ import com.simcoder.bimbo.Admin.ViewAllCustomers;
 import com.simcoder.bimbo.DriverMapActivity;
 import com.simcoder.bimbo.HistoryActivity;
 import com.simcoder.bimbo.Interface.ItemClickListner;
-import com.simcoder.bimbo.Model.BackgroundInfoSubmitModel;
-import com.simcoder.bimbo.Model.PersonalInfoSubmitModel;
-import com.simcoder.bimbo.Model.ResidentialInfoSubmitModel;
+import com.simcoder.bimbo.Model.ResidentialInfoSubmitModelForClient;
 import com.simcoder.bimbo.R;
 import com.simcoder.bimbo.WorkActivities.CartActivity;
 import com.simcoder.bimbo.WorkActivities.TraderProfile;
@@ -77,6 +75,7 @@ import io.paperdb.Paper;
 
 public  class ResidenceCandidatesApprovedForClients extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
     DatabaseReference ProductsRef;
     private DatabaseReference Userdetails;
     private DatabaseReference ProductsRefwithproduct;
@@ -439,14 +438,14 @@ public  class ResidenceCandidatesApprovedForClients extends AppCompatActivity
                     FirebaseDatabase.getInstance().getReference().child("Approval").orderByChild("statusidentifier").equalTo("approvedCustomer");
             if (queryhere != null) {
 
-                FirebaseRecyclerOptions<ResidentialInfoSubmitModel> options =
-                        new FirebaseRecyclerOptions.Builder<ResidentialInfoSubmitModel>()
-                                .setQuery(queryhere, new SnapshotParser<ResidentialInfoSubmitModel>() {
+                FirebaseRecyclerOptions<ResidentialInfoSubmitModelForClient> options =
+                        new FirebaseRecyclerOptions.Builder<ResidentialInfoSubmitModelForClient>()
+                                .setQuery(queryhere, new SnapshotParser<ResidentialInfoSubmitModelForClient>() {
 
 
                                     @Nullable
                                     @Override
-                                    public ResidentialInfoSubmitModel parseSnapshot(@Nullable DataSnapshot snapshot) {
+                                    public ResidentialInfoSubmitModelForClient parseSnapshot(@Nullable DataSnapshot snapshot) {
 
 
                                       /*
@@ -475,12 +474,12 @@ public  class ResidenceCandidatesApprovedForClients extends AppCompatActivity
 
 
 
-                                        return new ResidentialInfoSubmitModel(  address ,gpscode, street,residenceinfoapprovestatus);
+                                        return new ResidentialInfoSubmitModelForClient(  address ,gpscode, street,residenceinfoapprovestatus);
 
                                     }
                                 }).build();
 
-                feedadapter = new FirebaseRecyclerAdapter<ResidentialInfoSubmitModel, ResidenceCandidatesApprovedForClients.AllCandidatesApprovedForClientsViewHolder>(options) {
+                feedadapter = new FirebaseRecyclerAdapter<ResidentialInfoSubmitModelForClient, ResidenceCandidatesApprovedForClients.AllCandidatesApprovedForClientsViewHolder>(options) {
                     @Nullable
                     @Override
                     public AllCandidatesApprovedForClientsViewHolder onCreateViewHolder(ViewGroup parent, int viewrole) {
@@ -501,7 +500,7 @@ public  class ResidenceCandidatesApprovedForClients extends AppCompatActivity
 
 
                     @Override
-                    protected void onBindViewHolder(@Nullable final ResidenceCandidatesApprovedForClients.AllCandidatesApprovedForClientsViewHolder holder, int position, @Nullable ResidentialInfoSubmitModel model) {
+                    protected void onBindViewHolder(@Nullable final ResidenceCandidatesApprovedForClients.AllCandidatesApprovedForClientsViewHolder holder, int position, @Nullable ResidentialInfoSubmitModelForClient model) {
                         if (model != null) {
                             holders = holder;
 

@@ -5,29 +5,29 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.View;
-
-import com.google.android.material.navigation.NavigationView;
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.firebase.ui.database.SnapshotParser;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -38,10 +38,13 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.storage.StorageReference;
 import com.rey.material.widget.ImageView;
@@ -60,17 +63,15 @@ import com.simcoder.bimbo.Admin.SearchForAdminProductsActivity;
 import com.simcoder.bimbo.Admin.TradersFollowing;
 import com.simcoder.bimbo.Admin.ViewAllCarts;
 import com.simcoder.bimbo.Admin.ViewAllCustomers;
-import com.simcoder.bimbo.Model.Users;
-import com.simcoder.bimbo.WorkActivities.CartActivity;
-import com.simcoder.bimbo.WorkActivities.HomeActivity;
 import com.simcoder.bimbo.DriverMapActivity;
 import com.simcoder.bimbo.HistoryActivity;
 import com.simcoder.bimbo.Interface.ItemClickListner;
-import com.firebase.ui.database.FirebaseRecyclerAdapter;
-import com.firebase.ui.database.FirebaseRecyclerOptions;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+import com.simcoder.bimbo.Model.SecurityInfoSubmitModelForClient;
+import com.simcoder.bimbo.Model.SecurityInfoSubmitModelForTrader;
+import com.simcoder.bimbo.Model.Users;
 import com.simcoder.bimbo.R;
+import com.simcoder.bimbo.WorkActivities.CartActivity;
+import com.simcoder.bimbo.WorkActivities.HomeActivity;
 import com.simcoder.bimbo.WorkActivities.TraderProfile;
 import com.simcoder.bimbo.instagram.Home.InstagramHomeActivity;
 import com.squareup.picasso.Callback;
@@ -86,6 +87,7 @@ import io.paperdb.Paper;
 
 public  class SecurityCheckApproveForCustomer extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+    //These are susbmissions to be made for each of the modules
     DatabaseReference ProductsRef;
     private DatabaseReference Userdetails;
     private DatabaseReference ProductsRefwithproduct;
@@ -127,7 +129,7 @@ public  class SecurityCheckApproveForCustomer extends AppCompatActivity
     FirebaseUser user;
     String uid, name, address, street, gpscode, country;
 
-    String categoryname, date, desc, discount, time, pid, pimage, pname, price, image,  size, tradername, tid;
+    String categoryname, date, desc, discount, time, pid, pimage, pname, price, image,  size, tradername;
     String thetraderimage;
 
     String amount;
@@ -158,7 +160,7 @@ public  class SecurityCheckApproveForCustomer extends AppCompatActivity
     String getimage;
     DatabaseReference myreferencetoimage;
     String productID;
-      String gpsimage, natidimage;
+    String gpsimage, natidimage;
     ImageButton ApprovalButtton;
     ImageButton RejectButton;
     ImageButton PauseButton;
@@ -172,7 +174,7 @@ public  class SecurityCheckApproveForCustomer extends AppCompatActivity
     String email;
     String age;
     TextView candidateuserid;
-    String response = "approved";
+    String securitycheckapprove = "approved";
 
     String  auxname,auxemail,auxcountry,auxid,auxidtype, auxphone;
     //
@@ -193,7 +195,7 @@ public  class SecurityCheckApproveForCustomer extends AppCompatActivity
     private Uri mImageUri = null;
     private static final int GALLERY_REQUEST = 1;
     private StorageReference mStorage;
-    private DatabaseReference mDatabase;
+    private DatabaseReference ApprovalRef;
     private DatabaseReference mDatabaseCHURCHCHOSEN;
     private ProgressDialog mProgress;
     TextView CadidateId;
@@ -211,18 +213,20 @@ public  class SecurityCheckApproveForCustomer extends AppCompatActivity
     ImageButton candidateapprovebackbutton;
     ImageButton candidateapprovenextbutton;
 
-        ImageView nationalidimageview;
-        ImageView gpsimageview;
-         TextView gpscodetextpull;
-         String approverID;
-         String approvalID;
+    ImageView nationalidimageview;
+    ImageView gpsimageview;
+    TextView gpscodetextpull;
+    String approverID;
+    String approvalID;
+    String approvalkey;
 
-    String securitycheckapprove = "securityinfoapproveact";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(
                 (R.layout.stickynoterecycler));
+
 
         Intent roleintent = getIntent();
         if (roleintent.getExtras().getString("role") != null) {
@@ -244,6 +248,8 @@ public  class SecurityCheckApproveForCustomer extends AppCompatActivity
         if (approvalIDintent.getExtras().getString("approvalID") != null) {
             approvalID= approvalIDintent.getExtras().getString("approvalID");
         }
+
+
         recyclerView = findViewById(R.id.stickyheaderrecyler);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         if (recyclerView != null) {
@@ -264,7 +270,7 @@ public  class SecurityCheckApproveForCustomer extends AppCompatActivity
         candidateuserid = (TextView) findViewById(R.id.candidateuserid);
 
         nationalidimageview = (ImageView) findViewById(R.id.nationalidimageview);
-                gpsimageview = (ImageView) findViewById(R.id.gpsimageview);
+        gpsimageview = (ImageView) findViewById(R.id.gpsimageview);
         gpscodetextpull = (TextView) findViewById(R.id.gpscodetextpull);
 
 
@@ -279,7 +285,7 @@ public  class SecurityCheckApproveForCustomer extends AppCompatActivity
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         if (toolbar != null) {
-            toolbar.setTitle("Background Information Activity");
+            toolbar.setTitle("Security Information Activity");
         }
 //        setSupportActionBar(toolbar);
 
@@ -329,9 +335,9 @@ public  class SecurityCheckApproveForCustomer extends AppCompatActivity
 
                     myfirebaseDatabase = FirebaseDatabase.getInstance();
 
-                    UsersRef = myfirebaseDatabase.getReference().child("Users");
+                    ApprovalRef = myfirebaseDatabase.getReference().child("Approval");
 
-                    userkey = UsersRef.getKey();
+                    approvalkey = ApprovalRef.getKey();
                     // GET FROM FOLLOWING KEY
                     fetch();
                     recyclerView.setAdapter(feedadapter);
@@ -378,7 +384,7 @@ public  class SecurityCheckApproveForCustomer extends AppCompatActivity
         public ImageButton candidateapprovenextbutton;
 
 
-       public TextView NameofPerson;
+        public TextView NameofPerson;
         public  TextView candidateuserid;
         public ImageView nationalidimageview;
         public ImageView gpsimageview;
@@ -514,7 +520,7 @@ public  class SecurityCheckApproveForCustomer extends AppCompatActivity
         if (mAuth != null) {
             user = mAuth.getCurrentUser();
             if (user != null) {
-                traderID = user.getUid();
+                approverID = user.getUid();
 
             }
             @Nullable
@@ -524,20 +530,20 @@ public  class SecurityCheckApproveForCustomer extends AppCompatActivity
                     FirebaseDatabase.getInstance().getReference().child("Approval").orderByChild("uid").equalTo(userID);
             if (queryhere != null) {
 
-                FirebaseRecyclerOptions<Users> options =
-                        new FirebaseRecyclerOptions.Builder<Users>()
-                                .setQuery(queryhere, new SnapshotParser<Users>() {
+                FirebaseRecyclerOptions<SecurityInfoSubmitModelForTrader> options =
+                        new FirebaseRecyclerOptions.Builder<SecurityInfoSubmitModelForTrader>()
+                                .setQuery(queryhere, new SnapshotParser<SecurityInfoSubmitModelForTrader>() {
 
 
                                     @Nullable
                                     @Override
-                                    public Users parseSnapshot(@Nullable DataSnapshot snapshot) {
+                                    public SecurityInfoSubmitModelForTrader parseSnapshot(@Nullable DataSnapshot snapshot) {
 
 
                                       /*
                                       String commentkey = snapshot.child("Comments").getKey();
                                       String likekey = snapshot.child("Likes").getKey();*/
-                                        Log.i(TAG, "User " + snapshot);
+                                        Log.i(TAG, "Approval " + snapshot);
 
                                         if (snapshot.child("uid").getValue() != null) {
                                             uid = snapshot.child("uid").getValue(String.class);
@@ -558,8 +564,10 @@ public  class SecurityCheckApproveForCustomer extends AppCompatActivity
                                         if (snapshot.child("natidimage").getValue() != null) {
                                             natidimage = snapshot.child("natidimage").getValue(String.class);
                                         }
-
-                                        return new Users(uid, name, gpsimage, gpscode,  natidimage);
+                                        if (snapshot.child("securityinfoapprovestatus").getValue() != null) {
+                                            securitycheckapprove = snapshot.child("securityinfoapprovestatus").getValue(String.class);
+                                        }
+                                        return new SecurityInfoSubmitModelForTrader(uid, name, gpsimage, gpscode,  natidimage,securitycheckapprove);
 
 
                                     }
@@ -569,14 +577,14 @@ public  class SecurityCheckApproveForCustomer extends AppCompatActivity
 
 
 
-                feedadapter = new FirebaseRecyclerAdapter<Users, ViewHolder>(options) {
+                feedadapter = new FirebaseRecyclerAdapter<SecurityInfoSubmitModelForTrader, ViewHolder>(options) {
                     @Nullable
                     @Override
                     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
                         @Nullable
                         View view = LayoutInflater.from(parent.getContext())
-                                .inflate(R.layout.backgroundinfoapprove, parent, false);
+                                .inflate(R.layout.securitycheckapprove, parent, false);
 
                         return new ViewHolder(view);
                     }
@@ -588,15 +596,13 @@ public  class SecurityCheckApproveForCustomer extends AppCompatActivity
                     }
 
                     @Override
-                    protected void onBindViewHolder(@Nullable final ViewHolder holder, int position, @Nullable Users model) {
+                    protected void onBindViewHolder(@Nullable final ViewHolder holder, int position, @Nullable SecurityInfoSubmitModelForTrader model) {
                         if (model != null) {
 
 
 
                             holder.NameofPerson.setText( name);
                             holder.candidateuserid.setText(uid);
-
-
                             holder.gpscodetextpull.setText(gpscode);
 
 
@@ -629,13 +635,17 @@ public  class SecurityCheckApproveForCustomer extends AppCompatActivity
                             holder.ApprovalButtton.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    response = "approve";
-                                    setDecision(response);
+                                    securitycheckapprove = "approveTrader";
+                                    setDecision(securitycheckapprove);
                                     Intent approvalintent = new Intent(SecurityCheckApproveForCustomer.this, BackgroundInfoApproveForCustomer.class);
                                     approvalintent.putExtra("role", role);
                                     approvalintent.putExtra("uid", uid);
-                                    approvalintent.putExtra("traderID", traderID);
-                                    Toast.makeText(SecurityCheckApproveForCustomer.this, "Background has been approved", Toast.LENGTH_SHORT).show();
+                                    approvalintent.putExtra("approverID", approverID);
+                                    approvalintent.putExtra("approvalID", approvalID);
+                                    approvalintent.putExtra("userID", userID);
+
+
+                                    Toast.makeText(SecurityCheckApproveForCustomer.this, "Security Info has been approved", Toast.LENGTH_SHORT).show();
                                     startActivity(approvalintent);
                                 }
                             });
@@ -644,13 +654,17 @@ public  class SecurityCheckApproveForCustomer extends AppCompatActivity
                                 holder.RejectButton.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View view) {
-                                        response = "reject";
-                                        setDecision(response);
+                                        securitycheckapprove = "rejectTrader";
+                                        setDecision(securitycheckapprove);
                                         Intent rejectintent = new Intent(SecurityCheckApproveForCustomer.this, BackgroundInfoApproveForCustomer.class);
                                         rejectintent.putExtra("role", role);
                                         rejectintent.putExtra("uid", uid);
-                                        rejectintent.putExtra("traderID", traderID);
-                                        Toast.makeText(SecurityCheckApproveForCustomer.this, "BackgroundInfo has been rejected", Toast.LENGTH_SHORT).show();
+                                        rejectintent.putExtra("approverID", approverID);
+                                        rejectintent.putExtra("approvalID", approvalID);
+                                        rejectintent.putExtra("userID", userID);
+
+
+                                        Toast.makeText(SecurityCheckApproveForCustomer.this, "Security Info has been rejected", Toast.LENGTH_SHORT).show();
                                         startActivity(rejectintent);
 
 
@@ -663,14 +677,17 @@ public  class SecurityCheckApproveForCustomer extends AppCompatActivity
                                 holder.PauseButton.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View view) {
-                                        response = "pause";
-                                        setDecision(response);
+                                        securitycheckapprove = "pause";
+                                        setDecision(securitycheckapprove);
                                         Intent pausebuttonintent = new Intent(SecurityCheckApproveForCustomer.this, BackgroundInfoApproveForCustomer.class);
                                         pausebuttonintent.putExtra("role", role);
                                         pausebuttonintent.putExtra("uid", uid);
-                                        pausebuttonintent.putExtra("tid", tid);
+                                        pausebuttonintent.putExtra("approverID", approverID);
+                                        pausebuttonintent.putExtra("approvalID", approvalID);
+                                        pausebuttonintent.putExtra("userID", userID);
 
-                                        Toast.makeText(SecurityCheckApproveForCustomer.this, "BackgroundInfo has been paused", Toast.LENGTH_SHORT).show();
+
+                                        Toast.makeText(SecurityCheckApproveForCustomer.this, "Security info has been paused", Toast.LENGTH_SHORT).show();
                                         startActivity(pausebuttonintent);
 
                                     }
@@ -689,10 +706,8 @@ public  class SecurityCheckApproveForCustomer extends AppCompatActivity
                                         candidatebackbutton.putExtra("approverID", approverID);
                                         candidatebackbutton.putExtra("approvalID", approvalID);
                                         candidatebackbutton.putExtra("userID", userID);
-
-
                                         /// Controllers
-                                        candidatebackbutton.putExtra("traderID", traderID);
+
 
                                         Toast.makeText(SecurityCheckApproveForCustomer.this, "Back to Residence Approval List", Toast.LENGTH_SHORT).show();
                                         startActivity(candidatebackbutton);
@@ -707,28 +722,25 @@ public  class SecurityCheckApproveForCustomer extends AppCompatActivity
                                 holder.candidateapprovenextbutton.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View view) {
-                                        if (response == "approve") {
+                                        if (securitycheckapprove == "approve") {
                                             ;
-                                            Intent approvalsubmissionpage = new Intent(SecurityCheckApproveForCustomer.this, SecurityCheckApproveForCustomer.class);
-                                            approvalsubmissionpage.putExtra("role", role);
+                                            Intent approvalsubmissionpage = new Intent(SecurityCheckApproveForCustomer.this, FinalApprovalForTrader.class);
+                                            approvalsubmissionpage.putExtra("userID" , userID);
                                             approvalsubmissionpage.putExtra("uid", uid);
                                             approvalsubmissionpage.putExtra("approverID", approverID);
                                             approvalsubmissionpage.putExtra("approvalID", approvalID);
-                                            approvalsubmissionpage.putExtra("userID", userID);
-
-
+                                            approvalsubmissionpage.putExtra("role", role);
                                             Toast.makeText(SecurityCheckApproveForCustomer.this, "Write Approval Report", Toast.LENGTH_SHORT).show();
 
                                             startActivity(approvalsubmissionpage);
                                         }
-                                         else{
-                                            Intent approvalconfirmationpage = new Intent(SecurityCheckApproveForCustomer.this, SecurityCheckApproveForCustomer.class);
-                                            approvalconfirmationpage.putExtra("role", role);
+                                        else{
+                                            Intent approvalconfirmationpage = new Intent(SecurityCheckApproveForCustomer.this, FinalApprovalForTrader.class);
+                                            approvalconfirmationpage.putExtra("userID" , userID);
                                             approvalconfirmationpage.putExtra("uid", uid);
                                             approvalconfirmationpage.putExtra("approverID", approverID);
                                             approvalconfirmationpage.putExtra("approvalID", approvalID);
-                                            approvalconfirmationpage.putExtra("userID", userID);
-
+                                            approvalconfirmationpage.putExtra("role", role);
                                             Toast.makeText(SecurityCheckApproveForCustomer.this, "Write Approval Report", Toast.LENGTH_SHORT).show();
 
                                             startActivity(approvalconfirmationpage);
@@ -753,7 +765,7 @@ public  class SecurityCheckApproveForCustomer extends AppCompatActivity
 
 
     // Post Info
-    private void setDecision(String response) {
+    private void setDecision(String securitycheckapprove) {
 
         user = mAuth.getCurrentUser();
 
@@ -770,8 +782,8 @@ public  class SecurityCheckApproveForCustomer extends AppCompatActivity
 
             }
 
-            if (response != null) {
-                mProgress.setMessage("Making +" + response + "for this current user");
+            if (securitycheckapprove != null) {
+                mProgress.setMessage("Making +" + securitycheckapprove + "for this current user");
 
                 mProgress.show();
 
@@ -779,16 +791,16 @@ public  class SecurityCheckApproveForCustomer extends AppCompatActivity
 
 
                 // PICK UP THE SPECIAL PRODUCT INFO AND LOADING THEM INTO THE DATABASE
-                Users newuserapprovalinfo =     new Users(uid, name, address, street, gpscode, country,response, securitycheckapprove);
-                UsersRef.child(userID).setValue(newuserapprovalinfo, new
+                SecurityInfoSubmitModelForTrader newuserapprovalinfo =     new SecurityInfoSubmitModelForTrader(uid, name, gpsimage, gpscode,  natidimage,securitycheckapprove);
+                ApprovalRef.child(approvalID).setValue(newuserapprovalinfo, new
                         DatabaseReference.CompletionListener() {
                             @Override
                             public void onComplete(DatabaseError databaseError, DatabaseReference
                                     databaseReference) {
-                                Toast.makeText(getApplicationContext(), "User Decision Taken as "  +response, Toast.LENGTH_SHORT).show();
-                                Intent personapprovalloginfointent = new Intent(SecurityCheckApproveForCustomer.this, HomeActivity.class);
+                                Toast.makeText(getApplicationContext(), "Security Decision Taken as "  +securitycheckapprove, Toast.LENGTH_SHORT).show();
+                                Intent securitydecisionintent = new Intent(SecurityCheckApproveForCustomer.this, SecurityCheckApproveForCustomer.class);
 
-                                startActivity(personapprovalloginfointent);
+                                startActivity(securitydecisionintent);
 
                             }
                         });

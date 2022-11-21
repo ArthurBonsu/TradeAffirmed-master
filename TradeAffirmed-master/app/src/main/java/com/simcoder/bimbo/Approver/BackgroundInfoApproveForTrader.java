@@ -87,6 +87,7 @@ import io.paperdb.Paper;
 
 public  class BackgroundInfoApproveForTrader extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+    //These are susbmissions to be made for each of the modules
     DatabaseReference ProductsRef;
     private DatabaseReference Userdetails;
     private DatabaseReference ProductsRefwithproduct;
@@ -348,7 +349,7 @@ public  class BackgroundInfoApproveForTrader extends AppCompatActivity
                     }
 
                     if (mGoogleApiClient != null) {
-                        mGoogleApiClient = new GoogleApiClient.Builder(this).enableAutoManage(BackgroundInfoApproveForCustomer.this,
+                        mGoogleApiClient = new GoogleApiClient.Builder(this).enableAutoManage(BackgroundInfoApproveForTrader.this,
                                 new GoogleApiClient.OnConnectionFailedListener() {
                                     @Override
                                     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
@@ -501,7 +502,7 @@ public  class BackgroundInfoApproveForTrader extends AppCompatActivity
 
             Query queryhere =
 
-                    FirebaseDatabase.getInstance().getReference().child("Approval").orderByChild("uid").equalTo(userID);
+                    FirebaseDatabase.getInstance().getReference().child("Approval").orderByChild("tid").equalTo(userID);
             if (queryhere != null) {
 
                 FirebaseRecyclerOptions<BackgroundInfoSubmitModel> options =

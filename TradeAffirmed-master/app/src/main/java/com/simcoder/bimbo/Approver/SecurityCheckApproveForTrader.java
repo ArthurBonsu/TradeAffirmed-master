@@ -66,6 +66,8 @@ import com.simcoder.bimbo.Admin.ViewAllCustomers;
 import com.simcoder.bimbo.DriverMapActivity;
 import com.simcoder.bimbo.HistoryActivity;
 import com.simcoder.bimbo.Interface.ItemClickListner;
+import com.simcoder.bimbo.Model.SecurityInfoSubmitModelForClient;
+import com.simcoder.bimbo.Model.SecurityInfoSubmitModelForTrader;
 import com.simcoder.bimbo.Model.Users;
 import com.simcoder.bimbo.R;
 import com.simcoder.bimbo.WorkActivities.CartActivity;
@@ -85,6 +87,7 @@ import io.paperdb.Paper;
 
 public  class SecurityCheckApproveForTrader extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+    //These are susbmissions to be made for each of the modules
     DatabaseReference ProductsRef;
     private DatabaseReference Userdetails;
     private DatabaseReference ProductsRefwithproduct;
@@ -171,7 +174,7 @@ public  class SecurityCheckApproveForTrader extends AppCompatActivity
     String email;
     String age;
     TextView candidateuserid;
-    String response = "approved";
+    String securitycheckapprove = "approved";
 
     String  auxname,auxemail,auxcountry,auxid,auxidtype, auxphone;
     //
@@ -192,7 +195,7 @@ public  class SecurityCheckApproveForTrader extends AppCompatActivity
     private Uri mImageUri = null;
     private static final int GALLERY_REQUEST = 1;
     private StorageReference mStorage;
-    private DatabaseReference mDatabase;
+    private DatabaseReference ApprovalRef;
     private DatabaseReference mDatabaseCHURCHCHOSEN;
     private ProgressDialog mProgress;
     TextView CadidateId;
@@ -215,8 +218,9 @@ public  class SecurityCheckApproveForTrader extends AppCompatActivity
          TextView gpscodetextpull;
          String approverID;
          String approvalID;
+         String approvalkey;
 
-    String securitycheckapprove = "securityinfoapproveact";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -281,7 +285,7 @@ public  class SecurityCheckApproveForTrader extends AppCompatActivity
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         if (toolbar != null) {
-            toolbar.setTitle("Background Information Activity");
+            toolbar.setTitle("Security Information Activity");
         }
 //        setSupportActionBar(toolbar);
 
@@ -331,9 +335,9 @@ public  class SecurityCheckApproveForTrader extends AppCompatActivity
 
                     myfirebaseDatabase = FirebaseDatabase.getInstance();
 
-                    UsersRef = myfirebaseDatabase.getReference().child("Users");
+                    ApprovalRef = myfirebaseDatabase.getReference().child("Approval");
 
-                    userkey = UsersRef.getKey();
+                    approvalkey = ApprovalRef.getKey();
                     // GET FROM FOLLOWING KEY
                     fetch();
                     recyclerView.setAdapter(feedadapter);
@@ -526,20 +530,20 @@ public  class SecurityCheckApproveForTrader extends AppCompatActivity
                     FirebaseDatabase.getInstance().getReference().child("Approval").orderByChild("tid").equalTo(userID);
             if (queryhere != null) {
 
-                FirebaseRecyclerOptions<Users> options =
-                        new FirebaseRecyclerOptions.Builder<Users>()
-                                .setQuery(queryhere, new SnapshotParser<Users>() {
+                FirebaseRecyclerOptions<SecurityInfoSubmitModelForTrader> options =
+                        new FirebaseRecyclerOptions.Builder<SecurityInfoSubmitModelForTrader>()
+                                .setQuery(queryhere, new SnapshotParser<SecurityInfoSubmitModelForTrader>() {
 
 
                                     @Nullable
                                     @Override
-                                    public Users parseSnapshot(@Nullable DataSnapshot snapshot) {
+                                    public SecurityInfoSubmitModelForTrader parseSnapshot(@Nullable DataSnapshot snapshot) {
 
 
                                       /*
                                       String commentkey = snapshot.child("Comments").getKey();
                                       String likekey = snapshot.child("Likes").getKey();*/
-                                        Log.i(TAG, "User " + snapshot);
+                                        Log.i(TAG, "Approval " + snapshot);
 
                                         if (snapshot.child("tid").getValue() != null) {
                                             tid = snapshot.child("tid").getValue(String.class);
@@ -560,8 +564,10 @@ public  class SecurityCheckApproveForTrader extends AppCompatActivity
                                         if (snapshot.child("natidimage").getValue() != null) {
                                             natidimage = snapshot.child("natidimage").getValue(String.class);
                                         }
-
-                                        return new Users(uid, name, gpsimage, gpscode,  natidimage);
+                                        if (snapshot.child("securityinfoapprovestatus").getValue() != null) {
+                                            securitycheckapprove = snapshot.child("securityinfoapprovestatus").getValue(String.class);
+                                        }
+                                        return new SecurityInfoSubmitModelForTrader(tid, name, gpsimage, gpscode,  natidimage,securitycheckapprove);
 
 
                                     }
@@ -571,14 +577,14 @@ public  class SecurityCheckApproveForTrader extends AppCompatActivity
 
 
 
-                feedadapter = new FirebaseRecyclerAdapter<Users, ViewHolder>(options) {
+                feedadapter = new FirebaseRecyclerAdapter<SecurityInfoSubmitModelForTrader, ViewHolder>(options) {
                     @Nullable
                     @Override
                     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
                         @Nullable
                         View view = LayoutInflater.from(parent.getContext())
-                                .inflate(R.layout.backgroundinfoapprove, parent, false);
+                                .inflate(R.layout.securitycheckapprove, parent, false);
 
                         return new ViewHolder(view);
                     }
@@ -590,13 +596,13 @@ public  class SecurityCheckApproveForTrader extends AppCompatActivity
                     }
 
                     @Override
-                    protected void onBindViewHolder(@Nullable final ViewHolder holder, int position, @Nullable Users model) {
+                    protected void onBindViewHolder(@Nullable final ViewHolder holder, int position, @Nullable SecurityInfoSubmitModelForTrader model) {
                         if (model != null) {
 
 
 
                             holder.NameofPerson.setText( name);
-                            holder.candidateuserid.setText(uid);
+                            holder.candidateuserid.setText(tid);
                             holder.gpscodetextpull.setText(gpscode);
 
 
@@ -629,17 +635,17 @@ public  class SecurityCheckApproveForTrader extends AppCompatActivity
                             holder.ApprovalButtton.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    response = "approve";
-                                    setDecision(response);
+                                    securitycheckapprove = "approveTrader";
+                                    setDecision(securitycheckapprove);
                                     Intent approvalintent = new Intent(SecurityCheckApproveForTrader.this, BackgroundInfoApproveForCustomer.class);
                                     approvalintent.putExtra("role", role);
-                                    approvalintent.putExtra("uid", tid);
+                                    approvalintent.putExtra("tid", tid);
                                     approvalintent.putExtra("approverID", approverID);
                                     approvalintent.putExtra("approvalID", approvalID);
                                     approvalintent.putExtra("userID", userID);
 
 
-                                    Toast.makeText(SecurityCheckApproveForTrader.this, "Background has been approved", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(SecurityCheckApproveForTrader.this, "Security Info has been approved", Toast.LENGTH_SHORT).show();
                                     startActivity(approvalintent);
                                 }
                             });
@@ -648,17 +654,17 @@ public  class SecurityCheckApproveForTrader extends AppCompatActivity
                                 holder.RejectButton.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View view) {
-                                        response = "reject";
-                                        setDecision(response);
+                                        securitycheckapprove = "rejectTrader";
+                                        setDecision(securitycheckapprove);
                                         Intent rejectintent = new Intent(SecurityCheckApproveForTrader.this, BackgroundInfoApproveForCustomer.class);
                                         rejectintent.putExtra("role", role);
-                                        rejectintent.putExtra("uid", tid);
+                                        rejectintent.putExtra("tid", tid);
                                         rejectintent.putExtra("approverID", approverID);
                                         rejectintent.putExtra("approvalID", approvalID);
                                         rejectintent.putExtra("userID", userID);
 
 
-                                        Toast.makeText(SecurityCheckApproveForTrader.this, "BackgroundInfo has been rejected", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(SecurityCheckApproveForTrader.this, "Security Info has been rejected", Toast.LENGTH_SHORT).show();
                                         startActivity(rejectintent);
 
 
@@ -671,17 +677,17 @@ public  class SecurityCheckApproveForTrader extends AppCompatActivity
                                 holder.PauseButton.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View view) {
-                                        response = "pause";
-                                        setDecision(response);
+                                        securitycheckapprove = "pause";
+                                        setDecision(securitycheckapprove);
                                         Intent pausebuttonintent = new Intent(SecurityCheckApproveForTrader.this, BackgroundInfoApproveForCustomer.class);
                                         pausebuttonintent.putExtra("role", role);
-                                        pausebuttonintent.putExtra("uid", tid);
+                                        pausebuttonintent.putExtra("tid", tid);
                                         pausebuttonintent.putExtra("approverID", approverID);
                                         pausebuttonintent.putExtra("approvalID", approvalID);
                                         pausebuttonintent.putExtra("userID", userID);
 
 
-                                        Toast.makeText(SecurityCheckApproveForTrader.this, "BackgroundInfo has been paused", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(SecurityCheckApproveForTrader.this, "Security info has been paused", Toast.LENGTH_SHORT).show();
                                         startActivity(pausebuttonintent);
 
                                     }
@@ -696,7 +702,7 @@ public  class SecurityCheckApproveForTrader extends AppCompatActivity
 
                                         Intent candidatebackbutton  = new Intent(SecurityCheckApproveForTrader.this, PersonalInfoApproveForClient.class);
                                         candidatebackbutton.putExtra("role", role);
-                                        candidatebackbutton.putExtra("uid", tid);
+                                        candidatebackbutton.putExtra("tid", tid);
                                         candidatebackbutton.putExtra("approverID", approverID);
                                         candidatebackbutton.putExtra("approvalID", approvalID);
                                         candidatebackbutton.putExtra("userID", userID);
@@ -716,11 +722,11 @@ public  class SecurityCheckApproveForTrader extends AppCompatActivity
                                 holder.candidateapprovenextbutton.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View view) {
-                                        if (response == "approve") {
+                                        if (securitycheckapprove == "approve") {
                                             ;
-                                            Intent approvalsubmissionpage = new Intent(SecurityCheckApproveForTrader.this, SecurityCheckApproveForTrader.class);
+                                            Intent approvalsubmissionpage = new Intent(SecurityCheckApproveForTrader.this, FinalApprovalForTrader.class);
                                             approvalsubmissionpage.putExtra("userID" , userID);
-                                            approvalsubmissionpage.putExtra("uid", tid);
+                                            approvalsubmissionpage.putExtra("tid", tid);
                                             approvalsubmissionpage.putExtra("approverID", approverID);
                                             approvalsubmissionpage.putExtra("approvalID", approvalID);
                                             approvalsubmissionpage.putExtra("role", role);
@@ -729,9 +735,9 @@ public  class SecurityCheckApproveForTrader extends AppCompatActivity
                                             startActivity(approvalsubmissionpage);
                                         }
                                          else{
-                                            Intent approvalconfirmationpage = new Intent(SecurityCheckApproveForTrader.this, SecurityCheckApproveForTrader.class);
+                                            Intent approvalconfirmationpage = new Intent(SecurityCheckApproveForTrader.this, FinalApprovalForTrader.class);
                                             approvalconfirmationpage.putExtra("userID" , userID);
-                                            approvalconfirmationpage.putExtra("uid", tid);
+                                            approvalconfirmationpage.putExtra("tid", tid);
                                             approvalconfirmationpage.putExtra("approverID", approverID);
                                             approvalconfirmationpage.putExtra("approvalID", approvalID);
                                             approvalconfirmationpage.putExtra("role", role);
@@ -759,7 +765,7 @@ public  class SecurityCheckApproveForTrader extends AppCompatActivity
 
 
     // Post Info
-    private void setDecision(String response) {
+    private void setDecision(String securitycheckapprove) {
 
         user = mAuth.getCurrentUser();
 
@@ -776,8 +782,8 @@ public  class SecurityCheckApproveForTrader extends AppCompatActivity
 
             }
 
-            if (response != null) {
-                mProgress.setMessage("Making +" + response + "for this current user");
+            if (securitycheckapprove != null) {
+                mProgress.setMessage("Making +" + securitycheckapprove + "for this current user");
 
                 mProgress.show();
 
@@ -785,16 +791,16 @@ public  class SecurityCheckApproveForTrader extends AppCompatActivity
 
 
                 // PICK UP THE SPECIAL PRODUCT INFO AND LOADING THEM INTO THE DATABASE
-                Users newuserapprovalinfo =     new Users(uid, name, address, street, gpscode, country,response, securitycheckapprove);
-                UsersRef.child(userID).setValue(newuserapprovalinfo, new
+                SecurityInfoSubmitModelForTrader newuserapprovalinfo =     new SecurityInfoSubmitModelForTrader(tid, name, gpsimage, gpscode,  natidimage,securitycheckapprove);
+                ApprovalRef.child(approvalID).setValue(newuserapprovalinfo, new
                         DatabaseReference.CompletionListener() {
                             @Override
                             public void onComplete(DatabaseError databaseError, DatabaseReference
                                     databaseReference) {
-                                Toast.makeText(getApplicationContext(), "User Decision Taken as "  +response, Toast.LENGTH_SHORT).show();
-                                Intent personapprovalloginfointent = new Intent(SecurityCheckApproveForTrader.this, HomeActivity.class);
+                                Toast.makeText(getApplicationContext(), "Security Decision Taken as "  +securitycheckapprove, Toast.LENGTH_SHORT).show();
+                                Intent securitydecisionintent = new Intent(SecurityCheckApproveForTrader.this, SecurityCheckApproveForTrader.class);
 
-                                startActivity(personapprovalloginfointent);
+                                startActivity(securitydecisionintent);
 
                             }
                         });

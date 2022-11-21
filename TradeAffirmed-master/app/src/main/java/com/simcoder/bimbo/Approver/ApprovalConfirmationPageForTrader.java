@@ -86,6 +86,7 @@ import io.paperdb.Paper;
 
 public  class ApprovalConfirmationPageForTrader extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+    //Notice to confirm approval
     DatabaseReference ProductsRef;
     private DatabaseReference Userdetails;
     private DatabaseReference ProductsRefwithproduct;

@@ -75,6 +75,8 @@ import io.paperdb.Paper;
 
 public  class AllCandidatesBackgroundApprovedForTrader extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    //AllCandidtesApproved helps to check status
     DatabaseReference ProductsRef;
     private DatabaseReference Userdetails;
     private DatabaseReference ProductsRefwithproduct;

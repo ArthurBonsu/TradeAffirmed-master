@@ -67,11 +67,9 @@ import com.simcoder.bimbo.Admin.ViewAllCustomers;
 import com.simcoder.bimbo.DriverMapActivity;
 import com.simcoder.bimbo.HistoryActivity;
 import com.simcoder.bimbo.Interface.ItemClickListner;
-import com.simcoder.bimbo.Model.PersonalInfoSubmitModel;
-import com.simcoder.bimbo.Model.Users;
+import com.simcoder.bimbo.Model.PersonalInfoSubmitModelForClient;
 import com.simcoder.bimbo.R;
 import com.simcoder.bimbo.WorkActivities.CartActivity;
-import com.simcoder.bimbo.WorkActivities.HomeActivity;
 import com.simcoder.bimbo.WorkActivities.TraderProfile;
 import com.simcoder.bimbo.instagram.Home.InstagramHomeActivity;
 import com.squareup.picasso.Callback;
@@ -87,6 +85,7 @@ import io.paperdb.Paper;
 
 public  class PersonalInfoApproveForTrader extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+    //These are susbmissions to be made for each of the modules
     DatabaseReference ProductsRef;
     private DatabaseReference Userdetails;
     private DatabaseReference ProductsRefwithproduct;
@@ -465,14 +464,14 @@ public  class PersonalInfoApproveForTrader extends AppCompatActivity
                     FirebaseDatabase.getInstance().getReference().child("Approval").orderByChild("tid").equalTo(userID);
             if (queryhere != null) {
 
-                FirebaseRecyclerOptions<PersonalInfoSubmitModel> options =
-                        new FirebaseRecyclerOptions.Builder<PersonalInfoSubmitModel>()
-                                .setQuery(queryhere, new SnapshotParser<PersonalInfoSubmitModel>() {
+                FirebaseRecyclerOptions<PersonalInfoSubmitModelForClient> options =
+                        new FirebaseRecyclerOptions.Builder<PersonalInfoSubmitModelForClient>()
+                                .setQuery(queryhere, new SnapshotParser<PersonalInfoSubmitModelForClient>() {
 
 
                                     @Nullable
                                     @Override
-                                    public PersonalInfoSubmitModel parseSnapshot(@Nullable DataSnapshot snapshot) {
+                                    public PersonalInfoSubmitModelForClient parseSnapshot(@Nullable DataSnapshot snapshot) {
 
 
                                       /*
@@ -506,7 +505,7 @@ public  class PersonalInfoApproveForTrader extends AppCompatActivity
                                             age = snapshot.child("age").getValue(String.class);
                                         }
 
-                                        return new PersonalInfoSubmitModel(uid, name, image, phone, email, gender, age);
+                                        return new PersonalInfoSubmitModelForClient(uid, name, image, phone, email, gender, age);
 
 
                                     }
@@ -514,7 +513,7 @@ public  class PersonalInfoApproveForTrader extends AppCompatActivity
                                 }).build();
 
 
-                feedadapter = new FirebaseRecyclerAdapter<PersonalInfoSubmitModel, ViewHolder>(options) {
+                feedadapter = new FirebaseRecyclerAdapter<PersonalInfoSubmitModelForClient, ViewHolder>(options) {
                     @Nullable
                     @Override
                     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -533,7 +532,7 @@ public  class PersonalInfoApproveForTrader extends AppCompatActivity
                     }
 
                     @Override
-                    protected void onBindViewHolder(@Nullable final ViewHolder holder, int position, @Nullable PersonalInfoSubmitModel model) {
+                    protected void onBindViewHolder(@Nullable final ViewHolder holder, int position, @Nullable PersonalInfoSubmitModelForClient model) {
                         if (model != null) {
 
 
@@ -700,14 +699,14 @@ public  class PersonalInfoApproveForTrader extends AppCompatActivity
 
                         // PICK UP THE SPECIAL PRODUCT INFO AND LOADING THEM INTO THE DATABASE
 
-                PersonalInfoSubmitModel newuserapprovalinfo =     new PersonalInfoSubmitModel(tid, name, image, phone, email, gender, age,personalinfoapprovestatus);
+                PersonalInfoSubmitModelForClient newuserapprovalinfo =     new PersonalInfoSubmitModelForClient(tid, name, image, phone, email, gender, age,personalinfoapprovestatus);
                         UsersRef.child(userID).setValue(newuserapprovalinfo, new
                                 DatabaseReference.CompletionListener() {
                                     @Override
                                     public void onComplete(DatabaseError databaseError, DatabaseReference
                                             databaseReference) {
-                                        Toast.makeText(getApplicationContext(), "Person Decision Taken as "  +personalinfoapprovestatus, Toast.LENGTH_SHORT).show();
-                                        Intent personapprovalloginfointent = new Intent(PersonalInfoApproveForTrader.this, HomeActivity.class);
+                                        Toast.makeText(getApplicationContext(), "Personal Decision Taken as "  +personalinfoapprovestatus, Toast.LENGTH_SHORT).show();
+                                        Intent personapprovalloginfointent = new Intent(PersonalInfoApproveForTrader.this, PersonalInfoApproveForTrader.class);
 
                                         startActivity(personapprovalloginfointent);
 

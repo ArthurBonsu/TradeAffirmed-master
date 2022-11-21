@@ -26,16 +26,13 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.simcoder.bimbo.Admin.SecurityCheck;
 import com.simcoder.bimbo.Model.HashMaps;
-import com.simcoder.bimbo.Model.PersonalInfoSubmitModel;
-import com.simcoder.bimbo.Model.ResidentialInfoSubmitModel;
+import com.simcoder.bimbo.Model.ResidentialInfoSubmitModelForClient;
 import com.simcoder.bimbo.R;
 
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.Map;
 
 public class ResidentialInfo extends AppCompatActivity {
@@ -311,7 +308,7 @@ public class ResidentialInfo extends AppCompatActivity {
 
 
                     // PICK UP THE SPECIAL PRODUCT INFO AND LOADING THEM INTO THE DATABASE
-                    ResidentialInfoSubmitModel residentialinfotobesent = new ResidentialInfoSubmitModel( themailingaddressstring , thegpscodestring, thestreetaddressstring,residenceinfoapprove);
+                    ResidentialInfoSubmitModelForClient residentialinfotobesent = new ResidentialInfoSubmitModelForClient( themailingaddressstring , thegpscodestring, thestreetaddressstring,residenceinfoapprove);
 
                     mApproval.setValue(residentialinfotobesent, new
                             DatabaseReference.CompletionListener() {
@@ -386,7 +383,7 @@ public class ResidentialInfo extends AppCompatActivity {
 
 
                 // PICK UP THE SPECIAL PRODUCT INFO AND LOADING THEM INTO THE DATABASE
-                ResidentialInfoSubmitModel residentialinfotobesent = new ResidentialInfoSubmitModel( themailingaddressstring , thegpscodestring, thestreetaddressstring,residenceinfoapprove);
+                ResidentialInfoSubmitModelForClient residentialinfotobesent = new ResidentialInfoSubmitModelForClient( themailingaddressstring , thegpscodestring, thestreetaddressstring,residenceinfoapprove);
 
                 mApproval.setValue(residentialinfotobesent, new
                         DatabaseReference.CompletionListener() {

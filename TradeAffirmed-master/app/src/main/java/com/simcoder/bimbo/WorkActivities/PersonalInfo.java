@@ -1,16 +1,11 @@
 package com.simcoder.bimbo.WorkActivities;
 
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseUser;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.media.Image;
 import android.net.Uri;
-import android.provider.MediaStore;
-import androidx.annotation.NonNull;
+
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -25,29 +20,19 @@ import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
-import com.simcoder.bimbo.Model.BackgroundInfoSubmitModel;
 import com.simcoder.bimbo.Model.HashMaps;
-import com.simcoder.bimbo.Model.PersonalInfoSubmitModel;
+import com.simcoder.bimbo.Model.PersonalInfoSubmitModelForClient;
 import com.simcoder.bimbo.R;
 
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.Map;
 
 public class PersonalInfo extends AppCompatActivity {
@@ -352,7 +337,7 @@ public class PersonalInfo extends AppCompatActivity {
                     mApproval.keepSynced(true);
 
                 // PICK UP THE SPECIAL PRODUCT INFO AND LOADING THEM INTO THE DATABASE
-                PersonalInfoSubmitModel personalinfotobesent = new PersonalInfoSubmitModel( userID, thenameinfostring, thephoneinfostring, theemailinfostring, gendertext, agetext,countrytext,personalinfoapprove);
+                PersonalInfoSubmitModelForClient personalinfotobesent = new PersonalInfoSubmitModelForClient( userID, thenameinfostring, thephoneinfostring, theemailinfostring, gendertext, agetext,countrytext,personalinfoapprove);
 
                 mApproval.setValue(personalinfotobesent, new
                         DatabaseReference.CompletionListener() {
@@ -454,7 +439,7 @@ public class PersonalInfo extends AppCompatActivity {
                     mApproval.keepSynced(true);
 
                     // PICK UP THE SPECIAL PRODUCT INFO AND LOADING THEM INTO THE DATABASE
-                    PersonalInfoSubmitModel personalinfotobesent = new PersonalInfoSubmitModel( userID, thenameinfostring, thephoneinfostring, theemailinfostring, gendertext, agetext,countrytext,personalinfoapprove);
+                    PersonalInfoSubmitModelForClient personalinfotobesent = new PersonalInfoSubmitModelForClient( userID, thenameinfostring, thephoneinfostring, theemailinfostring, gendertext, agetext,countrytext,personalinfoapprove);
 
                     mApproval.setValue(personalinfotobesent, new
                             DatabaseReference.CompletionListener() {
