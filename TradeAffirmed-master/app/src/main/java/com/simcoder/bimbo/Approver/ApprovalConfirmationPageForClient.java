@@ -600,7 +600,7 @@ public  class ApprovalConfirmationPageForClient extends AppCompatActivity
                                 @Override
                                 public void onClick(View v) {
 
-                                    Intent backbutton  = new Intent(ApprovalConfirmationPageForClient.this, SecurityCheckApproveForCustomer.class);
+                                    Intent backbutton  = new Intent(ApprovalConfirmationPageForClient.this, SecurityInfoApproveForCustomer.class);
                                     backbutton.putExtra("role", role);
                                     backbutton.putExtra("uid", uid);
                                     backbutton.putExtra("approverID", approverID);

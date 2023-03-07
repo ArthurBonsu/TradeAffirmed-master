@@ -82,7 +82,8 @@ public  class AllCandidatesApprovedForClients extends AppCompatActivity
     private RecyclerView recyclerView;
     RecyclerView.LayoutManager layoutManager;
 
-    DatabaseReference AllOrderDatabaseRef;
+    DatabaseReference ApprovalRef;
+    String approvalkey;
     DatabaseReference FollowerDatabaseReference;
     String productkey;
     String traderkeyhere;
@@ -280,10 +281,11 @@ public  class AllCandidatesApprovedForClients extends AppCompatActivity
 
                 myfirebaseDatabase = FirebaseDatabase.getInstance();
 
-                UsersRef = myfirebaseDatabase.getReference().child("Users");
+                ApprovalRef = myfirebaseDatabase.getReference().child("Approval");
 
 
-                userkey = UsersRef.getKey();
+                approvalkey = ApprovalRef.getKey();
+
                 // GET FROM FOLLOWING KEY
 
 

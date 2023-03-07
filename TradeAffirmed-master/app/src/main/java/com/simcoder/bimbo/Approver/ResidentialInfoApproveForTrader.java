@@ -23,6 +23,7 @@ import androidx.appcompat.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -60,6 +61,7 @@ import com.simcoder.bimbo.Admin.SearchForAdminProductsActivity;
 import com.simcoder.bimbo.Admin.TradersFollowing;
 import com.simcoder.bimbo.Admin.ViewAllCarts;
 import com.simcoder.bimbo.Admin.ViewAllCustomers;
+import com.simcoder.bimbo.Model.ReceiptSetter;
 import com.simcoder.bimbo.Model.ResidentialInfoSubmitModelForClient;
 import com.simcoder.bimbo.Model.ResidentialInfoSubmitModelForTrader;
 import com.simcoder.bimbo.WorkActivities.CartActivity;
@@ -127,9 +129,9 @@ public  class ResidentialInfoApproveForTrader extends AppCompatActivity
     String tradename;
     String traderimage;
     FirebaseUser user;
-    String uid, name, address, street, gpscode, country;
+    String tid, name, address, street, gpscode, country;
 
-    String categoryname, date, desc, discount, time, pid, pimage, pname, price, image,  size, tradername, tid;
+    String categoryname, date, desc, discount, time, pid, pimage, pname, price, image,  size, tradername;
     String thetraderimage;
 
     String amount;
@@ -205,8 +207,9 @@ public  class ResidentialInfoApproveForTrader extends AppCompatActivity
     ImageButton candidateapprovenextbutton;
     String approverID;
     String approvalID;
+    Button receiptbutton;
 
-
+    String approvalreceipt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -261,7 +264,7 @@ public  class ResidentialInfoApproveForTrader extends AppCompatActivity
 
         candidateapprovebackbutton =  (ImageButton) findViewById(R.id.candidateapproveback);
         candidateapprovenextbutton = (ImageButton) findViewById(R.id.candidateapprovenext);
-
+        receiptbutton = (Button)findViewById(R.id.receiptbutton);
 
 
 
@@ -323,6 +326,7 @@ public  class ResidentialInfoApproveForTrader extends AppCompatActivity
                     ApprovalRef = myfirebaseDatabase.getReference().child("Approval");
 
                     approvalkey = ApprovalRef.getKey();
+                    approvalreceipt =userID+role+"residence"+"approved";
                     // GET FROM FOLLOWING KEY
                     fetch();
                     recyclerView.setAdapter(feedadapter);
@@ -371,7 +375,7 @@ public  class ResidentialInfoApproveForTrader extends AppCompatActivity
         public TextView CandidateGPSCode;
         public  TextView  CandidateCountry;
         public android.widget.ImageView ProfileImageofPerson;
-
+        public Button receiptbutton;
 
         public ItemClickListner listner;
 
@@ -394,7 +398,7 @@ public  class ResidentialInfoApproveForTrader extends AppCompatActivity
             CandidateStreet = itemView. findViewById(R.id. candidatestreet);
             CandidateGPSCode = itemView.findViewById(R.id.  GpsCode);
             CandidateCountry =itemView.findViewById(R.id. candidatecountry);
-
+            receiptbutton=itemView.findViewById(R.id.receiptbutton );
 
 
         }
@@ -571,7 +575,25 @@ public  class ResidentialInfoApproveForTrader extends AppCompatActivity
 
 
 
+                            if (holder.receiptbutton != null) {
+                                holder.receiptbutton.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
 
+                                        Intent receiptbuttonintent = new Intent(ResidentialInfoApproveForTrader.this, ResidenceInfoReceiptApprovedForTraders.class);
+                                        receiptbuttonintent .putExtra("role", role);
+                                        receiptbuttonintent .putExtra("tid", tid);
+                                        receiptbuttonintent .putExtra("approverID", approverID);
+                                        receiptbuttonintent .putExtra("approvalID", approvalID);
+                                        receiptbuttonintent .putExtra("userID", userID);
+
+
+                                        Toast.makeText(ResidentialInfoApproveForTrader.this, "Check the current receipt", Toast.LENGTH_SHORT).show();
+                                        startActivity(receiptbuttonintent );
+
+                                    }
+                                });
+                            }
 
                             holder.ApprovalButtton.setOnClickListener(new View.OnClickListener() {
                                 @Override
@@ -701,7 +723,7 @@ public  class ResidentialInfoApproveForTrader extends AppCompatActivity
                 mProgress.show();
 
 
-
+                ReceiptSetter newreceiptsetter = new ReceiptSetter(approvalreceipt);
 
                 // PICK UP THE SPECIAL PRODUCT INFO AND LOADING THEM INTO THE DATABASE
                 ResidentialInfoSubmitModelForTrader newuserapprovalinfo =     new ResidentialInfoSubmitModelForTrader( address ,gpscode, street,residenceinfoapprovestatus);
@@ -718,17 +740,25 @@ public  class ResidentialInfoApproveForTrader extends AppCompatActivity
                             }
                         });
 
+                ApprovalRef.child(approvalID).setValue(newreceiptsetter, new
+                        DatabaseReference.CompletionListener() {
+                            @Override
+                            public void onComplete(DatabaseError databaseError, DatabaseReference
+                                    databaseReference) {
+                                Toast.makeText(getApplicationContext(), "Residence key for trader as " + approvalreceipt  , Toast.LENGTH_SHORT).show();
+                                Intent residenceapprovalloginfointent = new Intent(ResidentialInfoApproveForTrader.this, ResidentialInfoApproveForTrader.class);
+
+                                startActivity(residenceapprovalloginfointent);
+
+                            }
+                        });
+
 
             }
-
-        };
-
-
+        }
         mProgress.dismiss();
 
-    }
-
-
+    };
 
 
     public void onConnected(@Nullable Bundle bundle) {

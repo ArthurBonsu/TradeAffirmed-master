@@ -23,6 +23,7 @@ import androidx.appcompat.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -62,6 +63,7 @@ import com.simcoder.bimbo.Admin.TradersFollowing;
 import com.simcoder.bimbo.Admin.ViewAllCarts;
 import com.simcoder.bimbo.Admin.ViewAllCustomers;
 import com.simcoder.bimbo.Model.PersonalInfoSubmitModelForClient;
+import com.simcoder.bimbo.Model.ReceiptSetter;
 import com.simcoder.bimbo.WorkActivities.CartActivity;
 import com.simcoder.bimbo.DriverMapActivity;
 import com.simcoder.bimbo.HistoryActivity;
@@ -92,7 +94,7 @@ public  class PersonalInfoApproveForClient extends AppCompatActivity
     private DatabaseReference ProductsRefwithproduct;
     private RecyclerView recyclerView;
     RecyclerView.LayoutManager layoutManager;
-    DatabaseReference UsersRef;
+    DatabaseReference ApprovalRef;
     DatabaseReference FollowerDatabaseReference;
     String productkey;
     String traderkeyhere;
@@ -200,7 +202,11 @@ personalinfoapprovestatus = "approved";
     private ProgressDialog mProgress;
     String approverID;
     String approvalID;
+    String approvalkey;
     String personalinfoapproveactivity = "personalinfoapproveact";
+    String approvalreceipt;
+    Button receiptbutton;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -254,6 +260,7 @@ personalinfoapprovestatus = "approved";
         candidateuserid = (TextView) findViewById(R.id.candidateuserid);
         candidateapprovebackbutton =  (ImageButton) findViewById(R.id.candidateapproveback);
                 candidateapprovenextbutton = (ImageButton) findViewById(R.id.candidateapprovenext);
+        receiptbutton = (Button)findViewById(R.id.receiptbutton);
 
         Paper.init(this);
 
@@ -309,9 +316,11 @@ personalinfoapprovestatus = "approved";
 
                     myfirebaseDatabase = FirebaseDatabase.getInstance();
 
-                    UsersRef = myfirebaseDatabase.getReference().child("Users");
+                    ApprovalRef = myfirebaseDatabase.getReference().child("Approval");
 
-                    userkey = UsersRef.getKey();
+                    approvalkey = ApprovalRef.getKey();
+
+                    approvalreceipt =userID+role+"personal"+"approved";
                     // GET FROM FOLLOWING KEY
                     fetch();
                     recyclerView.setAdapter(feedadapter);
@@ -349,7 +358,7 @@ personalinfoapprovestatus = "approved";
         public ImageButton RejectButton;
         public ImageButton PauseButton;
         public TextView NameofPerson;
-
+        public Button receiptbutton;
         public TextView PhoneNumberofPerson;
         public TextView PersonEmail;
         public TextView Gender;
@@ -382,7 +391,7 @@ personalinfoapprovestatus = "approved";
 
             candidateapprovebackbutton = itemView.findViewById(R.id.candidateapproveback );
             candidateapprovenextbutton = itemView.findViewById(R.id.candidateapprovenext);
-
+            receiptbutton=itemView.findViewById(R.id.receiptbutton );
         }
 
         public void setItemClickListner(ItemClickListner listner) {
@@ -624,7 +633,25 @@ personalinfoapprovestatus);
 
 ////
 
+                            if (holder.receiptbutton != null) {
+                                holder.receiptbutton.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
 
+                                        Intent receiptbuttonintent = new Intent(PersonalInfoApproveForClient.this, PersonalInfoReceiptApprovedForClients.class);
+                                        receiptbuttonintent .putExtra("role", role);
+                                        receiptbuttonintent .putExtra("uid", uid);
+                                        receiptbuttonintent .putExtra("approverID", approverID);
+                                        receiptbuttonintent .putExtra("approvalID", approvalID);
+                                        receiptbuttonintent .putExtra("userID", userID);
+
+
+                                        Toast.makeText(PersonalInfoApproveForClient.this, "Check the current receipt", Toast.LENGTH_SHORT).show();
+                                        startActivity(receiptbuttonintent );
+
+                                    }
+                                });
+                            }
                             // Product Details
                             if (holder.candidateapprovebackbutton != null) {
                                 holder.candidateapprovebackbutton.setOnClickListener(new View.OnClickListener() {
@@ -700,41 +727,56 @@ personalinfoapprovestatus) {
 
             if (
 personalinfoapprovestatus != null) {
-                mProgress.setMessage("Making +" + 
-personalinfoapprovestatus + "for this current user");
+                mProgress.setMessage("Making +" +
+                        personalinfoapprovestatus + "for this current user");
 
                 mProgress.show();
 
 
+                // PICK UP THE SPECIAL PRODUCT INFO AND LOADING THEM INTO THE DATABASE
+                ReceiptSetter newreceiptsetter = new ReceiptSetter(approvalreceipt);
+                PersonalInfoSubmitModelForClient newuserapprovalinfo = new PersonalInfoSubmitModelForClient(uid, name, image, phone, email, gender, age,
+                        personalinfoapprovestatus);
+
+                ApprovalRef.child(approvalID).setValue(newuserapprovalinfo, new
+                        DatabaseReference.CompletionListener() {
+                            @Override
+                            public void onComplete(DatabaseError databaseError, DatabaseReference
+                                    databaseReference) {
+                                Toast.makeText(getApplicationContext(), "Personal Decision Taken as " +
+                                        personalinfoapprovestatus, Toast.LENGTH_SHORT).show();
+                                Intent personapprovalloginfointent = new Intent(PersonalInfoApproveForClient.this, PersonalInfoApproveForClient.class);
+
+                                startActivity(personapprovalloginfointent);
+
+                            }
+                        });
 
 
-                        // PICK UP THE SPECIAL PRODUCT INFO AND LOADING THEM INTO THE DATABASE
+                ApprovalRef.child(approvalID).setValue(newreceiptsetter, new
+                        DatabaseReference.CompletionListener() {
+                            @Override
+                            public void onComplete(DatabaseError databaseError, DatabaseReference
+                                    databaseReference) {
+                                Toast.makeText(getApplicationContext(), "Receipt is set as " +
+                                        approvalreceipt, Toast.LENGTH_SHORT).show();
+                                Intent personapprovalloginfointent = new Intent(PersonalInfoApproveForClient.this, PersonalInfoApproveForClient.class);
 
-                PersonalInfoSubmitModelForClient newuserapprovalinfo =     new PersonalInfoSubmitModelForClient(uid, name, image, phone, email, gender, age,
-personalinfoapprovestatus);
-                        UsersRef.child(userID).setValue(newuserapprovalinfo, new
-                                DatabaseReference.CompletionListener() {
-                                    @Override
-                                    public void onComplete(DatabaseError databaseError, DatabaseReference
-                                            databaseReference) {
-                                        Toast.makeText(getApplicationContext(), "Personal Decision Taken as "  +
-personalinfoapprovestatus, Toast.LENGTH_SHORT).show();
-                                        Intent personapprovalloginfointent = new Intent(PersonalInfoApproveForClient.this, PersonalInfoApproveForClient.class);
+                                startActivity(personapprovalloginfointent);
 
-                                        startActivity(personapprovalloginfointent);
+                            }
+                        });
 
-                                    }
-                                });
-
-
-                    }
-
-                };
-
-
-                mProgress.dismiss();
 
             }
+        }
+
+        mProgress.dismiss();
+    }
+
+
+
+
 
 
 

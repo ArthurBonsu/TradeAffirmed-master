@@ -489,7 +489,7 @@ public  class ApprovalSubmissionForTrader extends AppCompatActivity
                                 @Override
                                 public void onClick(View v) {
 
-                                    Intent backbutton  = new Intent(ApprovalSubmissionForTrader.this, SecurityCheckApproveForCustomer.class);
+                                    Intent backbutton  = new Intent(ApprovalSubmissionForTrader.this, SecurityInfoApproveForCustomer.class);
                                     backbutton.putExtra("role", role);
                                     backbutton.putExtra("uid", tid);
                                     backbutton.putExtra("approverID", approverID);

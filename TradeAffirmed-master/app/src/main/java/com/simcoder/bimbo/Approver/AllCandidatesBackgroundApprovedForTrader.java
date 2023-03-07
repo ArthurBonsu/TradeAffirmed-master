@@ -137,7 +137,8 @@ public  class AllCandidatesBackgroundApprovedForTrader extends AppCompatActivity
     String state;
     String thecustomersjob;
     String orderkey;
-
+    DatabaseReference ApprovalRef;
+    String approvalkey;
     Getmyfollowings getmyfollowingsagain;
     String userkey;
     TextView  orderid;
@@ -277,13 +278,13 @@ public  class AllCandidatesBackgroundApprovedForTrader extends AppCompatActivity
                     }
                 }
 
-
                 myfirebaseDatabase = FirebaseDatabase.getInstance();
 
-                UsersRef = myfirebaseDatabase.getReference().child("Users");
+                ApprovalRef = myfirebaseDatabase.getReference().child("Approval");
 
 
-                userkey = UsersRef.getKey();
+                approvalkey = ApprovalRef.getKey();
+
                 // GET FROM FOLLOWING KEY
 
 

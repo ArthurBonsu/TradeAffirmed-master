@@ -4,18 +4,18 @@ import com.simcoder.bimbo.instagram.Models.Like;
 
 import java.util.List;
 
-public class BackgroundInfoSubmitModel {
+public class BackgroundInfoSubmitModelForTrader{
 
-        String emcountry, ememail, empersionid, emphone, empidtype, uid, backgroundinfostatus,  empersonname;
+        String emcountry, ememail, empersionid, emphone, empidtype, tid, backgroundinfostatus,  empersonname;
 
-        public BackgroundInfoSubmitModel( String emcountry, String ememail, String empersionid, String emphone, String empidtype) {
+        public BackgroundInfoSubmitModelForTrader( String emcountry, String ememail, String empersionid, String emphone, String empidtype) {
         }
 
 
-        public BackgroundInfoSubmitModel(
-                String uid,String empersonname, String emcountry, String ememail, String empersionid, String emphone, String empidtype,String backgroundinfostatus
+        public BackgroundInfoSubmitModelForTrader(
+                String tid,String empersonname, String emcountry, String ememail, String empersionid, String emphone, String empidtype,String backgroundinfostatus
         ) {
-           this.uid = uid;
+           this.tid = tid;
            this.emcountry= emcountry;
            this.ememail = ememail;
            this.empersionid = empersionid;
@@ -25,13 +25,13 @@ public class BackgroundInfoSubmitModel {
            this.empersonname = empersonname;
         }
 
-        public String getUid() {
-            return uid;
+        public String getTid() {
+            return tid;
         }
 
 
-        public void setUid(String uid) {
-            this.uid = uid;
+        public void setUid(String tid) {
+            this.tid = tid;
         }
 
         public String getEmecountry() {

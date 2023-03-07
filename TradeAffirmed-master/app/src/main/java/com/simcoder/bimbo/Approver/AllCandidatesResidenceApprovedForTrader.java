@@ -156,6 +156,8 @@ public  class AllCandidatesResidenceApprovedForTrader extends AppCompatActivity
     Button backtopreviouspage;
     Button      nextallcandidates;
     String  email,gender, age, country, personalinfoapprovestatus;
+
+
 /*
     addnewproducthere
             allproductshere
@@ -179,6 +181,8 @@ public  class AllCandidatesResidenceApprovedForTrader extends AppCompatActivity
     String approverID;
     String  status, approverimage;
     String emcountry, ememail,empersionid, emphone, empidtype, backgroundinfostatus;
+    DatabaseReference ApprovalRef;
+    String approvalkey;
 
 
     @Override
@@ -276,13 +280,13 @@ public  class AllCandidatesResidenceApprovedForTrader extends AppCompatActivity
                     }
                 }
 
-
                 myfirebaseDatabase = FirebaseDatabase.getInstance();
 
-                UsersRef = myfirebaseDatabase.getReference().child("Users");
+                ApprovalRef = myfirebaseDatabase.getReference().child("Approval");
 
 
-                userkey = UsersRef.getKey();
+                approvalkey = ApprovalRef.getKey();
+
                 // GET FROM FOLLOWING KEY
 
 
@@ -513,7 +517,7 @@ public  class AllCandidatesResidenceApprovedForTrader extends AppCompatActivity
 
                         @Nullable
                         View view = LayoutInflater.from(parent.getContext())
-                                .inflate(R.layout.allcandidatesapprovedforclient, parent, false);
+                                .inflate(R.layout.allcandidatesapprovedfortrader, parent, false);
 
                         return new AllCandidatesApprovedForClientsViewHolder(view);
                     }

@@ -513,7 +513,7 @@ public  class AllCandidatesSecurityApprovedForTrader extends AppCompatActivity
 
                         @Nullable
                         View view = LayoutInflater.from(parent.getContext())
-                                .inflate(R.layout.allcandidatesapprovedforclient, parent, false);
+                                .inflate(R.layout.allcandidatesapprovedfortrader, parent, false);
 
                         return new AllCandidatesApprovedForClientsViewHolder(view);
                     }

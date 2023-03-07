@@ -23,6 +23,7 @@ import androidx.appcompat.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -60,10 +61,10 @@ import com.simcoder.bimbo.Admin.SearchForAdminProductsActivity;
 import com.simcoder.bimbo.Admin.TradersFollowing;
 import com.simcoder.bimbo.Admin.ViewAllCarts;
 import com.simcoder.bimbo.Admin.ViewAllCustomers;
-import com.simcoder.bimbo.Model.BackgroundInfoSubmitModel;
-import com.simcoder.bimbo.Model.Users;
+
+import com.simcoder.bimbo.Model.BackgroundInfoSubmitModelForClient;
+import com.simcoder.bimbo.Model.ReceiptSetter;
 import com.simcoder.bimbo.WorkActivities.CartActivity;
-import com.simcoder.bimbo.WorkActivities.HomeActivity;
 import com.simcoder.bimbo.DriverMapActivity;
 import com.simcoder.bimbo.HistoryActivity;
 import com.simcoder.bimbo.Interface.ItemClickListner;
@@ -196,7 +197,7 @@ backgroundinfostatus;
     private Uri mImageUri = null;
     private static final int GALLERY_REQUEST = 1;
     private StorageReference mStorage;
-    private DatabaseReference mDatabase;
+    private DatabaseReference ApprovalRef;
     private DatabaseReference mDatabaseCHURCHCHOSEN;
     private ProgressDialog mProgress;
     TextView CadidateId;
@@ -214,8 +215,9 @@ backgroundinfostatus;
     ImageButton candidateapprovebackbutton;
     ImageButton candidateapprovenextbutton;
     String approverID, approvalID;
-    String  emcountry,empersonname, ememail, empersionid, emphone,  empidtype;
-
+    String  emcountry,empersonname, ememail, empersionid, emphone,  empidtype,approvalkey;
+    Button receiptbutton;
+    String approvalreceipt;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -275,7 +277,7 @@ backgroundinfostatus;
 
         candidateapprovebackbutton =  (ImageButton) findViewById(R.id.candidateapproveback);
         candidateapprovenextbutton = (ImageButton) findViewById(R.id.candidateapprovenext);
-
+        receiptbutton = (Button)findViewById(R.id.receiptbutton);
 
 
 
@@ -334,10 +336,11 @@ backgroundinfostatus;
 
                     myfirebaseDatabase = FirebaseDatabase.getInstance();
 
-                    UsersRef = myfirebaseDatabase.getReference().child("Users");
+                    ApprovalRef = myfirebaseDatabase.getReference().child("Approval");
 
-                    userkey = UsersRef.getKey();
+                    approvalkey = ApprovalRef.getKey();
                     // GET FROM FOLLOWING KEY
+                    approvalreceipt =userID+role+"background"+"approved";
                     fetch();
                     recyclerView.setAdapter(feedadapter);
                     //        setSupportActionBar(toolbar);
@@ -393,6 +396,7 @@ backgroundinfostatus;
         public  TextView  EmergencyPersonID;
         public  TextView EmergencyPersonType;
         public android.widget.ImageView ProfileImageofPerson;
+        public Button receiptbutton;
 
 
         public ItemClickListner listner;
@@ -415,6 +419,9 @@ backgroundinfostatus;
             EmergencyPersonCountry = itemView.findViewById(R.id.emergencypersoncountry);
             EmergencyPersonID = itemView. findViewById(R.id.emergencypersonID);
             EmergencyPersonType =itemView. findViewById(R.id.emergencypersonidtype);
+
+            receiptbutton=itemView.findViewById(R.id.receiptbutton );
+
                  }
 
         public void setItemClickListner(ItemClickListner listner) {
@@ -495,7 +502,7 @@ backgroundinfostatus;
         if (mAuth != null) {
             user = mAuth.getCurrentUser();
             if (user != null) {
-                traderID = user.getUid();
+                userID = user.getUid();
 
             }
             @Nullable
@@ -505,14 +512,14 @@ backgroundinfostatus;
                     FirebaseDatabase.getInstance().getReference().child("Approval").orderByChild("uid").equalTo(userID);
             if (queryhere != null) {
 
-                FirebaseRecyclerOptions<BackgroundInfoSubmitModel> options =
-                        new FirebaseRecyclerOptions.Builder<BackgroundInfoSubmitModel>()
-                                .setQuery(queryhere, new SnapshotParser<BackgroundInfoSubmitModel>() {
+                FirebaseRecyclerOptions<BackgroundInfoSubmitModelForClient> options =
+                        new FirebaseRecyclerOptions.Builder<BackgroundInfoSubmitModelForClient>()
+                                .setQuery(queryhere, new SnapshotParser<BackgroundInfoSubmitModelForClient>() {
 
 
                                     @Nullable
                                     @Override
-                                    public BackgroundInfoSubmitModel parseSnapshot(@Nullable DataSnapshot snapshot) {
+                                    public BackgroundInfoSubmitModelForClient parseSnapshot(@Nullable DataSnapshot snapshot) {
 
 
                                       /*
@@ -555,7 +562,7 @@ backgroundinfostatus;
 
 
 
-                                        return new BackgroundInfoSubmitModel( uid, empersonname,emcountry, ememail, empersionid, emphone,  empidtype, backgroundinfostatus);
+                                        return new BackgroundInfoSubmitModelForClient( uid, empersonname,emcountry, ememail, empersionid, emphone,  empidtype, backgroundinfostatus);
 
 
                                     }
@@ -565,7 +572,7 @@ backgroundinfostatus;
 
 
 
-                feedadapter = new FirebaseRecyclerAdapter<BackgroundInfoSubmitModel, ViewHolder>(options) {
+                feedadapter = new FirebaseRecyclerAdapter<BackgroundInfoSubmitModelForClient, ViewHolder>(options) {
                     @Nullable
                     @Override
                     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -584,7 +591,7 @@ backgroundinfostatus;
                     }
 
                     @Override
-                    protected void onBindViewHolder(@Nullable final ViewHolder holder, int position, @Nullable BackgroundInfoSubmitModel model) {
+                    protected void onBindViewHolder(@Nullable final ViewHolder holder, int position, @Nullable BackgroundInfoSubmitModelForClient model) {
                         if (model != null) {
 
 
@@ -677,7 +684,25 @@ backgroundinfostatus);
                                     }
                                 });
                             }
+                            if (holder.receiptbutton != null) {
+                                holder.receiptbutton.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
 
+                                        Intent receiptbuttonintent = new Intent(BackgroundInfoApproveForCustomer.this, BackgroundInfoReceiptApprovedForClients.class);
+                                        receiptbuttonintent .putExtra("role", role);
+                                        receiptbuttonintent .putExtra("uid", uid);
+                                        receiptbuttonintent .putExtra("approverID", approverID);
+                                        receiptbuttonintent .putExtra("approvalID", approvalID);
+                                        receiptbuttonintent .putExtra("userID", userID);
+
+
+                                        Toast.makeText(BackgroundInfoApproveForCustomer.this, "Check the current receipt", Toast.LENGTH_SHORT).show();
+                                        startActivity(receiptbuttonintent );
+
+                                    }
+                                });
+                            }
                             // Product Details
                             if (holder.candidateapprovebackbutton != null) {
                                 holder.candidateapprovebackbutton.setOnClickListener(new View.OnClickListener() {
@@ -705,7 +730,7 @@ backgroundinfostatus);
                                     @Override
                                     public void onClick(View view) {
 
-                                        Intent caandidateapprovenextbutton = new Intent(BackgroundInfoApproveForCustomer.this, SecurityCheckApproveForCustomer.class);
+                                        Intent caandidateapprovenextbutton = new Intent(BackgroundInfoApproveForCustomer.this, SecurityInfoApproveForCustomer.class);
                                         caandidateapprovenextbutton.putExtra("role", role);
                                         caandidateapprovenextbutton.putExtra("uid", uid);
                                         caandidateapprovenextbutton.putExtra("approverID", approverID);
@@ -754,45 +779,47 @@ backgroundinfostatus) {
             }
 
             if (
-backgroundinfostatus != null) {
-                mProgress.setMessage("Making +" + 
-backgroundinfostatus + "for this current user");
+                    backgroundinfostatus != null) {
+                mProgress.setMessage("Making +" +
+                        backgroundinfostatus + "for this current user");
 
                 mProgress.show();
 
 
-
-
                 // PICK UP THE SPECIAL PRODUCT INFO AND LOADING THEM INTO THE DATABASE
-
-                Users newuserapprovalinfo = new Users(uid,name, address, street, gpscode, country,
-backgroundinfostatus,backgroundinfoactivity);
-                UsersRef.child(userID).setValue(newuserapprovalinfo, new
+                ReceiptSetter newreceiptsetter = new ReceiptSetter(approvalreceipt);
+                BackgroundInfoSubmitModelForClient newuserapprovalinfo = new BackgroundInfoSubmitModelForClient(uid, empersonname, emcountry, ememail, empersionid, emphone, empidtype, backgroundinfostatus);
+                ApprovalRef.child(approvalID).setValue(newuserapprovalinfo, new
                         DatabaseReference.CompletionListener() {
                             @Override
                             public void onComplete(DatabaseError databaseError, DatabaseReference
                                     databaseReference) {
-                                Toast.makeText(getApplicationContext(), "Background Decision Taken as "  +
-backgroundinfostatus, Toast.LENGTH_SHORT).show();
-                                Intent personapprovalloginfointent = new Intent(BackgroundInfoApproveForCustomer.this, HomeActivity.class);
+                                Toast.makeText(getApplicationContext(), "Background Decision Taken as " +
+                                        backgroundinfostatus, Toast.LENGTH_SHORT).show();
+                                Intent backgroundapprovalloginfointent = new Intent(BackgroundInfoApproveForCustomer.this, BackgroundInfoApproveForCustomer.class);
 
-                                startActivity(personapprovalloginfointent);
+                                startActivity(backgroundapprovalloginfointent);
 
                             }
                         });
 
 
+                ApprovalRef.child(approvalID).setValue(newreceiptsetter, new
+                        DatabaseReference.CompletionListener() {
+                            @Override
+                            public void onComplete(DatabaseError databaseError, DatabaseReference
+                                    databaseReference) {
+                                Toast.makeText(getApplicationContext(), "Background Decision Taken as " + approvalreceipt, Toast.LENGTH_SHORT).show();
+                                Intent backgroundapprovalloginfointent = new Intent(BackgroundInfoApproveForCustomer.this, PersonalInfoApproveForTrader.class);
+
+                                startActivity(backgroundapprovalloginfointent);
+
+                            }
+                        });
             }
-
-        };
-
-
-        mProgress.dismiss();
-
+        }
+    mProgress.dismiss();
     }
-
-
-
 
     public void onConnected(@Nullable Bundle bundle) {
 

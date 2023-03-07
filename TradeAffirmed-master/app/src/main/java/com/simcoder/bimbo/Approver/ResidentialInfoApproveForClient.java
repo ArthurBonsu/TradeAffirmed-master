@@ -23,6 +23,7 @@ import androidx.appcompat.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -60,6 +61,7 @@ import com.simcoder.bimbo.Admin.SearchForAdminProductsActivity;
 import com.simcoder.bimbo.Admin.TradersFollowing;
 import com.simcoder.bimbo.Admin.ViewAllCarts;
 import com.simcoder.bimbo.Admin.ViewAllCustomers;
+import com.simcoder.bimbo.Model.ReceiptSetter;
 import com.simcoder.bimbo.Model.ResidentialInfoSubmitModelForClient;
 import com.simcoder.bimbo.WorkActivities.CartActivity;
 import com.simcoder.bimbo.DriverMapActivity;
@@ -204,8 +206,8 @@ public  class ResidentialInfoApproveForClient extends AppCompatActivity
     ImageButton candidateapprovenextbutton;
     String approverID;
     String approvalID;
-
-
+    Button receiptbutton;
+    String approvalreceipt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -261,7 +263,7 @@ public  class ResidentialInfoApproveForClient extends AppCompatActivity
         candidateapprovebackbutton =  (ImageButton) findViewById(R.id.candidateapproveback);
         candidateapprovenextbutton = (ImageButton) findViewById(R.id.candidateapprovenext);
 
-
+        receiptbutton = (Button)findViewById(R.id.receiptbutton);
 
 
 
@@ -322,6 +324,10 @@ public  class ResidentialInfoApproveForClient extends AppCompatActivity
                     ApprovalRef = myfirebaseDatabase.getReference().child("Approval");
 
                     approvalkey = ApprovalRef.getKey();
+
+
+                   approvalreceipt = userID+role+"residence"+"approved";
+
                     // GET FROM FOLLOWING KEY
                     fetch();
                     recyclerView.setAdapter(feedadapter);
@@ -370,7 +376,7 @@ public  class ResidentialInfoApproveForClient extends AppCompatActivity
         public TextView CandidateGPSCode;
         public  TextView  CandidateCountry;
         public android.widget.ImageView ProfileImageofPerson;
-
+        public Button receiptbutton;
 
         public ItemClickListner listner;
 
@@ -383,7 +389,7 @@ public  class ResidentialInfoApproveForClient extends AppCompatActivity
             PauseButton = itemView.findViewById(R.id.pauseapproval);
 
             ProfileImageofPerson = itemView.findViewById(R.id.candidateprofileimage);
-
+            receiptbutton=itemView.findViewById(R.id.receiptbutton );
 
 
             NameofPerson = itemView.findViewById(R.id.candidatename);
@@ -568,7 +574,25 @@ public  class ResidentialInfoApproveForClient extends AppCompatActivity
                             }
 
 
+                            if (holder.receiptbutton != null) {
+                                holder.receiptbutton.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
 
+                                        Intent receiptbuttonintent = new Intent(ResidentialInfoApproveForClient.this, ResidenceInfoReceiptApprovedForClients.class);
+                                        receiptbuttonintent .putExtra("role", role);
+                                        receiptbuttonintent .putExtra("uid", uid);
+                                        receiptbuttonintent .putExtra("approverID", approverID);
+                                        receiptbuttonintent .putExtra("approvalID", approvalID);
+                                        receiptbuttonintent .putExtra("userID", userID);
+
+
+                                        Toast.makeText(ResidentialInfoApproveForClient.this, "Check the current receipt", Toast.LENGTH_SHORT).show();
+                                        startActivity(receiptbuttonintent );
+
+                                    }
+                                });
+                            }
 
 
 
@@ -702,6 +726,7 @@ public  class ResidentialInfoApproveForClient extends AppCompatActivity
 
 
 
+                ReceiptSetter newreceiptsetter = new ReceiptSetter(approvalreceipt);
                 // PICK UP THE SPECIAL PRODUCT INFO AND LOADING THEM INTO THE DATABASE
                 ResidentialInfoSubmitModelForClient newuserapprovalinfo =     new ResidentialInfoSubmitModelForClient( address ,gpscode, street,residenceinfoapprovestatus);
                 ApprovalRef.child(approvalID).setValue(newuserapprovalinfo, new
@@ -717,16 +742,25 @@ public  class ResidentialInfoApproveForClient extends AppCompatActivity
                             }
                         });
 
+                ApprovalRef.child(approvalID).setValue(newreceiptsetter, new
+                        DatabaseReference.CompletionListener() {
+                            @Override
+                            public void onComplete(DatabaseError databaseError, DatabaseReference
+                                    databaseReference) {
+                                Toast.makeText(getApplicationContext(), "Residence Key taken as  " + approvalreceipt, Toast.LENGTH_SHORT).show();
+                                Intent residenceapprovalloginfointent = new Intent(ResidentialInfoApproveForClient.this, ResidentialInfoApproveForClient.class);
+
+                                startActivity(residenceapprovalloginfointent);
+
+                            }
+                        });
+
 
             }
-
-        };
-
-
+        }
         mProgress.dismiss();
 
-    }
-
+    };
 
 
 

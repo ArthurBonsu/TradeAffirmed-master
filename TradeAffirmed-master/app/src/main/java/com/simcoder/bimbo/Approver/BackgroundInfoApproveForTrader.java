@@ -23,6 +23,7 @@ import androidx.appcompat.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -60,10 +61,10 @@ import com.simcoder.bimbo.Admin.SearchForAdminProductsActivity;
 import com.simcoder.bimbo.Admin.TradersFollowing;
 import com.simcoder.bimbo.Admin.ViewAllCarts;
 import com.simcoder.bimbo.Admin.ViewAllCustomers;
-import com.simcoder.bimbo.Model.BackgroundInfoSubmitModel;
-import com.simcoder.bimbo.Model.Users;
+
+import com.simcoder.bimbo.Model.BackgroundInfoSubmitModelForTrader;
+import com.simcoder.bimbo.Model.ReceiptSetter;
 import com.simcoder.bimbo.WorkActivities.CartActivity;
-import com.simcoder.bimbo.WorkActivities.HomeActivity;
 import com.simcoder.bimbo.DriverMapActivity;
 import com.simcoder.bimbo.HistoryActivity;
 import com.simcoder.bimbo.Interface.ItemClickListner;
@@ -127,9 +128,9 @@ public  class BackgroundInfoApproveForTrader extends AppCompatActivity
     String tradename;
     String traderimage;
     FirebaseUser user;
-    String uid, name, address, street, gpscode, country;
+    String tid, name, address, street, gpscode, country;
 
-    String categoryname, date, desc, discount, time, pid, pimage, pname, price, image,  size, tradername, tid;
+    String categoryname, date, desc, discount, time, pid, pimage, pname, price, image,  size, tradername;
     String thetraderimage;
 
     String amount;
@@ -149,7 +150,7 @@ public  class BackgroundInfoApproveForTrader extends AppCompatActivity
     String userkey;
 
     private RecyclerView productsList;
-    private DatabaseReference cartListRef;
+    private DatabaseReference    ApprovalRef;
     private Query mQueryTraderandUserCart;
     private String userID = "";
     String traderID = "";
@@ -214,7 +215,10 @@ public  class BackgroundInfoApproveForTrader extends AppCompatActivity
     ImageButton candidateapprovebackbutton;
     ImageButton candidateapprovenextbutton;
     String approverID, approvalID;
-    String  emcountry,empersonname, ememail, empersionid, emphone,  empidtype;
+    String  emcountry,empersonname, ememail, empersionid, emphone,  empidtype,approvalkey;
+    Button receiptbutton;
+
+    String approvalreceipt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -275,7 +279,7 @@ public  class BackgroundInfoApproveForTrader extends AppCompatActivity
 
         candidateapprovebackbutton =  (ImageButton) findViewById(R.id.candidateapproveback);
         candidateapprovenextbutton = (ImageButton) findViewById(R.id.candidateapprovenext);
-
+        receiptbutton = (Button)findViewById(R.id.receiptbutton);
 
 
 
@@ -334,9 +338,11 @@ public  class BackgroundInfoApproveForTrader extends AppCompatActivity
 
                     myfirebaseDatabase = FirebaseDatabase.getInstance();
 
-                    UsersRef = myfirebaseDatabase.getReference().child("Users");
+                    ApprovalRef = myfirebaseDatabase.getReference().child("Approval");
 
-                    userkey = UsersRef.getKey();
+                    approvalkey = ApprovalRef.getKey();
+                    receiptbutton = (Button)findViewById(R.id.receiptbutton);
+                    approvalreceipt =userID+role+"background"+"approved";
                     // GET FROM FOLLOWING KEY
                     fetch();
                     recyclerView.setAdapter(feedadapter);
@@ -393,7 +399,7 @@ public  class BackgroundInfoApproveForTrader extends AppCompatActivity
         public  TextView  EmergencyPersonID;
         public  TextView EmergencyPersonType;
         public android.widget.ImageView ProfileImageofPerson;
-
+        public Button receiptbutton;
 
         public ItemClickListner listner;
 
@@ -415,6 +421,7 @@ public  class BackgroundInfoApproveForTrader extends AppCompatActivity
             EmergencyPersonCountry = itemView.findViewById(R.id.emergencypersoncountry);
             EmergencyPersonID = itemView. findViewById(R.id.emergencypersonID);
             EmergencyPersonType =itemView. findViewById(R.id.emergencypersonidtype);
+            receiptbutton=itemView.findViewById(R.id.receiptbutton );
         }
 
         public void setItemClickListner(ItemClickListner listner) {
@@ -505,14 +512,14 @@ public  class BackgroundInfoApproveForTrader extends AppCompatActivity
                     FirebaseDatabase.getInstance().getReference().child("Approval").orderByChild("tid").equalTo(userID);
             if (queryhere != null) {
 
-                FirebaseRecyclerOptions<BackgroundInfoSubmitModel> options =
-                        new FirebaseRecyclerOptions.Builder<BackgroundInfoSubmitModel>()
-                                .setQuery(queryhere, new SnapshotParser<BackgroundInfoSubmitModel>() {
+                FirebaseRecyclerOptions<BackgroundInfoSubmitModelForTrader> options =
+                        new FirebaseRecyclerOptions.Builder<BackgroundInfoSubmitModelForTrader>()
+                                .setQuery(queryhere, new SnapshotParser<BackgroundInfoSubmitModelForTrader>() {
 
 
                                     @Nullable
                                     @Override
-                                    public BackgroundInfoSubmitModel parseSnapshot(@Nullable DataSnapshot snapshot) {
+                                    public BackgroundInfoSubmitModelForTrader parseSnapshot(@Nullable DataSnapshot snapshot) {
 
 
                                       /*
@@ -520,8 +527,8 @@ public  class BackgroundInfoApproveForTrader extends AppCompatActivity
                                       String likekey = snapshot.child("Likes").getKey();*/
                                         Log.i(TAG, "BackgroundInfoSubmitModel " + snapshot);
 
-                                        if (snapshot.child("uid").getValue() != null) {
-                                            uid = snapshot.child("uid").getValue(String.class);
+                                        if (snapshot.child("tid").getValue() != null) {
+                                            tid = snapshot.child("tid").getValue(String.class);
                                         }
                                         if (snapshot.child("empersonname").getValue() != null) {
                                             empersonname = snapshot.child("empersonname").getValue(String.class);
@@ -555,7 +562,7 @@ public  class BackgroundInfoApproveForTrader extends AppCompatActivity
 
 
 
-                                        return new BackgroundInfoSubmitModel( uid, empersonname,emcountry, ememail, empersionid, emphone,  empidtype, backgroundinfostatus);
+                                        return new BackgroundInfoSubmitModelForTrader( tid, empersonname,  emcountry, ememail, empersionid,  emphone, empidtype, backgroundinfostatus);
 
 
                                     }
@@ -565,7 +572,7 @@ public  class BackgroundInfoApproveForTrader extends AppCompatActivity
 
 
 
-                feedadapter = new FirebaseRecyclerAdapter<BackgroundInfoSubmitModel, ViewHolder>(options) {
+                feedadapter = new FirebaseRecyclerAdapter<BackgroundInfoSubmitModelForTrader, ViewHolder>(options) {
                     @Nullable
                     @Override
                     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -584,13 +591,13 @@ public  class BackgroundInfoApproveForTrader extends AppCompatActivity
                     }
 
                     @Override
-                    protected void onBindViewHolder(@Nullable final ViewHolder holder, int position, @Nullable BackgroundInfoSubmitModel model) {
+                    protected void onBindViewHolder(@Nullable final ViewHolder holder, int position, @Nullable BackgroundInfoSubmitModelForTrader model) {
                         if (model != null) {
 
 
 
                             holder.NameofPerson.setText( name);
-                            holder.candidateuserid.setText(uid);
+                            holder.candidateuserid.setText(tid);
 
 
                             holder.EmergencyPersonName.setText(empersonname);
@@ -622,7 +629,7 @@ public  class BackgroundInfoApproveForTrader extends AppCompatActivity
                                             backgroundinfostatus);
                                     Intent approvalintent = new Intent(BackgroundInfoApproveForTrader.this, BackgroundInfoApproveForCustomer.class);
                                     approvalintent.putExtra("role", role);
-                                    approvalintent.putExtra("uid", uid);
+                                    approvalintent.putExtra("tid", tid);
                                     approvalintent.putExtra("approverID", approverID);
                                     approvalintent.putExtra("approvalID", approvalID);
                                     approvalintent.putExtra("userID", userID);
@@ -641,7 +648,7 @@ public  class BackgroundInfoApproveForTrader extends AppCompatActivity
                                                 backgroundinfostatus);
                                         Intent rejectintent = new Intent(BackgroundInfoApproveForTrader.this, BackgroundInfoApproveForCustomer.class);
                                         rejectintent.putExtra("role", role);
-                                        rejectintent.putExtra("uid", uid);
+                                        rejectintent.putExtra("tid", tid);
                                         rejectintent.putExtra("approverID", approverID);
                                         rejectintent.putExtra("approvalID", approvalID);
                                         rejectintent.putExtra("userID", userID);
@@ -665,7 +672,7 @@ public  class BackgroundInfoApproveForTrader extends AppCompatActivity
                                                 backgroundinfostatus);
                                         Intent pausebuttonintent = new Intent(BackgroundInfoApproveForTrader.this, BackgroundInfoApproveForCustomer.class);
                                         pausebuttonintent.putExtra("role", role);
-                                        pausebuttonintent.putExtra("uid", uid);
+                                        pausebuttonintent.putExtra("tid", tid);
                                         pausebuttonintent.putExtra("approverID", approverID);
                                         pausebuttonintent.putExtra("approvalID", approvalID);
                                         pausebuttonintent.putExtra("userID", userID);
@@ -677,7 +684,25 @@ public  class BackgroundInfoApproveForTrader extends AppCompatActivity
                                     }
                                 });
                             }
+                            if (holder.receiptbutton != null) {
+                                holder.receiptbutton.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
 
+                                        Intent receiptbuttonintent = new Intent(BackgroundInfoApproveForTrader.this, BackgroundInfoReceiptApprovedForTraders.class);
+                                        receiptbuttonintent .putExtra("role", role);
+                                        receiptbuttonintent .putExtra("tid", tid);
+                                        receiptbuttonintent .putExtra("approverID", approverID);
+                                        receiptbuttonintent .putExtra("approvalID", approvalID);
+                                        receiptbuttonintent .putExtra("userID", userID);
+
+
+                                        Toast.makeText(BackgroundInfoApproveForTrader.this, "Check the current receipt", Toast.LENGTH_SHORT).show();
+                                        startActivity(receiptbuttonintent );
+
+                                    }
+                                });
+                            }
                             // Product Details
                             if (holder.candidateapprovebackbutton != null) {
                                 holder.candidateapprovebackbutton.setOnClickListener(new View.OnClickListener() {
@@ -686,7 +711,7 @@ public  class BackgroundInfoApproveForTrader extends AppCompatActivity
 
                                         Intent candidatebackbutton  = new Intent(BackgroundInfoApproveForTrader.this, ResidentialInfoApproveForClient.class);
                                         candidatebackbutton.putExtra("role", role);
-                                        candidatebackbutton.putExtra("uid", uid);
+                                        candidatebackbutton.putExtra("tid", tid);
                                         candidatebackbutton.putExtra("approverID", approverID);
                                         candidatebackbutton.putExtra("approvalID", approvalID);
                                         candidatebackbutton.putExtra("userID", userID);
@@ -705,9 +730,9 @@ public  class BackgroundInfoApproveForTrader extends AppCompatActivity
                                     @Override
                                     public void onClick(View view) {
 
-                                        Intent caandidateapprovenextbutton = new Intent(BackgroundInfoApproveForTrader.this, SecurityCheckApproveForCustomer.class);
+                                        Intent caandidateapprovenextbutton = new Intent(BackgroundInfoApproveForTrader.this, SecurityInfoApproveForCustomer.class);
                                         caandidateapprovenextbutton.putExtra("role", role);
-                                        caandidateapprovenextbutton.putExtra("uid", uid);
+                                        caandidateapprovenextbutton.putExtra("tid", tid);
                                         caandidateapprovenextbutton.putExtra("approverID", approverID);
                                         caandidateapprovenextbutton.putExtra("approvalID", approvalID);
                                         caandidateapprovenextbutton.putExtra("userID", userID);
@@ -762,35 +787,44 @@ public  class BackgroundInfoApproveForTrader extends AppCompatActivity
 
 
 
-
+                ReceiptSetter newreceiptsetter = new ReceiptSetter(approvalreceipt);
                 // PICK UP THE SPECIAL PRODUCT INFO AND LOADING THEM INTO THE DATABASE
 
-                Users newuserapprovalinfo = new Users(uid,name, address, street, gpscode, country,
+                BackgroundInfoSubmitModelForTrader newuserapprovalinfo = new BackgroundInfoSubmitModelForTrader(tid,name, address, street, gpscode, country,
                         backgroundinfostatus,backgroundinfoactivity);
-                UsersRef.child(userID).setValue(newuserapprovalinfo, new
+                ApprovalRef.child(approvalID).setValue(newuserapprovalinfo, new
                         DatabaseReference.CompletionListener() {
                             @Override
                             public void onComplete(DatabaseError databaseError, DatabaseReference
                                     databaseReference) {
                                 Toast.makeText(getApplicationContext(), "Background Decision Taken as "  +
                                         backgroundinfostatus, Toast.LENGTH_SHORT).show();
-                                Intent personapprovalloginfointent = new Intent(BackgroundInfoApproveForTrader.this, HomeActivity.class);
+                                Intent backgroundapprovalloginfointent = new Intent(BackgroundInfoApproveForTrader.this, BackgroundInfoApproveForTrader.class);
 
-                                startActivity(personapprovalloginfointent);
+                                startActivity(backgroundapprovalloginfointent);
+
+                            }
+                        });
+
+                ApprovalRef.child(approvalID).setValue(newreceiptsetter, new
+                        DatabaseReference.CompletionListener() {
+                            @Override
+                            public void onComplete(DatabaseError databaseError, DatabaseReference
+                                    databaseReference) {
+                                Toast.makeText(getApplicationContext(), "Background Info Key " + approvalreceipt , Toast.LENGTH_SHORT).show();
+                                Intent backgroundapprovalloginfointent = new Intent(BackgroundInfoApproveForTrader.this, PersonalInfoApproveForTrader.class);
+
+                                startActivity(backgroundapprovalloginfointent);
 
                             }
                         });
 
 
             }
-
-        };
-
-
+        }
         mProgress.dismiss();
 
-    }
-
+    };
 
 
 

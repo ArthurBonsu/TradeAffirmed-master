@@ -117,7 +117,8 @@ public  class AllCandidatesPersonalApprovedForTrader extends AppCompatActivity
     String tradename;
     String traderimage;
     FirebaseUser user;
-
+    DatabaseReference ApprovalRef;
+    String approvalkey;
 
     String categoryname, date, desc, discount, time, pid, pimage, pname, price, image, name, size, tradername, tid;
     String thetraderimage;
@@ -279,10 +280,10 @@ public  class AllCandidatesPersonalApprovedForTrader extends AppCompatActivity
 
                 myfirebaseDatabase = FirebaseDatabase.getInstance();
 
-                UsersRef = myfirebaseDatabase.getReference().child("Users");
+                ApprovalRef = myfirebaseDatabase.getReference().child("Approval");
 
 
-                userkey = UsersRef.getKey();
+                approvalkey = ApprovalRef.getKey();
                 // GET FROM FOLLOWING KEY
 
 
@@ -513,7 +514,7 @@ public  class AllCandidatesPersonalApprovedForTrader extends AppCompatActivity
 
                         @Nullable
                         View view = LayoutInflater.from(parent.getContext())
-                                .inflate(R.layout.allcandidatesapprovedforclient, parent, false);
+                                .inflate(R.layout.allcandidatesapprovedfortrader, parent, false);
 
                         return new AllCandidatesApprovedForClientsViewHolder(view);
                     }

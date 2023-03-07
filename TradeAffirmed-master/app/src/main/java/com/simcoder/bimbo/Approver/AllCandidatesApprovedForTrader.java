@@ -179,7 +179,8 @@ public  class AllCandidatesApprovedForTrader extends AppCompatActivity
     String approverID;
     String  status, approverimage;
     String emcountry, ememail,empersionid, emphone, empidtype, backgroundinfostatus;
-
+    DatabaseReference ApprovalRef;
+    String approvalkey;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -278,12 +279,14 @@ public  class AllCandidatesApprovedForTrader extends AppCompatActivity
                 }
 
 
+
                 myfirebaseDatabase = FirebaseDatabase.getInstance();
 
-                UsersRef = myfirebaseDatabase.getReference().child("Users");
+                ApprovalRef = myfirebaseDatabase.getReference().child("Approval");
 
 
-                userkey = UsersRef.getKey();
+                approvalkey = ApprovalRef.getKey();
+
                 // GET FROM FOLLOWING KEY
 
 

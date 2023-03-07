@@ -156,6 +156,10 @@ public  class AllCandidatesResidenceApprovedForClient extends AppCompatActivity
     Button backtopreviouspage;
     Button      nextallcandidates;
     String  email,gender, age, country, personalinfoapprovestatus;
+    DatabaseReference ApprovalRef;
+    String approvalkey;
+
+
 /*
     addnewproducthere
             allproductshere
@@ -277,12 +281,15 @@ public  class AllCandidatesResidenceApprovedForClient extends AppCompatActivity
                 }
 
 
+
+
                 myfirebaseDatabase = FirebaseDatabase.getInstance();
 
-                UsersRef = myfirebaseDatabase.getReference().child("Users");
+                ApprovalRef = myfirebaseDatabase.getReference().child("Approval");
 
 
-                userkey = UsersRef.getKey();
+                approvalkey = ApprovalRef.getKey();
+
                 // GET FROM FOLLOWING KEY
 
 
